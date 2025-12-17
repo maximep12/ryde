@@ -60,26 +60,3 @@ export const bookReviews = app.table(
 
 export type BookReview = InferSelectModel<typeof bookReviews>
 export type NewBookReview = InferInsertModel<typeof bookReviews>
-
-// ============================================================================
-// MATERIALIZED VIEWS
-// ============================================================================
-
-export const booksStatsMview = app.materializedView('books_stats_mview').as((qb) =>
-  qb
-    .select({
-      bookId: bookReviews.bookId,
-      bookTitle: books.title,
-      author: books.author,
-      genre: books.genre,
-      totalReviews: sql<number>`COUNT(${bookReviews.id})`.as('total_reviews'),
-      averageRating: sql<number>`ROUND(AVG(${bookReviews.rating})::numeric, 2)`.as(
-        'average_rating',
-      ),
-    })
-    .from(bookReviews)
-    .innerJoin(books, sql`${bookReviews.bookId} = ${books.id}`)
-    .groupBy(bookReviews.bookId, books.title, books.author, books.genre),
-)
-
-export type BookStats = typeof booksStatsMview.$inferSelect

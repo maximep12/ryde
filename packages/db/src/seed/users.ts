@@ -1,4 +1,5 @@
 import * as crypto from 'crypto'
+import { inArray } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { promisify } from 'util'
 import type * as schema from '../schema'
@@ -18,13 +19,15 @@ function generateId(): string {
   return crypto.randomUUID()
 }
 
+const SEED_USER_EMAILS = ['admin@example.com']
+
 export async function seedUsers(db: NodePgDatabase<typeof schema>) {
   console.log('Seeding users...')
 
-  const existingUsers = await db.select().from(users).limit(1)
-  if (existingUsers.length > 0) {
-    console.log('Users already exist, skipping seed')
-    return
+  // Delete existing seed users (idempotent)
+  const deleted = await db.delete(users).where(inArray(users.email, SEED_USER_EMAILS)).returning()
+  if (deleted.length > 0) {
+    console.log(`Deleted ${deleted.length} existing seed user(s)`)
   }
 
   const adminPassword = await hashPassword('admin123')

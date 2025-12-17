@@ -1,11 +1,11 @@
 import { JOB_EVENT } from '@repo/constants'
 import { createBaseLogger } from '@repo/logger'
-import { QUEUE_CLEANUP_STALE_DATA, QUEUE_REFRESH_MATERIALIZED_VIEWS } from '@repo/queue'
+import { QUEUE_CLEANUP_STALE_DATA /* , QUEUE_REFRESH_MATERIALIZED_VIEWS */ } from '@repo/queue'
 import { createJobDbEntry } from './lib/utils/db'
 import { logQueueHealth } from './lib/utils/logger'
 import { startPollingServices } from './lib/utils/polling-services'
 import { cleanupWorker } from './workers/cleanup/worker'
-import { materializedViewsWorker } from './workers/materialized-views/worker'
+// import { materializedViewsWorker } from './workers/materialized-views/worker'
 
 const logger = createBaseLogger().child({
   module: 'worker',
@@ -16,10 +16,11 @@ logger.info({ cwd: process.cwd(), url: import.meta.url })
 // Good CRON Time reference: https://crontab.guru/
 
 const workers = [
-  {
-    worker: materializedViewsWorker,
-    setup: () => QUEUE_REFRESH_MATERIALIZED_VIEWS,
-  },
+  // Uncomment when materialized views worker is configured
+  // {
+  //   worker: materializedViewsWorker,
+  //   setup: () => QUEUE_REFRESH_MATERIALIZED_VIEWS,
+  // },
   {
     worker: cleanupWorker,
     setup: () => QUEUE_CLEANUP_STALE_DATA,

@@ -12,28 +12,32 @@ import {
 } from '@repo/ui/components'
 import { Link, useLocation } from '@tanstack/react-router'
 import { LogOutIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { navigation } from './navigation'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
   const { logout } = useLogout()
+  const { t } = useTranslation(['ui', 'routes'])
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" className="border-r" {...props}>
       <SidebarHeader>
-        <div className="flex h-12 items-center px-4 font-semibold">Franklin - V7 Starter App</div>
+        <div className="flex items-center px-2">
+          <span className="text-lg font-bold tracking-tight">Franklin Project</span>
+        </div>
       </SidebarHeader>
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('sidebar.navigation')}</SidebarGroupLabel>
           <SidebarMenu>
             {navigation.map((item) => (
               <SidebarMenuItem key={item.path}>
                 <SidebarMenuButton asChild isActive={location.pathname === item.path}>
                   <Link to={item.path}>
                     <item.icon className="size-4" />
-                    <span>{item.title}</span>
+                    <span>{t(`routes:${item.title}`)}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -47,7 +51,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton onClick={logout}>
               <LogOutIcon className="size-4" />
-              <span>Logout</span>
+              <span>{t('auth.logOut')}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

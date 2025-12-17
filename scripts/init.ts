@@ -2,8 +2,12 @@ import * as p from '@clack/prompts'
 import { execSync } from 'child_process'
 import * as fs from 'fs'
 import * as path from 'path'
+import { fileURLToPath } from 'url'
 
-const ROOT_DIR = path.resolve(import.meta.dirname, '..')
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const ROOT_DIR = path.resolve(__dirname, '..')
+const args = process.argv.slice(2)
+const SKIP_RENAME = args.includes('--skip-rename')
 
 const FILES_TO_UPDATE = [
   'docker-compose.yml',
@@ -57,7 +61,7 @@ function replaceProjectName(oldName: string, newName: string) {
   return updatedFiles
 }
 
-function generateEnvFile(projectName: string) {
+function generateEnvFile() {
   const envExamplePath = path.join(ROOT_DIR, '.env.example')
   const envPath = path.join(ROOT_DIR, '.env')
 
@@ -65,9 +69,7 @@ function generateEnvFile(projectName: string) {
     return false
   }
 
-  let content = fs.readFileSync(envExamplePath, 'utf-8')
-  content = content.replace(/franklin/g, projectName)
-
+  const content = fs.readFileSync(envExamplePath, 'utf-8')
   fs.writeFileSync(envPath, content)
   return true
 }
@@ -84,33 +86,43 @@ async function main() {
 
   p.intro('Welcome to the Franklin Project Starter Kit')
 
-  const projectName = await p.text({
-    message: 'What is the name of your project?',
-    placeholder: 'the-franklin-project',
-    validate: (value) => {
-      if (!value) return 'Project name is required'
-      if (!/^[a-z][a-z0-9-]*$/.test(value)) {
-        return 'Project name must start with a letter and contain only lowercase letters, numbers, and hyphens'
-      }
-      return undefined
-    },
-  })
+  let projectName = 'franklin'
 
-  if (p.isCancel(projectName)) {
-    p.cancel('Setup cancelled')
-    process.exit(0)
+  if (SKIP_RENAME) {
+    p.log.info('Skipping project rename (--skip-rename flag detected)')
+  } else {
+    const nameInput = await p.text({
+      message: 'What is the name of your project?',
+      placeholder: 'the-franklin-project',
+      validate: (value) => {
+        if (!value) return 'Project name is required'
+        if (!/^[a-z][a-z0-9-]*$/.test(value)) {
+          return 'Project name must start with a letter and contain only lowercase letters, numbers, and hyphens'
+        }
+        return undefined
+      },
+    })
+
+    if (p.isCancel(nameInput)) {
+      p.cancel('Setup cancelled')
+      process.exit(0)
+    }
+
+    projectName = nameInput
   }
 
   const spinner = p.spinner()
 
   // Step 1: Replace project name
-  spinner.start('Replacing project name references...')
-  const updatedFiles = replaceProjectName('franklin', projectName)
-  spinner.stop(`Updated ${updatedFiles.length} files`)
+  if (!SKIP_RENAME) {
+    spinner.start('Replacing project name references...')
+    const updatedFiles = replaceProjectName('franklin', projectName)
+    spinner.stop(`Updated ${updatedFiles.length} files`)
+  }
 
   // Step 2: Generate .env file
   spinner.start('Generating .env file...')
-  const envCreated = generateEnvFile(projectName)
+  const envCreated = generateEnvFile()
   spinner.stop(envCreated ? 'Created .env file' : '.env file already exists (skipped)')
 
   // Step 3: Start Docker containers
@@ -136,7 +148,7 @@ async function main() {
       const maxAttempts = 30
       while (attempts < maxAttempts) {
         try {
-          exec('docker compose exec -T postgres pg_isready -U postgres', { cwd: ROOT_DIR })
+          exec('docker compose exec -T postgres pg_isready -h localhost -U postgres', { cwd: ROOT_DIR })
           break
         } catch {
           attempts++
@@ -165,46 +177,48 @@ async function main() {
     process.exit(0)
   }
 
+  let migrationsSucceeded = false
+
   if (runMigrations) {
     spinner.start('Generating database migrations...')
     try {
       exec('pnpm db:generate')
       spinner.stop('Migrations generated')
-    } catch (error) {
-      spinner.stop('Failed to generate migrations')
-      p.log.error((error as Error).message)
-    }
 
-    spinner.start('Applying database migrations...')
-    try {
+      spinner.start('Applying database migrations...')
       exec('pnpm db:migrate')
       spinner.stop('Migrations applied')
+      migrationsSucceeded = true
     } catch (error) {
-      spinner.stop('Failed to apply migrations')
+      spinner.stop('Failed to run migrations')
       p.log.error((error as Error).message)
     }
   }
 
-  // Step 5: Run seed script
-  const runSeed = await p.confirm({
-    message: 'Seed the database with initial data?',
-    initialValue: true,
-  })
+  // Step 5: Run seed script (only if migrations succeeded)
+  if (migrationsSucceeded) {
+    const runSeed = await p.confirm({
+      message: 'Seed the database with initial data?',
+      initialValue: true,
+    })
 
-  if (p.isCancel(runSeed)) {
-    p.cancel('Setup cancelled')
-    process.exit(0)
-  }
-
-  if (runSeed) {
-    spinner.start('Seeding database...')
-    try {
-      exec('pnpm db:seed')
-      spinner.stop('Database seeded')
-    } catch (error) {
-      spinner.stop('Failed to seed database')
-      p.log.error((error as Error).message)
+    if (p.isCancel(runSeed)) {
+      p.cancel('Setup cancelled')
+      process.exit(0)
     }
+
+    if (runSeed) {
+      spinner.start('Seeding database...')
+      try {
+        exec('pnpm db:seed')
+        spinner.stop('Database seeded')
+      } catch (error) {
+        spinner.stop('Failed to seed database')
+        p.log.error((error as Error).message)
+      }
+    }
+  } else if (runMigrations) {
+    p.log.warn('Skipping seed because migrations failed')
   }
 
   p.outro('Project setup complete! Run `pnpm dev` to start developing.')

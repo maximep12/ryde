@@ -101,10 +101,15 @@ function AuthLayoutComponent() {
           <div className="flex max-h-svh w-full flex-col">
             <AppHeader />
 
-            <div className="bg-background-level-2 h-full w-full flex-1" ref={viewportRef}>
-              <CatchBoundary getResetKey={() => 'reset'} errorComponent={ErrorComponent}>
-                <Outlet />
-              </CatchBoundary>
+            <div
+              className="bg-background-level-2 h-full w-full flex-1 overflow-y-auto"
+              ref={viewportRef}
+            >
+              <div className="mx-auto w-full max-w-5xl px-6 py-6">
+                <CatchBoundary getResetKey={() => 'reset'} errorComponent={ErrorComponent}>
+                  <Outlet />
+                </CatchBoundary>
+              </div>
             </div>
           </div>
         </SidebarProvider>

@@ -1,6 +1,57 @@
-import { SidebarTrigger } from '@repo/ui/components'
+import type { Theme } from '@/components/ThemeProvider'
+import { useTheme } from '@/components/ThemeProvider/hooks'
+import useLogout from '@/hooks/queries/auth/useLogout'
+import { useMe } from '@/hooks/queries/auth/useMe'
+import {
+  Button,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  SidebarTrigger,
+} from '@repo/ui/components'
+import { Link } from '@tanstack/react-router'
+import {
+  GlobeIcon,
+  LogOutIcon,
+  MonitorIcon,
+  MoonIcon,
+  SettingsIcon,
+  SunIcon,
+  UserIcon,
+} from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'fr', label: 'Français' },
+] as const
+
+const THEMES = [
+  { value: 'light', icon: SunIcon, labelKey: 'theme.light' },
+  { value: 'dark', icon: MoonIcon, labelKey: 'theme.dark' },
+  { value: 'system', icon: MonitorIcon, labelKey: 'theme.system' },
+] as const
 
 export function AppHeader() {
+  const { t, i18n } = useTranslation('ui')
+  const { theme, setTheme } = useTheme()
+  const { data: user } = useMe()
+  const { logout } = useLogout()
+
+  const currentLanguage = LANGUAGES.find((lang) => lang.code === i18n.language) ?? LANGUAGES[0]
+  const currentTheme = THEMES.find((th) => th.value === theme) ?? THEMES[0]
+  const CurrentThemeIcon = currentTheme.icon
+
+  const displayName = user
+    ? `${user.givenName ?? ''} ${user.familyName ?? ''}`.trim() || user.email
+    : ''
+
+  const handleLanguageChange = (code: string) => {
+    i18n.changeLanguage(code)
+  }
+
   return (
     <header className="flex h-12 shrink-0 items-center justify-between gap-2 border-b px-4">
       <div className="flex items-center gap-2">
@@ -8,9 +59,67 @@ export function AppHeader() {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* TODO: Add theme selector */}
-        {/* TODO: Add language selector */}
-        {/* TODO: Add user menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label={t('themeSelector.toggle')}>
+              <CurrentThemeIcon className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {THEMES.map((th) => (
+              <DropdownMenuItem
+                key={th.value}
+                onClick={() => setTheme(th.value as Theme)}
+                className={theme === th.value ? 'bg-accent' : ''}
+              >
+                <th.icon className="size-4" />
+                <span>{t(th.labelKey)}</span>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" aria-label={t('languageSelector.toggle')}>
+              <GlobeIcon className="size-4" />
+              <span className="ml-1">{currentLanguage.label}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {LANGUAGES.map((lang) => (
+              <DropdownMenuItem
+                key={lang.code}
+                onClick={() => handleLanguageChange(lang.code)}
+                className={i18n.language === lang.code ? 'bg-accent' : ''}
+              >
+                {lang.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm">
+              <UserIcon className="size-4" />
+              <span className="ml-1">{displayName}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link to="/settings">
+                <SettingsIcon className="size-4" />
+                <span>{t('settings')}</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logout} variant="destructive">
+              <LogOutIcon className="size-4" />
+              <span>{t('auth.logOut')}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )

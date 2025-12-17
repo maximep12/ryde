@@ -1,4 +1,9 @@
 {
+  "auth.logOut": "Sign out",
+  "auth.signIn": "Sign in",
+
+  "sidebar.navigation": "Navigation",
+
   "dropdown.empty": "No results found",
   "dropdown.placeholder": "Select an option...",
   "dropdown.placeholderMultiple": "Select options...",

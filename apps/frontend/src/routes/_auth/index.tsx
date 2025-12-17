@@ -11,11 +11,11 @@ export const Route = createFileRoute('/_auth/')({
 
 function DashboardPage() {
   return (
-    <div className="space-y-6">
-      <div>
+    <div className="space-y-8">
+      <header>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome to your dashboard</p>
-      </div>
+        <p className="text-muted-foreground mt-1">Welcome to your dashboard</p>
+      </header>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>

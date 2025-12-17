@@ -156,3 +156,13 @@ After running `pnpm db:seed`, you can log in with:
 | Redis         | 6379 | Cache & job queue   |
 | Redis Insight | 5540 | Redis GUI           |
 | Bull Board    | 3000 | Job queue dashboard |
+
+## Developing the Starter Kit
+
+When working on the Franklin starter kit itself (not using it for a new project), use the `--skip-rename` flag to avoid renaming references:
+
+```bash
+pnpm init-project --skip-rename
+```
+
+This will skip the project naming step and keep all "franklin" references intact, while still setting up Docker, migrations, and seeds.

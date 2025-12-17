@@ -34,7 +34,11 @@
     "db:seed:mock:users": "dotenv -- tsx --conditions=volume-seven  ./apps/backend/src/scripts/data/mock/users.ts",
     "db:dev:godmode": "dotenv -- tsx --conditions=volume-seven  ./apps/backend/src/scripts/data/permissions/dev-superadmin.ts",
     "pull:master": "git stash && git checkout master && git pull && pnpm i && cd packages/db && pnpm db:generate && pnpm db:migrate",
-    "init-project": "tsx scripts/init.ts"
+    "init-project": "tsx scripts/init.ts",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:nuke": "docker compose down -v && tsx scripts/reset-migrations.ts && rm -rf .turbo",
+    "db:reset-migrations": "tsx scripts/reset-migrations.ts"
   },
   "devDependencies": {
     "@clack/prompts": "^0.11.0",
