@@ -1,4 +1,4 @@
-import { jobsLogs } from '@repo/db'
+import { backgroundJobsLogs } from '@repo/db'
 import { db } from '../../db'
 
 type JobData = {
@@ -9,5 +9,5 @@ type JobData = {
 }
 
 export function createJobDbEntry(job: JobData) {
-  return db.insert(jobsLogs).values({ ...job, timestamp: new Date() })
+  return db.insert(backgroundJobsLogs).values({ ...job, timestamp: new Date() })
 }
