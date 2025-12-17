@@ -1,0 +1,34 @@
+{
+  "name": "@repo/config-sentry",
+  "version": "0.0.0",
+  "description": "Shared Sentry configuration for Volume7",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src/",
+    "type-check": "tsc --noEmit",
+    "build": "tsup"
+  },
+  "exports": {
+    "./frontend": {
+      "types": "./src/frontend.ts",
+      "volume-seven": "./src/frontend.ts",
+      "default": "./dist/frontend.js"
+    },
+    "./backend": {
+      "types": "./src/backend.ts",
+      "volume-seven": "./src/backend.ts",
+      "default": "./dist/backend.js"
+    }
+  },
+  "dependencies": {
+    "@sentry/node": "^10.30.0",
+    "@sentry/react": "^10.30.0"
+  },
+  "devDependencies": {
+    "@repo/config-eslint-custom": "workspace:*",
+    "@repo/config-typescript": "workspace:*",
+    "tsup": "^8.5.1"
+  }
+}

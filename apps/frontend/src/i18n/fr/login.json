@@ -1,0 +1,5 @@
+{
+  "action.signIn": "Se connecter",
+  "action.logOut": "Déconnexion",
+  "error.invalidCredentials": "Identifiants invalides"
+}

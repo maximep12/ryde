@@ -1,0 +1,21 @@
+{
+  "name": "@repo/queue",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "FORCE_COLOR=1 eslint src/",
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@repo/config-eslint-custom": "workspace:*",
+    "@repo/config-typescript": "workspace:*"
+  },
+  "dependencies": {
+    "bullmq": "^5.66.0",
+    "ioredis": "^5.8.2"
+  }
+}

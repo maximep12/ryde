@@ -1,0 +1,96 @@
+version: "3.8"
+name: franklin
+services:
+  postgres:
+    image: postgres:18
+    container_name: franklin-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh
+    networks:
+      - franklin-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U franklin -d franklin_p2 && pg_isready -U franklin -d franklin_p3",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:alpine
+    container_name: franklin-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - franklin-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: franklin-redis-insight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"
+    volumes:
+      - redis_insight_data:/data
+    networks:
+      - franklin-network
+    depends_on:
+      - redis
+
+  bull-board:
+    image: deadly0/bull-board:latest
+    container_name: franklin-bull-board
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      BULL_PREFIX: bull
+    networks:
+      - franklin-network
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  franklin-network:
+    driver: bridge
+    name: franklin-network
+
+volumes:
+  mongodb_data:
+    driver: local
+  mongodb_config:
+    driver: local
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  redis_insight_data:
+    driver: local

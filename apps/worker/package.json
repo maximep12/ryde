@@ -1,0 +1,39 @@
+{
+  "name": "@repo/worker",
+  "type": "module",
+  "description": "Worker - Background job processing with BullMQ",
+  "scripts": {
+    "dev": "tsx watch --conditions=volume-seven src/index.ts",
+    "build": "tsup",
+    "type-check": "tsc --noEmit",
+    "lint": "FORCE_COLOR=1 eslint src/"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@repo/config-typescript": "workspace:*",
+    "@repo/constants": "workspace:*",
+    "@repo/db": "workspace:*",
+    "@repo/feature-flags": "workspace:*",
+    "@repo/logger": "workspace:*",
+    "@repo/queue": "workspace:*",
+    "@repo/redis": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "@repo/zod-schemas": "workspace:*",
+    "bluebird": "^3.7.2",
+    "bullmq": "^5.66.0",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.45.1",
+    "ioredis": "^5.8.2",
+    "pg": "^8.16.3",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@repo/config-eslint-custom": "workspace:*",
+    "@types/bluebird": "^3.5.42",
+    "@types/node": "^25.0.2",
+    "@types/pg": "^8.16.0",
+    "tsx": "^4.21.0"
+  }
+}

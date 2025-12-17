@@ -1,0 +1,5 @@
+{
+  "action.signIn": "Sign in",
+  "action.logOut": "Log Out",
+  "error.invalidCredentials": "Invalid credentials"
+}

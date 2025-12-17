@@ -1,0 +1,80 @@
+/* Linto Circular Pro - Heading Font */
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-book.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-book.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-book-italic.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-book-italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-medium.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-medium-italic.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-medium-italic.woff") format("woff");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-bold.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-bold-italic.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-bold-italic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-black.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Linto Circular";
+  src:
+    url("../assets/fonts/lineto-circular-pro-black-italic.woff2") format("woff2"),
+    url("../assets/fonts/lineto-circular-pro-black-italic.woff") format("woff");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}

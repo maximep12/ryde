@@ -1,0 +1,7 @@
+{
+  "extends": "@repo/config-typescript/node.json",
+  "compilerOptions": {
+    "declaration": false,
+    "declarationMap": false
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@repo/zod-schemas",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "FORCE_COLOR=1 eslint src/",
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "volume-seven": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "devDependencies": {
+    "@repo/config-eslint-custom": "workspace:*",
+    "@repo/config-typescript": "workspace:*"
+  },
+  "dependencies": {
+    "zod": "^4.2.0",
+    "zod-form-data": "^3.0.1"
+  }
+}

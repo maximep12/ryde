@@ -1,0 +1,29 @@
+{
+  "name": "@repo/config-eslint-custom",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "exports": {
+    "./node": "./node.js",
+    "./vite": "./vite.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/js": "^9.39.2",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.25",
+    "globals": "^16.5.0",
+    "typescript-eslint": "^8.50.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "eslint-plugin-i18next": "^6.1.3"
+  }
+}

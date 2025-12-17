@@ -1,0 +1,80 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs (will be generated during Docker build)
+**/dist
+**/.turbo
+**/.next
+**/.nuxt
+**/out
+**/build
+
+# Development
+.git
+.gitignore
+*.md
+!README.md
+
+# Testing
+coverage
+.nyc_output
+*.test.ts
+*.spec.ts
+__tests__
+__mocks__
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.*
+!.env.example
+.vault-env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Misc
+*.tsbuildinfo
+.eslintcache
+.turbo
+
+# Docker
+docker-compose*.yml
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Nixpacks configs (no longer needed with Dockerfile)
+nixpacks.toml
+nixpacks.api.toml
+test-nixpacks-build.sh
+
+# Documentation
+docs/
+
+# Postman collections
+postman/
+
+# MCP config
+.mcp.json
+
+# Husky
+.husky
+
+# Specify configs
+.specify

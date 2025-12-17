@@ -1,0 +1,4 @@
+**/routeTree.gen.ts
+
+# Helm templates contain Go template syntax, not valid YAML
+helm/**/templates/**

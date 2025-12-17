@@ -1,0 +1,10 @@
+{
+  "extends": "@repo/config-typescript/node.json",
+  "include": ["."],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "paths": {
+      "@repo/logger/*": ["./src/*"]
+    }
+  }
+}

@@ -1,0 +1,5 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+  - 'config/*'
+minimumReleaseAge: 1440 # Minimum release age is 1440 minutes (1 day)

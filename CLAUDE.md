@@ -1,6 +1,10 @@
-# the-franklin-project
+# CLAUDE.md
 
-Official V7 starter kit to kickstart a prototype or a real app.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## The Franklin Project
+
+This app is built upon The Franklin Project, an in-house initiative
 
 # Objective
 
