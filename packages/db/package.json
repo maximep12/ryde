@@ -12,7 +12,8 @@
     "db:custom": "pnpm exec drizzle-kit generate --custom --config=drizzle.config.local.ts",
     "db:generate:deploy": "pnpm exec drizzle-kit generate --config=drizzle.config.deploy.ts",
     "db:migrate:deploy": "pnpm exec drizzle-kit migrate --config=drizzle.config.deploy.ts",
-    "db:custom:deploy": "pnpm exec drizzle-kit generate --custom --config=drizzle.config.deploy.ts"
+    "db:custom:deploy": "pnpm exec drizzle-kit generate --custom --config=drizzle.config.deploy.ts",
+    "db:seed": "tsx src/seed/index.ts"
   },
   "exports": {
     ".": {

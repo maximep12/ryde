@@ -27,14 +27,17 @@
     "db:pull": "dotenv -- turbo db:pull --filter=@repo/db",
     "db:generate": "dotenv -- turbo db:generate --filter=@repo/db",
     "db:migrate": "dotenv -- turbo db:migrate --filter=@repo/db",
+    "db:seed": "pnpm --filter=@repo/db db:seed",
     "db:generate:deploy": "dotenv -- turbo db:generate:deploy --filter=@repo/db",
     "db:migrate:deploy": "pnpm --filter=@repo/db exec drizzle-kit migrate --config=drizzle.config.deploy.ts",
     "db:index:mviews": "dotenv -- tsx --conditions=volume-seven  ./apps/backend/src/scripts/indexes/drop-and-create-unique-idx-mviews.ts",
     "db:seed:mock:users": "dotenv -- tsx --conditions=volume-seven  ./apps/backend/src/scripts/data/mock/users.ts",
     "db:dev:godmode": "dotenv -- tsx --conditions=volume-seven  ./apps/backend/src/scripts/data/permissions/dev-superadmin.ts",
-    "pull:master": "git stash && git checkout master && git pull && pnpm i && cd packages/db && pnpm db:generate && pnpm db:migrate"
+    "pull:master": "git stash && git checkout master && git pull && pnpm i && cd packages/db && pnpm db:generate && pnpm db:migrate",
+    "init-project": "tsx scripts/init.ts"
   },
   "devDependencies": {
+    "@clack/prompts": "^0.11.0",
     "@tailwindcss/postcss": "^4.1.18",
     "@tailwindcss/vite": "^4.1.18",
     "eslint": "^9.39.2",
