@@ -31,7 +31,7 @@ export const authRouterDefinition = authRouter
     }
 
     if (!user.isActive) {
-      throw new HTTPException(401, { message: MESSAGE.INVALID_CREDENTIALS })
+      throw new HTTPException(401, { message: MESSAGE.USER_DISABLED })
     }
 
     const isValidPassword = await verifyPassword(password, user.passwordHash)
@@ -39,11 +39,11 @@ export const authRouterDefinition = authRouter
       throw new HTTPException(401, { message: MESSAGE.INVALID_CREDENTIALS })
     }
 
-    const session = await createSession(user.id, '', '')
+    const { sessionToken } = await createSession(user.id, '', '')
 
     return c.json({
       message: MESSAGE.SESSION_CREATED,
-      sessionToken: session.sessionToken,
+      sessionToken,
       user: {
         id: user.id,
         email: user.email,

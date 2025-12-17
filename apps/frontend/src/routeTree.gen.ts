@@ -10,128 +10,104 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as KitchenSinkRouteImport } from './routes/kitchen-sink'
-import { Route as CallbackRouteImport } from './routes/callback'
-import { Route as AuthRouteImport } from './routes/_auth'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
-import { Route as AuthDispatchRouteImport } from './routes/_auth/dispatch'
-import { Route as AuthSplatRouteImport } from './routes/_auth/$'
-import { Route as AuthDispatchIndexRouteImport } from './routes/_auth/dispatch/index'
-import { Route as AuthDispatchJobIdRouteImport } from './routes/_auth/dispatch/$jobId'
+import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
+import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
+import { Route as AuthErrorRouteImport } from './routes/_auth/error'
+import { Route as AuthKitchenSinkIndexRouteImport } from './routes/_auth/kitchen-sink/index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KitchenSinkRoute = KitchenSinkRouteImport.update({
-  id: '/kitchen-sink',
-  path: '/kitchen-sink',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CallbackRoute = CallbackRouteImport.update({
-  id: '/callback',
-  path: '/callback',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
+const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthIndexRoute = AuthIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AuthRoute,
+  getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthDispatchRoute = AuthDispatchRouteImport.update({
-  id: '/dispatch',
-  path: '/dispatch',
-  getParentRoute: () => AuthRoute,
+const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
+  id: '/unauthorized',
+  path: '/unauthorized',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthSplatRoute = AuthSplatRouteImport.update({
-  id: '/$',
-  path: '/$',
-  getParentRoute: () => AuthRoute,
+const AuthNotFoundRoute = AuthNotFoundRouteImport.update({
+  id: '/not-found',
+  path: '/not-found',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthDispatchIndexRoute = AuthDispatchIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AuthDispatchRoute,
+const AuthErrorRoute = AuthErrorRouteImport.update({
+  id: '/error',
+  path: '/error',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthDispatchJobIdRoute = AuthDispatchJobIdRouteImport.update({
-  id: '/$jobId',
-  path: '/$jobId',
-  getParentRoute: () => AuthDispatchRoute,
+const AuthKitchenSinkIndexRoute = AuthKitchenSinkIndexRouteImport.update({
+  id: '/kitchen-sink/',
+  path: '/kitchen-sink/',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/callback': typeof CallbackRoute
-  '/kitchen-sink': typeof KitchenSinkRoute
   '/login': typeof LoginRoute
-  '/$': typeof AuthSplatRoute
-  '/dispatch': typeof AuthDispatchRouteWithChildren
+  '/error': typeof AuthErrorRoute
+  '/not-found': typeof AuthNotFoundRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/dispatch/$jobId': typeof AuthDispatchJobIdRoute
-  '/dispatch/': typeof AuthDispatchIndexRoute
+  '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
 }
 export interface FileRoutesByTo {
-  '/callback': typeof CallbackRoute
-  '/kitchen-sink': typeof KitchenSinkRoute
   '/login': typeof LoginRoute
-  '/$': typeof AuthSplatRoute
+  '/error': typeof AuthErrorRoute
+  '/not-found': typeof AuthNotFoundRoute
+  '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/dispatch/$jobId': typeof AuthDispatchJobIdRoute
-  '/dispatch': typeof AuthDispatchIndexRoute
+  '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_auth': typeof AuthRouteWithChildren
-  '/callback': typeof CallbackRoute
-  '/kitchen-sink': typeof KitchenSinkRoute
+  '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/_auth/$': typeof AuthSplatRoute
-  '/_auth/dispatch': typeof AuthDispatchRouteWithChildren
+  '/_auth/error': typeof AuthErrorRoute
+  '/_auth/not-found': typeof AuthNotFoundRoute
+  '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
-  '/_auth/dispatch/$jobId': typeof AuthDispatchJobIdRoute
-  '/_auth/dispatch/': typeof AuthDispatchIndexRoute
+  '/_auth/kitchen-sink/': typeof AuthKitchenSinkIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/callback'
-    | '/kitchen-sink'
     | '/login'
-    | '/$'
-    | '/dispatch'
+    | '/error'
+    | '/not-found'
+    | '/unauthorized'
     | '/'
-    | '/dispatch/$jobId'
-    | '/dispatch/'
+    | '/kitchen-sink'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/callback'
-    | '/kitchen-sink'
     | '/login'
-    | '/$'
+    | '/error'
+    | '/not-found'
+    | '/unauthorized'
     | '/'
-    | '/dispatch/$jobId'
-    | '/dispatch'
+    | '/kitchen-sink'
   id:
     | '__root__'
     | '/_auth'
-    | '/callback'
-    | '/kitchen-sink'
     | '/login'
-    | '/_auth/$'
-    | '/_auth/dispatch'
+    | '/_auth/error'
+    | '/_auth/not-found'
+    | '/_auth/unauthorized'
     | '/_auth/'
-    | '/_auth/dispatch/$jobId'
-    | '/_auth/dispatch/'
+    | '/_auth/kitchen-sink/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AuthRoute: typeof AuthRouteWithChildren
-  CallbackRoute: typeof CallbackRoute
-  KitchenSinkRoute: typeof KitchenSinkRoute
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
 
@@ -144,25 +120,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/kitchen-sink': {
-      id: '/kitchen-sink'
-      path: '/kitchen-sink'
-      fullPath: '/kitchen-sink'
-      preLoaderRoute: typeof KitchenSinkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/callback': {
-      id: '/callback'
-      path: '/callback'
-      fullPath: '/callback'
-      preLoaderRoute: typeof CallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof AuthRouteImport
+      preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth/': {
@@ -170,71 +132,61 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthIndexRouteImport
-      parentRoute: typeof AuthRoute
+      parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/dispatch': {
-      id: '/_auth/dispatch'
-      path: '/dispatch'
-      fullPath: '/dispatch'
-      preLoaderRoute: typeof AuthDispatchRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/unauthorized': {
+      id: '/_auth/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/unauthorized'
+      preLoaderRoute: typeof AuthUnauthorizedRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/$': {
-      id: '/_auth/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof AuthSplatRouteImport
-      parentRoute: typeof AuthRoute
+    '/_auth/not-found': {
+      id: '/_auth/not-found'
+      path: '/not-found'
+      fullPath: '/not-found'
+      preLoaderRoute: typeof AuthNotFoundRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/dispatch/': {
-      id: '/_auth/dispatch/'
-      path: '/'
-      fullPath: '/dispatch/'
-      preLoaderRoute: typeof AuthDispatchIndexRouteImport
-      parentRoute: typeof AuthDispatchRoute
+    '/_auth/error': {
+      id: '/_auth/error'
+      path: '/error'
+      fullPath: '/error'
+      preLoaderRoute: typeof AuthErrorRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/dispatch/$jobId': {
-      id: '/_auth/dispatch/$jobId'
-      path: '/$jobId'
-      fullPath: '/dispatch/$jobId'
-      preLoaderRoute: typeof AuthDispatchJobIdRouteImport
-      parentRoute: typeof AuthDispatchRoute
+    '/_auth/kitchen-sink/': {
+      id: '/_auth/kitchen-sink/'
+      path: '/kitchen-sink'
+      fullPath: '/kitchen-sink'
+      preLoaderRoute: typeof AuthKitchenSinkIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
   }
 }
 
-interface AuthDispatchRouteChildren {
-  AuthDispatchJobIdRoute: typeof AuthDispatchJobIdRoute
-  AuthDispatchIndexRoute: typeof AuthDispatchIndexRoute
+interface AuthRouteRouteChildren {
+  AuthErrorRoute: typeof AuthErrorRoute
+  AuthNotFoundRoute: typeof AuthNotFoundRoute
+  AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
+  AuthIndexRoute: typeof AuthIndexRoute
+  AuthKitchenSinkIndexRoute: typeof AuthKitchenSinkIndexRoute
 }
 
-const AuthDispatchRouteChildren: AuthDispatchRouteChildren = {
-  AuthDispatchJobIdRoute: AuthDispatchJobIdRoute,
-  AuthDispatchIndexRoute: AuthDispatchIndexRoute,
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthErrorRoute: AuthErrorRoute,
+  AuthNotFoundRoute: AuthNotFoundRoute,
+  AuthUnauthorizedRoute: AuthUnauthorizedRoute,
+  AuthIndexRoute: AuthIndexRoute,
+  AuthKitchenSinkIndexRoute: AuthKitchenSinkIndexRoute,
 }
 
-const AuthDispatchRouteWithChildren = AuthDispatchRoute._addFileChildren(
-  AuthDispatchRouteChildren,
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
 )
 
-interface AuthRouteChildren {
-  AuthSplatRoute: typeof AuthSplatRoute
-  AuthDispatchRoute: typeof AuthDispatchRouteWithChildren
-  AuthIndexRoute: typeof AuthIndexRoute
-}
-
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthSplatRoute: AuthSplatRoute,
-  AuthDispatchRoute: AuthDispatchRouteWithChildren,
-  AuthIndexRoute: AuthIndexRoute,
-}
-
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
-  AuthRoute: AuthRouteWithChildren,
-  CallbackRoute: CallbackRoute,
-  KitchenSinkRoute: KitchenSinkRoute,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport

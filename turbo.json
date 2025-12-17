@@ -5,8 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", "build/**"],
-      "passThroughEnv": ["VITE_FRONTEND_SENTRY_DSN", "VITE_SENTRY_AUTH_TOKEN", "SENTRY_AUTH_TOKEN"]
+      "outputs": ["dist/**", "build/**"]
     },
     "lint": {},
     "type-check": {},

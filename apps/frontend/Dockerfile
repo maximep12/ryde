@@ -14,10 +14,6 @@ WORKDIR /app
 RUN npm pkg delete scripts.prepare
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod=false --filter=@repo/frontend... --config.dedupe-peer-dependents=false
 
-ARG VITE_FRONTEND_SENTRY_DSN
-ARG VITE_SENTRY_AUTH_TOKEN
-ENV SENTRY_AUTH_TOKEN=$VITE_SENTRY_AUTH_TOKEN
-
 RUN pnpm build --filter=@repo/frontend
 
 FROM nginx:stable-alpine

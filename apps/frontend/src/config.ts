@@ -19,7 +19,7 @@ const local: Config = {
   ...base,
   env: ENV.LOCAL,
   backendURL: 'http://localhost:5000',
-  logoutUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/logout',
+  logoutUrl: 'http://localhost:5000/auth/logout',
   featureFlags: FEATURE_FLAGS_ENV.LOCAL,
 }
 
@@ -27,7 +27,7 @@ const dev: Config = {
   ...base,
   env: ENV.DEV,
   backendURL: 'https://api-dev.example.com',
-  logoutUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/logout',
+  logoutUrl: 'https://api-dev.example.com/auth/logout',
   featureFlags: FEATURE_FLAGS_ENV.DEV,
 }
 
@@ -35,7 +35,7 @@ const prod: Config = {
   ...base,
   env: ENV.PROD,
   backendURL: 'https://api.example.com',
-  logoutUrl: 'https://login.microsoftonline.com/common/oauth2/v2.0/logout',
+  logoutUrl: 'https://api.example.com/auth/logout',
   featureFlags: FEATURE_FLAGS_ENV.PROD,
 }
 

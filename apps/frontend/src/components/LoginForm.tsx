@@ -1,54 +1,57 @@
+import { getApi, updateApiClient } from '@/stores/api'
+import { setSessionToken } from '@/stores/session'
 import { Button, Input, Label } from '@repo/ui/components'
 import { cn } from '@repo/ui/lib'
 import { useState } from 'react'
-import { setAuthSession } from '@/lib/auth'
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
 
-    // Mock login - replace with actual API call
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      const api = getApi()
+      const res = await api.auth.callback.$post({ json: { email, password } })
 
-      // Mock session - replace with actual auth response
-      setAuthSession({
-        userId: '1',
-        loginToken: 'mock-token',
-        loginTokenExpires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        tenantId: 'default',
-        user: {
-          id: '1',
-          email,
-          firstName: 'Demo',
-          lastName: 'User',
-          isEnabled: true,
-          roles: ['user'],
-        },
-      })
+      if (!res.ok) {
+        const data = await res.json()
+        setError('message' in data ? data.message : 'Invalid credentials')
+        return
+      }
 
-      window.location.href = '/'
-    } catch (error) {
-      console.error('Login failed:', error)
+      const data = await res.json()
+      setSessionToken(data.sessionToken)
+      updateApiClient(data.sessionToken)
+
+      const params = new URLSearchParams(window.location.search)
+      const redirect = params.get('redirect') || '/'
+      window.location.href = redirect
+    } catch (err) {
+      console.error('Login failed:', err)
+      setError('An error occurred. Please try again.')
     } finally {
       setIsLoading(false)
     }
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
+    <div className={cn('mb-42 flex flex-col gap-6', className)} {...props}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Welcome back</h1>
         <p className="text-muted-foreground text-sm">Enter your credentials to sign in</p>
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-4">
+        {error && (
+          <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
+        )}
+
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input

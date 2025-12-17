@@ -45,7 +45,3 @@ dist/
 # terraform
 terraform/.terraform
 terraform/.terraform/*
-
-# sentry
-.sentryclirc
-**/.sentryclirc

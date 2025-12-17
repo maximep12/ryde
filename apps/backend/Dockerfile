@@ -5,9 +5,6 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV NODE_ENV=production
 ENV PORT=5000
 
-ARG SENTRY_AUTH_TOKEN
-ENV SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN
-
 RUN npm install -g corepack@latest && \
     corepack enable && \
     apk add --no-cache tini

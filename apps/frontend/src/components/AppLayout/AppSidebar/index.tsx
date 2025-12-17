@@ -1,3 +1,4 @@
+import useLogout from '@/hooks/queries/auth/useLogout'
 import {
   Sidebar,
   SidebarContent,
@@ -10,27 +11,17 @@ import {
   SidebarMenuItem,
 } from '@repo/ui/components'
 import { Link, useLocation } from '@tanstack/react-router'
-import { BookOpenIcon, HomeIcon, LogOutIcon, SettingsIcon } from 'lucide-react'
-import { logout } from '@/lib/auth'
-
-const navigation = [
-  { title: 'Dashboard', url: '/', icon: HomeIcon },
-  { title: 'Books', url: '/books', icon: BookOpenIcon },
-  { title: 'Settings', url: '/settings', icon: SettingsIcon },
-]
+import { LogOutIcon } from 'lucide-react'
+import { navigation } from './navigation'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
-
-  const handleLogout = () => {
-    logout()
-    window.location.href = '/login'
-  }
+  const { logout } = useLogout()
 
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
-        <div className="flex h-12 items-center px-4 font-semibold">Starter App</div>
+        <div className="flex h-12 items-center px-4 font-semibold">Franklin - V7 Starter App</div>
       </SidebarHeader>
 
       <SidebarContent>
@@ -38,9 +29,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarMenu>
             {navigation.map((item) => (
-              <SidebarMenuItem key={item.url}>
-                <SidebarMenuButton asChild isActive={location.pathname === item.url}>
-                  <Link to={item.url}>
+              <SidebarMenuItem key={item.path}>
+                <SidebarMenuButton asChild isActive={location.pathname === item.path}>
+                  <Link to={item.path}>
                     <item.icon className="size-4" />
                     <span>{item.title}</span>
                   </Link>
@@ -54,7 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton onClick={handleLogout}>
+            <SidebarMenuButton onClick={logout}>
               <LogOutIcon className="size-4" />
               <span>Logout</span>
             </SidebarMenuButton>

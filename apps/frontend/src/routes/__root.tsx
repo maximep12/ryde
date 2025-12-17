@@ -1,33 +1,41 @@
+import { RouterContext } from '@/main'
+import { getLocale } from '@/stores/i18n'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { createRootRoute, Outlet, redirect } from '@tanstack/react-router'
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { isAuthenticated } from '../lib/auth'
+import i18n from 'i18next'
+import { initReactI18next } from 'react-i18next'
+import { resources } from '../i18n'
 
 const queryClient = new QueryClient()
 
-const devToolsEnabled = import.meta.env.DEV
+const shouldEnableDevTools = import.meta.env.DEV
 
-export const Route = createRootRoute({
-  beforeLoad: ({ location }) => {
-    if (location.pathname === '/' && location.search === '' && location.hash === '') {
-      const authenticated = isAuthenticated()
-      if (!authenticated) {
-        throw redirect({
-          to: '/login',
-        })
-      }
-    }
+i18n.use(initReactI18next).init({
+  lng: getLocale(),
+  resources,
+  fallbackLng: 'en',
+  debug: !!import.meta.env.DEV,
+  interpolation: {
+    escapeValue: false,
   },
-  component: () => (
-    <QueryClientProvider client={queryClient}>
-      <Outlet />
-      {devToolsEnabled && (
-        <>
-          <TanStackRouterDevtools />
-          <ReactQueryDevtools />
-        </>
-      )}
-    </QueryClientProvider>
-  ),
+  saveMissing: true,
+})
+
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: () => {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+
+        {shouldEnableDevTools && (
+          <>
+            <TanStackRouterDevtools />
+            <ReactQueryDevtools />
+          </>
+        )}
+      </QueryClientProvider>
+    )
+  },
 })

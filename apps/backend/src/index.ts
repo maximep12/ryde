@@ -1,12 +1,3 @@
-import { ENV } from '@repo/constants'
-import { initSentry } from '@repo/config-sentry/backend'
-import pkg from '../package.json'
-import { env } from './lib/utils/env'
-
-if (env.BACKEND_SENTRY_DSN && env.ENV !== ENV.LOCAL) {
-  initSentry(env.BACKEND_SENTRY_DSN, env.ENV, pkg.version)
-}
-
 import { serve } from '@hono/node-server'
 import { usersSessions } from '@repo/db'
 import { createBaseLogger } from '@repo/logger'
@@ -43,16 +34,13 @@ const appDefinition = app
   .use(
     cors({
       origin: ['http://localhost:3000', 'http://localhost:5173'],
-      allowHeaders: ['sentry-trace', 'baggage', 'Content-Type', 'Authorization'],
+      allowHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
     }),
   )
   .use(httpLogger)
   .get('/', timeoutHandler(1000 * 60 * 60 * 24))
   .get('/healthz', async (c) => c.text('OK'))
-  .get('/debug-sentry', () => {
-    throw new Error('Test Sentry error!')
-  })
   .route('/auth', authRouterDefinition)
   .use(verifySession)
   .use(attachUser)

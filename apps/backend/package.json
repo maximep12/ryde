@@ -5,12 +5,11 @@
   "description": "Backend - Hono API server with TypeScript, PostgreSQL/Drizzle ORM, Redis",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' tsx watch --conditions=volume-seven src/index.ts",
-    "build": "tsup && pnpm sentry:sourcemaps",
+    "build": "tsup",
     "lint": "FORCE_COLOR=1 eslint src/",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
-    "start": "pnpm -w db:migrate:deploy && pnpm -w db:seed:roles && node dist",
-    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org volume7 --project placeholder-backend ./dist && sentry-cli sourcemaps upload --org volume7 --project placeholder-backend ./dist"
+    "start": "pnpm -w db:migrate:deploy && pnpm -w db:seed:roles && node dist"
   },
   "exports": {
     "./app": "./src/index.ts",
@@ -21,7 +20,6 @@
     "@hono/node-server": "^1.19.7",
     "@hono/zod-validator": "^0.7.5",
     "@repo/config-eslint-custom": "workspace:*",
-    "@repo/config-sentry": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@repo/constants": "workspace:*",
     "@repo/db": "workspace:*",
@@ -31,7 +29,6 @@
     "@repo/redis": "workspace:*",
     "@repo/utils": "workspace:*",
     "@repo/zod-schemas": "workspace:*",
-    "@sentry/cli": "^3.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.13.2",
     "bluebird": "^3.7.2",

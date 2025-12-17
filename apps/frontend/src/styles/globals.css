@@ -1,17 +1,16 @@
-@import "tailwindcss";
-@import "@repo/ui/styles/globals.css";
-@import "mapbox-gl/dist/mapbox-gl.css";
-@import "./fonts.css";
+@import 'tailwindcss';
+@import '@repo/ui/styles/globals.css';
+@import './fonts.css';
 
-@source "../../../../packages/ui";
+@source '../../../../packages/ui';
 
 @theme inline {
   --map-route-color: var(--color-brand-teal);
   --map-route-outline-color: var(--color-brand-seafoam);
 
   /* Font families */
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-heading: "Linto Circular", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Linto Circular', ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Admin-web specific styles can be added here */
