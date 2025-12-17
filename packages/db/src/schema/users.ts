@@ -1,5 +1,5 @@
 import { InferSelectModel, sql } from 'drizzle-orm'
-import { boolean, index, jsonb, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { boolean, index, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { app } from './app'
 
@@ -8,10 +8,9 @@ export const users = app.table(
   {
     id: varchar('id').primaryKey(),
     email: varchar('email').unique().notNull(),
+    passwordHash: varchar('password_hash'),
     givenName: varchar('given_name'),
     familyName: varchar('family_name'),
-    fallbackName: varchar('fallback_name'),
-    meta: jsonb('meta'),
     isActive: boolean('is_active').default(true),
     ...timestamps,
   },
@@ -33,7 +32,7 @@ export const usersSessions = app.table(
     refreshToken: varchar('refresh_token'),
     expiresAt: timestamp('expires_at')
       .notNull()
-      .default(sql`now() + INTERVAL '30 minutes'`),
+      .default(sql`now() + INTERVAL '20 minutes'`),
     ...timestamps,
   },
   (table) => {

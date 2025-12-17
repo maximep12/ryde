@@ -1,6 +1,6 @@
 {
-  "dashboard": "Tableau de bord",
-  "settings": "Paramètres",
-  "books": "Livres",
-  "kitchenSink": "Évier de cuisine"
+  "route.dashboard": "Tableau de bord",
+  "route.settings": "Paramètres",
+  "route.books": "Livres",
+  "route.kitchenSink": "Évier de cuisine"
 }

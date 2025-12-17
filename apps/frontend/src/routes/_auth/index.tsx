@@ -3,6 +3,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/_auth/')({
   component: DashboardPage,
+  staticData: {
+    title: 'route.dashboard',
+    crumb: 'route.dashboard',
+  },
 })
 
 function DashboardPage() {

@@ -464,6 +464,9 @@ importers:
       '@repo/config-typescript':
         specifier: workspace:*
         version: link:../../config/config-typescript
+      '@repo/constants':
+        specifier: workspace:*
+        version: link:../constants
 
   packages/logger:
     dependencies:

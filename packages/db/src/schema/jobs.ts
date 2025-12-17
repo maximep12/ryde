@@ -1,7 +1,11 @@
-import { serial, text, timestamp, jsonb } from 'drizzle-orm/pg-core'
+import { jsonb, serial, text, timestamp } from 'drizzle-orm/pg-core'
 import { app } from './app'
 
-export const jobsLogs = app.table('jobs_logs', {
+// ============================================================================
+// BACKGROUND JOB LOGS
+// ============================================================================
+
+export const backgroundJobsLogs = app.table('background_jobs_logs', {
   id: serial('id').primaryKey(),
   jobId: text('job_id').notNull(),
   jobName: text('job_name').notNull(),

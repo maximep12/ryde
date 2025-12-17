@@ -1,6 +1,6 @@
 {
-  "dashboard": "Dashboard",
-  "settings": "Settings",
-  "books": "Books",
-  "kitchenSink": "Kitchen Sink"
+  "route.dashboard": "Dashboard",
+  "route.settings": "Settings",
+  "route.books": "Books",
+  "route.kitchenSink": "Kitchen Sink"
 }

@@ -1,3 +1,4 @@
+import { Environment } from '@repo/constants'
 import { FeatureFlags } from './features'
 
 const LOCAL: FeatureFlags = {
@@ -12,7 +13,7 @@ const PROD: FeatureFlags = {
   'placeholder-feature': false,
 }
 
-export const FEATURE_FLAGS_ENV = {
+export const FEATURE_FLAGS_ENV: Record<Environment, FeatureFlags> = {
   LOCAL,
   DEV,
   PROD,

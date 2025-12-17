@@ -11,7 +11,6 @@ export const upsertUserSchema = z.object({
   email: z.string().email(),
   givenName: z.string().optional(),
   familyName: z.string().optional(),
-  fallbackName: z.string().optional(),
 })
 
 export type UsersQueries = z.infer<typeof usersQueriesSchema>

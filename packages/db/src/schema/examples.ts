@@ -1,14 +1,5 @@
-import { InferSelectModel, InferInsertModel, sql } from 'drizzle-orm'
-import {
-  integer,
-  serial,
-  text,
-  varchar,
-  index,
-  check,
-  numeric,
-  uniqueIndex,
-} from 'drizzle-orm/pg-core'
+import { InferInsertModel, InferSelectModel, sql } from 'drizzle-orm'
+import { check, index, integer, serial, text, varchar } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { app } from './app'
 import { users } from './users'

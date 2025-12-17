@@ -21,7 +21,6 @@ export async function createUser(newUser: UpsertUser) {
       email: newUser.email,
       givenName: newUser.givenName,
       familyName: newUser.familyName,
-      fallbackName: newUser.fallbackName,
     })
     .onConflictDoNothing()
     .returning()
@@ -36,7 +35,6 @@ export async function updateUser(updatedUser: UpsertUser) {
       email: updatedUser.email,
       givenName: updatedUser.givenName,
       familyName: updatedUser.familyName,
-      fallbackName: updatedUser.fallbackName,
     })
     .where(eq(users.id, updatedUser.id))
     .returning()

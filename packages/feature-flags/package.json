@@ -15,6 +15,7 @@
     }
   },
   "devDependencies": {
+    "@repo/constants": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@repo/config-eslint-custom": "workspace:*"
   }

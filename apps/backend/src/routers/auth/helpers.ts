@@ -1,9 +1,16 @@
-import { AUTHORIZATION_HEADER_PREFIX } from '@repo/constants'
-import { usersSessions } from '@repo/db'
+import { AUTHORIZATION_HEADER_PREFIX, MESSAGE } from '@repo/constants'
+import { users, usersSessions } from '@repo/db'
 import { eq, InferSelectModel, sql } from 'drizzle-orm'
+import { HTTPException } from 'hono/http-exception'
 import { z } from 'zod'
 import { db } from '../../db'
 import { generateToken } from '../../lib/utils/crypto'
+
+export async function getUserByEmail(email: string) {
+  const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1)
+
+  return user
+}
 
 export const isSessionExpired = (session: InferSelectModel<typeof usersSessions>) =>
   session.expiresAt < new Date()
@@ -31,7 +38,7 @@ export async function createSession(userId: string, accessToken: string, refresh
     })
     .returning()
 
-  if (!session) throw new Error('Session could not be created')
+  if (!session) throw new HTTPException(500, { message: MESSAGE.SESSION_CREATION_FAILED })
   return session
 }
 
@@ -49,7 +56,7 @@ export async function extendSession(
     .set({
       accessToken,
       refreshToken,
-      expiresAt: sql`now() + INTERVAL '30 minutes'`,
+      expiresAt: sql`now() + INTERVAL '20 minutes'`,
       updatedAt: sql`now()`,
     })
     .where(eq(usersSessions.sessionToken, sessionToken))
@@ -62,4 +69,9 @@ export const extractSessionTokenFromAuth = (authorization: string) => {
 
 export const getSessionSchema = z.object({
   sessionToken: z.string(),
+})
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
 })
