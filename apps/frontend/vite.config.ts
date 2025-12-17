@@ -1,9 +1,9 @@
-import { sentryVitePlugin } from '@sentry/vite-plugin';
-import tailwindcss from "@tailwindcss/vite";
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
-import react from "@vitejs/plugin-react";
-import path from "path";
-import { defineConfig } from "vite";
+import { sentryVitePlugin } from '@sentry/vite-plugin'
+import tailwindcss from '@tailwindcss/vite'
+import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   build: {
@@ -17,8 +17,8 @@ export default defineConfig({
     }),
     tailwindcss(),
     TanStackRouterVite({
-      routesDirectory: "./src/routes",
-      generatedRouteTree: "./src/routeTree.gen.ts",
+      routesDirectory: './src/routes',
+      generatedRouteTree: './src/routeTree.gen.ts',
       autoCodeSplitting: true,
     }),
     sentryVitePlugin({
@@ -31,14 +31,12 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: process.env.ADMIN_WEB_PORT
-      ? parseInt(process.env.ADMIN_WEB_PORT, 10)
-      : 5173,
+    port: process.env.ADMIN_WEB_PORT ? parseInt(process.env.ADMIN_WEB_PORT, 10) : 5173,
     host: true,
   },
   resolve: {
     alias: {
-      "@src": path.resolve(__dirname, "./src"),
+      '@src': path.resolve(__dirname, './src'),
     },
   },
   test: {
@@ -48,4 +46,4 @@ export default defineConfig({
     include: ['**/*.{test,spec}.{ts,tsx}'],
     exclude: ['node_modules', 'dist', '.git'],
   },
-});
+})

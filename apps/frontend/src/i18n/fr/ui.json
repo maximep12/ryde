@@ -1,0 +1,25 @@
+{
+  "dropdown.empty": "Aucun résultat trouvé",
+  "dropdown.placeholder": "Sélectionner une option...",
+  "dropdown.placeholderMultiple": "Sélectionner des options...",
+  "dropdown.search": "Rechercher...",
+  "dropdown.selected_one": "{{count}} sélectionné",
+  "dropdown.selected_other": "{{count}} sélectionnés",
+  "dropdown.unselectAll": "Tout désélectionner",
+
+  "languageSelector.toggle": "Changer de langue",
+
+  "pagination.of": "sur {{count, number}}",
+  "pagination.rowsPerPage": "Lignes par page",
+  "pagination.showing": "Affichage de {{from}}-{{to}} sur {{total}}",
+  "pagination.results": "{{count, number}} résultats",
+
+  "search.placeholder": "Rechercher...",
+
+  "settings": "Paramètres",
+
+  "theme.dark": "Sombre",
+  "theme.light": "Clair",
+  "theme.system": "Système",
+  "themeSelector.toggle": "Changer de thème"
+}

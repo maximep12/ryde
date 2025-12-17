@@ -1,23 +1,23 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from 'react'
 
 interface UseInfiniteScrollOptions {
   /** Called when sentinel enters viewport */
-  onLoadMore: () => void;
+  onLoadMore: () => void
   /** Whether more data is available */
-  hasMore: boolean;
+  hasMore: boolean
   /** Whether data is currently loading */
-  isLoading: boolean;
+  isLoading: boolean
   /** IntersectionObserver rootMargin - triggers early load (default: "200px") */
-  rootMargin?: string;
+  rootMargin?: string
   /** IntersectionObserver threshold (default: 0) */
-  threshold?: number;
+  threshold?: number
   /** Whether the scroll behavior is enabled (default: true) */
-  enabled?: boolean;
+  enabled?: boolean
 }
 
 interface UseInfiniteScrollReturn {
   /** Ref to attach to sentinel element at end of list */
-  sentinelRef: React.RefObject<HTMLDivElement | null>;
+  sentinelRef: React.RefObject<HTMLDivElement | null>
 }
 
 /**
@@ -47,39 +47,39 @@ export function useInfiniteScroll({
   onLoadMore,
   hasMore,
   isLoading,
-  rootMargin = "200px",
+  rootMargin = '200px',
   threshold = 0,
   enabled = true,
 }: UseInfiniteScrollOptions): UseInfiniteScrollReturn {
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   // Memoize callback to prevent observer recreation on every render
   const handleIntersect = useCallback(
     (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
+      const [entry] = entries
       if (entry?.isIntersecting && hasMore && !isLoading) {
-        onLoadMore();
+        onLoadMore()
       }
     },
     [onLoadMore, hasMore, isLoading],
-  );
+  )
 
   useEffect(() => {
     // Don't observe if disabled, no more data, or currently loading
-    if (!enabled || !hasMore || isLoading) return;
+    if (!enabled || !hasMore || isLoading) return
 
-    const sentinel = sentinelRef.current;
-    if (!sentinel) return;
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
 
     const observer = new IntersectionObserver(handleIntersect, {
       rootMargin,
       threshold,
-    });
+    })
 
-    observer.observe(sentinel);
+    observer.observe(sentinel)
 
-    return () => observer.disconnect();
-  }, [handleIntersect, hasMore, isLoading, rootMargin, threshold, enabled]);
+    return () => observer.disconnect()
+  }, [handleIntersect, hasMore, isLoading, rootMargin, threshold, enabled])
 
-  return { sentinelRef };
+  return { sentinelRef }
 }

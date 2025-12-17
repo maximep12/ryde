@@ -1,0 +1,20 @@
+{
+  "error": "Error",
+  "required": "Required",
+  "somethingWentWrong": "Something went wrong",
+
+  "validation.invalid": "Invalid value",
+  "validation.invalid.date": "Invalid date",
+  "validation.invalid.email": "Invalid email address",
+  "validation.invalid.enum": "Invalid value. Must be one of: {{options}}",
+  "validation.invalid.format": "Invalid format",
+  "validation.invalid.type": "Expected {{expected}}, received {{received}}",
+  "validation.invalid.url": "Invalid URL",
+  "validation.field.required": "This field is required",
+  "validation.max": "Must be at most {{max}}",
+  "validation.maxLength": "Must be at most {{max}} characters",
+  "validation.min": "Must be at least {{min}}",
+  "validation.minLength": "Must be at least {{min}} characters",
+
+  "warning.notImplemented": "{{feature}} yet to be implemented"
+}

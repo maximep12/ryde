@@ -1,9 +1,6 @@
 import { JOB_EVENT } from '@repo/constants'
 import { createBaseLogger } from '@repo/logger'
-import {
-  QUEUE_CLEANUP_STALE_DATA,
-  QUEUE_REFRESH_MATERIALIZED_VIEWS,
-} from '@repo/queue'
+import { QUEUE_CLEANUP_STALE_DATA, QUEUE_REFRESH_MATERIALIZED_VIEWS } from '@repo/queue'
 import { createJobDbEntry } from './lib/utils/db'
 import { logQueueHealth } from './lib/utils/logger'
 import { startPollingServices } from './lib/utils/polling-services'

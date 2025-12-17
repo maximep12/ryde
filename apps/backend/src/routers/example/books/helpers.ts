@@ -14,9 +14,7 @@ export async function getBooks(query: BookQuery) {
   const conditions = []
 
   if (search) {
-    conditions.push(
-      or(ilike(books.title, `%${search}%`), ilike(books.author, `%${search}%`)),
-    )
+    conditions.push(or(ilike(books.title, `%${search}%`), ilike(books.author, `%${search}%`)))
   }
 
   if (genre) {
@@ -37,10 +35,7 @@ export async function getBooks(query: BookQuery) {
       .orderBy(desc(books.createdAt))
       .limit(pageSize)
       .offset(offset),
-    db
-      .select({ total: count() })
-      .from(books)
-      .where(whereClause),
+    db.select({ total: count() }).from(books).where(whereClause),
   ])
 
   const total = countResult[0]?.total ?? 0
@@ -127,11 +122,7 @@ export async function getBookAverageRating(bookId: number) {
 }
 
 export async function getReviewById(id: number) {
-  const [review] = await db
-    .select()
-    .from(bookReviews)
-    .where(eq(bookReviews.id, id))
-    .limit(1)
+  const [review] = await db.select().from(bookReviews).where(eq(bookReviews.id, id)).limit(1)
   return review ?? null
 }
 

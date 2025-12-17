@@ -42,10 +42,7 @@ const app = new Hono<{ Variables: ContextVariables }>()
 const appDefinition = app
   .use(
     cors({
-      origin: [
-        'http://localhost:3000',
-        'http://localhost:5173',
-      ],
+      origin: ['http://localhost:3000', 'http://localhost:5173'],
       allowHeaders: ['sentry-trace', 'baggage', 'Content-Type', 'Authorization'],
       credentials: true,
     }),

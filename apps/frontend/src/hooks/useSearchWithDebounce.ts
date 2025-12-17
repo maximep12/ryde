@@ -1,22 +1,22 @@
-import { useEffect, useState } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { useEffect, useState } from 'react'
+import { useDebouncedCallback } from 'use-debounce'
 
 interface UseSearchWithDebounceOptions {
   /**
    * Initial value for the search input
    */
-  initialValue: string;
+  initialValue: string
 
   /**
    * Callback invoked after the debounce delay
    */
-  onDebouncedChange: (value: string) => void;
+  onDebouncedChange: (value: string) => void
 
   /**
    * Debounce delay in milliseconds
    * @default 500
    */
-  delay?: number;
+  delay?: number
 }
 
 /**
@@ -48,30 +48,30 @@ export function useSearchWithDebounce({
   delay = 500,
 }: UseSearchWithDebounceOptions) {
   // Local state for immediate input updates (no lag)
-  const [localValue, setLocalValue] = useState(initialValue);
+  const [localValue, setLocalValue] = useState(initialValue)
 
   // Track if we're waiting for debounce to complete
-  const [isPending, setIsPending] = useState(false);
+  const [isPending, setIsPending] = useState(false)
 
   // Debounced callback - triggers after delay
   const debouncedChange = useDebouncedCallback((value: string) => {
-    onDebouncedChange(value);
-    setIsPending(false); // Clear pending state when debounce completes
-  }, delay);
+    onDebouncedChange(value)
+    setIsPending(false) // Clear pending state when debounce completes
+  }, delay)
 
   // Handle input change: update local state immediately + debounce API call
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setLocalValue(value); // Immediate visual feedback
-    setIsPending(true); // Set pending state immediately on keystroke
-    debouncedChange(value); // Debounced API call
-  };
+    const value = e.target.value
+    setLocalValue(value) // Immediate visual feedback
+    setIsPending(true) // Set pending state immediately on keystroke
+    debouncedChange(value) // Debounced API call
+  }
 
   // Sync local state when initialValue prop changes (e.g., browser back/forward)
   useEffect(() => {
-    setLocalValue(initialValue);
-    setIsPending(false); // Clear pending when external value changes
-  }, [initialValue]);
+    setLocalValue(initialValue)
+    setIsPending(false) // Clear pending when external value changes
+  }, [initialValue])
 
   return {
     /**
@@ -88,5 +88,5 @@ export function useSearchWithDebounce({
      * True while waiting for debounce to complete
      */
     isPending,
-  };
+  }
 }

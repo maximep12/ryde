@@ -1,33 +1,30 @@
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
-import * as React from "react";
+import { Slot } from '@radix-ui/react-slot'
+import { cva, type VariantProps } from 'class-variance-authority'
+import * as React from 'react'
 
-import { cn } from "../../lib/utils";
+import { cn } from '../../lib/utils'
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center border font-medium w-fit select-none whitespace-nowrap shrink-0 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+  'inline-flex items-center justify-center border font-medium w-fit select-none whitespace-nowrap shrink-0 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden',
   {
     variants: {
       variant: {
-        default:
-          "border-border bg-background text-foreground [a&]:hover:bg-primary/90",
-        transparent:
-          "border-border bg-transparent text-foreground [a&]:hover:bg-primary/10",
-        primary:
-          "border-none bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+        default: 'border-border bg-background text-foreground [a&]:hover:bg-primary/90',
+        transparent: 'border-border bg-transparent text-foreground [a&]:hover:bg-primary/10',
+        primary: 'border-none bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
       },
       size: {
-        lg: "h-8 px-3 py-1 rounded-md text-sm [&>svg]:size-4",
-        default: "h-6 px-2 py-0.5 rounded-md text-xs [&>svg]:size-3",
-        xs: "h-5 px-1.5 rounded-md text-xs [&>svg]:size-2.5",
+        lg: 'h-8 px-3 py-1 rounded-md text-sm [&>svg]:size-4',
+        default: 'h-6 px-2 py-0.5 rounded-md text-xs [&>svg]:size-3',
+        xs: 'h-5 px-1.5 rounded-md text-xs [&>svg]:size-2.5',
       },
     },
     defaultVariants: {
-      variant: "default",
-      size: "default",
+      variant: 'default',
+      size: 'default',
     },
   },
-);
+)
 
 function Badge({
   className,
@@ -35,9 +32,8 @@ function Badge({
   size,
   asChild = false,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : "span";
+}: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  const Comp = asChild ? Slot : 'span'
 
   return (
     <Comp
@@ -45,7 +41,7 @@ function Badge({
       className={cn(badgeVariants({ variant, size }), className)}
       {...props}
     />
-  );
+  )
 }
 
-export { Badge, badgeVariants };
+export { Badge, badgeVariants }

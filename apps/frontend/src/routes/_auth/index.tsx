@@ -20,7 +20,7 @@ function DashboardPage() {
             <CardDescription>Your starter kit is ready</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               This is a minimal frontend template with authentication, routing, and UI components.
             </p>
           </CardContent>
@@ -32,7 +32,7 @@ function DashboardPage() {
             <CardDescription>Hono-powered API</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               The backend runs on port 5000 with full TypeScript support and Drizzle ORM.
             </p>
           </CardContent>
@@ -44,7 +44,7 @@ function DashboardPage() {
             <CardDescription>shadcn/ui based</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Pre-configured with Tailwind v4 and a collection of accessible components.
             </p>
           </CardContent>
