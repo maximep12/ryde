@@ -19,7 +19,9 @@ import { Route as AuthExamplesRouteRouteImport } from './routes/_auth/examples/r
 import { Route as AuthUsersIndexRouteImport } from './routes/_auth/users/index'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthKitchenSinkIndexRouteImport } from './routes/_auth/kitchen-sink/index'
+import { Route as AuthExamplesClientsIndexRouteImport } from './routes/_auth/examples/clients/index'
 import { Route as AuthExamplesBooksIndexRouteImport } from './routes/_auth/examples/books/index'
+import { Route as AuthExamplesClientsClientIdRouteImport } from './routes/_auth/examples/clients/$clientId'
 import { Route as AuthExamplesBooksBookIdRouteImport } from './routes/_auth/examples/books/$bookId'
 
 const LoginRoute = LoginRouteImport.update({
@@ -71,11 +73,23 @@ const AuthKitchenSinkIndexRoute = AuthKitchenSinkIndexRouteImport.update({
   path: '/kitchen-sink/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthExamplesClientsIndexRoute =
+  AuthExamplesClientsIndexRouteImport.update({
+    id: '/clients/',
+    path: '/clients/',
+    getParentRoute: () => AuthExamplesRouteRoute,
+  } as any)
 const AuthExamplesBooksIndexRoute = AuthExamplesBooksIndexRouteImport.update({
   id: '/books/',
   path: '/books/',
   getParentRoute: () => AuthExamplesRouteRoute,
 } as any)
+const AuthExamplesClientsClientIdRoute =
+  AuthExamplesClientsClientIdRouteImport.update({
+    id: '/clients/$clientId',
+    path: '/clients/$clientId',
+    getParentRoute: () => AuthExamplesRouteRoute,
+  } as any)
 const AuthExamplesBooksBookIdRoute = AuthExamplesBooksBookIdRouteImport.update({
   id: '/books/$bookId',
   path: '/books/$bookId',
@@ -93,7 +107,9 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthSettingsIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
+  '/examples/clients/$clientId': typeof AuthExamplesClientsClientIdRoute
   '/examples/books': typeof AuthExamplesBooksIndexRoute
+  '/examples/clients': typeof AuthExamplesClientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -106,7 +122,9 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthSettingsIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
+  '/examples/clients/$clientId': typeof AuthExamplesClientsClientIdRoute
   '/examples/books': typeof AuthExamplesBooksIndexRoute
+  '/examples/clients': typeof AuthExamplesClientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -121,7 +139,9 @@ export interface FileRoutesById {
   '/_auth/settings/': typeof AuthSettingsIndexRoute
   '/_auth/users/': typeof AuthUsersIndexRoute
   '/_auth/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
+  '/_auth/examples/clients/$clientId': typeof AuthExamplesClientsClientIdRoute
   '/_auth/examples/books/': typeof AuthExamplesBooksIndexRoute
+  '/_auth/examples/clients/': typeof AuthExamplesClientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -136,7 +156,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/users'
     | '/examples/books/$bookId'
+    | '/examples/clients/$clientId'
     | '/examples/books'
+    | '/examples/clients'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -149,7 +171,9 @@ export interface FileRouteTypes {
     | '/settings'
     | '/users'
     | '/examples/books/$bookId'
+    | '/examples/clients/$clientId'
     | '/examples/books'
+    | '/examples/clients'
   id:
     | '__root__'
     | '/_auth'
@@ -163,7 +187,9 @@ export interface FileRouteTypes {
     | '/_auth/settings/'
     | '/_auth/users/'
     | '/_auth/examples/books/$bookId'
+    | '/_auth/examples/clients/$clientId'
     | '/_auth/examples/books/'
+    | '/_auth/examples/clients/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -243,11 +269,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthKitchenSinkIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/examples/clients/': {
+      id: '/_auth/examples/clients/'
+      path: '/clients'
+      fullPath: '/examples/clients'
+      preLoaderRoute: typeof AuthExamplesClientsIndexRouteImport
+      parentRoute: typeof AuthExamplesRouteRoute
+    }
     '/_auth/examples/books/': {
       id: '/_auth/examples/books/'
       path: '/books'
       fullPath: '/examples/books'
       preLoaderRoute: typeof AuthExamplesBooksIndexRouteImport
+      parentRoute: typeof AuthExamplesRouteRoute
+    }
+    '/_auth/examples/clients/$clientId': {
+      id: '/_auth/examples/clients/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/examples/clients/$clientId'
+      preLoaderRoute: typeof AuthExamplesClientsClientIdRouteImport
       parentRoute: typeof AuthExamplesRouteRoute
     }
     '/_auth/examples/books/$bookId': {
@@ -262,12 +302,16 @@ declare module '@tanstack/react-router' {
 
 interface AuthExamplesRouteRouteChildren {
   AuthExamplesBooksBookIdRoute: typeof AuthExamplesBooksBookIdRoute
+  AuthExamplesClientsClientIdRoute: typeof AuthExamplesClientsClientIdRoute
   AuthExamplesBooksIndexRoute: typeof AuthExamplesBooksIndexRoute
+  AuthExamplesClientsIndexRoute: typeof AuthExamplesClientsIndexRoute
 }
 
 const AuthExamplesRouteRouteChildren: AuthExamplesRouteRouteChildren = {
   AuthExamplesBooksBookIdRoute: AuthExamplesBooksBookIdRoute,
+  AuthExamplesClientsClientIdRoute: AuthExamplesClientsClientIdRoute,
   AuthExamplesBooksIndexRoute: AuthExamplesBooksIndexRoute,
+  AuthExamplesClientsIndexRoute: AuthExamplesClientsIndexRoute,
 }
 
 const AuthExamplesRouteRouteWithChildren =

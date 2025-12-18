@@ -1,3 +1,8 @@
+import { setupCleanupJobs } from '../../workers/cleanup/jobs'
+import { setupPlaceholderJobs } from '../../workers/placeholder/jobs'
+
 export const startPollingServices = () => {
-  console.log('No polling services have been implemented for this project.')
+  // Setup recurring jobs
+  setupCleanupJobs()
+  setupPlaceholderJobs()
 }

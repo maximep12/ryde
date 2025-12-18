@@ -2,6 +2,7 @@
 
 export const CRON_PATTERNS = {
   EVERY_1_MINUTE: '* * * * *', // For testing
+  EVERY_5_MINUTES: '*/5 * * * *',
   EVERY_25_MINUTES: '*/25 * * * *',
   EVERY_HOUR: '0 * * * *',
   EVERY_1_HOUR_30_MINUTES: '*/30 */1 * * *',

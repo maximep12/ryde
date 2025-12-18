@@ -4,6 +4,8 @@
   "route.examples": "Examples",
   "route.books": "Books",
   "route.bookDetails": "Book Details",
+  "route.clients": "Clients",
+  "route.clientProfile": "Client Profile",
   "route.users": "Users",
   "route.kitchenSink": "Kitchen Sink"
 }

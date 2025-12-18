@@ -4,6 +4,8 @@
   "route.examples": "Exemples",
   "route.books": "Livres",
   "route.bookDetails": "Détails du livre",
+  "route.clients": "Clients",
+  "route.clientProfile": "Profil du client",
   "route.users": "Utilisateurs",
   "route.kitchenSink": "Évier de cuisine"
 }

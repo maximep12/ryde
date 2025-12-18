@@ -1,10 +1,11 @@
 import { JOB_EVENT } from '@repo/constants'
 import { createBaseLogger } from '@repo/logger'
-import { QUEUE_CLEANUP_STALE_DATA /* , QUEUE_REFRESH_MATERIALIZED_VIEWS */ } from '@repo/queue'
+import { QUEUE_CLEANUP_STALE_DATA, QUEUE_PLACEHOLDER /* , QUEUE_REFRESH_MATERIALIZED_VIEWS */ } from '@repo/queue'
 import { createJobDbEntry } from './lib/utils/db'
 import { logQueueHealth } from './lib/utils/logger'
 import { startPollingServices } from './lib/utils/polling-services'
 import { cleanupWorker } from './workers/cleanup/worker'
+import { placeholderWorker } from './workers/placeholder/worker'
 // import { materializedViewsWorker } from './workers/materialized-views/worker'
 
 const logger = createBaseLogger().child({
@@ -24,6 +25,10 @@ const workers = [
   {
     worker: cleanupWorker,
     setup: () => QUEUE_CLEANUP_STALE_DATA,
+  },
+  {
+    worker: placeholderWorker,
+    setup: () => QUEUE_PLACEHOLDER,
   },
 ]
 

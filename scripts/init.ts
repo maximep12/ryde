@@ -53,6 +53,8 @@ function replaceProjectName(oldName: string, newName: string) {
     // Full project name strings for UI (must come first to avoid partial replacements)
     { search: /The Franklin Project/g, replace: newTitleCase },
     { search: /Franklin Project/g, replace: newTitleCase },
+    // Package name replacement (franklin-project -> newName)
+    { search: /franklin-project/g, replace: newName },
     // Standard replacements
     { search: new RegExp(oldName, 'g'), replace: newName },
     { search: new RegExp(oldName.replace(/-/g, '_'), 'g'), replace: newName.replace(/-/g, '_') },

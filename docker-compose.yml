@@ -5,7 +5,7 @@ services:
     container_name: franklin-postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -15,7 +15,7 @@ services:
     networks:
       - franklin-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres -d postgres']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,14 +26,14 @@ services:
     container_name: franklin-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
     networks:
       - franklin-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -44,7 +44,7 @@ services:
     container_name: franklin-redis-insight
     restart: unless-stopped
     ports:
-      - "5540:5540"
+      - '5540:5540'
     volumes:
       - redis_insight_data:/data
     networks:
@@ -58,17 +58,16 @@ services:
     container_name: franklin-bull-board
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      BULL_PREFIX: bull
     networks:
       - franklin-network
     depends_on:
       - redis
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/"]
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3000/']
       interval: 30s
       timeout: 10s
       retries: 3

@@ -1,10 +1,11 @@
 import { FileRouteTypes } from '@/routeTree.gen'
-import { HomeIcon, LibraryIcon, LucideIcon, PaletteIcon, UsersIcon } from 'lucide-react'
+import { ContactIcon, HomeIcon, LibraryIcon, LucideIcon, PaletteIcon, UsersIcon } from 'lucide-react'
 
-type NavigationItem = {
+export type NavigationItem = {
   title: string
   path: FileRouteTypes['to']
   icon: LucideIcon
+  shouldHide?: boolean
 }
 
 export const navigation: NavigationItem[] = [
@@ -14,6 +15,7 @@ export const navigation: NavigationItem[] = [
 
 export const examplesNavigation: NavigationItem[] = [
   { title: 'route.books', path: '/examples/books', icon: LibraryIcon },
+  { title: 'route.clients', path: '/examples/clients', icon: ContactIcon },
 ]
 
 export const uiUxNavigation: NavigationItem[] = [

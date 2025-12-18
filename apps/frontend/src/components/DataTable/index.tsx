@@ -32,13 +32,13 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
   })
 
   return (
-    <div className="rounded-md border">
+    <div className="bg-card overflow-hidden rounded-lg border shadow-sm">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/50">
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
+            <TableRow key={headerGroup.id} className="hover:bg-muted/50 border-b">
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead key={header.id} className="font-semibold">
                   {header.isPlaceholder ? null : (
                     <div
                       className={
@@ -69,8 +69,12 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+            table.getRowModel().rows.map((row, index) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+                className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -80,7 +84,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className="text-muted-foreground h-24 text-center">
                 No results.
               </TableCell>
             </TableRow>

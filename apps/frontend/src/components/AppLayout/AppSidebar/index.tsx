@@ -13,7 +13,40 @@ import {
 import { Link, useLocation } from '@tanstack/react-router'
 import { LogOutIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
-import { examplesNavigation, navigation, uiUxNavigation } from './navigation'
+import { examplesNavigation, navigation, NavigationItem, uiUxNavigation } from './navigation'
+
+function NavSection({
+  items,
+  label,
+  isActiveCheck,
+}: {
+  items: NavigationItem[]
+  label: string
+  isActiveCheck: (path: string) => boolean
+}) {
+  const { t } = useTranslation(['ui', 'routes'])
+  const visibleItems = items.filter((item) => !item.shouldHide)
+
+  if (visibleItems.length === 0) return null
+
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarMenu>
+        {visibleItems.map((item) => (
+          <SidebarMenuItem key={item.path}>
+            <SidebarMenuButton asChild isActive={isActiveCheck(item.path)}>
+              <Link to={item.path}>
+                <item.icon className="size-4" />
+                <span>{t(`routes:${item.title}`)}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
+  )
+}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
@@ -29,53 +62,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>{t('sidebar.navigation')}</SidebarGroupLabel>
-          <SidebarMenu>
-            {navigation.map((item) => (
-              <SidebarMenuItem key={item.path}>
-                <SidebarMenuButton asChild isActive={location.pathname === item.path}>
-                  <Link to={item.path}>
-                    <item.icon className="size-4" />
-                    <span>{t(`routes:${item.title}`)}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>{t('sidebar.examples')}</SidebarGroupLabel>
-          <SidebarMenu>
-            {examplesNavigation.map((item) => (
-              <SidebarMenuItem key={item.path}>
-                <SidebarMenuButton asChild isActive={location.pathname.startsWith(item.path)}>
-                  <Link to={item.path}>
-                    <item.icon className="size-4" />
-                    <span>{t(`routes:${item.title}`)}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>{t('sidebar.uiUx')}</SidebarGroupLabel>
-          <SidebarMenu>
-            {uiUxNavigation.map((item) => (
-              <SidebarMenuItem key={item.path}>
-                <SidebarMenuButton asChild isActive={location.pathname === item.path}>
-                  <Link to={item.path}>
-                    <item.icon className="size-4" />
-                    <span>{t(`routes:${item.title}`)}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
+        <NavSection
+          items={navigation}
+          label={t('sidebar.navigation')}
+          isActiveCheck={(path) => location.pathname === path}
+        />
+        <NavSection
+          items={examplesNavigation}
+          label={t('sidebar.examples')}
+          isActiveCheck={(path) => location.pathname.startsWith(path)}
+        />
+        <NavSection
+          items={uiUxNavigation}
+          label={t('sidebar.uiUx')}
+          isActiveCheck={(path) => location.pathname === path}
+        />
       </SidebarContent>
 
       <SidebarFooter>

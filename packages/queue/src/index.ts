@@ -8,3 +8,6 @@ export const QUEUE_REFRESH_MATERIALIZED_VIEWS = 'queue_refresh_materialized_view
 
 // Cleanup queue
 export const QUEUE_CLEANUP_STALE_DATA = 'queue_cleanup_stale_data'
+
+// Placeholder queue
+export const QUEUE_PLACEHOLDER = 'queue_placeholder'
