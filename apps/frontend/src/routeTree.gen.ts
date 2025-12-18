@@ -15,6 +15,7 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
 import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
+import { Route as AuthUsersIndexRouteImport } from './routes/_auth/users/index'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthKitchenSinkIndexRouteImport } from './routes/_auth/kitchen-sink/index'
 import { Route as AuthBooksIndexRouteImport } from './routes/_auth/books/index'
@@ -49,6 +50,11 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/error',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthUsersIndexRoute = AuthUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthSettingsIndexRoute = AuthSettingsIndexRouteImport.update({
   id: '/settings/',
   path: '/settings/',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/books': typeof AuthBooksIndexRoute
   '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
+  '/users': typeof AuthUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/books': typeof AuthBooksIndexRoute
   '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
+  '/users': typeof AuthUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/_auth/books/': typeof AuthBooksIndexRoute
   '/_auth/kitchen-sink/': typeof AuthKitchenSinkIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
+  '/_auth/users/': typeof AuthUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -117,6 +126,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/kitchen-sink'
     | '/settings'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/books'
     | '/kitchen-sink'
     | '/settings'
+    | '/users'
   id:
     | '__root__'
     | '/_auth'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/_auth/books/'
     | '/_auth/kitchen-sink/'
     | '/_auth/settings/'
+    | '/_auth/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -191,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/users/': {
+      id: '/_auth/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AuthUsersIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/settings/': {
       id: '/_auth/settings/'
       path: '/settings'
@@ -231,6 +250,7 @@ interface AuthRouteRouteChildren {
   AuthBooksIndexRoute: typeof AuthBooksIndexRoute
   AuthKitchenSinkIndexRoute: typeof AuthKitchenSinkIndexRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
+  AuthUsersIndexRoute: typeof AuthUsersIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -242,6 +262,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthBooksIndexRoute: AuthBooksIndexRoute,
   AuthKitchenSinkIndexRoute: AuthKitchenSinkIndexRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
+  AuthUsersIndexRoute: AuthUsersIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

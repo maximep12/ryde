@@ -2,5 +2,6 @@
   "route.dashboard": "Dashboard",
   "route.settings": "Settings",
   "route.books": "Books",
+  "route.users": "Users",
   "route.kitchenSink": "Kitchen Sink"
 }

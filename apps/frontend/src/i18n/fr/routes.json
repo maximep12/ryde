@@ -2,5 +2,6 @@
   "route.dashboard": "Tableau de bord",
   "route.settings": "Paramètres",
   "route.books": "Livres",
+  "route.users": "Utilisateurs",
   "route.kitchenSink": "Évier de cuisine"
 }

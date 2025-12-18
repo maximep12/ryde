@@ -136,6 +136,16 @@ export {
 export { Skeleton } from './ui/Skeleton'
 export { Slider } from './ui/Slider'
 export { Spinner } from './ui/Spinner'
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from './ui/Table'
 export { Toggle, toggleVariants } from './ui/Toggle'
 export { ToggleGroup, ToggleGroupItem } from './ui/ToggleGroup'
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/Tooltip'

@@ -25,7 +25,9 @@ function resetMigrations() {
 
   // Remove all .json files in meta except _journal.json
   if (fs.existsSync(META_DIR)) {
-    const metaFiles = fs.readdirSync(META_DIR).filter((f) => f.endsWith('.json') && f !== '_journal.json')
+    const metaFiles = fs
+      .readdirSync(META_DIR)
+      .filter((f) => f.endsWith('.json') && f !== '_journal.json')
     for (const file of metaFiles) {
       fs.unlinkSync(path.join(META_DIR, file))
     }

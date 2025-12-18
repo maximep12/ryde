@@ -1,7 +1,7 @@
 import { config } from 'dotenv'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import * as schema from '../schema'
-import { seedBooks } from './books'
+import { seedBookReviews, seedBooks } from './books'
 import { seedUsers } from './users'
 
 config({ path: '../../.env' })
@@ -20,6 +20,7 @@ async function main() {
 
   await seedUsers(db)
   await seedBooks(db)
+  await seedBookReviews(db)
 
   console.log('Database seed completed!')
   process.exit(0)

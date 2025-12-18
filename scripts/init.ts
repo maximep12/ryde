@@ -148,7 +148,9 @@ async function main() {
       const maxAttempts = 30
       while (attempts < maxAttempts) {
         try {
-          exec('docker compose exec -T postgres pg_isready -h localhost -U postgres', { cwd: ROOT_DIR })
+          exec('docker compose exec -T postgres pg_isready -h localhost -U postgres', {
+            cwd: ROOT_DIR,
+          })
           break
         } catch {
           attempts++

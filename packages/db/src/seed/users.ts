@@ -19,7 +19,13 @@ function generateId(): string {
   return crypto.randomUUID()
 }
 
-const SEED_USER_EMAILS = ['admin@example.com']
+const SEED_USER_EMAILS = [
+  'admin@example.com',
+  'john.denver@example.com',
+  'samantha.charron@example.com',
+  'michael.chen@example.com',
+  'emily.rodriguez@example.com',
+]
 
 export async function seedUsers(db: NodePgDatabase<typeof schema>) {
   console.log('Seeding users...')
@@ -30,18 +36,56 @@ export async function seedUsers(db: NodePgDatabase<typeof schema>) {
     console.log(`Deleted ${deleted.length} existing seed user(s)`)
   }
 
-  const adminPassword = await hashPassword('admin123')
+  const defaultPassword = await hashPassword('admin123')
 
   await db.insert(users).values([
     {
       id: generateId(),
       email: 'admin@example.com',
-      passwordHash: adminPassword,
+      passwordHash: defaultPassword,
       givenName: 'Admin',
       familyName: 'User',
       isActive: true,
     },
+    {
+      id: generateId(),
+      email: 'john.denver@example.com',
+      passwordHash: defaultPassword,
+      givenName: 'John',
+      familyName: 'Denver',
+      isActive: true,
+    },
+    {
+      id: generateId(),
+      email: 'samantha.charron@example.com',
+      passwordHash: defaultPassword,
+      givenName: 'Samantha',
+      familyName: 'Charron',
+      isActive: true,
+    },
+    {
+      id: generateId(),
+      email: 'michael.chen@example.com',
+      passwordHash: defaultPassword,
+      givenName: 'Michael',
+      familyName: 'Chen',
+      isActive: true,
+    },
+    {
+      id: generateId(),
+      email: 'emily.rodriguez@example.com',
+      passwordHash: defaultPassword,
+      givenName: 'Emily',
+      familyName: 'Rodriguez',
+      isActive: true,
+    },
   ])
 
-  console.log('Created admin user: admin@example.com (password: admin123)')
+  console.log('Created seed users:')
+  console.log('  - admin@example.com (Admin User)')
+  console.log('  - john.denver@example.com (John Denver)')
+  console.log('  - samantha.charron@example.com (Samantha Charron)')
+  console.log('  - michael.chen@example.com (Michael Chen)')
+  console.log('  - emily.rodriguez@example.com (Emily Rodriguez)')
+  console.log('All users have password: admin123')
 }
