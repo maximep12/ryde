@@ -79,7 +79,9 @@ function BooksPage() {
                           <>
                             <span className="flex items-center gap-1 text-amber-500">
                               <StarIcon className="size-3.5 fill-current" />
-                              <span className="font-medium">{Number(book.averageRating).toFixed(1)}</span>
+                              <span className="font-medium">
+                                {Number(book.averageRating).toFixed(1)}
+                              </span>
                             </span>
                             <span className="text-muted-foreground flex items-center gap-1">
                               <MessageSquareIcon className="size-3.5" />
@@ -87,7 +89,9 @@ function BooksPage() {
                             </span>
                           </>
                         ) : (
-                          <span className="text-muted-foreground/50 text-xs italic">No reviews</span>
+                          <span className="text-muted-foreground/50 text-xs italic">
+                            No reviews
+                          </span>
                         )}
                       </div>
                     </div>

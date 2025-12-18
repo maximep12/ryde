@@ -226,7 +226,12 @@ function DashboardPage() {
                   />
                   <Legend />
                   <Bar dataKey="sales" name="Sales" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="returns" name="Returns" fill="var(--chart-3)" radius={[4, 4, 0, 0]} />
+                  <Bar
+                    dataKey="returns"
+                    name="Returns"
+                    fill="var(--chart-3)"
+                    radius={[4, 4, 0, 0]}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </div>

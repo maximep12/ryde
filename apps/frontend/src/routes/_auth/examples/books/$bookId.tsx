@@ -286,80 +286,80 @@ function BookDetailPage() {
                     Add Review
                   </Button>
                 </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Write a Review</DialogTitle>
-                  <DialogDescription>Share your thoughts about "{book?.title}"</DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label>Rating</Label>
-                    <div className="flex items-center gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          type="button"
-                          onClick={() => setRating(star)}
-                          onMouseEnter={() => setHoverRating(star)}
-                          onMouseLeave={() => setHoverRating(0)}
-                          className="p-0.5 transition-transform hover:scale-110"
-                        >
-                          <StarIcon
-                            className={`size-7 ${
-                              star <= (hoverRating || rating)
-                                ? 'fill-amber-500 text-amber-500'
-                                : 'text-muted-foreground/30'
-                            }`}
-                          />
-                        </button>
-                      ))}
-                      {rating > 0 && (
-                        <span className="text-muted-foreground ml-2 text-sm">
-                          {rating} star{rating !== 1 ? 's' : ''}
-                        </span>
-                      )}
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Write a Review</DialogTitle>
+                    <DialogDescription>Share your thoughts about "{book?.title}"</DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Rating</Label>
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <button
+                            key={star}
+                            type="button"
+                            onClick={() => setRating(star)}
+                            onMouseEnter={() => setHoverRating(star)}
+                            onMouseLeave={() => setHoverRating(0)}
+                            className="p-0.5 transition-transform hover:scale-110"
+                          >
+                            <StarIcon
+                              className={`size-7 ${
+                                star <= (hoverRating || rating)
+                                  ? 'fill-amber-500 text-amber-500'
+                                  : 'text-muted-foreground/30'
+                              }`}
+                            />
+                          </button>
+                        ))}
+                        {rating > 0 && (
+                          <span className="text-muted-foreground ml-2 text-sm">
+                            {rating} star{rating !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="review-title">Title (optional)</Label>
+                      <Input
+                        id="review-title"
+                        placeholder="Summarize your review"
+                        value={reviewTitle}
+                        onChange={(e) => setReviewTitle(e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="review-content">Review (optional)</Label>
+                      <Textarea
+                        id="review-content"
+                        placeholder="What did you think about this book?"
+                        value={reviewContent}
+                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                          setReviewContent(e.target.value)
+                        }
+                        rows={4}
+                      />
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="review-title">Title (optional)</Label>
-                    <Input
-                      id="review-title"
-                      placeholder="Summarize your review"
-                      value={reviewTitle}
-                      onChange={(e) => setReviewTitle(e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="review-content">Review (optional)</Label>
-                    <Textarea
-                      id="review-content"
-                      placeholder="What did you think about this book?"
-                      value={reviewContent}
-                      onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                        setReviewContent(e.target.value)
-                      }
-                      rows={4}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      resetForm()
-                      setIsReviewModalOpen(false)
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={handleSubmitReview}
-                    disabled={rating === 0 || createReview.isPending}
-                  >
-                    {createReview.isPending ? 'Submitting...' : 'Submit Review'}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
+                  <DialogFooter>
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        resetForm()
+                        setIsReviewModalOpen(false)
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSubmitReview}
+                      disabled={rating === 0 || createReview.isPending}
+                    >
+                      {createReview.isPending ? 'Submitting...' : 'Submit Review'}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
               </Dialog>
             )}
           </div>
@@ -389,7 +389,7 @@ function BookDetailPage() {
                 return (
                   <div
                     key={review.id}
-                    className={`flex gap-4 ${isOwnReview ? 'bg-primary/5 -mx-4 rounded-lg border border-primary/20 p-4' : ''}`}
+                    className={`flex gap-4 ${isOwnReview ? 'bg-primary/5 border-primary/20 -mx-4 rounded-lg border p-4' : ''}`}
                   >
                     <Avatar className="size-10">
                       <AvatarFallback
@@ -437,7 +437,7 @@ function BookDetailPage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-destructive hover:text-destructive size-7 p-0"
+                                className="text-destructive-foreground hover:text-destructive-foreground size-7 p-0"
                                 onClick={() => {
                                   setDeletingReviewId(review.id)
                                   setIsDeleteDialogOpen(true)
@@ -464,7 +464,9 @@ function BookDetailPage() {
                                     <div className="text-xs">
                                       <p>Created: {new Date(review.createdAt).toLocaleString()}</p>
                                       {isEdited && (
-                                        <p>Edited: {new Date(review.updatedAt!).toLocaleString()}</p>
+                                        <p>
+                                          Edited: {new Date(review.updatedAt!).toLocaleString()}
+                                        </p>
                                       )}
                                     </div>
                                   </TooltipContent>
@@ -538,7 +540,9 @@ function BookDetailPage() {
                 id="edit-review-content"
                 placeholder="What did you think about this book?"
                 value={editContent}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditContent(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                  setEditContent(e.target.value)
+                }
                 rows={4}
               />
             </div>
@@ -576,7 +580,7 @@ function BookDetailPage() {
             <AlertDialogCancel onClick={() => setDeletingReviewId(null)}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteReview}
-              className="bg-destructive text-white hover:bg-destructive/90"
+              className="bg-destructive hover:bg-destructive/90 text-white"
             >
               {deleteReview.isPending ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
