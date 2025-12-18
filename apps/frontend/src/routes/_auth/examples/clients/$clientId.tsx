@@ -425,9 +425,7 @@ function ClientProfilePage() {
                 <TableBody>
                   {exchanges?.map((exchange) => (
                     <TableRow key={exchange.id}>
-                      <TableCell className="font-mono text-sm">
-                        {exchange.exchangeNumber}
-                      </TableCell>
+                      <TableCell className="font-mono text-sm">{exchange.exchangeNumber}</TableCell>
                       <TableCell>{formatDate(exchange.exchangeDate)}</TableCell>
                       <TableCell>
                         <div>
@@ -539,7 +537,7 @@ function ClientProfilePage() {
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Add a note about this client..."
-                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[100px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               />
               <div className="flex justify-end">
                 <Button
@@ -631,7 +629,7 @@ function ClientProfilePage() {
                           <textarea
                             value={editingContent}
                             onChange={(e) => setEditingContent(e.target.value)}
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring min-h-[80px] w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                           />
                           <div className="flex justify-end gap-2">
                             <Button
@@ -664,7 +662,10 @@ function ClientProfilePage() {
       )}
 
       {/* Delete Comment Confirmation Dialog */}
-      <Dialog open={!!deletingCommentId} onOpenChange={(open) => !open && setDeletingCommentId(null)}>
+      <Dialog
+        open={!!deletingCommentId}
+        onOpenChange={(open) => !open && setDeletingCommentId(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Note</DialogTitle>

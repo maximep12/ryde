@@ -1,5 +1,12 @@
 import { FileRouteTypes } from '@/routeTree.gen'
-import { ContactIcon, HomeIcon, LibraryIcon, LucideIcon, PaletteIcon, UsersIcon } from 'lucide-react'
+import {
+  ContactIcon,
+  HomeIcon,
+  LibraryIcon,
+  LucideIcon,
+  PaletteIcon,
+  UsersIcon,
+} from 'lucide-react'
 
 export type NavigationItem = {
   title: string

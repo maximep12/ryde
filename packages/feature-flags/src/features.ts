@@ -1,4 +1,4 @@
-export const FEATURES_FLAGS = ['placeholder-feature'] as const
+export const FEATURES_FLAGS = ['placeholder-feature', 'infinite-user-sessions'] as const
 
 export type FeatureFlag = (typeof FEATURES_FLAGS)[number]
 export type FeatureFlags = Record<FeatureFlag, boolean>

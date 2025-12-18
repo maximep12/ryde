@@ -377,7 +377,11 @@ export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
     'Exchange processed',
   ]
 
-  const productNames = ['Enterprise Software License', 'Premium Support Package', 'Security Suite Pro']
+  const productNames = [
+    'Enterprise Software License',
+    'Premium Support Package',
+    'Security Suite Pro',
+  ]
   const productSkus = ['SW-ENT-001', 'SUP-PRM-001', 'SEC-PRO-001']
 
   // Fixed list of clients with exchanges and their exchange counts
@@ -442,7 +446,8 @@ export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
         productName,
         productSku,
         quantity: 1,
-        resolution: status === 'completed' ? resolutions[(clientIdx + i) % resolutions.length]! : null,
+        resolution:
+          status === 'completed' ? resolutions[(clientIdx + i) % resolutions.length]! : null,
       })
     }
   }
@@ -506,7 +511,9 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
       // Deterministic purchase date
       const seed = clientIdx * 100 + productIdx
       const purchaseDaysAgo = Math.floor(seededRandom(seed) * 600) + 30
-      const purchaseDate = new Date(REFERENCE_DATE.getTime() - purchaseDaysAgo * 24 * 60 * 60 * 1000)
+      const purchaseDate = new Date(
+        REFERENCE_DATE.getTime() - purchaseDaysAgo * 24 * 60 * 60 * 1000,
+      )
 
       let expirationDate: Date | null = null
       let status = 'active'

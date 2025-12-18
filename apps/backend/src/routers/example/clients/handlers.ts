@@ -18,7 +18,12 @@ import {
   searchClients,
   updateClientComment,
 } from './helpers'
-import { clientQuerySchema, clientSearchSchema, createCommentSchema, updateCommentSchema } from './schemas'
+import {
+  clientQuerySchema,
+  clientSearchSchema,
+  createCommentSchema,
+  updateCommentSchema,
+} from './schemas'
 
 const clientsRouter = new Hono<{ Variables: ContextVariables }>()
 
@@ -79,7 +84,10 @@ export const clientsRouterDefinition = clientsRouter
   .get(
     '/:id/orders',
     zValidatorThrow('param', z.object({ id: z.coerce.number().int().positive() })),
-    zValidatorThrow('query', z.object({ limit: z.coerce.number().int().min(1).max(50).default(11) })),
+    zValidatorThrow(
+      'query',
+      z.object({ limit: z.coerce.number().int().min(1).max(50).default(11) }),
+    ),
     async (c) => {
       const { id } = c.req.valid('param')
       const { limit } = c.req.valid('query')
