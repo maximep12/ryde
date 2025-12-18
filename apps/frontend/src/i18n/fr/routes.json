@@ -1,7 +1,9 @@
 {
   "route.dashboard": "Tableau de bord",
   "route.settings": "Paramètres",
+  "route.examples": "Exemples",
   "route.books": "Livres",
+  "route.bookDetails": "Détails du livre",
   "route.users": "Utilisateurs",
   "route.kitchenSink": "Évier de cuisine"
 }

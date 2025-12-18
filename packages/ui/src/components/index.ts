@@ -146,6 +146,7 @@ export {
   TableHeader,
   TableRow,
 } from './ui/Table'
+export { Textarea } from './ui/Textarea'
 export { Toggle, toggleVariants } from './ui/Toggle'
 export { ToggleGroup, ToggleGroupItem } from './ui/ToggleGroup'
 export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/Tooltip'

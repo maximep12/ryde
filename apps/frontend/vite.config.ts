@@ -10,6 +10,9 @@ export default defineConfig({
     sourcemap: true,
   },
   plugins: [
+    tanstackRouter({
+      autoCodeSplitting: true,
+    }),
     react({
       babel: {
         plugins: [['babel-plugin-react-compiler', {}]],
@@ -17,9 +20,6 @@ export default defineConfig({
     }),
     tsconfigPaths(),
     tailwindcss(),
-    tanstackRouter({
-      autoCodeSplitting: true,
-    }),
   ],
   server: {
     port: process.env.ADMIN_WEB_PORT ? parseInt(process.env.ADMIN_WEB_PORT, 10) : 5173,

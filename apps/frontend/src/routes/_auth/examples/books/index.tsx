@@ -8,8 +8,9 @@ import {
   Skeleton,
 } from '@repo/ui/components'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { MessageSquareIcon, StarIcon } from 'lucide-react'
 
-export const Route = createFileRoute('/_auth/books/')({
+export const Route = createFileRoute('/_auth/examples/books/')({
   component: BooksPage,
   staticData: {
     title: 'route.books',
@@ -51,20 +52,20 @@ function BooksPage() {
             {data.items.map((book) => (
               <Link
                 key={book.id}
-                to="/books/$bookId"
+                to="/examples/books/$bookId"
                 params={{ bookId: book.id.toString() }}
                 className="block"
               >
-                <Card className="hover:bg-muted/50 h-full transition-colors">
+                <Card className="hover:bg-muted/50 flex h-full flex-col transition-colors">
                   <CardHeader>
                     <CardTitle className="line-clamp-1">{book.title}</CardTitle>
                     <CardDescription>{book.author}</CardDescription>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex flex-1 flex-col">
                     <p className="text-muted-foreground line-clamp-3 text-sm">
                       {book.description || 'No description available'}
                     </p>
-                    <div className="mt-4 flex items-center gap-2 text-sm">
+                    <div className="mt-auto flex flex-wrap items-center gap-3 pt-4 text-sm">
                       {book.genre && (
                         <span className="bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-xs">
                           {book.genre}
@@ -73,6 +74,22 @@ function BooksPage() {
                       {book.publishedYear && (
                         <span className="text-muted-foreground">{book.publishedYear}</span>
                       )}
+                      <div className="ml-auto flex items-center gap-3">
+                        {book.totalReviews > 0 ? (
+                          <>
+                            <span className="flex items-center gap-1 text-amber-500">
+                              <StarIcon className="size-3.5 fill-current" />
+                              <span className="font-medium">{Number(book.averageRating).toFixed(1)}</span>
+                            </span>
+                            <span className="text-muted-foreground flex items-center gap-1">
+                              <MessageSquareIcon className="size-3.5" />
+                              <span>{book.totalReviews}</span>
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground/50 text-xs italic">No reviews</span>
+                        )}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

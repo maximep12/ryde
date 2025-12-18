@@ -1,7 +1,9 @@
 {
   "route.dashboard": "Dashboard",
   "route.settings": "Settings",
+  "route.examples": "Examples",
   "route.books": "Books",
+  "route.bookDetails": "Book Details",
   "route.users": "Users",
   "route.kitchenSink": "Kitchen Sink"
 }

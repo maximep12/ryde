@@ -3,6 +3,8 @@
   "auth.signIn": "Sign in",
 
   "sidebar.navigation": "Navigation",
+  "sidebar.examples": "Examples",
+  "sidebar.uiUx": "UI/UX",
 
   "dropdown.empty": "No results found",
   "dropdown.placeholder": "Select an option...",

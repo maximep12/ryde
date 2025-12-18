@@ -29,9 +29,25 @@ export async function getBooks(query: BookQuery) {
 
   const [items, countResult] = await Promise.all([
     db
-      .select()
+      .select({
+        id: books.id,
+        title: books.title,
+        author: books.author,
+        isbn: books.isbn,
+        description: books.description,
+        publishedYear: books.publishedYear,
+        genre: books.genre,
+        pageCount: books.pageCount,
+        coverImageUrl: books.coverImageUrl,
+        createdAt: books.createdAt,
+        updatedAt: books.updatedAt,
+        averageRating: sql<number>`ROUND(AVG(${bookReviews.rating})::numeric, 1)`,
+        totalReviews: sql<number>`COUNT(${bookReviews.id})::int`,
+      })
       .from(books)
+      .leftJoin(bookReviews, eq(books.id, bookReviews.bookId))
       .where(whereClause)
+      .groupBy(books.id)
       .orderBy(desc(books.createdAt))
       .limit(pageSize)
       .offset(offset),

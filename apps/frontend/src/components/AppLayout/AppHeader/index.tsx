@@ -2,6 +2,8 @@ import type { Theme } from '@/components/ThemeProvider'
 import { useTheme } from '@/components/ThemeProvider/hooks'
 import useLogout from '@/hooks/queries/auth/useLogout'
 import { useMe } from '@/hooks/queries/auth/useMe'
+import { setLocale } from '@/stores/i18n'
+import { Language } from '@repo/constants'
 import {
   Button,
   DropdownMenu,
@@ -48,8 +50,9 @@ export function AppHeader() {
     ? `${user.givenName ?? ''} ${user.familyName ?? ''}`.trim() || user.email
     : ''
 
-  const handleLanguageChange = (code: string) => {
+  const handleLanguageChange = (code: Language) => {
     i18n.changeLanguage(code)
+    setLocale(code)
   }
 
   return (
@@ -90,7 +93,7 @@ export function AppHeader() {
             {LANGUAGES.map((lang) => (
               <DropdownMenuItem
                 key={lang.code}
-                onClick={() => handleLanguageChange(lang.code)}
+                onClick={() => handleLanguageChange(lang.code as Language)}
                 className={i18n.language === lang.code ? 'bg-accent' : ''}
               >
                 {lang.label}

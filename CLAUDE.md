@@ -18,6 +18,21 @@ It is essential to maintain this repository over time. It is also crucial to ref
 
 Whenever there are changes to data structures (changes in the db or redis package), let's make sure the seed data is adjusted accordingly in both directories if there are any.
 
+## React Compiler Compatibility
+
+This project uses React Compiler. Some libraries are not compatible with React Compiler's automatic memoization:
+
+### TanStack React Table
+
+`useReactTable` returns functions that cannot be safely memoized. Any component using `useReactTable` must include the `'use no memo'` directive at the top of the file to opt out of React Compiler optimization for that component.
+
+```tsx
+'use no memo'
+
+import { useReactTable } from '@tanstack/react-table'
+// ...
+```
+
 ## MCP Servers
 
 This project includes three MCP (Model Context Protocol) servers configured in `.mcp.json`:

@@ -14,6 +14,8 @@ const FILES_TO_UPDATE = [
   'package.json',
   'apps/backend/package.json',
   'apps/frontend/package.json',
+  'apps/frontend/index.html',
+  'apps/frontend/src/components/AppLayout/AppSidebar/index.tsx',
   'apps/worker/package.json',
   'packages/db/package.json',
   'packages/constants/package.json',
@@ -36,14 +38,29 @@ function replaceInFile(filePath: string, searchValue: string | RegExp, replaceVa
   return false
 }
 
+function toTitleCase(str: string): string {
+  return str
+    .split('-')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+}
+
 function replaceProjectName(oldName: string, newName: string) {
+  const oldTitleCase = toTitleCase(oldName)
+  const newTitleCase = toTitleCase(newName)
+
   const replacements = [
+    // Full project name strings for UI (must come first to avoid partial replacements)
+    { search: /The Franklin Project/g, replace: newTitleCase },
+    { search: /Franklin Project/g, replace: newTitleCase },
+    // Standard replacements
     { search: new RegExp(oldName, 'g'), replace: newName },
     { search: new RegExp(oldName.replace(/-/g, '_'), 'g'), replace: newName.replace(/-/g, '_') },
     {
       search: new RegExp(oldName.charAt(0).toUpperCase() + oldName.slice(1), 'g'),
       replace: newName.charAt(0).toUpperCase() + newName.slice(1),
     },
+    { search: new RegExp(oldTitleCase, 'g'), replace: newTitleCase },
   ]
 
   const updatedFiles: string[] = []

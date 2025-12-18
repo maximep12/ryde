@@ -1,11 +1,6 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@repo/ui/components'
+'use no memo'
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@repo/ui/components'
 import {
   ColumnDef,
   flexRender,
@@ -48,7 +43,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
                     <div
                       className={
                         header.column.getCanSort()
-                          ? 'flex cursor-pointer select-none items-center gap-2'
+                          ? 'flex cursor-pointer items-center gap-2 select-none'
                           : ''
                       }
                       onClick={header.column.getToggleSortingHandler()}

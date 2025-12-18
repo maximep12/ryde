@@ -1,26 +1,11 @@
 import config from '@/config'
+import { fetchWithThrow } from '@/lib/queries'
 import { AppType } from '@repo/backend/app'
 import { AUTHORIZATION_HEADER_PREFIX } from '@repo/constants'
 import { hc } from 'hono/client'
 import { atom } from 'jotai'
 import { store } from '.'
 import { sessionTokenAtom } from './session'
-
-const fetchWithThrow = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-  const res = await fetch(input, { ...init, credentials: 'include' })
-  if (!res.ok) {
-    const contentType = res.headers.get('Content-Type')
-
-    if (contentType && contentType.includes('application/json')) {
-      const json = await res.json()
-      throw json
-    }
-
-    throw res
-  }
-
-  return res
-}
 
 export const createHonoClient = (sessionToken: string | null) => {
   if (sessionToken) {

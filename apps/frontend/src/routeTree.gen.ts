@@ -15,11 +15,12 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
 import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
+import { Route as AuthExamplesRouteRouteImport } from './routes/_auth/examples/route'
 import { Route as AuthUsersIndexRouteImport } from './routes/_auth/users/index'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
 import { Route as AuthKitchenSinkIndexRouteImport } from './routes/_auth/kitchen-sink/index'
-import { Route as AuthBooksIndexRouteImport } from './routes/_auth/books/index'
-import { Route as AuthBooksBookIdRouteImport } from './routes/_auth/books/$bookId'
+import { Route as AuthExamplesBooksIndexRouteImport } from './routes/_auth/examples/books/index'
+import { Route as AuthExamplesBooksBookIdRouteImport } from './routes/_auth/examples/books/$bookId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -50,6 +51,11 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/error',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthExamplesRouteRoute = AuthExamplesRouteRouteImport.update({
+  id: '/examples',
+  path: '/examples',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthUsersIndexRoute = AuthUsersIndexRouteImport.update({
   id: '/users/',
   path: '/users/',
@@ -65,93 +71,99 @@ const AuthKitchenSinkIndexRoute = AuthKitchenSinkIndexRouteImport.update({
   path: '/kitchen-sink/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthBooksIndexRoute = AuthBooksIndexRouteImport.update({
+const AuthExamplesBooksIndexRoute = AuthExamplesBooksIndexRouteImport.update({
   id: '/books/',
   path: '/books/',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthExamplesRouteRoute,
 } as any)
-const AuthBooksBookIdRoute = AuthBooksBookIdRouteImport.update({
+const AuthExamplesBooksBookIdRoute = AuthExamplesBooksBookIdRouteImport.update({
   id: '/books/$bookId',
   path: '/books/$bookId',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthExamplesRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
+  '/examples': typeof AuthExamplesRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/books/$bookId': typeof AuthBooksBookIdRoute
-  '/books': typeof AuthBooksIndexRoute
   '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
   '/users': typeof AuthUsersIndexRoute
+  '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
+  '/examples/books': typeof AuthExamplesBooksIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
+  '/examples': typeof AuthExamplesRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/books/$bookId': typeof AuthBooksBookIdRoute
-  '/books': typeof AuthBooksIndexRoute
   '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
   '/users': typeof AuthUsersIndexRoute
+  '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
+  '/examples/books': typeof AuthExamplesBooksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
+  '/_auth/examples': typeof AuthExamplesRouteRouteWithChildren
   '/_auth/error': typeof AuthErrorRoute
   '/_auth/not-found': typeof AuthNotFoundRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
-  '/_auth/books/$bookId': typeof AuthBooksBookIdRoute
-  '/_auth/books/': typeof AuthBooksIndexRoute
   '/_auth/kitchen-sink/': typeof AuthKitchenSinkIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
   '/_auth/users/': typeof AuthUsersIndexRoute
+  '/_auth/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
+  '/_auth/examples/books/': typeof AuthExamplesBooksIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/login'
+    | '/examples'
     | '/error'
     | '/not-found'
     | '/unauthorized'
     | '/'
-    | '/books/$bookId'
-    | '/books'
     | '/kitchen-sink'
     | '/settings'
     | '/users'
+    | '/examples/books/$bookId'
+    | '/examples/books'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
+    | '/examples'
     | '/error'
     | '/not-found'
     | '/unauthorized'
     | '/'
-    | '/books/$bookId'
-    | '/books'
     | '/kitchen-sink'
     | '/settings'
     | '/users'
+    | '/examples/books/$bookId'
+    | '/examples/books'
   id:
     | '__root__'
     | '/_auth'
     | '/login'
+    | '/_auth/examples'
     | '/_auth/error'
     | '/_auth/not-found'
     | '/_auth/unauthorized'
     | '/_auth/'
-    | '/_auth/books/$bookId'
-    | '/_auth/books/'
     | '/_auth/kitchen-sink/'
     | '/_auth/settings/'
     | '/_auth/users/'
+    | '/_auth/examples/books/$bookId'
+    | '/_auth/examples/books/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -203,6 +215,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/examples': {
+      id: '/_auth/examples'
+      path: '/examples'
+      fullPath: '/examples'
+      preLoaderRoute: typeof AuthExamplesRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/users/': {
       id: '/_auth/users/'
       path: '/users'
@@ -224,42 +243,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthKitchenSinkIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/books/': {
-      id: '/_auth/books/'
+    '/_auth/examples/books/': {
+      id: '/_auth/examples/books/'
       path: '/books'
-      fullPath: '/books'
-      preLoaderRoute: typeof AuthBooksIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/examples/books'
+      preLoaderRoute: typeof AuthExamplesBooksIndexRouteImport
+      parentRoute: typeof AuthExamplesRouteRoute
     }
-    '/_auth/books/$bookId': {
-      id: '/_auth/books/$bookId'
+    '/_auth/examples/books/$bookId': {
+      id: '/_auth/examples/books/$bookId'
       path: '/books/$bookId'
-      fullPath: '/books/$bookId'
-      preLoaderRoute: typeof AuthBooksBookIdRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/examples/books/$bookId'
+      preLoaderRoute: typeof AuthExamplesBooksBookIdRouteImport
+      parentRoute: typeof AuthExamplesRouteRoute
     }
   }
 }
 
+interface AuthExamplesRouteRouteChildren {
+  AuthExamplesBooksBookIdRoute: typeof AuthExamplesBooksBookIdRoute
+  AuthExamplesBooksIndexRoute: typeof AuthExamplesBooksIndexRoute
+}
+
+const AuthExamplesRouteRouteChildren: AuthExamplesRouteRouteChildren = {
+  AuthExamplesBooksBookIdRoute: AuthExamplesBooksBookIdRoute,
+  AuthExamplesBooksIndexRoute: AuthExamplesBooksIndexRoute,
+}
+
+const AuthExamplesRouteRouteWithChildren =
+  AuthExamplesRouteRoute._addFileChildren(AuthExamplesRouteRouteChildren)
+
 interface AuthRouteRouteChildren {
+  AuthExamplesRouteRoute: typeof AuthExamplesRouteRouteWithChildren
   AuthErrorRoute: typeof AuthErrorRoute
   AuthNotFoundRoute: typeof AuthNotFoundRoute
   AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
   AuthIndexRoute: typeof AuthIndexRoute
-  AuthBooksBookIdRoute: typeof AuthBooksBookIdRoute
-  AuthBooksIndexRoute: typeof AuthBooksIndexRoute
   AuthKitchenSinkIndexRoute: typeof AuthKitchenSinkIndexRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
   AuthUsersIndexRoute: typeof AuthUsersIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthExamplesRouteRoute: AuthExamplesRouteRouteWithChildren,
   AuthErrorRoute: AuthErrorRoute,
   AuthNotFoundRoute: AuthNotFoundRoute,
   AuthUnauthorizedRoute: AuthUnauthorizedRoute,
   AuthIndexRoute: AuthIndexRoute,
-  AuthBooksBookIdRoute: AuthBooksBookIdRoute,
-  AuthBooksIndexRoute: AuthBooksIndexRoute,
   AuthKitchenSinkIndexRoute: AuthKitchenSinkIndexRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
   AuthUsersIndexRoute: AuthUsersIndexRoute,

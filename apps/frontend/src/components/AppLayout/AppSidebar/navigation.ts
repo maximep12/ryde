@@ -1,5 +1,5 @@
 import { FileRouteTypes } from '@/routeTree.gen'
-import { BookOpenIcon, HomeIcon, LibraryIcon, LucideIcon, UsersIcon } from 'lucide-react'
+import { HomeIcon, LibraryIcon, LucideIcon, PaletteIcon, UsersIcon } from 'lucide-react'
 
 type NavigationItem = {
   title: string
@@ -9,7 +9,13 @@ type NavigationItem = {
 
 export const navigation: NavigationItem[] = [
   { title: 'route.dashboard', path: '/', icon: HomeIcon },
-  { title: 'route.books', path: '/books', icon: LibraryIcon },
   { title: 'route.users', path: '/users', icon: UsersIcon },
-  { title: 'route.kitchenSink', path: '/kitchen-sink', icon: BookOpenIcon },
+]
+
+export const examplesNavigation: NavigationItem[] = [
+  { title: 'route.books', path: '/examples/books', icon: LibraryIcon },
+]
+
+export const uiUxNavigation: NavigationItem[] = [
+  { title: 'route.kitchenSink', path: '/kitchen-sink', icon: PaletteIcon },
 ]
