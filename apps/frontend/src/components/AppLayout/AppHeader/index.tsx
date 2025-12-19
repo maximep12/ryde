@@ -69,16 +69,19 @@ export function AppHeader() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {THEMES.map((th) => (
-              <DropdownMenuItem
-                key={th.value}
-                onClick={() => setTheme(th.value as Theme)}
-                className={theme === th.value ? 'bg-accent' : ''}
-              >
-                <th.icon className="size-4" />
-                <span>{t(th.labelKey)}</span>
-              </DropdownMenuItem>
-            ))}
+            {THEMES.map((th) => {
+              const isSelected = theme === th.value
+              return (
+                <DropdownMenuItem
+                  key={th.value}
+                  onClick={() => setTheme(th.value as Theme)}
+                  className={isSelected ? 'bg-primary/10 text-primary hover:bg-accent hover:text-accent-foreground' : ''}
+                >
+                  <th.icon className={`size-4 ${isSelected ? 'text-primary group-hover:text-accent-foreground' : ''}`} />
+                  <span>{t(th.labelKey)}</span>
+                </DropdownMenuItem>
+              )
+            })}
           </DropdownMenuContent>
         </DropdownMenu>
 
@@ -94,7 +97,7 @@ export function AppHeader() {
               <DropdownMenuItem
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code as Language)}
-                className={i18n.language === lang.code ? 'bg-accent' : ''}
+                className={i18n.language === lang.code ? 'bg-primary/10 text-primary hover:bg-accent hover:text-accent-foreground' : ''}
               >
                 {lang.label}
               </DropdownMenuItem>

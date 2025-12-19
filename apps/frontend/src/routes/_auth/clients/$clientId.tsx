@@ -3,6 +3,7 @@ import { useDeleteComment } from '@/hooks/mutations/clients/useDeleteComment'
 import { useUpdateComment } from '@/hooks/mutations/clients/useUpdateComment'
 import { useMe } from '@/hooks/queries/auth/useMe'
 import { useClient } from '@/hooks/queries/clients/useClient'
+import { useRecentlyViewedClients } from '@/hooks/useRecentlyViewedClients'
 import { useClientAssortments } from '@/hooks/queries/clients/useClientAssortments'
 import { useClientComments } from '@/hooks/queries/clients/useClientComments'
 import { useClientExchanges } from '@/hooks/queries/clients/useClientExchanges'
@@ -46,9 +47,9 @@ import {
   ShoppingCartIcon,
   Trash2Icon,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export const Route = createFileRoute('/_auth/examples/clients/$clientId')({
+export const Route = createFileRoute('/_auth/clients/$clientId')({
   component: ClientProfilePage,
   staticData: {
     title: 'route.clientProfile',
@@ -64,11 +65,7 @@ function formatCurrency(cents: number) {
 }
 
 function formatDate(date: string | Date) {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
+  return new Date(date).toLocaleDateString('en-GB')
 }
 
 function getStatusColor(status: string) {
@@ -95,6 +92,20 @@ function ClientProfilePage() {
   const { clientId } = Route.useParams()
   const { data: currentUser } = useMe()
   const { data: client, isLoading, error } = useClient(Number(clientId))
+  const { addRecentClient } = useRecentlyViewedClients()
+
+  // Track client view in recently viewed
+  useEffect(() => {
+    if (client) {
+      addRecentClient({
+        id: client.id,
+        storeName: client.storeName,
+        clientCode: client.clientCode,
+        storeType: client.storeType,
+        status: client.status,
+      })
+    }
+  }, [client, addRecentClient])
   const { data: orders, isLoading: isLoadingOrders } = useClientOrders(Number(clientId))
   const { data: exchanges, isLoading: isLoadingExchanges } = useClientExchanges(Number(clientId))
   const { data: assortments, isLoading: isLoadingAssortments } = useClientAssortments(
@@ -159,7 +170,7 @@ function ClientProfilePage() {
     return (
       <div className="space-y-6">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/examples/clients">
+          <Link to="/clients">
             <ArrowLeftIcon className="mr-2 size-4" />
             Back to Search
           </Link>
@@ -190,7 +201,7 @@ function ClientProfilePage() {
     return (
       <div className="space-y-6">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/examples/clients">
+          <Link to="/clients">
             <ArrowLeftIcon className="mr-2 size-4" />
             Back to Search
           </Link>
@@ -203,7 +214,7 @@ function ClientProfilePage() {
   return (
     <div className="space-y-6">
       <Button variant="ghost" size="sm" asChild>
-        <Link to="/examples/clients">
+        <Link to="/clients">
           <ArrowLeftIcon className="mr-2 size-4" />
           Back to Search
         </Link>
@@ -215,15 +226,15 @@ function ClientProfilePage() {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               <div className="bg-primary/10 text-primary flex size-16 items-center justify-center rounded-full text-xl font-semibold">
-                {client.firstName[0]}
-                {client.lastName[0]}
+                {client.storeName[0]}
               </div>
               <div>
-                <CardTitle className="text-2xl">
-                  {client.firstName} {client.lastName}
-                </CardTitle>
+                <CardTitle className="text-2xl">{client.storeName}</CardTitle>
                 <CardDescription className="mt-1 flex items-center gap-2">
                   <span className="font-mono">{client.clientCode}</span>
+                  <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                    {client.storeType.replace(/_/g, ' ')}
+                  </span>
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs ${getStatusColor(client.status)}`}
                   >
@@ -239,24 +250,24 @@ function ClientProfilePage() {
             <div className="space-y-4">
               <h3 className="font-semibold">Contact Information</h3>
               <div className="space-y-2 text-sm">
+                {client.contactName && (
+                  <div className="flex items-center gap-2">
+                    <BuildingIcon className="text-muted-foreground size-4" />
+                    <span>{client.contactName}</span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <MailIcon className="text-muted-foreground size-4" />
-                  <a href={`mailto:${client.email}`} className="text-primary hover:underline">
+                  <a href={`mailto:${client.email}`} className="hover:underline">
                     {client.email}
                   </a>
                 </div>
                 {client.phone && (
                   <div className="flex items-center gap-2">
                     <PhoneIcon className="text-muted-foreground size-4" />
-                    <a href={`tel:${client.phone}`} className="text-primary hover:underline">
+                    <a href={`tel:${client.phone}`} className="hover:underline">
                       {client.phone}
                     </a>
-                  </div>
-                )}
-                {client.companyName && (
-                  <div className="flex items-center gap-2">
-                    <BuildingIcon className="text-muted-foreground size-4" />
-                    <span>{client.companyName}</span>
                   </div>
                 )}
               </div>
@@ -289,10 +300,10 @@ function ClientProfilePage() {
       <div className="bg-muted flex gap-1 rounded-lg p-1">
         <button
           onClick={() => setActiveTab('orders')}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'orders'
               ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
+              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
           }`}
         >
           <ShoppingCartIcon className="size-4" />
@@ -300,10 +311,10 @@ function ClientProfilePage() {
         </button>
         <button
           onClick={() => setActiveTab('exchanges')}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'exchanges'
               ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
+              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
           }`}
         >
           <RefreshCwIcon className="size-4" />
@@ -311,10 +322,10 @@ function ClientProfilePage() {
         </button>
         <button
           onClick={() => setActiveTab('assortments')}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'assortments'
               ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
+              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
           }`}
         >
           <PackageIcon className="size-4" />
@@ -322,10 +333,10 @@ function ClientProfilePage() {
         </button>
         <button
           onClick={() => setActiveTab('notes')}
-          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'notes'
               ? 'bg-background text-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground'
+              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
           }`}
         >
           <MessageSquareIcon className="size-4" />
@@ -371,16 +382,26 @@ function ClientProfilePage() {
                       className="cursor-pointer"
                       onClick={() => setSelectedOrderId(order.id)}
                     >
-                      <TableCell className="font-mono text-sm">{order.orderNumber}</TableCell>
-                      <TableCell>{formatDate(order.orderDate)}</TableCell>
-                      <TableCell>
+                      <TableCell className="py-2 font-mono text-sm">{order.orderNumber}</TableCell>
+                      <TableCell className="py-2">
+                        <div>
+                          <p>{formatDate(order.orderDate)}</p>
+                          <p className="text-muted-foreground text-xs">
+                            {new Date(order.orderDate).toLocaleTimeString('en-GB', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
                         <span
                           className={`rounded-full px-2 py-1 text-xs ${getStatusColor(order.status)}`}
                         >
                           {order.status}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="py-2 text-right font-medium">
                         {formatCurrency(order.totalAmount)}
                       </TableCell>
                     </TableRow>
@@ -425,9 +446,19 @@ function ClientProfilePage() {
                 <TableBody>
                   {exchanges?.map((exchange) => (
                     <TableRow key={exchange.id}>
-                      <TableCell className="font-mono text-sm">{exchange.exchangeNumber}</TableCell>
-                      <TableCell>{formatDate(exchange.exchangeDate)}</TableCell>
-                      <TableCell>
+                      <TableCell className="py-2 font-mono text-sm">{exchange.exchangeNumber}</TableCell>
+                      <TableCell className="py-2">
+                        <div>
+                          <p>{formatDate(exchange.exchangeDate)}</p>
+                          <p className="text-muted-foreground text-xs">
+                            {new Date(exchange.exchangeDate).toLocaleTimeString('en-GB', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
                         <div>
                           <p className="font-medium">{exchange.productName}</p>
                           {exchange.productSku && (
@@ -435,17 +466,17 @@ function ClientProfilePage() {
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="capitalize">
+                      <TableCell className="py-2 capitalize">
                         {exchange.reason.replace(/_/g, ' ')}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-2">
                         <span
                           className={`rounded-full px-2 py-1 text-xs ${getStatusColor(exchange.status)}`}
                         >
                           {exchange.status}
                         </span>
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="py-2 text-right font-medium">
                         {formatCurrency(exchange.exchangeAmount)}
                       </TableCell>
                     </TableRow>
@@ -490,26 +521,43 @@ function ClientProfilePage() {
                 <TableBody>
                   {assortments?.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell className="font-medium">{item.productName}</TableCell>
-                      <TableCell>
+                      <TableCell className="py-2">
+                        <div>
+                          <p className="font-medium">{item.productName}</p>
+                          {item.productSku && (
+                            <p className="text-muted-foreground text-xs">{item.productSku}</p>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
                         {item.productCategory && <Badge>{item.productCategory}</Badge>}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-2">
                         <span
                           className={`rounded-full px-2 py-1 text-xs ${getStatusColor(item.subscriptionStatus)}`}
                         >
                           {item.subscriptionStatus.replace(/_/g, ' ')}
                         </span>
                       </TableCell>
-                      <TableCell>{formatDate(item.purchaseDate)}</TableCell>
-                      <TableCell>
+                      <TableCell className="py-2">
+                        <div>
+                          <p>{formatDate(item.purchaseDate)}</p>
+                          <p className="text-muted-foreground text-xs">
+                            {new Date(item.purchaseDate).toLocaleTimeString('en-GB', {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-2">
                         {item.expirationDate ? formatDate(item.expirationDate) : 'N/A'}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="py-2">
                         {item.autoRenew ? (
-                          <Badge variant="primary">Yes</Badge>
+                          <Badge variant="success">Yes</Badge>
                         ) : (
-                          <Badge variant="default">No</Badge>
+                          <Badge variant="transparent">No</Badge>
                         )}
                       </TableCell>
                     </TableRow>
@@ -575,12 +623,12 @@ function ClientProfilePage() {
                   return (
                     <div
                       key={comment.id}
-                      className={`border-border rounded-lg border p-4 ${isOwnComment ? 'bg-primary/5 border-primary/20' : ''}`}
+                      className={`border-border rounded-lg border p-4 ${isOwnComment ? 'bg-muted/50' : ''}`}
                     >
                       <div className="mb-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div
-                            className={`flex size-8 items-center justify-center rounded-full text-xs font-medium ${isOwnComment ? 'bg-primary text-primary-foreground' : 'bg-primary/10 text-primary'}`}
+                            className={`flex size-8 items-center justify-center rounded-full text-xs font-medium ${isOwnComment ? 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200' : 'bg-primary/10 text-primary'}`}
                           >
                             {comment.author.givenName?.[0] || '?'}
                             {comment.author.familyName?.[0] || ''}
@@ -588,11 +636,6 @@ function ClientProfilePage() {
                           <div>
                             <p className="text-sm font-medium">
                               {comment.author.givenName} {comment.author.familyName}
-                              {isOwnComment && (
-                                <Badge variant="primary" className="ml-2">
-                                  You
-                                </Badge>
-                              )}
                             </p>
                             <p className="text-muted-foreground text-xs">{comment.author.email}</p>
                           </div>
@@ -650,7 +693,7 @@ function ClientProfilePage() {
                           </div>
                         </div>
                       ) : (
-                        <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+                        <p className="text-sm whitespace-pre-wrap pt-2">{comment.content}</p>
                       )}
                     </div>
                   )

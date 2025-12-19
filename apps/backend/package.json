@@ -38,12 +38,14 @@
     "ioredis": "^5.8.2",
     "jsonwebtoken": "^9.0.3",
     "luxon": "^3.7.2",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.16.3",
     "zod": "^4.2.0"
   },
   "devDependencies": {
     "@types/bluebird": "^3.5.42",
     "@types/node": "^25.0.2",
+    "@types/pdf-parse": "^1.1.5",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.8",
     "tsx": "^4.21.0",

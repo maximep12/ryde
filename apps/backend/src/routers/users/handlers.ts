@@ -23,9 +23,9 @@ export const usersRouterDefinition = usersRouter
   })
 
   .get('/', zValidatorThrow('query', usersQueriesSchema), async (c) => {
-    const { page, pageSize } = c.req.valid('query')
-    const users = await getUsers(page, pageSize)
-    return c.json({ users })
+    const query = c.req.valid('query')
+    const result = await getUsers(query)
+    return c.json({ users: result.items, pagination: result.pagination })
   })
 
   .post('/activate', zValidatorThrow('json', z.object({ userId: z.string() })), async (c) => {

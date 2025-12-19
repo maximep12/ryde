@@ -5,11 +5,25 @@ import {
   clientAssortments,
   clientComments,
   clientExchanges,
+  clientOrderIssues,
   clientOrderItems,
   clientOrders,
   clients,
   users,
 } from '../schema'
+import { SEED_PRODUCTS } from './products'
+
+const SEED_USER_EMAILS = [
+  'admin@example.com',
+  'anne.sergerie@intersand.com',
+  'isabelle.picard@intersand.com',
+  'nathalie.laforest@intersand.com',
+  'nicolas.tremblay@intersand.com',
+  'julien.chenard@intersand.com',
+  'dominic.mercier@intersand.com',
+  'miguel.turcotte@intersand.com',
+  'johanne.belanger@intersand.com',
+]
 
 // Seeded random number generator for deterministic results
 function seededRandom(seed: number) {
@@ -20,12 +34,12 @@ function seededRandom(seed: number) {
 const SEED_CLIENTS = [
   {
     clientCode: 'CLI-001',
-    firstName: 'Sarah',
-    lastName: 'Johnson',
-    email: 'sarah.johnson@techcorp.com',
+    storeName: 'Paws & Claws Pet Emporium',
+    storeType: 'pet_store',
+    contactName: 'Sarah Johnson',
+    email: 'orders@pawsclaws.com',
     phone: '+1-555-123-4567',
-    companyName: 'TechCorp Industries',
-    billingAddress: '123 Innovation Drive, Suite 400',
+    billingAddress: '123 Pet Avenue, Suite 400',
     city: 'San Francisco',
     state: 'CA',
     postalCode: '94102',
@@ -34,11 +48,11 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-002',
-    firstName: 'Michael',
-    lastName: 'Chen',
-    email: 'mchen@globalretail.com',
+    storeName: 'PetSmart Plus',
+    storeType: 'pet_store',
+    contactName: 'Michael Chen',
+    email: 'purchasing@petsmartplus.com',
     phone: '+1-555-234-5678',
-    companyName: 'Global Retail Co',
     billingAddress: '456 Commerce Street',
     city: 'New York',
     state: 'NY',
@@ -48,12 +62,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-003',
-    firstName: 'Emily',
-    lastName: 'Williams',
-    email: 'emily.w@startupxyz.io',
+    storeName: 'Happy Tails Veterinary Clinic',
+    storeType: 'veterinary_clinic',
+    contactName: 'Dr. Emily Williams',
+    email: 'supplies@happytailsvet.com',
     phone: '+1-555-345-6789',
-    companyName: 'StartupXYZ',
-    billingAddress: '789 Venture Lane',
+    billingAddress: '789 Animal Care Lane',
     city: 'Austin',
     state: 'TX',
     postalCode: '78701',
@@ -62,12 +76,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-004',
-    firstName: 'James',
-    lastName: 'Martinez',
-    email: 'jmartinez@mediahub.net',
+    storeName: 'MegaMart Superstore',
+    storeType: 'supermarket',
+    contactName: 'James Martinez',
+    email: 'petaisle@megamart.com',
     phone: '+1-555-456-7890',
-    companyName: 'MediaHub Networks',
-    billingAddress: '321 Broadcast Ave',
+    billingAddress: '321 Retail Boulevard',
     city: 'Los Angeles',
     state: 'CA',
     postalCode: '90001',
@@ -76,12 +90,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-005',
-    firstName: 'Amanda',
-    lastName: 'Thompson',
-    email: 'athompson@healthplus.org',
+    storeName: 'Whiskers & Waggers',
+    storeType: 'pet_store',
+    contactName: 'Amanda Thompson',
+    email: 'orders@whiskersandwaggers.com',
     phone: '+1-555-567-8901',
-    companyName: 'HealthPlus Medical',
-    billingAddress: '555 Wellness Blvd',
+    billingAddress: '555 Furry Friends Blvd',
     city: 'Chicago',
     state: 'IL',
     postalCode: '60601',
@@ -90,12 +104,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-006',
-    firstName: 'David',
-    lastName: 'Kim',
-    email: 'david.kim@financegroup.com',
+    storeName: 'PetSupplies Direct',
+    storeType: 'online_retailer',
+    contactName: 'David Kim',
+    email: 'wholesale@petsuppliesdirect.com',
     phone: '+1-555-678-9012',
-    companyName: 'Finance Group LLC',
-    billingAddress: '888 Wall Street, Floor 12',
+    billingAddress: '888 E-Commerce Way, Suite 12',
     city: 'New York',
     state: 'NY',
     postalCode: '10005',
@@ -104,12 +118,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-007',
-    firstName: 'Lisa',
-    lastName: 'Anderson',
-    email: 'lisa.a@educatemore.edu',
+    storeName: 'Feline Friends Animal Hospital',
+    storeType: 'veterinary_clinic',
+    contactName: 'Dr. Lisa Anderson',
+    email: 'clinic@felinefriends.vet',
     phone: '+1-555-789-0123',
-    companyName: 'EducateMore Institute',
-    billingAddress: '100 Learning Way',
+    billingAddress: '100 Veterinary Way',
     city: 'Boston',
     state: 'MA',
     postalCode: '02101',
@@ -118,12 +132,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-008',
-    firstName: 'Robert',
-    lastName: 'Brown',
-    email: 'rbrown@constructall.com',
+    storeName: 'Rocky Mountain Pet Distributors',
+    storeType: 'distributor',
+    contactName: 'Robert Brown',
+    email: 'orders@rockymountainpet.com',
     phone: '+1-555-890-1234',
-    companyName: 'ConstructAll Building',
-    billingAddress: '200 Builder Road',
+    billingAddress: '200 Distribution Center Road',
     city: 'Denver',
     state: 'CO',
     postalCode: '80201',
@@ -132,12 +146,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-009',
-    firstName: 'Jennifer',
-    lastName: 'Davis',
-    email: 'jdavis@legalpartners.law',
+    storeName: 'Capital City Pet Supply',
+    storeType: 'pet_store',
+    contactName: 'Jennifer Davis',
+    email: 'orders@capitalcitypet.com',
     phone: '+1-555-901-2345',
-    companyName: 'Legal Partners LLP',
-    billingAddress: '300 Justice Avenue, Suite 500',
+    billingAddress: '300 Pennsylvania Avenue, Suite 500',
     city: 'Washington',
     state: 'DC',
     postalCode: '20001',
@@ -146,12 +160,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-010',
-    firstName: 'Christopher',
-    lastName: 'Wilson',
-    email: 'cwilson@greenenergy.com',
+    storeName: 'Desert Paws Pet Center',
+    storeType: 'pet_store',
+    contactName: 'Christopher Wilson',
+    email: 'purchasing@desertpaws.com',
     phone: '+1-555-012-3456',
-    companyName: 'Green Energy Solutions',
-    billingAddress: '400 Solar Drive',
+    billingAddress: '400 Cactus Drive',
     city: 'Phoenix',
     state: 'AZ',
     postalCode: '85001',
@@ -160,12 +174,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-011',
-    firstName: 'Michelle',
-    lastName: 'Taylor',
-    email: 'mtaylor@fooddelivery.co',
+    storeName: 'Chewy Northwest',
+    storeType: 'online_retailer',
+    contactName: 'Michelle Taylor',
+    email: 'wholesale@chewynw.com',
     phone: '+1-555-111-2222',
-    companyName: 'FoodDelivery Express',
-    billingAddress: '500 Cuisine Court',
+    billingAddress: '500 Fulfillment Way',
     city: 'Seattle',
     state: 'WA',
     postalCode: '98101',
@@ -174,12 +188,12 @@ const SEED_CLIENTS = [
   },
   {
     clientCode: 'CLI-012',
-    firstName: 'Daniel',
-    lastName: 'Garcia',
-    email: 'dgarcia@autoparts.com',
+    storeName: 'Great Lakes Pet Wholesale',
+    storeType: 'distributor',
+    contactName: 'Daniel Garcia',
+    email: 'orders@greatlakespet.com',
     phone: '+1-555-222-3333',
-    companyName: 'AutoParts Unlimited',
-    billingAddress: '600 Motor Lane',
+    billingAddress: '600 Warehouse Lane',
     city: 'Detroit',
     state: 'MI',
     postalCode: '48201',
@@ -191,32 +205,11 @@ const SEED_CLIENTS = [
 const SEED_CLIENT_CODES = SEED_CLIENTS.map((c) => c.clientCode)
 
 // Fixed reference date for deterministic date calculations
-const REFERENCE_DATE = new Date('2024-06-15T12:00:00Z')
+const REFERENCE_DATE = new Date('2025-12-15T12:00:00Z')
 
-const PRODUCTS = [
-  { name: 'Enterprise Software License', sku: 'SW-ENT-001', price: 149900 },
-  { name: 'Cloud Storage Plan - 1TB', sku: 'CS-1TB-001', price: 9999 },
-  { name: 'Premium Support Package', sku: 'SUP-PRM-001', price: 29999 },
-  { name: 'Data Analytics Module', sku: 'DA-MOD-001', price: 49999 },
-  { name: 'Security Suite Pro', sku: 'SEC-PRO-001', price: 79999 },
-  { name: 'API Integration Kit', sku: 'API-KIT-001', price: 19999 },
-  { name: 'Mobile App License', sku: 'MOB-LIC-001', price: 24999 },
-  { name: 'Training Workshop (5 seats)', sku: 'TRN-WRK-005', price: 99999 },
-  { name: 'Backup Service - Annual', sku: 'BKP-ANN-001', price: 59999 },
-  { name: 'Custom Development Hours (10)', sku: 'DEV-HRS-010', price: 150000 },
-]
 
 export async function seedClients(db: NodePgDatabase<typeof schema>) {
   console.log('Seeding clients...')
-
-  // Delete existing seed clients (cascade will delete related orders, exchanges, assortments)
-  const deleted = await db
-    .delete(clients)
-    .where(inArray(clients.clientCode, SEED_CLIENT_CODES))
-    .returning()
-  if (deleted.length > 0) {
-    console.log(`Deleted ${deleted.length} existing seed client(s) and related data`)
-  }
 
   await db.insert(clients).values(SEED_CLIENTS)
   console.log(`Created ${SEED_CLIENTS.length} sample clients`)
@@ -247,6 +240,8 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
     orderDate: Date
     totalAmount: number
     status: string
+    source: string
+    requiresApproval: boolean
     shippingAddress: string | null
   }> = []
 
@@ -254,6 +249,7 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
     orderNumber: string
     productName: string
     productSku: string
+    packageType: string
     quantity: number
     unitPrice: number
   }> = []
@@ -273,21 +269,32 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
       const orderNum = `ORD-${seedClient.clientCode}-${String(orderIdx + 1).padStart(3, '0')}`
 
       // Deterministic days ago based on client and order index
+      // Most orders (5 out of 7) are in December, rest spread over past months
       const seed = clientIdx * 100 + orderIdx
-      const daysAgo = Math.floor(seededRandom(seed) * 300) + 10
+      let daysAgo: number
+      if (orderIdx < 5) {
+        // December orders: 0-14 days ago (Dec 1-15)
+        daysAgo = Math.floor(seededRandom(seed) * 15)
+      } else {
+        // Older orders: 30-180 days ago
+        daysAgo = Math.floor(seededRandom(seed) * 150) + 30
+      }
       const orderDate = new Date(REFERENCE_DATE.getTime() - daysAgo * 24 * 60 * 60 * 1000)
 
       // Deterministic status
       const statusIdx = (clientIdx + orderIdx) % orderStatuses.length
       const status = orderStatuses[statusIdx]!
 
+      // Deterministic source - about 70% EDI, 30% Manual
+      const source = (clientIdx + orderIdx) % 10 < 7 ? 'edi' : 'manual'
+
       // Deterministic products: 1-3 items per order
       const numItems = (orderIdx % 3) + 1
       let totalAmount = 0
 
       for (let itemIdx = 0; itemIdx < numItems; itemIdx++) {
-        const productIdx = (clientIdx + orderIdx + itemIdx) % PRODUCTS.length
-        const product = PRODUCTS[productIdx]!
+        const productIdx = (clientIdx + orderIdx + itemIdx) % SEED_PRODUCTS.length
+        const product = SEED_PRODUCTS[productIdx]!
         const quantity = (itemIdx % 2) + 1
 
         totalAmount += product.price * quantity
@@ -296,17 +303,27 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
           orderNumber: orderNum,
           productName: product.name,
           productSku: product.sku,
+          packageType: product.packageType,
           quantity,
           unitPrice: product.price,
         })
       }
+
+      // Deterministic requiresApproval - about 25% of orders require approval
+      // Higher chance for large orders (totalAmount > 50000 cents = $500)
+      const requiresApproval = totalAmount > 50000
+        ? (clientIdx + orderIdx) % 2 === 0
+        : (clientIdx + orderIdx) % 4 === 0
 
       orders.push({
         orderNumber: orderNum,
         clientId: client.id,
         orderDate,
         totalAmount,
-        status,
+        // Orders requiring approval must be pending (not yet processed)
+        status: requiresApproval ? 'pending' : status,
+        source,
+        requiresApproval,
         shippingAddress: seedClient.billingAddress ?? null,
       })
 
@@ -334,12 +351,165 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
       orderId: orderByNumber[item.orderNumber]!.id,
       productName: item.productName,
       productSku: item.productSku,
+      packageType: item.packageType,
       quantity: item.quantity,
       unitPrice: item.unitPrice,
     }))
 
   await db.insert(clientOrderItems).values(itemsToInsert)
   console.log(`Created ${itemsToInsert.length} sample order items`)
+}
+
+export async function seedClientOrderIssues(db: NodePgDatabase<typeof schema>) {
+  console.log('Seeding client order issues...')
+
+  // Get all orders to potentially add issues
+  const allOrders = await db
+    .select({ id: clientOrders.id, orderNumber: clientOrders.orderNumber, status: clientOrders.status })
+    .from(clientOrders)
+
+  if (allOrders.length === 0) {
+    console.log('Skipping order issues seed: no orders found')
+    return
+  }
+
+  const issueTypes = [
+    'pricing_error',
+    'inventory_shortage',
+    'shipping_delay',
+    'damaged_product',
+    'wrong_item',
+    'payment_issue',
+    'address_issue',
+  ]
+
+  const severities = ['low', 'medium', 'high', 'critical']
+  const statuses = ['open', 'in_progress', 'resolved', 'dismissed']
+
+  const issueTemplates: Record<string, { title: string; description: string }[]> = {
+    pricing_error: [
+      { title: 'Price mismatch on invoice', description: 'Customer invoice shows different price than quoted. Need to issue credit memo.' },
+      { title: 'Discount not applied', description: 'Volume discount was not applied to this order. Customer is expecting 10% off.' },
+    ],
+    inventory_shortage: [
+      { title: 'Partial shipment required', description: 'Only 60% of ordered quantity available in warehouse. Backorder created for remaining items.' },
+      { title: 'Out of stock - substitute offered', description: 'Product SKU out of stock. Customer offered alternative product at same price.' },
+    ],
+    shipping_delay: [
+      { title: 'Carrier delay - weather related', description: 'Shipment delayed due to severe weather conditions in delivery region. ETA pushed by 3 days.' },
+      { title: 'Customs hold', description: 'International shipment held at customs. Additional documentation required.' },
+    ],
+    damaged_product: [
+      { title: 'Damaged packaging reported', description: 'Customer reported damaged packaging on 2 units. Photos received and replacement being processed.' },
+      { title: 'Product contamination', description: 'Customer reported unusual odor from product batch. QA investigation initiated.' },
+    ],
+    wrong_item: [
+      { title: 'Wrong product variant shipped', description: 'Customer received lavender scent instead of unscented. Return label sent.' },
+      { title: 'Incorrect quantity', description: 'Order shows 10 units but only 8 were shipped. Shortage to be resolved.' },
+    ],
+    payment_issue: [
+      { title: 'Payment declined', description: 'Customer payment method declined. Order on hold pending new payment information.' },
+      { title: 'Duplicate charge', description: 'Customer charged twice for same order. Refund being processed.' },
+    ],
+    address_issue: [
+      { title: 'Invalid delivery address', description: 'Carrier unable to deliver - address incomplete. Awaiting customer confirmation.' },
+      { title: 'Business closed at delivery', description: 'Multiple delivery attempts failed - business closed during delivery hours.' },
+    ],
+  }
+
+  const resolutions = [
+    'Issue resolved - credit memo issued',
+    'Replacement shipment sent via express',
+    'Customer accepted alternative solution',
+    'Refund processed successfully',
+    'Issue escalated and resolved by management',
+    'Carrier confirmed successful redelivery',
+  ]
+
+  // Only add issues to some orders (about 20%)
+  const ordersWithIssues = allOrders.filter((_, idx) => idx % 5 === 0 || idx % 7 === 0)
+
+  const issues: Array<{
+    orderId: number
+    issueType: string
+    severity: string
+    title: string
+    description: string
+    status: string
+    resolvedAt: Date | null
+    resolution: string | null
+    createdAt: Date
+  }> = []
+
+  for (let i = 0; i < ordersWithIssues.length; i++) {
+    const order = ordersWithIssues[i]!
+
+    // Deterministic issue type based on index
+    const issueTypeIdx = i % issueTypes.length
+    const issueType = issueTypes[issueTypeIdx]!
+
+    // Get template for this issue type
+    const templates = issueTemplates[issueType]!
+    const template = templates[i % templates.length]!
+
+    // Deterministic severity - cancelled orders get higher severity
+    let severityIdx = i % severities.length
+    if (order.status === 'cancelled') {
+      severityIdx = Math.min(severityIdx + 2, severities.length - 1)
+    }
+    const severity = severities[severityIdx]!
+
+    // Deterministic status - older issues more likely resolved
+    const statusIdx = i % statuses.length
+    const status = statuses[statusIdx]!
+
+    // Created date - 1-10 days ago
+    const daysAgo = (i % 10) + 1
+    const createdAt = new Date(REFERENCE_DATE.getTime() - daysAgo * 24 * 60 * 60 * 1000)
+
+    // Resolved date and resolution only for resolved/dismissed
+    let resolvedAt: Date | null = null
+    let resolution: string | null = null
+    if (status === 'resolved' || status === 'dismissed') {
+      resolvedAt = new Date(createdAt.getTime() + (i % 3 + 1) * 24 * 60 * 60 * 1000)
+      resolution = resolutions[i % resolutions.length]!
+    }
+
+    issues.push({
+      orderId: order.id,
+      issueType,
+      severity,
+      title: template.title,
+      description: template.description,
+      status,
+      resolvedAt,
+      resolution,
+      createdAt,
+    })
+
+    // Some orders have multiple issues (about 30%)
+    if (i % 3 === 0) {
+      const secondIssueTypeIdx = (issueTypeIdx + 2) % issueTypes.length
+      const secondIssueType = issueTypes[secondIssueTypeIdx]!
+      const secondTemplates = issueTemplates[secondIssueType]!
+      const secondTemplate = secondTemplates[(i + 1) % secondTemplates.length]!
+
+      issues.push({
+        orderId: order.id,
+        issueType: secondIssueType,
+        severity: severities[(severityIdx + 1) % severities.length]!,
+        title: secondTemplate.title,
+        description: secondTemplate.description,
+        status: 'open',
+        resolvedAt: null,
+        resolution: null,
+        createdAt: new Date(createdAt.getTime() + 2 * 24 * 60 * 60 * 1000),
+      })
+    }
+  }
+
+  await db.insert(clientOrderIssues).values(issues)
+  console.log(`Created ${issues.length} sample order issues`)
 }
 
 export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
@@ -359,11 +529,11 @@ export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
   const clientByCode = Object.fromEntries(seedClientsList.map((c) => [c.clientCode, c]))
 
   const exchangeReasons = [
-    'defective_product',
-    'wrong_item',
-    'not_as_described',
-    'changed_mind',
-    'better_price_found',
+    'damaged_packaging',
+    'wrong_product_variant',
+    'quality_issue',
+    'contamination',
+    'dust_excess',
     'duplicate_order',
   ]
 
@@ -371,18 +541,17 @@ export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
 
   const resolutions = [
     'Full refund issued',
-    'Replacement sent',
+    'Replacement shipment sent',
     'Store credit applied',
-    'Partial refund issued',
-    'Exchange processed',
+    'Partial refund for damaged units',
+    'Exchange for different product variant',
   ]
 
-  const productNames = [
-    'Enterprise Software License',
-    'Premium Support Package',
-    'Security Suite Pro',
+  const exchangeProducts = [
+    { name: 'OdourLock Unscented 12kg', sku: 'ODL-UNS-12', packageType: 'jug' },
+    { name: 'Odour Buster Original 14kg', sku: 'ODB-ORI-14', packageType: 'box' },
+    { name: 'Classic Unscented 14kg', sku: 'CLS-UNS-14', packageType: 'plastic_bag' },
   ]
-  const productSkus = ['SW-ENT-001', 'SUP-PRM-001', 'SEC-PRO-001']
 
   // Fixed list of clients with exchanges and their exchange counts
   const clientExchangeConfig: Record<string, number> = {
@@ -425,12 +594,11 @@ export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
 
       const reasonIdx = (clientIdx + i) % exchangeReasons.length
       const statusIdx = (clientIdx + i * 2) % exchangeStatuses.length
-      const productIdx = (clientIdx + i) % productNames.length
+      const productIdx = (clientIdx + i) % exchangeProducts.length
 
       const reason = exchangeReasons[reasonIdx]!
       const status = exchangeStatuses[statusIdx]!
-      const productName = productNames[productIdx]!
-      const productSku = productSkus[productIdx]!
+      const exchangeProduct = exchangeProducts[productIdx]!
 
       // Deterministic amount based on seed
       const exchangeAmount = 5000 + Math.floor(seededRandom(seed + 1000) * 95000)
@@ -440,11 +608,11 @@ export async function seedClientExchanges(db: NodePgDatabase<typeof schema>) {
         clientId: client.id,
         exchangeDate,
         reason,
-        reasonDetails: `Customer reported: ${reason.replace(/_/g, ' ')}. Ticket created for review.`,
+        reasonDetails: `Store reported: ${reason.replace(/_/g, ' ')}. Ticket created for review.`,
         status,
         exchangeAmount,
-        productName,
-        productSku,
+        productName: exchangeProduct.name,
+        productSku: exchangeProduct.sku,
         quantity: 1,
         resolution:
           status === 'completed' ? resolutions[(clientIdx + i) % resolutions.length]! : null,
@@ -472,18 +640,6 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
 
   const clientByCode = Object.fromEntries(seedClientsList.map((c) => [c.clientCode, c]))
 
-  const productCategories = [
-    { name: 'Enterprise Software License', category: 'Software', hasExpiration: true },
-    { name: 'Cloud Storage Plan - 1TB', category: 'Cloud Services', hasExpiration: true },
-    { name: 'Premium Support Package', category: 'Support', hasExpiration: true },
-    { name: 'Data Analytics Module', category: 'Analytics', hasExpiration: true },
-    { name: 'Security Suite Pro', category: 'Security', hasExpiration: true },
-    { name: 'API Integration Kit', category: 'Development', hasExpiration: false },
-    { name: 'Mobile App License', category: 'Software', hasExpiration: true },
-    { name: 'Training Workshop Credits', category: 'Training', hasExpiration: true },
-    { name: 'Backup Service - Annual', category: 'Cloud Services', hasExpiration: true },
-    { name: 'Consulting Hours Package', category: 'Services', hasExpiration: true },
-  ]
 
   const assortments: Array<{
     clientId: number
@@ -505,8 +661,8 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
 
     for (let productIdx = 0; productIdx < numProducts; productIdx++) {
       // Deterministic product selection
-      const selectedProductIdx = (clientIdx + productIdx) % productCategories.length
-      const product = productCategories[selectedProductIdx]!
+      const selectedProductIdx = (clientIdx + productIdx) % SEED_PRODUCTS.length
+      const product = SEED_PRODUCTS[selectedProductIdx]!
 
       // Deterministic purchase date
       const seed = clientIdx * 100 + productIdx
@@ -515,20 +671,8 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
         REFERENCE_DATE.getTime() - purchaseDaysAgo * 24 * 60 * 60 * 1000,
       )
 
-      let expirationDate: Date | null = null
-      let status = 'active'
-
-      if (product.hasExpiration) {
-        // Expiration is 1 year from purchase
-        expirationDate = new Date(purchaseDate.getTime() + 365 * 24 * 60 * 60 * 1000)
-
-        // Deterministic status based on expiration and seed
-        if (expirationDate < REFERENCE_DATE) {
-          status = (clientIdx + productIdx) % 2 === 0 ? 'expired' : 'pending_renewal'
-        } else {
-          status = (clientIdx + productIdx) % 10 === 0 ? 'cancelled' : 'active'
-        }
-      }
+      // Deterministic status
+      const status = (clientIdx + productIdx) % 10 === 0 ? 'cancelled' : 'active'
 
       // Deterministic auto-renew
       const autoRenew = (clientIdx + productIdx) % 4 !== 0 ? 1 : 0
@@ -539,7 +683,7 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
         productCategory: product.category,
         subscriptionStatus: status,
         purchaseDate,
-        expirationDate,
+        expirationDate: null,
         autoRenew,
       })
     }
@@ -549,30 +693,22 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
   console.log(`Created ${assortments.length} sample assortments`)
 }
 
-const SEED_USER_EMAILS = [
-  'admin@example.com',
-  'john.denver@example.com',
-  'samantha.charron@example.com',
-  'michael.chen@example.com',
-  'emily.rodriguez@example.com',
-]
-
 const COMMENT_TEMPLATES = [
-  'Spoke with client about their account. They are satisfied with the current service level.',
-  'Client requested information about upgrading their plan. Sent follow-up email with details.',
+  'Spoke with store manager about inventory levels. They are satisfied with current delivery schedule.',
+  'Store requested information about bulk pricing tiers. Sent follow-up email with wholesale options.',
   'Processed billing inquiry. Issue resolved - duplicate charge was refunded.',
-  'Client mentioned they may need additional licenses next quarter. Flagged for sales follow-up.',
-  'Annual review completed. Client is happy with the product and plans to renew.',
-  'Technical support ticket escalated. Engineering team is investigating.',
-  'Client asked about new features in the roadmap. Shared product update newsletter.',
-  'Payment method updated successfully. New card ending in 4242.',
-  'Client experiencing slow performance. Advised to clear cache and restart.',
-  'Onboarding call completed. Client is ready to start using the platform.',
-  'Contract renewal discussion. Client negotiating for multi-year discount.',
-  'Client reported a bug. Ticket #12345 created and assigned to dev team.',
-  'Scheduled quarterly business review for next month.',
-  'Client wants to add new team members. Sent invitation instructions.',
-  'Billing address updated per client request.',
+  'Store mentioned they may need to increase order volume next quarter. Flagged for sales follow-up.',
+  'Annual partnership review completed. Store is happy with product quality and plans to continue.',
+  'Quality concern escalated. Production team is investigating batch consistency.',
+  'Store asked about new product variants in development. Shared upcoming product catalog.',
+  'Payment terms updated successfully. Net-30 approved.',
+  'Store reported customer feedback on clumping performance. Shared with product team.',
+  'New store onboarding completed. Initial order placed and scheduled for delivery.',
+  'Contract renewal discussion. Store negotiating for volume discount on multi-pallet orders.',
+  'Store reported damaged shipment. Replacement order processed and expedited.',
+  'Scheduled quarterly business review for next month to discuss seasonal inventory needs.',
+  'Store wants to add new locations to their account. Sent setup instructions.',
+  'Shipping address updated per store request for new distribution center.',
 ]
 
 export async function seedClientComments(db: NodePgDatabase<typeof schema>) {

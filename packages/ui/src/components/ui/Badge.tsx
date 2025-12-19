@@ -12,6 +12,9 @@ const badgeVariants = cva(
         default: 'border-border bg-background text-foreground [a&]:hover:bg-primary/90',
         transparent: 'border-border bg-transparent text-foreground [a&]:hover:bg-primary/10',
         primary: 'border-none bg-primary text-primary-foreground [a&]:hover:bg-primary/90',
+        secondary: 'border-none bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90',
+        success: 'border-none bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900 [a&]:hover:bg-gray-800 dark:[a&]:hover:bg-gray-200',
+        muted: 'border-none bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-200 [a&]:hover:bg-gray-300 dark:[a&]:hover:bg-gray-600',
       },
       size: {
         lg: 'h-8 px-3 py-1 rounded-md text-sm [&>svg]:size-4',

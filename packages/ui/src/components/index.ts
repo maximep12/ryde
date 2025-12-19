@@ -83,6 +83,7 @@ export {
   InputGroupTextarea,
 } from './ui/InputGroup'
 export { Label } from './ui/Label'
+export { MultiSelect, type MultiSelectOption } from './ui/MultiSelect'
 export { Popover, PopoverContent, PopoverTrigger } from './ui/Popover'
 export { Progress, ProgressCircle, ProgressLabel } from './ui/ProgressCircle'
 export {
@@ -103,6 +104,7 @@ export {
   SheetClose,
   SheetContent,
   SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,

@@ -12,7 +12,7 @@ export function useCreateComment() {
   return useMutation({
     mutationFn: async ({ clientId, content }: CreateCommentInput) => {
       const api = getApi()
-      const res = await api.example.clients[':id'].comments.$post({
+      const res = await api.clients[':id'].comments.$post({
         param: { id: clientId.toString() },
         json: { content },
       })

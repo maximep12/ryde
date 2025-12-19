@@ -18,10 +18,14 @@ import { Route as AuthErrorRouteImport } from './routes/_auth/error'
 import { Route as AuthExamplesRouteRouteImport } from './routes/_auth/examples/route'
 import { Route as AuthUsersIndexRouteImport } from './routes/_auth/users/index'
 import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
+import { Route as AuthOrdersIndexRouteImport } from './routes/_auth/orders/index'
 import { Route as AuthKitchenSinkIndexRouteImport } from './routes/_auth/kitchen-sink/index'
-import { Route as AuthExamplesClientsIndexRouteImport } from './routes/_auth/examples/clients/index'
+import { Route as AuthClientsIndexRouteImport } from './routes/_auth/clients/index'
+import { Route as AuthOrdersNewRouteImport } from './routes/_auth/orders/new'
+import { Route as AuthOrdersOrderIdRouteImport } from './routes/_auth/orders/$orderId'
+import { Route as AuthClientsNewRouteImport } from './routes/_auth/clients/new'
+import { Route as AuthClientsClientIdRouteImport } from './routes/_auth/clients/$clientId'
 import { Route as AuthExamplesBooksIndexRouteImport } from './routes/_auth/examples/books/index'
-import { Route as AuthExamplesClientsClientIdRouteImport } from './routes/_auth/examples/clients/$clientId'
 import { Route as AuthExamplesBooksBookIdRouteImport } from './routes/_auth/examples/books/$bookId'
 
 const LoginRoute = LoginRouteImport.update({
@@ -68,28 +72,46 @@ const AuthSettingsIndexRoute = AuthSettingsIndexRouteImport.update({
   path: '/settings/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthOrdersIndexRoute = AuthOrdersIndexRouteImport.update({
+  id: '/orders/',
+  path: '/orders/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthKitchenSinkIndexRoute = AuthKitchenSinkIndexRouteImport.update({
   id: '/kitchen-sink/',
   path: '/kitchen-sink/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthExamplesClientsIndexRoute =
-  AuthExamplesClientsIndexRouteImport.update({
-    id: '/clients/',
-    path: '/clients/',
-    getParentRoute: () => AuthExamplesRouteRoute,
-  } as any)
+const AuthClientsIndexRoute = AuthClientsIndexRouteImport.update({
+  id: '/clients/',
+  path: '/clients/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthOrdersNewRoute = AuthOrdersNewRouteImport.update({
+  id: '/orders/new',
+  path: '/orders/new',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthOrdersOrderIdRoute = AuthOrdersOrderIdRouteImport.update({
+  id: '/orders/$orderId',
+  path: '/orders/$orderId',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthClientsNewRoute = AuthClientsNewRouteImport.update({
+  id: '/clients/new',
+  path: '/clients/new',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthClientsClientIdRoute = AuthClientsClientIdRouteImport.update({
+  id: '/clients/$clientId',
+  path: '/clients/$clientId',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthExamplesBooksIndexRoute = AuthExamplesBooksIndexRouteImport.update({
   id: '/books/',
   path: '/books/',
   getParentRoute: () => AuthExamplesRouteRoute,
 } as any)
-const AuthExamplesClientsClientIdRoute =
-  AuthExamplesClientsClientIdRouteImport.update({
-    id: '/clients/$clientId',
-    path: '/clients/$clientId',
-    getParentRoute: () => AuthExamplesRouteRoute,
-  } as any)
 const AuthExamplesBooksBookIdRoute = AuthExamplesBooksBookIdRouteImport.update({
   id: '/books/$bookId',
   path: '/books/$bookId',
@@ -103,13 +125,17 @@ export interface FileRoutesByFullPath {
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
+  '/clients/$clientId': typeof AuthClientsClientIdRoute
+  '/clients/new': typeof AuthClientsNewRoute
+  '/orders/$orderId': typeof AuthOrdersOrderIdRoute
+  '/orders/new': typeof AuthOrdersNewRoute
+  '/clients': typeof AuthClientsIndexRoute
   '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
+  '/orders': typeof AuthOrdersIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
-  '/examples/clients/$clientId': typeof AuthExamplesClientsClientIdRoute
   '/examples/books': typeof AuthExamplesBooksIndexRoute
-  '/examples/clients': typeof AuthExamplesClientsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -118,13 +144,17 @@ export interface FileRoutesByTo {
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
+  '/clients/$clientId': typeof AuthClientsClientIdRoute
+  '/clients/new': typeof AuthClientsNewRoute
+  '/orders/$orderId': typeof AuthOrdersOrderIdRoute
+  '/orders/new': typeof AuthOrdersNewRoute
+  '/clients': typeof AuthClientsIndexRoute
   '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
+  '/orders': typeof AuthOrdersIndexRoute
   '/settings': typeof AuthSettingsIndexRoute
   '/users': typeof AuthUsersIndexRoute
   '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
-  '/examples/clients/$clientId': typeof AuthExamplesClientsClientIdRoute
   '/examples/books': typeof AuthExamplesBooksIndexRoute
-  '/examples/clients': typeof AuthExamplesClientsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -135,13 +165,17 @@ export interface FileRoutesById {
   '/_auth/not-found': typeof AuthNotFoundRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/clients/$clientId': typeof AuthClientsClientIdRoute
+  '/_auth/clients/new': typeof AuthClientsNewRoute
+  '/_auth/orders/$orderId': typeof AuthOrdersOrderIdRoute
+  '/_auth/orders/new': typeof AuthOrdersNewRoute
+  '/_auth/clients/': typeof AuthClientsIndexRoute
   '/_auth/kitchen-sink/': typeof AuthKitchenSinkIndexRoute
+  '/_auth/orders/': typeof AuthOrdersIndexRoute
   '/_auth/settings/': typeof AuthSettingsIndexRoute
   '/_auth/users/': typeof AuthUsersIndexRoute
   '/_auth/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
-  '/_auth/examples/clients/$clientId': typeof AuthExamplesClientsClientIdRoute
   '/_auth/examples/books/': typeof AuthExamplesBooksIndexRoute
-  '/_auth/examples/clients/': typeof AuthExamplesClientsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -152,13 +186,17 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/unauthorized'
     | '/'
+    | '/clients/$clientId'
+    | '/clients/new'
+    | '/orders/$orderId'
+    | '/orders/new'
+    | '/clients'
     | '/kitchen-sink'
+    | '/orders'
     | '/settings'
     | '/users'
     | '/examples/books/$bookId'
-    | '/examples/clients/$clientId'
     | '/examples/books'
-    | '/examples/clients'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -167,13 +205,17 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/unauthorized'
     | '/'
+    | '/clients/$clientId'
+    | '/clients/new'
+    | '/orders/$orderId'
+    | '/orders/new'
+    | '/clients'
     | '/kitchen-sink'
+    | '/orders'
     | '/settings'
     | '/users'
     | '/examples/books/$bookId'
-    | '/examples/clients/$clientId'
     | '/examples/books'
-    | '/examples/clients'
   id:
     | '__root__'
     | '/_auth'
@@ -183,13 +225,17 @@ export interface FileRouteTypes {
     | '/_auth/not-found'
     | '/_auth/unauthorized'
     | '/_auth/'
+    | '/_auth/clients/$clientId'
+    | '/_auth/clients/new'
+    | '/_auth/orders/$orderId'
+    | '/_auth/orders/new'
+    | '/_auth/clients/'
     | '/_auth/kitchen-sink/'
+    | '/_auth/orders/'
     | '/_auth/settings/'
     | '/_auth/users/'
     | '/_auth/examples/books/$bookId'
-    | '/_auth/examples/clients/$clientId'
     | '/_auth/examples/books/'
-    | '/_auth/examples/clients/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSettingsIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/orders/': {
+      id: '/_auth/orders/'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof AuthOrdersIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/kitchen-sink/': {
       id: '/_auth/kitchen-sink/'
       path: '/kitchen-sink'
@@ -269,25 +322,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthKitchenSinkIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/examples/clients/': {
-      id: '/_auth/examples/clients/'
+    '/_auth/clients/': {
+      id: '/_auth/clients/'
       path: '/clients'
-      fullPath: '/examples/clients'
-      preLoaderRoute: typeof AuthExamplesClientsIndexRouteImport
-      parentRoute: typeof AuthExamplesRouteRoute
+      fullPath: '/clients'
+      preLoaderRoute: typeof AuthClientsIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/orders/new': {
+      id: '/_auth/orders/new'
+      path: '/orders/new'
+      fullPath: '/orders/new'
+      preLoaderRoute: typeof AuthOrdersNewRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/orders/$orderId': {
+      id: '/_auth/orders/$orderId'
+      path: '/orders/$orderId'
+      fullPath: '/orders/$orderId'
+      preLoaderRoute: typeof AuthOrdersOrderIdRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/clients/new': {
+      id: '/_auth/clients/new'
+      path: '/clients/new'
+      fullPath: '/clients/new'
+      preLoaderRoute: typeof AuthClientsNewRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/clients/$clientId': {
+      id: '/_auth/clients/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/clients/$clientId'
+      preLoaderRoute: typeof AuthClientsClientIdRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_auth/examples/books/': {
       id: '/_auth/examples/books/'
       path: '/books'
       fullPath: '/examples/books'
       preLoaderRoute: typeof AuthExamplesBooksIndexRouteImport
-      parentRoute: typeof AuthExamplesRouteRoute
-    }
-    '/_auth/examples/clients/$clientId': {
-      id: '/_auth/examples/clients/$clientId'
-      path: '/clients/$clientId'
-      fullPath: '/examples/clients/$clientId'
-      preLoaderRoute: typeof AuthExamplesClientsClientIdRouteImport
       parentRoute: typeof AuthExamplesRouteRoute
     }
     '/_auth/examples/books/$bookId': {
@@ -302,16 +376,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthExamplesRouteRouteChildren {
   AuthExamplesBooksBookIdRoute: typeof AuthExamplesBooksBookIdRoute
-  AuthExamplesClientsClientIdRoute: typeof AuthExamplesClientsClientIdRoute
   AuthExamplesBooksIndexRoute: typeof AuthExamplesBooksIndexRoute
-  AuthExamplesClientsIndexRoute: typeof AuthExamplesClientsIndexRoute
 }
 
 const AuthExamplesRouteRouteChildren: AuthExamplesRouteRouteChildren = {
   AuthExamplesBooksBookIdRoute: AuthExamplesBooksBookIdRoute,
-  AuthExamplesClientsClientIdRoute: AuthExamplesClientsClientIdRoute,
   AuthExamplesBooksIndexRoute: AuthExamplesBooksIndexRoute,
-  AuthExamplesClientsIndexRoute: AuthExamplesClientsIndexRoute,
 }
 
 const AuthExamplesRouteRouteWithChildren =
@@ -323,7 +393,13 @@ interface AuthRouteRouteChildren {
   AuthNotFoundRoute: typeof AuthNotFoundRoute
   AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
   AuthIndexRoute: typeof AuthIndexRoute
+  AuthClientsClientIdRoute: typeof AuthClientsClientIdRoute
+  AuthClientsNewRoute: typeof AuthClientsNewRoute
+  AuthOrdersOrderIdRoute: typeof AuthOrdersOrderIdRoute
+  AuthOrdersNewRoute: typeof AuthOrdersNewRoute
+  AuthClientsIndexRoute: typeof AuthClientsIndexRoute
   AuthKitchenSinkIndexRoute: typeof AuthKitchenSinkIndexRoute
+  AuthOrdersIndexRoute: typeof AuthOrdersIndexRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
   AuthUsersIndexRoute: typeof AuthUsersIndexRoute
 }
@@ -334,7 +410,13 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthNotFoundRoute: AuthNotFoundRoute,
   AuthUnauthorizedRoute: AuthUnauthorizedRoute,
   AuthIndexRoute: AuthIndexRoute,
+  AuthClientsClientIdRoute: AuthClientsClientIdRoute,
+  AuthClientsNewRoute: AuthClientsNewRoute,
+  AuthOrdersOrderIdRoute: AuthOrdersOrderIdRoute,
+  AuthOrdersNewRoute: AuthOrdersNewRoute,
+  AuthClientsIndexRoute: AuthClientsIndexRoute,
   AuthKitchenSinkIndexRoute: AuthKitchenSinkIndexRoute,
+  AuthOrdersIndexRoute: AuthOrdersIndexRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
   AuthUsersIndexRoute: AuthUsersIndexRoute,
 }

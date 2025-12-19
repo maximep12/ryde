@@ -1,4 +1,6 @@
 export * from './app'
+export * from './clients'
 export * from './examples'
 export * from './jobs'
+export * from './products'
 export * from './users'

@@ -2,9 +2,24 @@
   "auth.logOut": "Sign out",
   "auth.signIn": "Sign in",
 
-  "sidebar.navigation": "Navigation",
+  "pdf.parsing": "Parsing document...",
+  "pdf.parseComplete": "Fields prefilled successfully",
+  "pdf.parseFailed": "Failed to parse PDF",
+  "pdf.lowConfidence": "Some fields may need manual verification",
+  "pdf.errors.PDF_FILE_REQUIRED": "Please select a PDF file",
+  "pdf.errors.PDF_FILE_TOO_LARGE": "File is too large (max 10MB)",
+  "pdf.errors.PDF_INVALID_FILE_TYPE": "Please upload a valid PDF file",
+  "pdf.errors.PDF_NO_TEXT_CONTENT": "PDF appears to be empty or scanned",
+  "pdf.errors.PDF_PARSE_FAILED": "Failed to parse the PDF document",
+
+  "sidebar.navigation": "General",
+  "sidebar.orders": "Orders",
+  "sidebar.clients": "Clients",
   "sidebar.examples": "Examples",
   "sidebar.uiUx": "UI/UX",
+  "sidebar.external": "External",
+
+  "external.mistyNet": "Misty .NET",
 
   "dropdown.empty": "No results found",
   "dropdown.placeholder": "Select an option...",

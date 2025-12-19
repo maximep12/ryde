@@ -49,5 +49,14 @@
   "deleting": "Suppression...",
   "exporting": "Exportation...",
 
-  "time.today": "Aujourd'hui"
+  "time.today": "Aujourd'hui",
+
+  "department": "Département",
+  "department.finance": "Finances",
+  "department.procurement": "Achats",
+  "department.production_planning": "Planning",
+  "department.manufacturing": "Production",
+  "department.customer_service": "SC",
+  "department.it": "TI",
+  "department.external": "Externe"
 }

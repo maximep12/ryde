@@ -12,7 +12,7 @@ export function useDeleteComment() {
   return useMutation({
     mutationFn: async ({ clientId, commentId }: DeleteCommentInput) => {
       const api = getApi()
-      const res = await api.example.clients[':id'].comments[':commentId'].$delete({
+      const res = await api.clients[':id'].comments[':commentId'].$delete({
         param: { id: clientId.toString(), commentId: commentId.toString() },
       })
       if (!res.ok) {

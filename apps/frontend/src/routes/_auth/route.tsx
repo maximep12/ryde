@@ -15,6 +15,7 @@ import {
   useNavigate,
 } from '@tanstack/react-router'
 import { useEffect, useRef } from 'react'
+import { Toaster } from 'sonner'
 
 export const Route = createFileRoute('/_auth')({
   component: AuthLayoutComponent,
@@ -102,7 +103,7 @@ function AuthLayoutComponent() {
             <AppHeader />
 
             <div
-              className="bg-background-level-2 h-full w-full flex-1 overflow-y-auto"
+              className="bg-background-level-2 relative h-full w-full flex-1 overflow-y-auto"
               ref={viewportRef}
             >
               <div className="mx-auto w-full max-w-5xl px-6 py-6">
@@ -113,6 +114,7 @@ function AuthLayoutComponent() {
             </div>
           </div>
         </SidebarProvider>
+        <Toaster position="top-right" richColors offset="64px" style={{ right: 32 }} />
       </div>
     </ThemeProvider>
   )

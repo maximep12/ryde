@@ -49,5 +49,14 @@
   "deleting": "Deleting...",
   "exporting": "Exporting...",
 
-  "time.today": "Today"
+  "time.today": "Today",
+
+  "department": "Department",
+  "department.finance": "Finance",
+  "department.procurement": "Procurement",
+  "department.production_planning": "Production Planning",
+  "department.manufacturing": "Manufacturing",
+  "department.customer_service": "CSR",
+  "department.it": "IT",
+  "department.external": "External"
 }

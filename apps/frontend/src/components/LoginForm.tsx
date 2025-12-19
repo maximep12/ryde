@@ -5,8 +5,8 @@ import { cn } from '@repo/ui/lib'
 import { useState } from 'react'
 
 export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('johanne.belanger@intersand.com')
+  const [password, setPassword] = useState('admin123')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 

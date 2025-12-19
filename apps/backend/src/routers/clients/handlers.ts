@@ -2,9 +2,10 @@ import { MESSAGE } from '@repo/constants'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { z } from 'zod'
-import { ContextVariables } from '../../../index'
-import { zValidatorThrow } from '../../../lib/errors/zValidatorThrow'
+import { ContextVariables } from '../../index'
+import { zValidatorThrow } from '../../lib/errors/zValidatorThrow'
 import {
+  createClient,
   createClientComment,
   deleteClientComment,
   getClientAssortments,
@@ -21,6 +22,7 @@ import {
 import {
   clientQuerySchema,
   clientSearchSchema,
+  createClientSchema,
   createCommentSchema,
   updateCommentSchema,
 } from './schemas'
@@ -72,6 +74,16 @@ export const clientsRouterDefinition = clientsRouter
       return c.json(client)
     },
   )
+
+  /**
+   * POST /clients
+   * Create a new client in the SAP system
+   */
+  .post('/', zValidatorThrow('json', createClientSchema), async (c) => {
+    const data = c.req.valid('json')
+    const client = await createClient(data)
+    return c.json({ message: MESSAGE.CLIENT_CREATED, client }, 201)
+  })
 
   // ============================================================================
   // ORDERS ENDPOINTS

@@ -456,16 +456,16 @@ function BookDetailPage() {
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <span className="text-muted-foreground cursor-default text-xs">
-                                      {new Date(displayDate).toLocaleDateString()}
+                                      {new Date(displayDate).toLocaleDateString('en-GB')}
                                       {isEdited && '*'}
                                     </span>
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <div className="text-xs">
-                                      <p>Created: {new Date(review.createdAt).toLocaleString()}</p>
+                                      <p>Created: {new Date(review.createdAt).toLocaleString('en-GB')}</p>
                                       {isEdited && (
                                         <p>
-                                          Edited: {new Date(review.updatedAt!).toLocaleString()}
+                                          Edited: {new Date(review.updatedAt!).toLocaleString('en-GB')}
                                         </p>
                                       )}
                                     </div>

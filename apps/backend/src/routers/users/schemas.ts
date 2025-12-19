@@ -1,9 +1,20 @@
 import { z } from 'zod'
 
+// Helper to parse string "true"/"false" to boolean
+const stringBoolean = (defaultValue: boolean) =>
+  z
+    .string()
+    .optional()
+    .default(defaultValue ? 'true' : 'false')
+    .transform((val) => val === 'true')
+
 export const usersQueriesSchema = z.object({
-  keyword: z.string().optional(),
-  page: z.coerce.number().optional(),
-  pageSize: z.coerce.number().optional(),
+  search: z.string().optional(),
+  departments: z.string().optional(), // comma-separated list
+  showActive: stringBoolean(true),
+  showInactive: stringBoolean(true),
+  page: z.coerce.number().optional().default(1),
+  pageSize: z.coerce.number().optional().default(20),
 })
 
 export const upsertUserSchema = z.object({

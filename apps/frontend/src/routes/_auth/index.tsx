@@ -1,3 +1,4 @@
+import { useMe } from '@/hooks/queries/auth/useMe'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/components'
 import { createFileRoute } from '@tanstack/react-router'
 import {
@@ -17,34 +18,43 @@ import {
 } from 'recharts'
 
 export const Route = createFileRoute('/_auth/')({
-  component: DashboardPage,
+  component: WelcomePage,
   staticData: {
-    title: 'route.dashboard',
-    crumb: 'route.dashboard',
+    title: 'route.welcome',
+    crumb: 'route.welcome',
   },
 })
 
+function getGreetingForTimeOfDay(): string {
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
+}
+
+// Production & shipment data (in tons)
 const lineChartData = [
-  { month: 'Jan', visitors: 1240, pageViews: 3720, conversions: 186 },
-  { month: 'Feb', visitors: 1580, pageViews: 4420, conversions: 221 },
-  { month: 'Mar', visitors: 2150, pageViews: 5890, conversions: 312 },
-  { month: 'Apr', visitors: 1890, pageViews: 5120, conversions: 278 },
-  { month: 'May', visitors: 2680, pageViews: 7340, conversions: 402 },
-  { month: 'Jun', visitors: 3120, pageViews: 8560, conversions: 468 },
-  { month: 'Jul', visitors: 2890, pageViews: 7920, conversions: 433 },
-  { month: 'Aug', visitors: 3450, pageViews: 9480, conversions: 517 },
-  { month: 'Sep', visitors: 4120, pageViews: 11330, conversions: 618 },
-  { month: 'Oct', visitors: 4780, pageViews: 13140, conversions: 717 },
-  { month: 'Nov', visitors: 5240, pageViews: 14410, conversions: 786 },
-  { month: 'Dec', visitors: 4890, pageViews: 13450, conversions: 733 },
+  { month: 'Jan', produced: 142, shipped: 138, orders: 89 },
+  { month: 'Feb', produced: 156, shipped: 151, orders: 94 },
+  { month: 'Mar', produced: 168, shipped: 162, orders: 102 },
+  { month: 'Apr', produced: 175, shipped: 170, orders: 108 },
+  { month: 'May', produced: 189, shipped: 184, orders: 118 },
+  { month: 'Jun', produced: 195, shipped: 191, orders: 124 },
+  { month: 'Jul', produced: 188, shipped: 185, orders: 119 },
+  { month: 'Aug', produced: 201, shipped: 196, orders: 128 },
+  { month: 'Sep', produced: 215, shipped: 208, orders: 136 },
+  { month: 'Oct', produced: 228, shipped: 221, orders: 145 },
+  { month: 'Nov', produced: 245, shipped: 238, orders: 156 },
+  { month: 'Dec', produced: 232, shipped: 225, orders: 148 },
 ]
 
+// Sales by client type (in $K)
 const pieChartData = [
-  { name: 'Direct', value: 4200 },
-  { name: 'Organic Search', value: 3800 },
-  { name: 'Referral', value: 2400 },
-  { name: 'Social Media', value: 1800 },
-  { name: 'Email', value: 1200 },
+  { name: 'Pet Stores', value: 425 },
+  { name: 'Distributors', value: 380 },
+  { name: 'Online Retailers', value: 245 },
+  { name: 'Supermarkets', value: 165 },
+  { name: 'Veterinary Clinics', value: 85 },
 ]
 
 const PIE_COLORS = [
@@ -55,56 +65,100 @@ const PIE_COLORS = [
   'var(--chart-5)',
 ]
 
+// Sales by product line (in tons) and returns
 const barChartData = [
-  { category: 'Electronics', sales: 4200, returns: 320 },
-  { category: 'Clothing', sales: 3800, returns: 280 },
-  { category: 'Home & Garden', sales: 2900, returns: 190 },
-  { category: 'Sports', sales: 2100, returns: 150 },
-  { category: 'Books', sales: 1800, returns: 90 },
-  { category: 'Toys', sales: 1500, returns: 120 },
+  { category: 'OdourLock', sales: 485, returns: 8 },
+  { category: 'Odour Buster', sales: 380, returns: 10 },
+  { category: 'Classic', sales: 520, returns: 12 },
 ]
 
-function DashboardPage() {
+function AnimatedNumber({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  return (
+    <span
+      className="inline-block"
+      style={{
+        animation: 'fadeInUp 0.6s ease-out forwards',
+        animationDelay: `${delay}s`,
+        opacity: 0,
+      }}
+    >
+      <style>
+        {`
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}
+      </style>
+      {children}
+    </span>
+  )
+}
+
+function WelcomePage() {
+  const { data: user } = useMe()
+
+  const timeGreeting = getGreetingForTimeOfDay()
+  const userName = user?.givenName || user?.familyName
+
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome to your dashboard</p>
+        <h1 className="text-3xl font-bold">
+          {timeGreeting}
+          {userName && (
+            <>
+              , <span className="text-primary">{userName}</span>
+            </>
+          )}
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Here's an overview of what's happening in your world
+        </p>
       </header>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Getting Started</CardTitle>
-            <CardDescription>Your starter kit is ready</CardDescription>
+            <CardTitle>Active Orders</CardTitle>
+            <CardDescription>Pending fulfillment</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">
-              This is a minimal frontend template with authentication, routing, and UI components.
+            <p className="text-3xl font-bold">
+              <AnimatedNumber delay={0.1}>47</AnimatedNumber>
+            </p>
+            <p className="text-muted-foreground text-sm mt-1">
+              12 processing, 35 ready to ship
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Backend API</CardTitle>
-            <CardDescription>Hono-powered API</CardDescription>
+            <CardTitle>Inventory Level</CardTitle>
+            <CardDescription>Current stock status</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">
-              The backend runs on port 5000 with full TypeScript support and Drizzle ORM.
+            <p className="text-3xl font-bold">
+              <AnimatedNumber delay={0.2}>1,245 tons</AnimatedNumber>
+            </p>
+            <p className="text-muted-foreground text-sm mt-1">
+              Across all product lines
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>UI Components</CardTitle>
-            <CardDescription>shadcn/ui based</CardDescription>
+            <CardTitle>Monthly Revenue</CardTitle>
+            <CardDescription>December 2024</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground text-sm">
-              Pre-configured with Tailwind v4 and a collection of accessible components.
+            <p className="text-3xl font-bold">
+              <AnimatedNumber delay={0.3}>$1.32M</AnimatedNumber>
+            </p>
+            <p className="text-muted-foreground text-sm mt-1">
+              +8.4% from last month
             </p>
           </CardContent>
         </Card>
@@ -112,8 +166,8 @@ function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Analytics Overview</CardTitle>
-          <CardDescription>Monthly visitors and page views for the current year</CardDescription>
+          <CardTitle>Production & Shipments</CardTitle>
+          <CardDescription>Monthly production output, shipments, and orders (in tons)</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-80">
@@ -133,8 +187,8 @@ function DashboardPage() {
                 <Legend />
                 <Line
                   type="monotone"
-                  dataKey="pageViews"
-                  name="Page Views"
+                  dataKey="produced"
+                  name="Produced (tons)"
                   stroke="var(--chart-1)"
                   strokeWidth={2}
                   dot={false}
@@ -142,8 +196,8 @@ function DashboardPage() {
                 />
                 <Line
                   type="monotone"
-                  dataKey="visitors"
-                  name="Visitors"
+                  dataKey="shipped"
+                  name="Shipped (tons)"
                   stroke="var(--chart-2)"
                   strokeWidth={2}
                   dot={false}
@@ -151,8 +205,8 @@ function DashboardPage() {
                 />
                 <Line
                   type="monotone"
-                  dataKey="conversions"
-                  name="Conversions"
+                  dataKey="orders"
+                  name="Orders"
                   stroke="var(--chart-3)"
                   strokeWidth={2}
                   dot={false}
@@ -167,23 +221,27 @@ function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Traffic Sources</CardTitle>
-            <CardDescription>Breakdown of visitor acquisition channels</CardDescription>
+            <CardTitle>Sales by Client Type</CardTitle>
+            <CardDescription>Revenue distribution across client segments ($K)</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" debounce={0}>
                 <PieChart>
                   <Pie
                     data={pieChartData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={55}
+                    outerRadius={90}
                     paddingAngle={2}
                     dataKey="value"
+                    stroke="var(--background)"
+                    strokeWidth={2}
+                    animationBegin={0}
                     label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(0)}%`}
-                    labelLine={false}
+                    labelLine={{ stroke: 'var(--muted-foreground)', strokeWidth: 1 }}
+                    style={{ fontSize: '11px' }}
                   >
                     {pieChartData.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
@@ -205,8 +263,8 @@ function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Sales by Category</CardTitle>
-            <CardDescription>Product sales and returns comparison</CardDescription>
+            <CardTitle>Sales by Product Line</CardTitle>
+            <CardDescription>Volume sold and returns by litter type (tons)</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-80">
@@ -225,10 +283,10 @@ function DashboardPage() {
                     cursor={{ fill: 'var(--muted)', opacity: 0.3 }}
                   />
                   <Legend />
-                  <Bar dataKey="sales" name="Sales" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="sales" name="Sold (tons)" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
                   <Bar
                     dataKey="returns"
-                    name="Returns"
+                    name="Returns (tons)"
                     fill="var(--chart-3)"
                     radius={[4, 4, 0, 0]}
                   />

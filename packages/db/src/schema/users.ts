@@ -3,6 +3,18 @@ import { boolean, index, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-c
 import { timestamps } from '../helpers'
 import { app } from './app'
 
+export const DEPARTMENTS = [
+  'finance',
+  'procurement',
+  'production_planning',
+  'manufacturing',
+  'customer_service',
+  'it',
+  'external',
+] as const
+
+export type Department = (typeof DEPARTMENTS)[number]
+
 export const users = app.table(
   'users',
   {
@@ -11,6 +23,7 @@ export const users = app.table(
     passwordHash: varchar('password_hash'),
     givenName: varchar('given_name'),
     familyName: varchar('family_name'),
+    department: varchar('department', { length: 50 }).$type<Department>(),
     isActive: boolean('is_active').default(true),
     ...timestamps,
   },

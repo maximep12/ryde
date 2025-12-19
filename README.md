@@ -150,12 +150,12 @@ After running `pnpm db:seed`, you can log in with:
 
 ## Docker Services
 
-| Service       | Port | Description         |
-| ------------- | ---- | ------------------- |
-| PostgreSQL    | 5432 | Primary database    |
-| Redis         | 6379 | Cache & job queue   |
-| Redis Insight | 5540 | Redis GUI           |
-| Bull Board    | 3000 | Job queue dashboard |
+| Service       | Port | Description       |
+| ------------- | ---- | ----------------- |
+| PostgreSQL    | 5432 | Primary database  |
+| Redis         | 6379 | Cache & job queue |
+| Redis Insight | 5540 | Redis GUI         |
+| Bull Board    | 3000 | Job queue Welcome |
 
 ## Developing the Starter Kit
 

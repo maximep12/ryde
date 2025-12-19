@@ -6,7 +6,7 @@ export function useClient(id: number) {
     queryKey: ['client', id],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.example.clients[':id'].$get({
+      const res = await api.clients[':id'].$get({
         param: { id: id.toString() },
       })
       if (!res.ok) {

@@ -8,8 +8,8 @@ import {
   users,
 } from '@repo/db'
 import { and, count, desc, eq, ilike, or } from 'drizzle-orm'
-import { db } from '../../../db'
-import { ClientQuery, ClientSearch } from './schemas'
+import { db } from '../../db'
+import { ClientQuery, ClientSearch, CreateClient } from './schemas'
 
 // ============================================================================
 // CLIENTS HELPERS
@@ -23,21 +23,20 @@ export async function searchClients(query: ClientSearch) {
     .select({
       id: clients.id,
       clientCode: clients.clientCode,
-      firstName: clients.firstName,
-      lastName: clients.lastName,
+      storeName: clients.storeName,
+      storeType: clients.storeType,
+      contactName: clients.contactName,
       email: clients.email,
       phone: clients.phone,
-      companyName: clients.companyName,
       status: clients.status,
     })
     .from(clients)
     .where(
       or(
-        ilike(clients.firstName, searchPattern),
-        ilike(clients.lastName, searchPattern),
+        ilike(clients.storeName, searchPattern),
+        ilike(clients.contactName, searchPattern),
         ilike(clients.email, searchPattern),
         ilike(clients.phone, searchPattern),
-        ilike(clients.companyName, searchPattern),
         ilike(clients.clientCode, searchPattern),
       ),
     )
@@ -54,11 +53,10 @@ export async function getClients(query: ClientQuery) {
     const searchPattern = `%${search}%`
     conditions.push(
       or(
-        ilike(clients.firstName, searchPattern),
-        ilike(clients.lastName, searchPattern),
+        ilike(clients.storeName, searchPattern),
+        ilike(clients.contactName, searchPattern),
         ilike(clients.email, searchPattern),
         ilike(clients.phone, searchPattern),
-        ilike(clients.companyName, searchPattern),
         ilike(clients.clientCode, searchPattern),
       ),
     )
@@ -69,7 +67,7 @@ export async function getClients(query: ClientQuery) {
   }
 
   if (company) {
-    conditions.push(ilike(clients.companyName, `%${company}%`))
+    conditions.push(ilike(clients.storeName, `%${company}%`))
   }
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
@@ -101,6 +99,18 @@ export async function getClients(query: ClientQuery) {
 export async function getClientById(id: number) {
   const [client] = await db.select().from(clients).where(eq(clients.id, id)).limit(1)
   return client ?? null
+}
+
+export async function createClient(data: CreateClient) {
+  // Generate a unique client code (CLI-XXXXX format with random alphanumeric)
+  const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase()
+  const clientCode = `CLI-${randomPart}`
+
+  const [client] = await db
+    .insert(clients)
+    .values({ ...data, clientCode })
+    .returning()
+  return client
 }
 
 // ============================================================================

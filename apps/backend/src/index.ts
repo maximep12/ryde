@@ -10,7 +10,9 @@ import { timeoutHandler } from './lib/utils/timeoutHandler'
 import { attachUser, verifySession } from './middlewares/auth'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition } from './routers/auth/handlers'
+import { clientsRouterDefinition } from './routers/clients/handlers'
 import { exampleRouterDefinition } from './routers/example/handlers'
+import { ordersRouterDefinition } from './routers/orders/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
@@ -45,6 +47,8 @@ const appDefinition = app
   .use(verifySession)
   .use(attachUser)
   .route('/users', usersRouterDefinition)
+  .route('/clients', clientsRouterDefinition)
+  .route('/orders', ordersRouterDefinition)
   .route('/example', exampleRouterDefinition)
   .onError(errorHandler)
 

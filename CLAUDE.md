@@ -18,6 +18,8 @@ It is essential to maintain this repository over time. It is also crucial to ref
 
 Whenever there are changes to data structures (changes in the db or redis package), let's make sure the seed data is adjusted accordingly in both directories if there are any.
 
+The seeding approach is intentionally simple: **delete all data and regenerate from seed**. This ensures no bugs arise from data inconsistencies during quick iterations of data structures. The `clearAllData` function in `packages/db/src/seed/index.ts` deletes all tables in the correct order (child tables first) before seeding.
+
 ## React Compiler Compatibility
 
 This project uses React Compiler. Some libraries are not compatible with React Compiler's automatic memoization:

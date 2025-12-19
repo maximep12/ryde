@@ -1,4 +1,4 @@
-import { and, eq, inArray } from 'drizzle-orm'
+import { inArray } from 'drizzle-orm'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import type * as schema from '../schema'
 import { bookReviews, books, users } from '../schema'
@@ -58,12 +58,6 @@ const SEED_BOOK_ISBNS = SEED_BOOKS.map((book) => book.isbn)
 export async function seedBooks(db: NodePgDatabase<typeof schema>) {
   console.log('Seeding books...')
 
-  // Delete existing seed books (idempotent)
-  const deleted = await db.delete(books).where(inArray(books.isbn, SEED_BOOK_ISBNS)).returning()
-  if (deleted.length > 0) {
-    console.log(`Deleted ${deleted.length} existing seed book(s)`)
-  }
-
   await db.insert(books).values(SEED_BOOKS)
 
   console.log(`Created ${SEED_BOOKS.length} sample books`)
@@ -78,21 +72,21 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     .from(users)
     .where(
       inArray(users.email, [
-        'john.denver@example.com',
-        'samantha.charron@example.com',
-        'michael.chen@example.com',
-        'emily.rodriguez@example.com',
+        'miguel.turcotte@intersand.com',
+        'anne.sergerie@intersand.com',
+        'isabelle.picard@intersand.com',
+        'nathalie.laforest@intersand.com',
       ]),
     )
 
   const userByEmail = Object.fromEntries(seedUsers.map((u) => [u.email, u]))
 
-  const johnDenver = userByEmail['john.denver@example.com']
-  const samanthaCharron = userByEmail['samantha.charron@example.com']
-  const michaelChen = userByEmail['michael.chen@example.com']
-  const emilyRodriguez = userByEmail['emily.rodriguez@example.com']
+  const miguelTurcotte = userByEmail['miguel.turcotte@intersand.com']
+  const anneSergerie = userByEmail['anne.sergerie@intersand.com']
+  const isabellePicard = userByEmail['isabelle.picard@intersand.com']
+  const nathalieLaforest = userByEmail['nathalie.laforest@intersand.com']
 
-  if (!johnDenver || !samanthaCharron || !michaelChen || !emilyRodriguez) {
+  if (!miguelTurcotte || !anneSergerie || !isabellePicard || !nathalieLaforest) {
     console.log('Skipping reviews seed: required users not found')
     return
   }
@@ -115,38 +109,11 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     return
   }
 
-  // Delete existing seed reviews for these user/book combinations (idempotent)
-  const reviewPairs = [
-    { userId: johnDenver.id, bookId: pragmaticProgrammer.id },
-    { userId: samanthaCharron.id, bookId: pragmaticProgrammer.id },
-    { userId: michaelChen.id, bookId: pragmaticProgrammer.id },
-    { userId: emilyRodriguez.id, bookId: pragmaticProgrammer.id },
-    { userId: samanthaCharron.id, bookId: cleanCode.id },
-    { userId: michaelChen.id, bookId: cleanCode.id },
-    { userId: johnDenver.id, bookId: designingDataIntensive.id },
-    { userId: emilyRodriguez.id, bookId: designingDataIntensive.id },
-    { userId: johnDenver.id, bookId: atomicHabits.id },
-    { userId: michaelChen.id, bookId: atomicHabits.id },
-  ]
-
-  let deletedCount = 0
-  for (const pair of reviewPairs) {
-    const deleted = await db
-      .delete(bookReviews)
-      .where(and(eq(bookReviews.userId, pair.userId), eq(bookReviews.bookId, pair.bookId)))
-      .returning()
-    deletedCount += deleted.length
-  }
-
-  if (deletedCount > 0) {
-    console.log(`Deleted ${deletedCount} existing seed review(s)`)
-  }
-
   await db.insert(bookReviews).values([
     // The Pragmatic Programmer - 4 reviews
     {
       bookId: pragmaticProgrammer.id,
-      userId: johnDenver.id,
+      userId: miguelTurcotte.id,
       rating: 5,
       title: 'A must-read for every developer',
       content:
@@ -154,7 +121,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     },
     {
       bookId: pragmaticProgrammer.id,
-      userId: samanthaCharron.id,
+      userId: anneSergerie.id,
       rating: 5,
       title: 'Timeless wisdom for programmers',
       content:
@@ -162,7 +129,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     },
     {
       bookId: pragmaticProgrammer.id,
-      userId: michaelChen.id,
+      userId: isabellePicard.id,
       rating: 4,
       title: 'Great concepts, some obvious points',
       content:
@@ -170,7 +137,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     },
     {
       bookId: pragmaticProgrammer.id,
-      userId: emilyRodriguez.id,
+      userId: nathalieLaforest.id,
       rating: 5,
       title: 'Changed my career trajectory',
       content:
@@ -179,7 +146,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     // Clean Code - 2 reviews
     {
       bookId: cleanCode.id,
-      userId: samanthaCharron.id,
+      userId: anneSergerie.id,
       rating: 4,
       title: 'Solid fundamentals with some dated examples',
       content:
@@ -187,7 +154,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     },
     {
       bookId: cleanCode.id,
-      userId: michaelChen.id,
+      userId: isabellePicard.id,
       rating: 3,
       title: 'Good ideas, overly dogmatic at times',
       content:
@@ -196,7 +163,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     // Designing Data-Intensive Applications - 2 reviews
     {
       bookId: designingDataIntensive.id,
-      userId: johnDenver.id,
+      userId: miguelTurcotte.id,
       rating: 5,
       title: 'The best systems design book out there',
       content:
@@ -204,7 +171,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     },
     {
       bookId: designingDataIntensive.id,
-      userId: emilyRodriguez.id,
+      userId: nathalieLaforest.id,
       rating: 5,
       title: 'Dense but incredibly valuable',
       content:
@@ -213,7 +180,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     // Atomic Habits - 2 reviews
     {
       bookId: atomicHabits.id,
-      userId: johnDenver.id,
+      userId: miguelTurcotte.id,
       rating: 4,
       title: 'Practical and actionable',
       content:
@@ -221,7 +188,7 @@ export async function seedBookReviews(db: NodePgDatabase<typeof schema>) {
     },
     {
       bookId: atomicHabits.id,
-      userId: michaelChen.id,
+      userId: isabellePicard.id,
       rating: 5,
       title: 'Actually changed my daily routine',
       content:

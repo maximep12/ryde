@@ -1,11 +1,18 @@
 {
-  "route.dashboard": "Tableau de bord",
+  "route.welcome": "Accueil",
   "route.settings": "Paramètres",
   "route.examples": "Exemples",
   "route.books": "Livres",
   "route.bookDetails": "Détails du livre",
   "route.clients": "Clients",
+  "route.clientsLookup": "Recherche",
+  "route.clientsAdd": "Ajouter",
   "route.clientProfile": "Profil du client",
+  "route.addClient": "Ajouter un client",
   "route.users": "Utilisateurs",
-  "route.kitchenSink": "Évier de cuisine"
+  "route.kitchenSink": "Évier de cuisine",
+  "route.orderCreation": "Nouvelle commande",
+  "route.ordersMonitor": "Suivi",
+  "route.ordersCreate": "Créer",
+  "route.orderDetails": "Détails de la commande"
 }

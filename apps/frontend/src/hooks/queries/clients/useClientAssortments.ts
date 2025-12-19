@@ -6,7 +6,7 @@ export function useClientAssortments(clientId: number) {
     queryKey: ['client', clientId, 'assortments'],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.example.clients[':id'].assortments.$get({
+      const res = await api.clients[':id'].assortments.$get({
         param: { id: clientId.toString() },
       })
       if (!res.ok) {

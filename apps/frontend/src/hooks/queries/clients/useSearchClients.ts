@@ -6,7 +6,7 @@ export function useSearchClients(search: string) {
     queryKey: ['clients', 'search', search],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.example.clients.search.$get({
+      const res = await api.clients.search.$get({
         query: { search, limit: '10' },
       })
       if (!res.ok) {

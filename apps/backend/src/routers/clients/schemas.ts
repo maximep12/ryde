@@ -34,3 +34,24 @@ export const updateCommentSchema = z.object({
 
 export type CreateComment = z.infer<typeof createCommentSchema>
 export type UpdateComment = z.infer<typeof updateCommentSchema>
+
+// ============================================================================
+// CREATE CLIENT SCHEMA
+// ============================================================================
+
+export const storeTypes = ['pet_store', 'veterinary_clinic', 'supermarket', 'online_retailer', 'distributor'] as const
+
+export const createClientSchema = z.object({
+  storeName: z.string().min(1).max(255),
+  storeType: z.enum(storeTypes),
+  contactName: z.string().max(200).optional(),
+  email: z.string().email().max(255),
+  phone: z.string().max(20).optional(),
+  billingAddress: z.string().optional(),
+  city: z.string().max(100).optional(),
+  state: z.string().max(100).optional(),
+  postalCode: z.string().max(20).optional(),
+  country: z.string().max(100).optional(),
+})
+
+export type CreateClient = z.infer<typeof createClientSchema>

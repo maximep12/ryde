@@ -2,9 +2,24 @@
   "auth.logOut": "Se déconnecter",
   "auth.signIn": "Se connecter",
 
-  "sidebar.navigation": "Navigation",
+  "pdf.parsing": "Analyse du document...",
+  "pdf.parseComplete": "Champs remplis avec succès",
+  "pdf.parseFailed": "Échec de l'analyse du PDF",
+  "pdf.lowConfidence": "Certains champs peuvent nécessiter une vérification manuelle",
+  "pdf.errors.PDF_FILE_REQUIRED": "Veuillez sélectionner un fichier PDF",
+  "pdf.errors.PDF_FILE_TOO_LARGE": "Le fichier est trop volumineux (max 10Mo)",
+  "pdf.errors.PDF_INVALID_FILE_TYPE": "Veuillez télécharger un fichier PDF valide",
+  "pdf.errors.PDF_NO_TEXT_CONTENT": "Le PDF semble être vide ou numérisé",
+  "pdf.errors.PDF_PARSE_FAILED": "Échec de l'analyse du document PDF",
+
+  "sidebar.navigation": "Général",
+  "sidebar.orders": "Commandes",
+  "sidebar.clients": "Clients",
   "sidebar.examples": "Exemples",
   "sidebar.uiUx": "UI/UX",
+  "sidebar.external": "Externe",
+
+  "external.mistyNet": "Misty .NET",
 
   "dropdown.empty": "Aucun résultat trouvé",
   "dropdown.placeholder": "Sélectionner une option...",

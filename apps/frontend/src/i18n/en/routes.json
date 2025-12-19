@@ -1,11 +1,18 @@
 {
-  "route.dashboard": "Dashboard",
+  "route.welcome": "Welcome",
   "route.settings": "Settings",
   "route.examples": "Examples",
   "route.books": "Books",
   "route.bookDetails": "Book Details",
   "route.clients": "Clients",
+  "route.clientsLookup": "Lookup",
+  "route.clientsAdd": "Add",
   "route.clientProfile": "Client Profile",
+  "route.addClient": "Add Client",
   "route.users": "Users",
-  "route.kitchenSink": "Kitchen Sink"
+  "route.kitchenSink": "Kitchen Sink",
+  "route.orderCreation": "New Order",
+  "route.ordersMonitor": "Monitor",
+  "route.ordersCreate": "Create",
+  "route.orderDetails": "Order Details"
 }

@@ -13,7 +13,7 @@ export function useUpdateComment() {
   return useMutation({
     mutationFn: async ({ clientId, commentId, content }: UpdateCommentInput) => {
       const api = getApi()
-      const res = await api.example.clients[':id'].comments[':commentId'].$patch({
+      const res = await api.clients[':id'].comments[':commentId'].$patch({
         param: { id: clientId.toString(), commentId: commentId.toString() },
         json: { content },
       })
