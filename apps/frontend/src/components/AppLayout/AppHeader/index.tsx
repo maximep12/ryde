@@ -75,9 +75,15 @@ export function AppHeader() {
                 <DropdownMenuItem
                   key={th.value}
                   onClick={() => setTheme(th.value as Theme)}
-                  className={isSelected ? 'bg-primary/10 text-primary hover:bg-accent hover:text-accent-foreground' : ''}
+                  className={
+                    isSelected
+                      ? 'bg-primary/10 text-primary hover:bg-accent hover:text-accent-foreground'
+                      : ''
+                  }
                 >
-                  <th.icon className={`size-4 ${isSelected ? 'text-primary group-hover:text-accent-foreground' : ''}`} />
+                  <th.icon
+                    className={`size-4 ${isSelected ? 'text-primary group-hover:text-accent-foreground' : ''}`}
+                  />
                   <span>{t(th.labelKey)}</span>
                 </DropdownMenuItem>
               )
@@ -97,7 +103,11 @@ export function AppHeader() {
               <DropdownMenuItem
                 key={lang.code}
                 onClick={() => handleLanguageChange(lang.code as Language)}
-                className={i18n.language === lang.code ? 'bg-primary/10 text-primary hover:bg-accent hover:text-accent-foreground' : ''}
+                className={
+                  i18n.language === lang.code
+                    ? 'bg-primary/10 text-primary hover:bg-accent hover:text-accent-foreground'
+                    : ''
+                }
               >
                 {lang.label}
               </DropdownMenuItem>

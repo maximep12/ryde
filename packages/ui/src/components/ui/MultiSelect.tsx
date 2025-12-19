@@ -31,7 +31,7 @@ function MultiSelect({
     onChange(
       value.includes(optionValue)
         ? value.filter((v) => v !== optionValue)
-        : [...value, optionValue]
+        : [...value, optionValue],
     )
   }
 
@@ -41,9 +41,7 @@ function MultiSelect({
     onChange([])
   }
 
-  const selectedLabels = value
-    .map((v) => options.find((o) => o.value === v)?.label)
-    .filter(Boolean)
+  const selectedLabels = value.map((v) => options.find((o) => o.value === v)?.label).filter(Boolean)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -60,7 +58,10 @@ function MultiSelect({
             ) : value.length <= 2 ? (
               <div className="flex flex-wrap gap-1">
                 {selectedLabels.map((label) => (
-                  <span key={label} className="rounded-full bg-black px-2 py-0.5 text-xs font-medium text-white">
+                  <span
+                    key={label}
+                    className="rounded-full bg-black px-2 py-0.5 text-xs font-medium text-white"
+                  >
                     {label}
                   </span>
                 ))}
@@ -84,7 +85,7 @@ function MultiSelect({
                   }
                 }}
               >
-                <XIcon className="size-4 text-muted-foreground hover:text-foreground cursor-pointer" />
+                <XIcon className="text-muted-foreground hover:text-foreground size-4 cursor-pointer" />
               </span>
             )}
             <ChevronDownIcon className="size-4 shrink-0 opacity-50" />
@@ -101,8 +102,8 @@ function MultiSelect({
                 type="button"
                 onClick={() => toggleOption(option.value)}
                 className={cn(
-                  'flex items-center gap-2 rounded-sm px-2 py-1.5 text-sm cursor-pointer hover:bg-accent',
-                  isSelected && 'bg-accent/50'
+                  'hover:bg-accent flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm',
+                  isSelected && 'bg-accent/50',
                 )}
               >
                 <div
@@ -110,7 +111,7 @@ function MultiSelect({
                     'flex size-4 items-center justify-center rounded-sm border',
                     isSelected
                       ? 'border-primary bg-primary text-primary-foreground'
-                      : 'border-muted-foreground/30'
+                      : 'border-muted-foreground/30',
                   )}
                 >
                   {isSelected && <CheckIcon className="size-3" />}

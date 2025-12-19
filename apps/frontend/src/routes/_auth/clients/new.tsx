@@ -43,9 +43,15 @@ type StoreType = (typeof STORE_TYPES)[number]['value']
 
 const clientFormSchema = z.object({
   storeName: z.string().min(1, { error: 'Store name is required' }),
-  storeType: z.enum(['pet_store', 'veterinary_clinic', 'supermarket', 'online_retailer', 'distributor'], { error: 'Store type is required' }),
+  storeType: z.enum(
+    ['pet_store', 'veterinary_clinic', 'supermarket', 'online_retailer', 'distributor'],
+    { error: 'Store type is required' },
+  ),
   contactName: z.string().optional(),
-  email: z.string().min(1, { error: 'Email is required' }).email({ error: 'Please enter a valid email address' }),
+  email: z
+    .string()
+    .min(1, { error: 'Email is required' })
+    .email({ error: 'Please enter a valid email address' }),
   phone: z.string().optional(),
   billingAddress: z.string().min(1, { error: 'Street address is required' }),
   city: z.string().min(1, { error: 'City is required' }),
@@ -76,13 +82,13 @@ function FormSection({
   return (
     <div
       id={`section-${id}`}
-      className={`space-y-5 rounded-xl border bg-card p-5 transition-[box-shadow,border-color] duration-200 [&_label]:text-muted-foreground ${isActive ? 'border-muted-foreground/30 shadow-lg' : 'shadow-sm'}`}
+      className={`bg-card [&_label]:text-muted-foreground space-y-5 rounded-xl border p-5 transition-[box-shadow,border-color] duration-200 ${isActive ? 'border-muted-foreground/30 shadow-lg' : 'shadow-sm'}`}
       onFocus={onFocus}
     >
       <button
         type="button"
         onClick={onFocus}
-        className={`hover:text-primary mb-6 flex w-full cursor-pointer items-center gap-2 border-b border-muted-foreground/10 pb-4 text-left text-lg font-semibold transition-colors ${isActive ? 'text-primary' : ''}`}
+        className={`hover:text-primary border-muted-foreground/10 mb-6 flex w-full cursor-pointer items-center gap-2 border-b pb-4 text-left text-lg font-semibold transition-colors ${isActive ? 'text-primary' : ''}`}
       >
         <Icon className="size-5" />
         {title}
@@ -206,26 +212,43 @@ function AddClientPage() {
     scrollToSection(`section-${section}`)
   }
 
-
   // Section completion status
   const sectionStatus = {
     basic: !!(formData.storeName && formData.storeType),
     contact: !!formData.email,
-    billing: !!(formData.billingAddress && formData.city && formData.state && formData.postalCode && formData.country),
+    billing: !!(
+      formData.billingAddress &&
+      formData.city &&
+      formData.state &&
+      formData.postalCode &&
+      formData.country
+    ),
   }
 
   // Section error status (which sections have invalid fields)
   const sectionErrors = {
     basic: !!(fieldErrors.storeName || fieldErrors.storeType),
     contact: !!fieldErrors.email,
-    billing: !!(fieldErrors.billingAddress || fieldErrors.city || fieldErrors.state || fieldErrors.postalCode || fieldErrors.country),
+    billing: !!(
+      fieldErrors.billingAddress ||
+      fieldErrors.city ||
+      fieldErrors.state ||
+      fieldErrors.postalCode ||
+      fieldErrors.country
+    ),
   }
 
   // Group errors by section for display
   const sectionErrorMessages: Record<Section, string[]> = {
     basic: [fieldErrors.storeName, fieldErrors.storeType].filter(Boolean) as string[],
     contact: [fieldErrors.email].filter(Boolean) as string[],
-    billing: [fieldErrors.billingAddress, fieldErrors.city, fieldErrors.state, fieldErrors.postalCode, fieldErrors.country].filter(Boolean) as string[],
+    billing: [
+      fieldErrors.billingAddress,
+      fieldErrors.city,
+      fieldErrors.state,
+      fieldErrors.postalCode,
+      fieldErrors.country,
+    ].filter(Boolean) as string[],
   }
 
   // Validate a single field on blur
@@ -265,10 +288,20 @@ function AddClientPage() {
         <div className="lg:col-span-2">
           <form id="create-client-form" onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Basic Information */}
-            <FormSection id="basic" icon={BuildingIcon} title="Basic Information" isActive={activeSection === 'basic'} onFocus={() => setActiveSection('basic')} errors={sectionErrorMessages.basic}>
+            <FormSection
+              id="basic"
+              icon={BuildingIcon}
+              title="Basic Information"
+              isActive={activeSection === 'basic'}
+              onFocus={() => setActiveSection('basic')}
+              errors={sectionErrorMessages.basic}
+            >
               <div className="space-y-5">
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.storeName ? 'text-destructive' : ''}`} htmlFor="storeName">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.storeName ? 'text-destructive' : ''}`}
+                    htmlFor="storeName"
+                  >
                     Store Name *
                   </Label>
                   <Input
@@ -277,11 +310,18 @@ function AddClientPage() {
                     value={formData.storeName}
                     onChange={(e) => handleChange('storeName', e.target.value)}
                     onBlur={(e) => validateFieldOnBlur('storeName', e.target.value)}
-                    className={fieldErrors.storeName ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    className={
+                      fieldErrors.storeName
+                        ? 'border-destructive focus-visible:ring-destructive'
+                        : ''
+                    }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.storeType ? 'text-destructive' : ''}`} htmlFor="storeType">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.storeType ? 'text-destructive' : ''}`}
+                    htmlFor="storeType"
+                  >
                     Store Type *
                   </Label>
                   <Select
@@ -289,7 +329,10 @@ function AddClientPage() {
                     onValueChange={(value) => handleChange('storeType', value)}
                     onOpenChange={(open) => open && setActiveSection('basic')}
                   >
-                    <SelectTrigger id="storeType" className={`w-full ${fieldErrors.storeType ? 'border-destructive focus:ring-destructive' : ''}`}>
+                    <SelectTrigger
+                      id="storeType"
+                      className={`w-full ${fieldErrors.storeType ? 'border-destructive focus:ring-destructive' : ''}`}
+                    >
                       <SelectValue placeholder="Select store type" />
                     </SelectTrigger>
                     <SelectContent>
@@ -305,7 +348,14 @@ function AddClientPage() {
             </FormSection>
 
             {/* Contact Information */}
-            <FormSection id="contact" icon={UserIcon} title="Contact Information" isActive={activeSection === 'contact'} onFocus={() => setActiveSection('contact')} errors={sectionErrorMessages.contact}>
+            <FormSection
+              id="contact"
+              icon={UserIcon}
+              title="Contact Information"
+              isActive={activeSection === 'contact'}
+              onFocus={() => setActiveSection('contact')}
+              errors={sectionErrorMessages.contact}
+            >
               <div className="grid gap-5 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label className="pl-0.5" htmlFor="contactName">
@@ -319,7 +369,10 @@ function AddClientPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.email ? 'text-destructive' : ''}`} htmlFor="email">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.email ? 'text-destructive' : ''}`}
+                    htmlFor="email"
+                  >
                     Email *
                   </Label>
                   <Input
@@ -329,7 +382,9 @@ function AddClientPage() {
                     value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     onBlur={(e) => validateFieldOnBlur('email', e.target.value)}
-                    className={fieldErrors.email ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    className={
+                      fieldErrors.email ? 'border-destructive focus-visible:ring-destructive' : ''
+                    }
                   />
                 </div>
               </div>
@@ -348,9 +403,19 @@ function AddClientPage() {
             </FormSection>
 
             {/* Billing Address */}
-            <FormSection id="billing" icon={MapPinIcon} title="Billing Address" isActive={activeSection === 'billing'} onFocus={() => setActiveSection('billing')} errors={sectionErrorMessages.billing}>
+            <FormSection
+              id="billing"
+              icon={MapPinIcon}
+              title="Billing Address"
+              isActive={activeSection === 'billing'}
+              onFocus={() => setActiveSection('billing')}
+              errors={sectionErrorMessages.billing}
+            >
               <div className="space-y-2">
-                <Label className={`pl-0.5 ${fieldErrors.billingAddress ? 'text-destructive' : ''}`} htmlFor="billingAddress">
+                <Label
+                  className={`pl-0.5 ${fieldErrors.billingAddress ? 'text-destructive' : ''}`}
+                  htmlFor="billingAddress"
+                >
                   Street Address *
                 </Label>
                 <Input
@@ -359,12 +424,19 @@ function AddClientPage() {
                   value={formData.billingAddress}
                   onChange={(e) => handleChange('billingAddress', e.target.value)}
                   onBlur={(e) => validateFieldOnBlur('billingAddress', e.target.value)}
-                  className={fieldErrors.billingAddress ? 'border-destructive focus-visible:ring-destructive' : ''}
+                  className={
+                    fieldErrors.billingAddress
+                      ? 'border-destructive focus-visible:ring-destructive'
+                      : ''
+                  }
                 />
               </div>
               <div className="grid gap-5 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.city ? 'text-destructive' : ''}`} htmlFor="city">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.city ? 'text-destructive' : ''}`}
+                    htmlFor="city"
+                  >
                     City *
                   </Label>
                   <Input
@@ -373,11 +445,16 @@ function AddClientPage() {
                     value={formData.city}
                     onChange={(e) => handleChange('city', e.target.value)}
                     onBlur={(e) => validateFieldOnBlur('city', e.target.value)}
-                    className={fieldErrors.city ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    className={
+                      fieldErrors.city ? 'border-destructive focus-visible:ring-destructive' : ''
+                    }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.state ? 'text-destructive' : ''}`} htmlFor="state">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.state ? 'text-destructive' : ''}`}
+                    htmlFor="state"
+                  >
                     State / Province *
                   </Label>
                   <Input
@@ -386,13 +463,18 @@ function AddClientPage() {
                     value={formData.state}
                     onChange={(e) => handleChange('state', e.target.value)}
                     onBlur={(e) => validateFieldOnBlur('state', e.target.value)}
-                    className={fieldErrors.state ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    className={
+                      fieldErrors.state ? 'border-destructive focus-visible:ring-destructive' : ''
+                    }
                   />
                 </div>
               </div>
               <div className="grid gap-5 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.postalCode ? 'text-destructive' : ''}`} htmlFor="postalCode">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.postalCode ? 'text-destructive' : ''}`}
+                    htmlFor="postalCode"
+                  >
                     Postal Code *
                   </Label>
                   <Input
@@ -401,11 +483,18 @@ function AddClientPage() {
                     value={formData.postalCode}
                     onChange={(e) => handleChange('postalCode', e.target.value)}
                     onBlur={(e) => validateFieldOnBlur('postalCode', e.target.value)}
-                    className={fieldErrors.postalCode ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    className={
+                      fieldErrors.postalCode
+                        ? 'border-destructive focus-visible:ring-destructive'
+                        : ''
+                    }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className={`pl-0.5 ${fieldErrors.country ? 'text-destructive' : ''}`} htmlFor="country">
+                  <Label
+                    className={`pl-0.5 ${fieldErrors.country ? 'text-destructive' : ''}`}
+                    htmlFor="country"
+                  >
                     Country *
                   </Label>
                   <Input
@@ -414,12 +503,13 @@ function AddClientPage() {
                     value={formData.country}
                     onChange={(e) => handleChange('country', e.target.value)}
                     onBlur={(e) => validateFieldOnBlur('country', e.target.value)}
-                    className={fieldErrors.country ? 'border-destructive focus-visible:ring-destructive' : ''}
+                    className={
+                      fieldErrors.country ? 'border-destructive focus-visible:ring-destructive' : ''
+                    }
                   />
                 </div>
               </div>
             </FormSection>
-
           </form>
         </div>
 
@@ -436,7 +526,11 @@ function AddClientPage() {
                 type="submit"
                 form="create-client-form"
                 className="w-full"
-                disabled={!Object.values(sectionStatus).every(Boolean) || Object.keys(fieldErrors).length > 0 || createClient.isPending}
+                disabled={
+                  !Object.values(sectionStatus).every(Boolean) ||
+                  Object.keys(fieldErrors).length > 0 ||
+                  createClient.isPending
+                }
               >
                 <SaveIcon className="size-4" />
                 {createClient.isPending ? 'Creating...' : 'Create Client'}
@@ -455,9 +549,7 @@ function AddClientPage() {
               You are about to create a new client:{' '}
               <span className="font-semibold">{formData.storeName}</span>
               {formData.storeType && (
-                <>
-                  {' '}({STORE_TYPES.find((t) => t.value === formData.storeType)?.label})
-                </>
+                <> ({STORE_TYPES.find((t) => t.value === formData.storeType)?.label})</>
               )}
             </DialogDescription>
           </DialogHeader>

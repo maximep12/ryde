@@ -143,7 +143,7 @@ function ClientsPage() {
                     <div className="text-muted-foreground px-3 py-1.5 text-xs font-medium">
                       Search Results
                     </div>
-                    {results?.map((client: typeof results[0], index: number) => (
+                    {results?.map((client: (typeof results)[0], index: number) => (
                       <button
                         key={client.id}
                         onClick={() => handleSelect(client.id)}
@@ -217,17 +217,13 @@ function ClientsPage() {
                     <div className="bg-primary/10 text-primary flex size-12 shrink-0 items-center justify-center rounded-full text-lg font-medium">
                       {client.storeName[0]}
                     </div>
-                    <div className="min-w-0 w-full space-y-1">
-                      <p className="truncate font-medium text-sm">{client.storeName}</p>
-                      <p className="text-muted-foreground font-mono text-xs">
-                        {client.clientCode}
-                      </p>
+                    <div className="w-full min-w-0 space-y-1">
+                      <p className="truncate text-sm font-medium">{client.storeName}</p>
+                      <p className="text-muted-foreground font-mono text-xs">{client.clientCode}</p>
                       <div className="flex items-center justify-center gap-1.5">
                         <span
                           className={`inline-block size-2 rounded-full ${
-                            client.status === 'active'
-                              ? 'bg-green-500'
-                              : 'bg-red-500'
+                            client.status === 'active' ? 'bg-green-500' : 'bg-red-500'
                           }`}
                         />
                         <span className="text-muted-foreground text-xs capitalize">

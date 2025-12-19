@@ -43,7 +43,10 @@ function extractField(text: string, pattern: RegExp): string | undefined {
 }
 
 // Parse sold-to party (format: "CLI-001 – Paws & Claws Pet Emporium")
-function parseSoldToParty(value: string | undefined): { code: string | undefined; name: string | undefined } {
+function parseSoldToParty(value: string | undefined): {
+  code: string | undefined
+  name: string | undefined
+} {
   if (!value) return { code: undefined, name: undefined }
   const match = value.match(/^(CLI-\d+)\s*[–-]\s*(.+)$/i)
   if (match && match[1] && match[2]) {
@@ -78,7 +81,10 @@ function parseShipTo(value: string | undefined): {
 }
 
 // Parse incoterms (format: "DAP – San Francisco, CA")
-function parseIncoterms(value: string | undefined): { code: string | undefined; location: string | undefined } {
+function parseIncoterms(value: string | undefined): {
+  code: string | undefined
+  location: string | undefined
+} {
   if (!value) return { code: undefined, location: undefined }
   const match = value.match(/^([A-Z]{3})\s*[–-]\s*(.+)$/i)
   if (match && match[1] && match[2]) {
@@ -117,7 +123,9 @@ function normalizeCurrency(value: string | undefined): 'USD' | 'CAD' | 'EUR' | u
 }
 
 // Normalize sales document type
-function normalizeSalesDocumentType(value: string | undefined): 'OR' | 'ZOR' | 'RE' | 'CR' | undefined {
+function normalizeSalesDocumentType(
+  value: string | undefined,
+): 'OR' | 'ZOR' | 'RE' | 'CR' | undefined {
   if (!value) return undefined
   const upper = value.toUpperCase().trim()
   if (upper.startsWith('OR')) return 'OR'
@@ -225,7 +233,9 @@ export function parseOrderFormText(text: string): ParsedOrderForm {
     // Section A
     orderRequestDate: extractField(text, FIELD_PATTERNS.orderRequestDate),
     customerPoNumber: extractField(text, FIELD_PATTERNS.customerPoNumber),
-    salesDocumentType: normalizeSalesDocumentType(extractField(text, FIELD_PATTERNS.salesDocumentType)),
+    salesDocumentType: normalizeSalesDocumentType(
+      extractField(text, FIELD_PATTERNS.salesDocumentType),
+    ),
     orderReason: extractField(text, FIELD_PATTERNS.orderReason),
     requestedByName,
     requestedByEmail,

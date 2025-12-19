@@ -44,10 +44,35 @@ export type OrdersResponse = {
 }
 
 export function useOrders(params: OrdersQueryParams = {}) {
-  const { page = 1, pageSize = 15, statuses, sources, search, date, hasIssues, hasResolvedIssues, requiresApproval, wasApproved } = params
+  const {
+    page = 1,
+    pageSize = 15,
+    statuses,
+    sources,
+    search,
+    date,
+    hasIssues,
+    hasResolvedIssues,
+    requiresApproval,
+    wasApproved,
+  } = params
 
   return useQuery({
-    queryKey: ['orders', { page, pageSize, statuses, sources, search, date, hasIssues, hasResolvedIssues, requiresApproval, wasApproved }],
+    queryKey: [
+      'orders',
+      {
+        page,
+        pageSize,
+        statuses,
+        sources,
+        search,
+        date,
+        hasIssues,
+        hasResolvedIssues,
+        requiresApproval,
+        wasApproved,
+      },
+    ],
     queryFn: async () => {
       const api = getApi()
       const res = await api.orders.$get({
@@ -59,7 +84,9 @@ export function useOrders(params: OrdersQueryParams = {}) {
           ...(search && { search }),
           ...(date && { date }),
           ...(hasIssues !== undefined && { hasIssues: hasIssues.toString() }),
-          ...(hasResolvedIssues !== undefined && { hasResolvedIssues: hasResolvedIssues.toString() }),
+          ...(hasResolvedIssues !== undefined && {
+            hasResolvedIssues: hasResolvedIssues.toString(),
+          }),
           ...(requiresApproval !== undefined && { requiresApproval: requiresApproval.toString() }),
           ...(wasApproved !== undefined && { wasApproved: wasApproved.toString() }),
         },

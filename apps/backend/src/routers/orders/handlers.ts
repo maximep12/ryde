@@ -3,7 +3,14 @@ import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { ContextVariables } from '../../index'
 import { zValidatorThrow } from '../../lib/errors/zValidatorThrow'
-import { approveOrder, createOrder, findClientByCode, getOrderById, getOrders, parsePdfOrderForm } from './helpers'
+import {
+  approveOrder,
+  createOrder,
+  findClientByCode,
+  getOrderById,
+  getOrders,
+  parsePdfOrderForm,
+} from './helpers'
 import { createOrderSchema, ordersQuerySchema, parsedOrderFormSchema } from './schemas'
 
 const ordersRouter = new Hono<{ Variables: ContextVariables }>()
@@ -129,7 +136,10 @@ export const ordersRouterDefinition = ordersRouter
         parsedData._meta = {
           ...parsedData._meta!,
           confidence: Math.min(parsedData._meta?.confidence ?? 0, 0.5),
-          warnings: [...(parsedData._meta?.warnings ?? []), 'Some parsed fields did not match expected format'],
+          warnings: [
+            ...(parsedData._meta?.warnings ?? []),
+            'Some parsed fields did not match expected format',
+          ],
         }
       }
 

@@ -32,7 +32,11 @@ export function FormSectionsCard<T extends string>({
 
   const getStatusText = () => {
     if (errorCount > 0) {
-      return <span className="text-destructive font-normal">({errorCount} {errorCount === 1 ? 'error' : 'errors'})</span>
+      return (
+        <span className="text-destructive font-normal">
+          ({errorCount} {errorCount === 1 ? 'error' : 'errors'})
+        </span>
+      )
     }
     if (allComplete) {
       return <span className="text-muted-foreground/60 font-normal">(Complete)</span>
@@ -44,8 +48,7 @@ export function FormSectionsCard<T extends string>({
     <Card>
       <CardContent>
         <h3 className="mb-3 font-semibold">
-          <span className="uppercase">Form Sections</span>{' '}
-          {getStatusText()}
+          <span className="uppercase">Form Sections</span> {getStatusText()}
         </h3>
         <nav className="space-y-1">
           {sections.map((section) => {
@@ -68,18 +71,18 @@ export function FormSectionsCard<T extends string>({
                 }`}
               >
                 {hasError ? (
-                  <AlertCircleIcon className="size-4 shrink-0 text-destructive" />
+                  <AlertCircleIcon className="text-destructive size-4 shrink-0" />
                 ) : isComplete ? (
                   <CheckCircleIcon className="size-4 shrink-0 text-black dark:text-white" />
                 ) : (
-                  <CircleHelpIcon className="size-4 shrink-0 text-muted-foreground/40" />
+                  <CircleHelpIcon className="text-muted-foreground/40 size-4 shrink-0" />
                 )}
                 <span className="truncate">{section.label}</span>
               </button>
             )
           })}
         </nav>
-        {action && <div className="-mb-1 mt-6 border-t pt-5">{action}</div>}
+        {action && <div className="mt-6 -mb-1 border-t pt-5">{action}</div>}
       </CardContent>
     </Card>
   )

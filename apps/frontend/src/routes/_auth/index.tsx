@@ -127,9 +127,7 @@ function WelcomePage() {
             <p className="text-3xl font-bold">
               <AnimatedNumber delay={0.1}>47</AnimatedNumber>
             </p>
-            <p className="text-muted-foreground text-sm mt-1">
-              12 processing, 35 ready to ship
-            </p>
+            <p className="text-muted-foreground mt-1 text-sm">12 processing, 35 ready to ship</p>
           </CardContent>
         </Card>
 
@@ -142,9 +140,7 @@ function WelcomePage() {
             <p className="text-3xl font-bold">
               <AnimatedNumber delay={0.2}>1,245 tons</AnimatedNumber>
             </p>
-            <p className="text-muted-foreground text-sm mt-1">
-              Across all product lines
-            </p>
+            <p className="text-muted-foreground mt-1 text-sm">Across all product lines</p>
           </CardContent>
         </Card>
 
@@ -157,9 +153,7 @@ function WelcomePage() {
             <p className="text-3xl font-bold">
               <AnimatedNumber delay={0.3}>$1.32M</AnimatedNumber>
             </p>
-            <p className="text-muted-foreground text-sm mt-1">
-              +8.4% from last month
-            </p>
+            <p className="text-muted-foreground mt-1 text-sm">+8.4% from last month</p>
           </CardContent>
         </Card>
       </div>
@@ -167,7 +161,9 @@ function WelcomePage() {
       <Card>
         <CardHeader>
           <CardTitle>Production & Shipments</CardTitle>
-          <CardDescription>Monthly production output, shipments, and orders (in tons)</CardDescription>
+          <CardDescription>
+            Monthly production output, shipments, and orders (in tons)
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-80">
@@ -283,7 +279,12 @@ function WelcomePage() {
                     cursor={{ fill: 'var(--muted)', opacity: 0.3 }}
                   />
                   <Legend />
-                  <Bar dataKey="sales" name="Sold (tons)" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
+                  <Bar
+                    dataKey="sales"
+                    name="Sold (tons)"
+                    fill="var(--chart-1)"
+                    radius={[4, 4, 0, 0]}
+                  />
                   <Bar
                     dataKey="returns"
                     name="Returns (tons)"

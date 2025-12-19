@@ -432,9 +432,7 @@ function OrdersMonitorPage() {
                     <Checkbox
                       id="was-approved"
                       checked={sheetWasApprovedFilter}
-                      onCheckedChange={(checked) =>
-                        setSheetWasApprovedFilter(checked === true)
-                      }
+                      onCheckedChange={(checked) => setSheetWasApprovedFilter(checked === true)}
                     />
                     <label htmlFor="was-approved" className="cursor-pointer text-sm">
                       Show manually approved orders
@@ -618,7 +616,10 @@ function OrdersMonitorPage() {
           )}
 
           {/* Alert boxes and active filter indicators */}
-          {((data.ordersWithIssuesCount > 0) || (data.ordersRequiringApprovalCount > 0) || hasIssuesFilter || requiresApprovalFilter) && (
+          {(data.ordersWithIssuesCount > 0 ||
+            data.ordersRequiringApprovalCount > 0 ||
+            hasIssuesFilter ||
+            requiresApprovalFilter) && (
             <div className="space-y-2">
               {/* Warning box for orders with issues */}
               {data.ordersWithIssuesCount > 0 && !hasIssuesFilter && (
@@ -629,8 +630,8 @@ function OrdersMonitorPage() {
                     </div>
                     <div>
                       <p className="font-medium text-orange-800 dark:text-orange-200">
-                        {data.ordersWithIssuesCount} order{data.ordersWithIssuesCount !== 1 ? 's' : ''}{' '}
-                        with open issues
+                        {data.ordersWithIssuesCount} order
+                        {data.ordersWithIssuesCount !== 1 ? 's' : ''} with open issues
                       </p>
                       <p className="text-sm text-orange-600 dark:text-orange-400">
                         These orders require attention due to unresolved issues
@@ -682,8 +683,8 @@ function OrdersMonitorPage() {
                     </div>
                     <div>
                       <p className="font-medium text-blue-800 dark:text-blue-200">
-                        {data.ordersRequiringApprovalCount} order{data.ordersRequiringApprovalCount !== 1 ? 's' : ''}{' '}
-                        requiring approval
+                        {data.ordersRequiringApprovalCount} order
+                        {data.ordersRequiringApprovalCount !== 1 ? 's' : ''} requiring approval
                       </p>
                       <p className="text-sm text-blue-600 dark:text-blue-400">
                         These orders need to be reviewed and approved before processing

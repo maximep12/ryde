@@ -39,7 +39,13 @@ export type UpdateComment = z.infer<typeof updateCommentSchema>
 // CREATE CLIENT SCHEMA
 // ============================================================================
 
-export const storeTypes = ['pet_store', 'veterinary_clinic', 'supermarket', 'online_retailer', 'distributor'] as const
+export const storeTypes = [
+  'pet_store',
+  'veterinary_clinic',
+  'supermarket',
+  'online_retailer',
+  'distributor',
+] as const
 
 export const createClientSchema = z.object({
   storeName: z.string().min(1).max(255),

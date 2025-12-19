@@ -1,12 +1,36 @@
 import { clientOrderIssues, clientOrderItems, clientOrders, clients, users } from '@repo/db'
-import { and, count, countDistinct, desc, eq, exists, gte, ilike, isNotNull, lt, ne, or } from 'drizzle-orm'
+import {
+  and,
+  count,
+  countDistinct,
+  desc,
+  eq,
+  exists,
+  gte,
+  ilike,
+  isNotNull,
+  lt,
+  ne,
+  or,
+} from 'drizzle-orm'
 import { PDFParse } from 'pdf-parse'
 import { db } from '../../db'
 import { parseOrderFormText } from './parsers/orderFormParser'
 import type { CreateOrderInput, OrdersQuery, ParsedOrderForm } from './schemas'
 
 export async function getOrders(query: OrdersQuery) {
-  const { page, pageSize, statuses, sources, search, date, hasIssues, hasResolvedIssues, requiresApproval, wasApproved } = query
+  const {
+    page,
+    pageSize,
+    statuses,
+    sources,
+    search,
+    date,
+    hasIssues,
+    hasResolvedIssues,
+    requiresApproval,
+    wasApproved,
+  } = query
   const offset = (page - 1) * pageSize
 
   const conditions = []
@@ -75,7 +99,10 @@ export async function getOrders(query: OrdersQuery) {
           .where(
             and(
               eq(clientOrderIssues.orderId, clientOrders.id),
-              or(eq(clientOrderIssues.status, 'resolved'), eq(clientOrderIssues.status, 'dismissed')),
+              or(
+                eq(clientOrderIssues.status, 'resolved'),
+                eq(clientOrderIssues.status, 'dismissed'),
+              ),
             ),
           ),
       ),
@@ -94,49 +121,52 @@ export async function getOrders(query: OrdersQuery) {
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
-  const [items, countResult, ordersWithIssuesCount, ordersRequiringApprovalCount] = await Promise.all([
-    db
-      .select({
-        id: clientOrders.id,
-        orderNumber: clientOrders.orderNumber,
-        clientId: clientOrders.clientId,
-        orderDate: clientOrders.orderDate,
-        totalAmount: clientOrders.totalAmount,
-        status: clientOrders.status,
-        source: clientOrders.source,
-        requiresApproval: clientOrders.requiresApproval,
-        shippingAddress: clientOrders.shippingAddress,
-        notes: clientOrders.notes,
-        createdAt: clientOrders.createdAt,
-        client: {
-          id: clients.id,
-          clientCode: clients.clientCode,
-          storeName: clients.storeName,
-          storeType: clients.storeType,
-        },
-      })
-      .from(clientOrders)
-      .innerJoin(clients, eq(clientOrders.clientId, clients.id))
-      .where(whereClause)
-      .orderBy(desc(clientOrders.orderDate))
-      .limit(pageSize)
-      .offset(offset),
-    db
-      .select({ total: count() })
-      .from(clientOrders)
-      .innerJoin(clients, eq(clientOrders.clientId, clients.id))
-      .where(whereClause),
-    // Count orders with open/in_progress issues (regardless of filters)
-    db
-      .select({ count: countDistinct(clientOrderIssues.orderId) })
-      .from(clientOrderIssues)
-      .where(or(eq(clientOrderIssues.status, 'open'), eq(clientOrderIssues.status, 'in_progress'))),
-    // Count orders requiring approval (regardless of filters)
-    db
-      .select({ count: count() })
-      .from(clientOrders)
-      .where(eq(clientOrders.requiresApproval, true)),
-  ])
+  const [items, countResult, ordersWithIssuesCount, ordersRequiringApprovalCount] =
+    await Promise.all([
+      db
+        .select({
+          id: clientOrders.id,
+          orderNumber: clientOrders.orderNumber,
+          clientId: clientOrders.clientId,
+          orderDate: clientOrders.orderDate,
+          totalAmount: clientOrders.totalAmount,
+          status: clientOrders.status,
+          source: clientOrders.source,
+          requiresApproval: clientOrders.requiresApproval,
+          shippingAddress: clientOrders.shippingAddress,
+          notes: clientOrders.notes,
+          createdAt: clientOrders.createdAt,
+          client: {
+            id: clients.id,
+            clientCode: clients.clientCode,
+            storeName: clients.storeName,
+            storeType: clients.storeType,
+          },
+        })
+        .from(clientOrders)
+        .innerJoin(clients, eq(clientOrders.clientId, clients.id))
+        .where(whereClause)
+        .orderBy(desc(clientOrders.orderDate))
+        .limit(pageSize)
+        .offset(offset),
+      db
+        .select({ total: count() })
+        .from(clientOrders)
+        .innerJoin(clients, eq(clientOrders.clientId, clients.id))
+        .where(whereClause),
+      // Count orders with open/in_progress issues (regardless of filters)
+      db
+        .select({ count: countDistinct(clientOrderIssues.orderId) })
+        .from(clientOrderIssues)
+        .where(
+          or(eq(clientOrderIssues.status, 'open'), eq(clientOrderIssues.status, 'in_progress')),
+        ),
+      // Count orders requiring approval (regardless of filters)
+      db
+        .select({ count: count() })
+        .from(clientOrders)
+        .where(eq(clientOrders.requiresApproval, true)),
+    ])
 
   const total = countResult[0]?.total ?? 0
   const issuesCount = ordersWithIssuesCount[0]?.count ?? 0
@@ -357,10 +387,7 @@ export async function createOrder(input: CreateOrderInput) {
 
   // Update order number with generated value
   const orderNumber = generateOrderNumber(client[0].clientCode, newOrder.id)
-  await db
-    .update(clientOrders)
-    .set({ orderNumber })
-    .where(eq(clientOrders.id, newOrder.id))
+  await db.update(clientOrders).set({ orderNumber }).where(eq(clientOrders.id, newOrder.id))
 
   // Insert order items
   if (input.items.length > 0) {

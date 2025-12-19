@@ -180,29 +180,48 @@ type Section =
 const orderFormSchema = z.object({
   orderRequestDate: z.string().min(1, { error: 'Order request date is required' }),
   customerPONumber: z.string().min(1, { error: 'Customer PO number is required' }),
-  salesDocumentType: z.enum(['OR', 'ZOR', 'RE', 'CR'], { error: 'Sales document type is required' }),
-  client: z.object({
-    id: z.number(),
-    storeName: z.string(),
-    clientCode: z.string(),
-  }).nullable().refine((val) => val !== null, {
-    error: 'Please select a client',
+  salesDocumentType: z.enum(['OR', 'ZOR', 'RE', 'CR'], {
+    error: 'Sales document type is required',
   }),
+  client: z
+    .object({
+      id: z.number(),
+      storeName: z.string(),
+      clientCode: z.string(),
+    })
+    .nullable()
+    .refine((val) => val !== null, {
+      error: 'Please select a client',
+    }),
   currency: z.enum(['USD', 'CAD', 'EUR'], { error: 'Currency is required' }),
-  paymentTerms: z.enum(['NET15', 'NET30', 'NET45', 'NET60', 'COD', 'PREPAID'], { error: 'Payment terms are required' }),
+  paymentTerms: z.enum(['NET15', 'NET30', 'NET45', 'NET60', 'COD', 'PREPAID'], {
+    error: 'Payment terms are required',
+  }),
   taxStatus: z.enum(['taxable', 'exempt', 'zero_rated'], { error: 'Tax status is required' }),
-  orderItems: z.array(z.object({
-    itemNumber: z.number(),
-    sku: z.string(),
-    name: z.string(),
-    price: z.number(),
-    quantity: z.number(),
-    uom: z.string(),
-    packageType: z.string(),
-  })).min(1, { error: 'At least one line item is required' }),
+  orderItems: z
+    .array(
+      z.object({
+        itemNumber: z.number(),
+        sku: z.string(),
+        name: z.string(),
+        price: z.number(),
+        quantity: z.number(),
+        uom: z.string(),
+        packageType: z.string(),
+      }),
+    )
+    .min(1, { error: 'At least one line item is required' }),
   // Optional fields with format validation
-  requestedByName: z.string().min(3, { error: 'Name must be at least 3 characters' }).optional().or(z.literal('')),
-  requestedByEmail: z.string().email({ error: 'Please enter a valid email address' }).optional().or(z.literal('')),
+  requestedByName: z
+    .string()
+    .min(3, { error: 'Name must be at least 3 characters' })
+    .optional()
+    .or(z.literal('')),
+  requestedByEmail: z
+    .string()
+    .email({ error: 'Please enter a valid email address' })
+    .optional()
+    .or(z.literal('')),
 })
 
 function FormSection({
@@ -225,13 +244,13 @@ function FormSection({
   return (
     <div
       id={`section-${id}`}
-      className={`space-y-5 rounded-xl border bg-card p-5 transition-[box-shadow,border-color] duration-200 [&_label]:text-muted-foreground ${isActive ? 'border-muted-foreground/30 shadow-lg' : 'shadow-sm'}`}
+      className={`bg-card [&_label]:text-muted-foreground space-y-5 rounded-xl border p-5 transition-[box-shadow,border-color] duration-200 ${isActive ? 'border-muted-foreground/30 shadow-lg' : 'shadow-sm'}`}
       onFocus={onFocus}
     >
       <button
         type="button"
         onClick={onFocus}
-        className={`hover:text-primary mb-6 flex w-full cursor-pointer items-center gap-2 border-b border-muted-foreground/10 pb-4 text-left text-lg font-semibold transition-colors ${isActive ? 'text-primary' : ''}`}
+        className={`hover:text-primary border-muted-foreground/10 mb-6 flex w-full cursor-pointer items-center gap-2 border-b pb-4 text-left text-lg font-semibold transition-colors ${isActive ? 'text-primary' : ''}`}
       >
         <Icon className="size-5" />
         {title}
@@ -401,9 +420,7 @@ function OrderCreationPage() {
   const handleSetQuantity = (sku: string, value: string) => {
     const quantity = parseInt(value, 10)
     if (isNaN(quantity) || quantity < 0) return
-    setOrderItems(
-      orderItems.map((item) => (item.sku === sku ? { ...item, quantity } : item)),
-    )
+    setOrderItems(orderItems.map((item) => (item.sku === sku ? { ...item, quantity } : item)))
   }
 
   const handleUpdateUom = (sku: string, uom: string) => {
@@ -592,7 +609,13 @@ function OrderCreationPage() {
 
   // Section error status (which sections have invalid fields)
   const sectionErrors = {
-    identification: !!(fieldErrors.orderRequestDate || fieldErrors.customerPONumber || fieldErrors.salesDocumentType || fieldErrors.requestedByName || fieldErrors.requestedByEmail),
+    identification: !!(
+      fieldErrors.orderRequestDate ||
+      fieldErrors.customerPONumber ||
+      fieldErrors.salesDocumentType ||
+      fieldErrors.requestedByName ||
+      fieldErrors.requestedByEmail
+    ),
     customer: !!fieldErrors.client,
     commercial: !!(fieldErrors.currency || fieldErrors.paymentTerms || fieldErrors.taxStatus),
     delivery: false,
@@ -603,9 +626,17 @@ function OrderCreationPage() {
 
   // Group errors by section for display
   const sectionErrorMessages: Record<Section, string[]> = {
-    identification: [fieldErrors.orderRequestDate, fieldErrors.customerPONumber, fieldErrors.salesDocumentType, fieldErrors.requestedByName, fieldErrors.requestedByEmail].filter(Boolean) as string[],
+    identification: [
+      fieldErrors.orderRequestDate,
+      fieldErrors.customerPONumber,
+      fieldErrors.salesDocumentType,
+      fieldErrors.requestedByName,
+      fieldErrors.requestedByEmail,
+    ].filter(Boolean) as string[],
     customer: [fieldErrors.client].filter(Boolean) as string[],
-    commercial: [fieldErrors.currency, fieldErrors.paymentTerms, fieldErrors.taxStatus].filter(Boolean) as string[],
+    commercial: [fieldErrors.currency, fieldErrors.paymentTerms, fieldErrors.taxStatus].filter(
+      Boolean,
+    ) as string[],
     delivery: [],
     lineItems: [fieldErrors.lineItems].filter(Boolean) as string[],
     attachments: [],
@@ -738,7 +769,6 @@ function OrderCreationPage() {
     scrollToSection(`section-${section}`)
   }
 
-
   return (
     <div className="space-y-8">
       <header>
@@ -751,795 +781,904 @@ function OrderCreationPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div>
-              {/* PDF Upload Card */}
-              <div className="mb-6 rounded-xl border border-dashed border-primary/30 bg-primary/5 p-5">
-                <div className="flex items-start gap-4">
-                  <div className="rounded-lg bg-primary/10 p-3">
-                    <SparklesIcon className="size-6 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold">Quick Fill with PDF</h3>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                      Upload a filled order form PDF and we'll automatically extract the data to prefill the form below.
-                    </p>
+            {/* PDF Upload Card */}
+            <div className="border-primary/30 bg-primary/5 mb-6 rounded-xl border border-dashed p-5">
+              <div className="flex items-start gap-4">
+                <div className="bg-primary/10 rounded-lg p-3">
+                  <SparklesIcon className="text-primary size-6" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold">Quick Fill with PDF</h3>
+                  <p className="text-muted-foreground mt-1 text-sm">
+                    Upload a filled order form PDF and we'll automatically extract the data to
+                    prefill the form below.
+                  </p>
 
-                    {!uploadedPdf ? (
-                      <label className="mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-primary/20 bg-background px-4 py-3 transition-colors hover:border-primary/40 hover:bg-primary/5">
-                        <UploadIcon className="size-4 text-primary" />
-                        <span className="text-sm font-medium text-primary">
-                          Choose PDF file or drag and drop
-                        </span>
-                        <input
-                          type="file"
-                          accept="application/pdf"
-                          onChange={handlePdfUpload}
-                          className="hidden"
-                        />
-                      </label>
-                    ) : (
-                      <div className="mt-4 flex items-center gap-3 rounded-lg border bg-background px-4 py-3">
-                        <FileTextIcon className="size-5 text-primary" />
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{uploadedPdf.name}</p>
-                          {isParsing && (
-                            <p className="text-muted-foreground text-xs">Parsing document...</p>
-                          )}
-                          {parseComplete && (
-                            <p className="text-xs text-green-600">Fields prefilled successfully</p>
-                          )}
-                        </div>
-                        {isParsing ? (
-                          <div className="size-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={handleRemovePdf}
-                            className="rounded-md p-1 hover:bg-muted"
-                          >
-                            <XIcon className="size-4 text-muted-foreground" />
-                          </button>
+                  {!uploadedPdf ? (
+                    <label className="border-primary/20 bg-background hover:border-primary/40 hover:bg-primary/5 mt-4 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-3 transition-colors">
+                      <UploadIcon className="text-primary size-4" />
+                      <span className="text-primary text-sm font-medium">
+                        Choose PDF file or drag and drop
+                      </span>
+                      <input
+                        type="file"
+                        accept="application/pdf"
+                        onChange={handlePdfUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  ) : (
+                    <div className="bg-background mt-4 flex items-center gap-3 rounded-lg border px-4 py-3">
+                      <FileTextIcon className="text-primary size-5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{uploadedPdf.name}</p>
+                        {isParsing && (
+                          <p className="text-muted-foreground text-xs">Parsing document...</p>
+                        )}
+                        {parseComplete && (
+                          <p className="text-xs text-green-600">Fields prefilled successfully</p>
                         )}
                       </div>
-                    )}
-                  </div>
+                      {isParsing ? (
+                        <div className="border-primary size-5 animate-spin rounded-full border-2 border-t-transparent" />
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleRemovePdf}
+                          className="hover:bg-muted rounded-md p-1"
+                        >
+                          <XIcon className="text-muted-foreground size-4" />
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
+            </div>
 
-              <form id="create-order-form" onSubmit={handleSubmitOrder} className="space-y-4" noValidate>
-                {/* A. Order Identification */}
-                <FormSection id="identification" icon={ClipboardListIcon} title="A. Order Identification" isActive={activeSection === 'identification'} onFocus={() => setActiveSection('identification')} errors={sectionErrorMessages.identification}>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.orderRequestDate ? 'text-destructive' : ''}`} htmlFor="orderRequestDate">
-                        Order Request Date *
-                      </Label>
-                      <Input
-                        id="orderRequestDate"
-                        type="date"
-                        value={orderRequestDate}
-                        onChange={(e) => {
-                          setOrderRequestDate(e.target.value)
-                          if (fieldErrors.orderRequestDate) {
-                            validateFieldOnBlur('orderRequestDate', e.target.value)
-                          }
-                        }}
-                        onBlur={(e) => validateFieldOnBlur('orderRequestDate', e.target.value)}
-                        className={fieldErrors.orderRequestDate ? 'border-destructive focus-visible:ring-destructive' : ''}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.customerPONumber ? 'text-destructive' : ''}`} htmlFor="customerPONumber">
-                        Customer PO Number (BSTKD) *
-                      </Label>
-                      <Input
-                        id="customerPONumber"
-                        placeholder="e.g., PCE-77421"
-                        value={customerPONumber}
-                        onChange={(e) => {
-                          setCustomerPONumber(e.target.value)
-                          if (fieldErrors.customerPONumber) {
-                            validateFieldOnBlur('customerPONumber', e.target.value)
-                          }
-                        }}
-                        onBlur={(e) => validateFieldOnBlur('customerPONumber', e.target.value)}
-                        className={fieldErrors.customerPONumber ? 'border-destructive focus-visible:ring-destructive' : ''}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.requestedByName ? 'text-destructive' : ''}`} htmlFor="requestedByName">
-                        Requested By (Name)
-                      </Label>
-                      <Input
-                        id="requestedByName"
-                        placeholder="e.g., Sarah Johnson"
-                        value={requestedByName}
-                        onChange={(e) => {
-                          setRequestedByName(e.target.value)
-                          if (fieldErrors.requestedByName) {
-                            validateFieldOnBlur('requestedByName', e.target.value)
-                          }
-                        }}
-                        onBlur={(e) => validateFieldOnBlur('requestedByName', e.target.value)}
-                        className={fieldErrors.requestedByName ? 'border-destructive focus-visible:ring-destructive' : ''}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.requestedByEmail ? 'text-destructive' : ''}`} htmlFor="requestedByEmail">
-                        Requested By (Email)
-                      </Label>
-                      <Input
-                        id="requestedByEmail"
-                        type="text"
-                        placeholder="e.g., sarah.johnson@company.com"
-                        value={requestedByEmail}
-                        onChange={(e) => {
-                          setRequestedByEmail(e.target.value)
-                          if (fieldErrors.requestedByEmail) {
-                            validateFieldOnBlur('requestedByEmail', e.target.value)
-                          }
-                        }}
-                        onBlur={(e) => validateFieldOnBlur('requestedByEmail', e.target.value)}
-                        className={fieldErrors.requestedByEmail ? 'border-destructive focus-visible:ring-destructive' : ''}
-                      />
-                    </div>
-                  </div>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.salesDocumentType ? 'text-destructive' : ''}`} htmlFor="salesDocumentType">
-                        Sales Document Type (AUART) *
-                      </Label>
-                      <Select
-                        value={salesDocumentType}
-                        onValueChange={(value) => {
-                          setSalesDocumentType(value)
-                          if (fieldErrors.salesDocumentType) {
-                            validateFieldOnBlur('salesDocumentType', value)
-                          }
-                        }}
-                        onOpenChange={(open) => open && setActiveSection('identification')}
-                      >
-                        <SelectTrigger id="salesDocumentType" className={`w-full ${fieldErrors.salesDocumentType ? 'border-destructive focus:ring-destructive' : ''}`}>
-                          <SelectValue placeholder="Select document type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {SALES_DOCUMENT_TYPES.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="orderReason">
-                        Order Reason
-                      </Label>
-                      <Select
-                        value={orderReason}
-                        onValueChange={setOrderReason}
-                        onOpenChange={(open) => open && setActiveSection('identification')}
-                      >
-                        <SelectTrigger id="orderReason" className="w-full">
-                          <SelectValue placeholder="Select order reason" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ORDER_REASONS.map((reason) => (
-                            <SelectItem key={reason.value} value={reason.value}>
-                              {reason.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </FormSection>
-
-                {/* B. Customer and Partner Data */}
-                <FormSection id="customer" icon={BuildingIcon} title="B. Customer and Partner Data" isActive={activeSection === 'customer'} onFocus={() => setActiveSection('customer')} errors={sectionErrorMessages.customer}>
-
-                  {/* Sold-To Party */}
+            <form
+              id="create-order-form"
+              onSubmit={handleSubmitOrder}
+              className="space-y-4"
+              noValidate
+            >
+              {/* A. Order Identification */}
+              <FormSection
+                id="identification"
+                icon={ClipboardListIcon}
+                title="A. Order Identification"
+                isActive={activeSection === 'identification'}
+                onFocus={() => setActiveSection('identification')}
+                errors={sectionErrorMessages.identification}
+              >
+                <div className="grid gap-5 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label className={`pl-0.5 ${fieldErrors.client ? 'text-destructive' : ''}`}>Sold-To Party (Customer) *</Label>
-                    {selectedClient ? (
-                      <div className="flex items-center justify-between rounded-lg border p-4">
-                        <div>
-                          <p className="font-medium">{selectedClient.storeName}</p>
-                          <p className="text-muted-foreground text-sm">
-                            {selectedClient.clientCode}
-                          </p>
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={() => setSelectedClient(null)}>
-                          Change
-                        </Button>
-                      </div>
-                    ) : (
-                      <Popover
-                        open={isClientPopoverOpen && clientSearch.length >= 3}
-                        onOpenChange={setIsClientPopoverOpen}
-                      >
-                        <PopoverTrigger asChild>
-                          <div className="relative">
-                            <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-                            <Input
-                              value={clientSearch}
-                              onChange={(e) => {
-                                setClientSearch(e.target.value)
-                                if (e.target.value.length >= 3) {
-                                  setIsClientPopoverOpen(true)
-                                }
-                              }}
-                              onFocus={() => {
-                                setActiveSection('customer')
-                                if (clientSearch.length >= 3) {
-                                  setIsClientPopoverOpen(true)
-                                }
-                              }}
-                              onKeyDown={handleClientSearchKeyDown}
-                              placeholder="Search for a client..."
-                              className={`pl-10 ${fieldErrors.client ? 'border-destructive focus-visible:ring-destructive' : ''}`}
-                            />
-                          </div>
-                        </PopoverTrigger>
-                        <PopoverContent
-                          className="w-[var(--radix-popover-trigger-width)] p-0"
-                          align="start"
-                          onOpenAutoFocus={(e) => e.preventDefault()}
-                        >
-                          <div className="max-h-[300px] overflow-y-auto">
-                            {isLoadingClients ? (
-                              <div className="space-y-2 p-2">
-                                {Array.from({ length: 3 }).map((_, i) => (
-                                  <div key={i} className="flex items-center gap-3 p-2">
-                                    <Skeleton className="size-10 rounded-full" />
-                                    <div className="flex-1 space-y-1">
-                                      <Skeleton className="h-4 w-3/4" />
-                                      <Skeleton className="h-3 w-1/2" />
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : clientResults?.length === 0 ? (
-                              <div className="text-muted-foreground p-4 text-center text-sm">
-                                No clients found
-                              </div>
-                            ) : (
-                              <div className="py-1">
-                                <div className="text-muted-foreground px-3 py-1.5 text-xs font-medium">
-                                  Search Results
-                                </div>
-                                {clientResults?.map((client, index) => (
-                                  <button
-                                    key={client.id}
-                                    type="button"
-                                    onClick={() =>
-                                      handleSelectClient({
-                                        id: client.id,
-                                        storeName: client.storeName,
-                                        clientCode: client.clientCode,
-                                      })
-                                    }
-                                    className={`flex w-full items-center gap-3 px-3 py-2 text-left ${
-                                      index === clientSelectedIndex ? 'bg-accent' : 'hover:bg-accent'
-                                    }`}
-                                  >
-                                    <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-medium">
-                                      {client.storeName[0]}
-                                    </div>
-                                    <div className="min-w-0 flex-1 space-y-0.5">
-                                      <div className="flex items-center gap-2">
-                                        <span className="truncate font-medium">{client.storeName}</span>
-                                        <span className="text-muted-foreground shrink-0 rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs dark:bg-slate-800">
-                                          {client.clientCode}
-                                        </span>
-                                        <span className="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                                          {client.storeType.replace(/_/g, ' ')}
-                                        </span>
-                                        <span
-                                          className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${
-                                            client.status === 'active'
-                                              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                                              : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                                          }`}
-                                        >
-                                          {client.status}
-                                        </span>
-                                      </div>
-                                      <div className="text-muted-foreground flex items-center gap-3 text-xs">
-                                        {client.contactName && (
-                                          <span className="flex items-center gap-1 truncate">
-                                            <BuildingIcon className="size-3 shrink-0" />
-                                            <span className="truncate">{client.contactName}</span>
-                                          </span>
-                                        )}
-                                        <span className="flex items-center gap-1 truncate">
-                                          <MailIcon className="size-3 shrink-0" />
-                                          <span className="truncate">{client.email}</span>
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    )}
-                  </div>
-
-                  {/* Ship-To Party */}
-                  <div className="space-y-2">
-                    <Label className="pl-0.5" htmlFor="shipToLocation">
-                      Ship-To Party (Location)
-                    </Label>
-                    <Input
-                      id="shipToLocation"
-                      placeholder="e.g., Main Store, Distribution Center"
-                      value={shipToLocation}
-                      onChange={(e) => setShipToLocation(e.target.value)}
-                    />
-                  </div>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="shipToCity">
-                        City
-                      </Label>
-                      <Input
-                        id="shipToCity"
-                        placeholder="e.g., San Francisco"
-                        value={shipToCity}
-                        onChange={(e) => setShipToCity(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="shipToState">
-                        State / Province
-                      </Label>
-                      <Input
-                        id="shipToState"
-                        placeholder="e.g., CA"
-                        value={shipToState}
-                        onChange={(e) => setShipToState(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Bill-To and Payer */}
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        id="billToSameAsSoldTo"
-                        checked={billToSameAsSoldTo}
-                        onCheckedChange={(checked) => setBillToSameAsSoldTo(checked === true)}
-                      />
-                      <Label htmlFor="billToSameAsSoldTo" className="cursor-pointer">
-                        Bill-To same as Sold-To
-                      </Label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        id="payerSameAsSoldTo"
-                        checked={payerSameAsSoldTo}
-                        onCheckedChange={(checked) => setPayerSameAsSoldTo(checked === true)}
-                      />
-                      <Label htmlFor="payerSameAsSoldTo" className="cursor-pointer">
-                        Payer same as Sold-To
-                      </Label>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label className="pl-0.5" htmlFor="customerContactPhone">
-                      Customer Contact Phone
-                    </Label>
-                    <Input
-                      id="customerContactPhone"
-                      type="tel"
-                      placeholder="e.g., +1 (415) 555-0184"
-                      value={customerContactPhone}
-                      onChange={(e) => setCustomerContactPhone(e.target.value)}
-                    />
-                  </div>
-                </FormSection>
-
-                {/* C. Commercial Terms */}
-                <FormSection id="commercial" icon={DollarSignIcon} title="C. Commercial Terms" isActive={activeSection === 'commercial'} onFocus={() => setActiveSection('commercial')} errors={sectionErrorMessages.commercial}>
-                  <div className="grid gap-5 md:grid-cols-3">
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.currency ? 'text-destructive' : ''}`} htmlFor="currency">
-                        Currency (WAERK) *
-                      </Label>
-                      <Select
-                        value={currency}
-                        onValueChange={(value) => {
-                          setCurrency(value)
-                          if (fieldErrors.currency) {
-                            validateFieldOnBlur('currency', value)
-                          }
-                        }}
-                        onOpenChange={(open) => open && setActiveSection('commercial')}
-                      >
-                        <SelectTrigger id="currency" className={`w-full ${fieldErrors.currency ? 'border-destructive focus:ring-destructive' : ''}`}>
-                          <SelectValue placeholder="Select currency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CURRENCIES.map((c) => (
-                            <SelectItem key={c.value} value={c.value}>
-                              {c.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.paymentTerms ? 'text-destructive' : ''}`} htmlFor="paymentTerms">
-                        Pay. Terms (ZTERM) *
-                      </Label>
-                      <Select
-                        value={paymentTerms}
-                        onValueChange={(value) => {
-                          setPaymentTerms(value)
-                          if (fieldErrors.paymentTerms) {
-                            validateFieldOnBlur('paymentTerms', value)
-                          }
-                        }}
-                        onOpenChange={(open) => open && setActiveSection('commercial')}
-                      >
-                        <SelectTrigger id="paymentTerms" className={`w-full ${fieldErrors.paymentTerms ? 'border-destructive focus:ring-destructive' : ''}`}>
-                          <SelectValue placeholder="Select payment terms" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PAYMENT_TERMS.map((term) => (
-                            <SelectItem key={term.value} value={term.value}>
-                              {term.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className={`pl-0.5 ${fieldErrors.taxStatus ? 'text-destructive' : ''}`} htmlFor="taxStatus">
-                        Tax Status *
-                      </Label>
-                      <Select
-                        value={taxStatus}
-                        onValueChange={(value) => {
-                          setTaxStatus(value)
-                          if (fieldErrors.taxStatus) {
-                            validateFieldOnBlur('taxStatus', value)
-                          }
-                        }}
-                        onOpenChange={(open) => open && setActiveSection('commercial')}
-                      >
-                        <SelectTrigger id="taxStatus" className={`w-full ${fieldErrors.taxStatus ? 'border-destructive focus:ring-destructive' : ''}`}>
-                          <SelectValue placeholder="Select tax status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {TAX_STATUSES.map((status) => (
-                            <SelectItem key={status.value} value={status.value}>
-                              {status.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="incoterm">
-                        Incoterms (INCO1)
-                      </Label>
-                      <Select
-                        value={incoterm}
-                        onValueChange={setIncoterm}
-                        onOpenChange={(open) => open && setActiveSection('commercial')}
-                      >
-                        <SelectTrigger id="incoterm" className="w-full">
-                          <SelectValue placeholder="Select incoterm" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {INCOTERMS.map((term) => (
-                            <SelectItem key={term.value} value={term.value}>
-                              {term.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="incotermLocation">
-                        Incoterm Location (INCO2)
-                      </Label>
-                      <Input
-                        id="incotermLocation"
-                        placeholder="e.g., San Francisco, CA"
-                        value={incotermLocation}
-                        onChange={(e) => setIncotermLocation(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="pl-0.5" htmlFor="priceAgreement">
-                      Price Agreement / Reference
-                    </Label>
-                    <Input
-                      id="priceAgreement"
-                      placeholder="e.g., FY25 Retail Price List – West Coast"
-                      value={priceAgreement}
-                      onChange={(e) => setPriceAgreement(e.target.value)}
-                    />
-                  </div>
-                </FormSection>
-
-                {/* D. Delivery and Logistics */}
-                <FormSection id="delivery" icon={TruckIcon} title="D. Delivery and Logistics" isActive={activeSection === 'delivery'} onFocus={() => setActiveSection('delivery')} errors={sectionErrorMessages.delivery}>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="requestedDeliveryDate">
-                        Requested Delivery Date (VDATU)
-                      </Label>
-                      <Input
-                        id="requestedDeliveryDate"
-                        type="date"
-                        value={requestedDeliveryDate}
-                        onChange={(e) => setRequestedDeliveryDate(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="carrier">
-                        Carrier / Routing
-                      </Label>
-                      <Select
-                        value={carrier}
-                        onValueChange={setCarrier}
-                        onOpenChange={(open) => open && setActiveSection('delivery')}
-                      >
-                        <SelectTrigger id="carrier" className="w-full">
-                          <SelectValue placeholder="Select carrier" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CARRIER_OPTIONS.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        id="partialDeliveriesAllowed"
-                        checked={partialDeliveriesAllowed}
-                        onCheckedChange={(checked) => setPartialDeliveriesAllowed(checked === true)}
-                      />
-                      <Label htmlFor="partialDeliveriesAllowed" className="cursor-pointer">
-                        Partial Deliveries Allowed
-                      </Label>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        id="substitutionsAllowed"
-                        checked={substitutionsAllowed}
-                        onCheckedChange={(checked) => setSubstitutionsAllowed(checked === true)}
-                      />
-                      <Label htmlFor="substitutionsAllowed" className="cursor-pointer">
-                        Substitutions Allowed
-                      </Label>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="pl-0.5" htmlFor="deliveryInstructions">
-                      Delivery Instructions
-                    </Label>
-                    <Textarea
-                      id="deliveryInstructions"
-                      placeholder="e.g., Appointment required. Deliver to rear loading dock. Pallets must be shrink-wrapped."
-                      value={deliveryInstructions}
-                      onChange={(e) => setDeliveryInstructions(e.target.value)}
-                      rows={3}
-                    />
-                  </div>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="receivingHours">
-                        Receiving Hours
-                      </Label>
-                      <Input
-                        id="receivingHours"
-                        placeholder="e.g., Monday to Friday, 08:00–16:00"
-                        value={receivingHours}
-                        onChange={(e) => setReceivingHours(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="specialPackagingLabeling">
-                        Special Packaging / Labeling
-                      </Label>
-                      <Input
-                        id="specialPackagingLabeling"
-                        placeholder="e.g., Pallet labels required"
-                        value={specialPackagingLabeling}
-                        onChange={(e) => setSpecialPackagingLabeling(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </FormSection>
-
-                {/* E. Order Line Items */}
-                <FormSection id="lineItems" icon={PackageIcon} title="E. Order Line Items" isActive={activeSection === 'lineItems'} onFocus={() => setActiveSection('lineItems')} errors={sectionErrorMessages.lineItems}>
-                  <div className="flex gap-2">
-                    <Select
-                      value={selectedProduct}
-                      onValueChange={setSelectedProduct}
-                      onOpenChange={(open) => open && setActiveSection('lineItems')}
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.orderRequestDate ? 'text-destructive' : ''}`}
+                      htmlFor="orderRequestDate"
                     >
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Select a product..." />
+                      Order Request Date *
+                    </Label>
+                    <Input
+                      id="orderRequestDate"
+                      type="date"
+                      value={orderRequestDate}
+                      onChange={(e) => {
+                        setOrderRequestDate(e.target.value)
+                        if (fieldErrors.orderRequestDate) {
+                          validateFieldOnBlur('orderRequestDate', e.target.value)
+                        }
+                      }}
+                      onBlur={(e) => validateFieldOnBlur('orderRequestDate', e.target.value)}
+                      className={
+                        fieldErrors.orderRequestDate
+                          ? 'border-destructive focus-visible:ring-destructive'
+                          : ''
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.customerPONumber ? 'text-destructive' : ''}`}
+                      htmlFor="customerPONumber"
+                    >
+                      Customer PO Number (BSTKD) *
+                    </Label>
+                    <Input
+                      id="customerPONumber"
+                      placeholder="e.g., PCE-77421"
+                      value={customerPONumber}
+                      onChange={(e) => {
+                        setCustomerPONumber(e.target.value)
+                        if (fieldErrors.customerPONumber) {
+                          validateFieldOnBlur('customerPONumber', e.target.value)
+                        }
+                      }}
+                      onBlur={(e) => validateFieldOnBlur('customerPONumber', e.target.value)}
+                      className={
+                        fieldErrors.customerPONumber
+                          ? 'border-destructive focus-visible:ring-destructive'
+                          : ''
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.requestedByName ? 'text-destructive' : ''}`}
+                      htmlFor="requestedByName"
+                    >
+                      Requested By (Name)
+                    </Label>
+                    <Input
+                      id="requestedByName"
+                      placeholder="e.g., Sarah Johnson"
+                      value={requestedByName}
+                      onChange={(e) => {
+                        setRequestedByName(e.target.value)
+                        if (fieldErrors.requestedByName) {
+                          validateFieldOnBlur('requestedByName', e.target.value)
+                        }
+                      }}
+                      onBlur={(e) => validateFieldOnBlur('requestedByName', e.target.value)}
+                      className={
+                        fieldErrors.requestedByName
+                          ? 'border-destructive focus-visible:ring-destructive'
+                          : ''
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.requestedByEmail ? 'text-destructive' : ''}`}
+                      htmlFor="requestedByEmail"
+                    >
+                      Requested By (Email)
+                    </Label>
+                    <Input
+                      id="requestedByEmail"
+                      type="text"
+                      placeholder="e.g., sarah.johnson@company.com"
+                      value={requestedByEmail}
+                      onChange={(e) => {
+                        setRequestedByEmail(e.target.value)
+                        if (fieldErrors.requestedByEmail) {
+                          validateFieldOnBlur('requestedByEmail', e.target.value)
+                        }
+                      }}
+                      onBlur={(e) => validateFieldOnBlur('requestedByEmail', e.target.value)}
+                      className={
+                        fieldErrors.requestedByEmail
+                          ? 'border-destructive focus-visible:ring-destructive'
+                          : ''
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.salesDocumentType ? 'text-destructive' : ''}`}
+                      htmlFor="salesDocumentType"
+                    >
+                      Sales Document Type (AUART) *
+                    </Label>
+                    <Select
+                      value={salesDocumentType}
+                      onValueChange={(value) => {
+                        setSalesDocumentType(value)
+                        if (fieldErrors.salesDocumentType) {
+                          validateFieldOnBlur('salesDocumentType', value)
+                        }
+                      }}
+                      onOpenChange={(open) => open && setActiveSection('identification')}
+                    >
+                      <SelectTrigger
+                        id="salesDocumentType"
+                        className={`w-full ${fieldErrors.salesDocumentType ? 'border-destructive focus:ring-destructive' : ''}`}
+                      >
+                        <SelectValue placeholder="Select document type" />
                       </SelectTrigger>
                       <SelectContent>
-                        {PRODUCTS.map((product) => (
-                          <SelectItem key={product.sku} value={product.sku}>
-                            {product.sku} – {product.name} (${product.price.toFixed(2)})
+                        {SALES_DOCUMENT_TYPES.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    <Button type="button" onClick={handleAddProduct} disabled={!selectedProduct}>
-                      <PlusIcon className="mr-1 size-4" />
-                      Add
-                    </Button>
                   </div>
-
-                  {orderItems.length > 0 && (
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Product</TableHead>
-                          <TableHead>Qty / UoM</TableHead>
-                          <TableHead className="text-right">Price</TableHead>
-                          <TableHead className="w-10"></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {orderItems.map((item) => (
-                          <TableRow key={item.sku}>
-                            <TableCell className="py-2">
-                              <div>
-                                <p className="font-medium">{item.name}</p>
-                                <p className="text-muted-foreground text-xs">{item.sku}</p>
-                              </div>
-                            </TableCell>
-                            <TableCell className="py-2">
-                              <div className="flex items-center gap-1">
-                                <Input
-                                  type="text"
-                                  value={item.quantity}
-                                  onChange={(e) => handleSetQuantity(item.sku, e.target.value)}
-                                  className="h-8 w-16 text-center"
-                                />
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="h-8 px-2 text-xs">
-                                      {item.uom}
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="start">
-                                    {UOM_OPTIONS.map((uom) => (
-                                      <DropdownMenuItem
-                                        key={uom.value}
-                                        onClick={() => handleUpdateUom(item.sku, uom.value)}
-                                        className={item.uom === uom.value ? 'bg-primary/10 text-primary' : ''}
-                                      >
-                                        {uom.value} - {uom.label.split(' - ')[1]}
-                                      </DropdownMenuItem>
-                                    ))}
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
-                              </div>
-                            </TableCell>
-                            <TableCell className="py-2 text-right font-medium">
-                              ${(item.price * item.quantity).toFixed(2)}
-                            </TableCell>
-                            <TableCell className="py-2">
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="text-destructive size-7"
-                                onClick={() => handleRemoveItem(item.sku)}
-                              >
-                                <TrashIcon className="size-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  )}
-
-                  {orderItems.length === 0 && (
-                    <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
-                      <ShoppingCartIcon className="mx-auto mb-2 size-8 opacity-50" />
-                      <p>No products added yet</p>
-                    </div>
-                  )}
-
-                  <div className="mt-10 space-y-2">
-                    <Label className="pl-0.5" htmlFor="lineNotes">
-                      Line Notes
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="orderReason">
+                      Order Reason
                     </Label>
-                    <Textarea
-                      id="lineNotes"
-                      placeholder="e.g., No substitutions allowed on OdourLock products. Ensure correct scent variant is shipped."
-                      value={lineNotes}
-                      onChange={(e) => setLineNotes(e.target.value)}
-                      rows={2}
+                    <Select
+                      value={orderReason}
+                      onValueChange={setOrderReason}
+                      onOpenChange={(open) => open && setActiveSection('identification')}
+                    >
+                      <SelectTrigger id="orderReason" className="w-full">
+                        <SelectValue placeholder="Select order reason" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ORDER_REASONS.map((reason) => (
+                          <SelectItem key={reason.value} value={reason.value}>
+                            {reason.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </FormSection>
+
+              {/* B. Customer and Partner Data */}
+              <FormSection
+                id="customer"
+                icon={BuildingIcon}
+                title="B. Customer and Partner Data"
+                isActive={activeSection === 'customer'}
+                onFocus={() => setActiveSection('customer')}
+                errors={sectionErrorMessages.customer}
+              >
+                {/* Sold-To Party */}
+                <div className="space-y-2">
+                  <Label className={`pl-0.5 ${fieldErrors.client ? 'text-destructive' : ''}`}>
+                    Sold-To Party (Customer) *
+                  </Label>
+                  {selectedClient ? (
+                    <div className="flex items-center justify-between rounded-lg border p-4">
+                      <div>
+                        <p className="font-medium">{selectedClient.storeName}</p>
+                        <p className="text-muted-foreground text-sm">{selectedClient.clientCode}</p>
+                      </div>
+                      <Button variant="ghost" size="sm" onClick={() => setSelectedClient(null)}>
+                        Change
+                      </Button>
+                    </div>
+                  ) : (
+                    <Popover
+                      open={isClientPopoverOpen && clientSearch.length >= 3}
+                      onOpenChange={setIsClientPopoverOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <div className="relative">
+                          <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                          <Input
+                            value={clientSearch}
+                            onChange={(e) => {
+                              setClientSearch(e.target.value)
+                              if (e.target.value.length >= 3) {
+                                setIsClientPopoverOpen(true)
+                              }
+                            }}
+                            onFocus={() => {
+                              setActiveSection('customer')
+                              if (clientSearch.length >= 3) {
+                                setIsClientPopoverOpen(true)
+                              }
+                            }}
+                            onKeyDown={handleClientSearchKeyDown}
+                            placeholder="Search for a client..."
+                            className={`pl-10 ${fieldErrors.client ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                          />
+                        </div>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-[var(--radix-popover-trigger-width)] p-0"
+                        align="start"
+                        onOpenAutoFocus={(e) => e.preventDefault()}
+                      >
+                        <div className="max-h-[300px] overflow-y-auto">
+                          {isLoadingClients ? (
+                            <div className="space-y-2 p-2">
+                              {Array.from({ length: 3 }).map((_, i) => (
+                                <div key={i} className="flex items-center gap-3 p-2">
+                                  <Skeleton className="size-10 rounded-full" />
+                                  <div className="flex-1 space-y-1">
+                                    <Skeleton className="h-4 w-3/4" />
+                                    <Skeleton className="h-3 w-1/2" />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : clientResults?.length === 0 ? (
+                            <div className="text-muted-foreground p-4 text-center text-sm">
+                              No clients found
+                            </div>
+                          ) : (
+                            <div className="py-1">
+                              <div className="text-muted-foreground px-3 py-1.5 text-xs font-medium">
+                                Search Results
+                              </div>
+                              {clientResults?.map((client, index) => (
+                                <button
+                                  key={client.id}
+                                  type="button"
+                                  onClick={() =>
+                                    handleSelectClient({
+                                      id: client.id,
+                                      storeName: client.storeName,
+                                      clientCode: client.clientCode,
+                                    })
+                                  }
+                                  className={`flex w-full items-center gap-3 px-3 py-2 text-left ${
+                                    index === clientSelectedIndex ? 'bg-accent' : 'hover:bg-accent'
+                                  }`}
+                                >
+                                  <div className="bg-primary/10 text-primary flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-medium">
+                                    {client.storeName[0]}
+                                  </div>
+                                  <div className="min-w-0 flex-1 space-y-0.5">
+                                    <div className="flex items-center gap-2">
+                                      <span className="truncate font-medium">
+                                        {client.storeName}
+                                      </span>
+                                      <span className="text-muted-foreground shrink-0 rounded bg-slate-100 px-1.5 py-0.5 font-mono text-xs dark:bg-slate-800">
+                                        {client.clientCode}
+                                      </span>
+                                      <span className="shrink-0 rounded-full bg-blue-100 px-2 py-0.5 text-xs text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                        {client.storeType.replace(/_/g, ' ')}
+                                      </span>
+                                      <span
+                                        className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${
+                                          client.status === 'active'
+                                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                            : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                                        }`}
+                                      >
+                                        {client.status}
+                                      </span>
+                                    </div>
+                                    <div className="text-muted-foreground flex items-center gap-3 text-xs">
+                                      {client.contactName && (
+                                        <span className="flex items-center gap-1 truncate">
+                                          <BuildingIcon className="size-3 shrink-0" />
+                                          <span className="truncate">{client.contactName}</span>
+                                        </span>
+                                      )}
+                                      <span className="flex items-center gap-1 truncate">
+                                        <MailIcon className="size-3 shrink-0" />
+                                        <span className="truncate">{client.email}</span>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  )}
+                </div>
+
+                {/* Ship-To Party */}
+                <div className="space-y-2">
+                  <Label className="pl-0.5" htmlFor="shipToLocation">
+                    Ship-To Party (Location)
+                  </Label>
+                  <Input
+                    id="shipToLocation"
+                    placeholder="e.g., Main Store, Distribution Center"
+                    value={shipToLocation}
+                    onChange={(e) => setShipToLocation(e.target.value)}
+                  />
+                </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="shipToCity">
+                      City
+                    </Label>
+                    <Input
+                      id="shipToCity"
+                      placeholder="e.g., San Francisco"
+                      value={shipToCity}
+                      onChange={(e) => setShipToCity(e.target.value)}
                     />
                   </div>
-                </FormSection>
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="shipToState">
+                      State / Province
+                    </Label>
+                    <Input
+                      id="shipToState"
+                      placeholder="e.g., CA"
+                      value={shipToState}
+                      onChange={(e) => setShipToState(e.target.value)}
+                    />
+                  </div>
+                </div>
 
-                {/* F. Attachments */}
-                <FormSection id="attachments" icon={PaperclipIcon} title="F. Attachments" isActive={activeSection === 'attachments'} onFocus={() => setActiveSection('attachments')} errors={sectionErrorMessages.attachments}>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className="pl-0.5">Customer PO / Order Form</Label>
-                      <div className="border-input hover:bg-accent/50 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed p-6 transition-colors">
-                        <FileTextIcon className="text-muted-foreground size-5" />
-                        <span className="text-muted-foreground text-sm">
-                          Click to upload or drag and drop
-                        </span>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5">Tax Exemption Certificate</Label>
-                      <div className="border-input hover:bg-accent/50 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed p-6 transition-colors">
-                        <FileTextIcon className="text-muted-foreground size-5" />
-                        <span className="text-muted-foreground text-sm">
-                          Click to upload or drag and drop
-                        </span>
-                      </div>
+                {/* Bill-To and Payer */}
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="billToSameAsSoldTo"
+                      checked={billToSameAsSoldTo}
+                      onCheckedChange={(checked) => setBillToSameAsSoldTo(checked === true)}
+                    />
+                    <Label htmlFor="billToSameAsSoldTo" className="cursor-pointer">
+                      Bill-To same as Sold-To
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="payerSameAsSoldTo"
+                      checked={payerSameAsSoldTo}
+                      onCheckedChange={(checked) => setPayerSameAsSoldTo(checked === true)}
+                    />
+                    <Label htmlFor="payerSameAsSoldTo" className="cursor-pointer">
+                      Payer same as Sold-To
+                    </Label>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="pl-0.5" htmlFor="customerContactPhone">
+                    Customer Contact Phone
+                  </Label>
+                  <Input
+                    id="customerContactPhone"
+                    type="tel"
+                    placeholder="e.g., +1 (415) 555-0184"
+                    value={customerContactPhone}
+                    onChange={(e) => setCustomerContactPhone(e.target.value)}
+                  />
+                </div>
+              </FormSection>
+
+              {/* C. Commercial Terms */}
+              <FormSection
+                id="commercial"
+                icon={DollarSignIcon}
+                title="C. Commercial Terms"
+                isActive={activeSection === 'commercial'}
+                onFocus={() => setActiveSection('commercial')}
+                errors={sectionErrorMessages.commercial}
+              >
+                <div className="grid gap-5 md:grid-cols-3">
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.currency ? 'text-destructive' : ''}`}
+                      htmlFor="currency"
+                    >
+                      Currency (WAERK) *
+                    </Label>
+                    <Select
+                      value={currency}
+                      onValueChange={(value) => {
+                        setCurrency(value)
+                        if (fieldErrors.currency) {
+                          validateFieldOnBlur('currency', value)
+                        }
+                      }}
+                      onOpenChange={(open) => open && setActiveSection('commercial')}
+                    >
+                      <SelectTrigger
+                        id="currency"
+                        className={`w-full ${fieldErrors.currency ? 'border-destructive focus:ring-destructive' : ''}`}
+                      >
+                        <SelectValue placeholder="Select currency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CURRENCIES.map((c) => (
+                          <SelectItem key={c.value} value={c.value}>
+                            {c.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.paymentTerms ? 'text-destructive' : ''}`}
+                      htmlFor="paymentTerms"
+                    >
+                      Pay. Terms (ZTERM) *
+                    </Label>
+                    <Select
+                      value={paymentTerms}
+                      onValueChange={(value) => {
+                        setPaymentTerms(value)
+                        if (fieldErrors.paymentTerms) {
+                          validateFieldOnBlur('paymentTerms', value)
+                        }
+                      }}
+                      onOpenChange={(open) => open && setActiveSection('commercial')}
+                    >
+                      <SelectTrigger
+                        id="paymentTerms"
+                        className={`w-full ${fieldErrors.paymentTerms ? 'border-destructive focus:ring-destructive' : ''}`}
+                      >
+                        <SelectValue placeholder="Select payment terms" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PAYMENT_TERMS.map((term) => (
+                          <SelectItem key={term.value} value={term.value}>
+                            {term.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label
+                      className={`pl-0.5 ${fieldErrors.taxStatus ? 'text-destructive' : ''}`}
+                      htmlFor="taxStatus"
+                    >
+                      Tax Status *
+                    </Label>
+                    <Select
+                      value={taxStatus}
+                      onValueChange={(value) => {
+                        setTaxStatus(value)
+                        if (fieldErrors.taxStatus) {
+                          validateFieldOnBlur('taxStatus', value)
+                        }
+                      }}
+                      onOpenChange={(open) => open && setActiveSection('commercial')}
+                    >
+                      <SelectTrigger
+                        id="taxStatus"
+                        className={`w-full ${fieldErrors.taxStatus ? 'border-destructive focus:ring-destructive' : ''}`}
+                      >
+                        <SelectValue placeholder="Select tax status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TAX_STATUSES.map((status) => (
+                          <SelectItem key={status.value} value={status.value}>
+                            {status.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="incoterm">
+                      Incoterms (INCO1)
+                    </Label>
+                    <Select
+                      value={incoterm}
+                      onValueChange={setIncoterm}
+                      onOpenChange={(open) => open && setActiveSection('commercial')}
+                    >
+                      <SelectTrigger id="incoterm" className="w-full">
+                        <SelectValue placeholder="Select incoterm" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INCOTERMS.map((term) => (
+                          <SelectItem key={term.value} value={term.value}>
+                            {term.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="incotermLocation">
+                      Incoterm Location (INCO2)
+                    </Label>
+                    <Input
+                      id="incotermLocation"
+                      placeholder="e.g., San Francisco, CA"
+                      value={incotermLocation}
+                      onChange={(e) => setIncotermLocation(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="pl-0.5" htmlFor="priceAgreement">
+                    Price Agreement / Reference
+                  </Label>
+                  <Input
+                    id="priceAgreement"
+                    placeholder="e.g., FY25 Retail Price List – West Coast"
+                    value={priceAgreement}
+                    onChange={(e) => setPriceAgreement(e.target.value)}
+                  />
+                </div>
+              </FormSection>
+
+              {/* D. Delivery and Logistics */}
+              <FormSection
+                id="delivery"
+                icon={TruckIcon}
+                title="D. Delivery and Logistics"
+                isActive={activeSection === 'delivery'}
+                onFocus={() => setActiveSection('delivery')}
+                errors={sectionErrorMessages.delivery}
+              >
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="requestedDeliveryDate">
+                      Requested Delivery Date (VDATU)
+                    </Label>
+                    <Input
+                      id="requestedDeliveryDate"
+                      type="date"
+                      value={requestedDeliveryDate}
+                      onChange={(e) => setRequestedDeliveryDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="carrier">
+                      Carrier / Routing
+                    </Label>
+                    <Select
+                      value={carrier}
+                      onValueChange={setCarrier}
+                      onOpenChange={(open) => open && setActiveSection('delivery')}
+                    >
+                      <SelectTrigger id="carrier" className="w-full">
+                        <SelectValue placeholder="Select carrier" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CARRIER_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="partialDeliveriesAllowed"
+                      checked={partialDeliveriesAllowed}
+                      onCheckedChange={(checked) => setPartialDeliveriesAllowed(checked === true)}
+                    />
+                    <Label htmlFor="partialDeliveriesAllowed" className="cursor-pointer">
+                      Partial Deliveries Allowed
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      id="substitutionsAllowed"
+                      checked={substitutionsAllowed}
+                      onCheckedChange={(checked) => setSubstitutionsAllowed(checked === true)}
+                    />
+                    <Label htmlFor="substitutionsAllowed" className="cursor-pointer">
+                      Substitutions Allowed
+                    </Label>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="pl-0.5" htmlFor="deliveryInstructions">
+                    Delivery Instructions
+                  </Label>
+                  <Textarea
+                    id="deliveryInstructions"
+                    placeholder="e.g., Appointment required. Deliver to rear loading dock. Pallets must be shrink-wrapped."
+                    value={deliveryInstructions}
+                    onChange={(e) => setDeliveryInstructions(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="receivingHours">
+                      Receiving Hours
+                    </Label>
+                    <Input
+                      id="receivingHours"
+                      placeholder="e.g., Monday to Friday, 08:00–16:00"
+                      value={receivingHours}
+                      onChange={(e) => setReceivingHours(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="specialPackagingLabeling">
+                      Special Packaging / Labeling
+                    </Label>
+                    <Input
+                      id="specialPackagingLabeling"
+                      placeholder="e.g., Pallet labels required"
+                      value={specialPackagingLabeling}
+                      onChange={(e) => setSpecialPackagingLabeling(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </FormSection>
+
+              {/* E. Order Line Items */}
+              <FormSection
+                id="lineItems"
+                icon={PackageIcon}
+                title="E. Order Line Items"
+                isActive={activeSection === 'lineItems'}
+                onFocus={() => setActiveSection('lineItems')}
+                errors={sectionErrorMessages.lineItems}
+              >
+                <div className="flex gap-2">
+                  <Select
+                    value={selectedProduct}
+                    onValueChange={setSelectedProduct}
+                    onOpenChange={(open) => open && setActiveSection('lineItems')}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Select a product..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PRODUCTS.map((product) => (
+                        <SelectItem key={product.sku} value={product.sku}>
+                          {product.sku} – {product.name} (${product.price.toFixed(2)})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" onClick={handleAddProduct} disabled={!selectedProduct}>
+                    <PlusIcon className="mr-1 size-4" />
+                    Add
+                  </Button>
+                </div>
+
+                {orderItems.length > 0 && (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Product</TableHead>
+                        <TableHead>Qty / UoM</TableHead>
+                        <TableHead className="text-right">Price</TableHead>
+                        <TableHead className="w-10"></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {orderItems.map((item) => (
+                        <TableRow key={item.sku}>
+                          <TableCell className="py-2">
+                            <div>
+                              <p className="font-medium">{item.name}</p>
+                              <p className="text-muted-foreground text-xs">{item.sku}</p>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <div className="flex items-center gap-1">
+                              <Input
+                                type="text"
+                                value={item.quantity}
+                                onChange={(e) => handleSetQuantity(item.sku, e.target.value)}
+                                className="h-8 w-16 text-center"
+                              />
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-8 px-2 text-xs">
+                                    {item.uom}
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                  {UOM_OPTIONS.map((uom) => (
+                                    <DropdownMenuItem
+                                      key={uom.value}
+                                      onClick={() => handleUpdateUom(item.sku, uom.value)}
+                                      className={
+                                        item.uom === uom.value ? 'bg-primary/10 text-primary' : ''
+                                      }
+                                    >
+                                      {uom.value} - {uom.label.split(' - ')[1]}
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
+                          </TableCell>
+                          <TableCell className="py-2 text-right font-medium">
+                            ${(item.price * item.quantity).toFixed(2)}
+                          </TableCell>
+                          <TableCell className="py-2">
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="text-destructive size-7"
+                              onClick={() => handleRemoveItem(item.sku)}
+                            >
+                              <TrashIcon className="size-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
+
+                {orderItems.length === 0 && (
+                  <div className="text-muted-foreground rounded-lg border border-dashed p-8 text-center">
+                    <ShoppingCartIcon className="mx-auto mb-2 size-8 opacity-50" />
+                    <p>No products added yet</p>
+                  </div>
+                )}
+
+                <div className="mt-10 space-y-2">
+                  <Label className="pl-0.5" htmlFor="lineNotes">
+                    Line Notes
+                  </Label>
+                  <Textarea
+                    id="lineNotes"
+                    placeholder="e.g., No substitutions allowed on OdourLock products. Ensure correct scent variant is shipped."
+                    value={lineNotes}
+                    onChange={(e) => setLineNotes(e.target.value)}
+                    rows={2}
+                  />
+                </div>
+              </FormSection>
+
+              {/* F. Attachments */}
+              <FormSection
+                id="attachments"
+                icon={PaperclipIcon}
+                title="F. Attachments"
+                isActive={activeSection === 'attachments'}
+                onFocus={() => setActiveSection('attachments')}
+                errors={sectionErrorMessages.attachments}
+              >
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="pl-0.5">Customer PO / Order Form</Label>
+                    <div className="border-input hover:bg-accent/50 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed p-6 transition-colors">
+                      <FileTextIcon className="text-muted-foreground size-5" />
+                      <span className="text-muted-foreground text-sm">
+                        Click to upload or drag and drop
+                      </span>
                     </div>
                   </div>
-                </FormSection>
-
-                {/* G. Internal Use Only */}
-                <FormSection id="internal" icon={UserIcon} title="G. Internal Use Only (Order Entry)" isActive={activeSection === 'internal'} onFocus={() => setActiveSection('internal')} errors={sectionErrorMessages.internal}>
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="orderEnteredBy">
-                        Order Entered By
-                      </Label>
-                      <Input
-                        id="orderEnteredBy"
-                        placeholder="e.g., J. Nguyen"
-                        value={orderEnteredBy}
-                        onChange={(e) => setOrderEnteredBy(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="pl-0.5" htmlFor="orderEntryDate">
-                        Order Entry Date
-                      </Label>
-                      <Input
-                        id="orderEntryDate"
-                        type="date"
-                        value={orderEntryDate}
-                        onChange={(e) => setOrderEntryDate(e.target.value)}
-                      />
+                  <div className="space-y-2">
+                    <Label className="pl-0.5">Tax Exemption Certificate</Label>
+                    <div className="border-input hover:bg-accent/50 flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed p-6 transition-colors">
+                      <FileTextIcon className="text-muted-foreground size-5" />
+                      <span className="text-muted-foreground text-sm">
+                        Click to upload or drag and drop
+                      </span>
                     </div>
                   </div>
-                </FormSection>
+                </div>
+              </FormSection>
 
-              </form>
+              {/* G. Internal Use Only */}
+              <FormSection
+                id="internal"
+                icon={UserIcon}
+                title="G. Internal Use Only (Order Entry)"
+                isActive={activeSection === 'internal'}
+                onFocus={() => setActiveSection('internal')}
+                errors={sectionErrorMessages.internal}
+              >
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="orderEnteredBy">
+                      Order Entered By
+                    </Label>
+                    <Input
+                      id="orderEnteredBy"
+                      placeholder="e.g., J. Nguyen"
+                      value={orderEnteredBy}
+                      onChange={(e) => setOrderEnteredBy(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="pl-0.5" htmlFor="orderEntryDate">
+                      Order Entry Date
+                    </Label>
+                    <Input
+                      id="orderEntryDate"
+                      type="date"
+                      value={orderEntryDate}
+                      onChange={(e) => setOrderEntryDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </FormSection>
+            </form>
           </div>
         </div>
 
         {/* Sidebar */}
-        <div className="sticky top-4 self-start space-y-4">
+        <div className="sticky top-4 space-y-4 self-start">
           {/* Section Navigation */}
           <FormSectionsCard
             sections={navigationSections}
@@ -1552,7 +1691,10 @@ function OrderCreationPage() {
                 type="submit"
                 form="create-order-form"
                 className="w-full"
-                disabled={!Object.values(sectionStatus).every(Boolean) || Object.keys(fieldErrors).length > 0}
+                disabled={
+                  !Object.values(sectionStatus).every(Boolean) ||
+                  Object.keys(fieldErrors).length > 0
+                }
               >
                 <SaveIcon className="size-4" />
                 Create Order
@@ -1635,7 +1777,11 @@ function OrderCreationPage() {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsConfirmDialogOpen(false)} disabled={createOrderMutation.isPending}>
+            <Button
+              variant="outline"
+              onClick={() => setIsConfirmDialogOpen(false)}
+              disabled={createOrderMutation.isPending}
+            >
               Cancel
             </Button>
             <Button onClick={handleConfirmCreateOrder} disabled={createOrderMutation.isPending}>

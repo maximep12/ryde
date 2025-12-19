@@ -207,7 +207,6 @@ const SEED_CLIENT_CODES = SEED_CLIENTS.map((c) => c.clientCode)
 // Fixed reference date for deterministic date calculations
 const REFERENCE_DATE = new Date('2025-12-15T12:00:00Z')
 
-
 export async function seedClients(db: NodePgDatabase<typeof schema>) {
   console.log('Seeding clients...')
 
@@ -311,9 +310,8 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
 
       // Deterministic requiresApproval - about 25% of orders require approval
       // Higher chance for large orders (totalAmount > 50000 cents = $500)
-      const requiresApproval = totalAmount > 50000
-        ? (clientIdx + orderIdx) % 2 === 0
-        : (clientIdx + orderIdx) % 4 === 0
+      const requiresApproval =
+        totalAmount > 50000 ? (clientIdx + orderIdx) % 2 === 0 : (clientIdx + orderIdx) % 4 === 0
 
       orders.push({
         orderNumber: orderNum,
@@ -365,7 +363,11 @@ export async function seedClientOrderIssues(db: NodePgDatabase<typeof schema>) {
 
   // Get all orders to potentially add issues
   const allOrders = await db
-    .select({ id: clientOrders.id, orderNumber: clientOrders.orderNumber, status: clientOrders.status })
+    .select({
+      id: clientOrders.id,
+      orderNumber: clientOrders.orderNumber,
+      status: clientOrders.status,
+    })
     .from(clientOrders)
 
   if (allOrders.length === 0) {
@@ -388,32 +390,83 @@ export async function seedClientOrderIssues(db: NodePgDatabase<typeof schema>) {
 
   const issueTemplates: Record<string, { title: string; description: string }[]> = {
     pricing_error: [
-      { title: 'Price mismatch on invoice', description: 'Customer invoice shows different price than quoted. Need to issue credit memo.' },
-      { title: 'Discount not applied', description: 'Volume discount was not applied to this order. Customer is expecting 10% off.' },
+      {
+        title: 'Price mismatch on invoice',
+        description:
+          'Customer invoice shows different price than quoted. Need to issue credit memo.',
+      },
+      {
+        title: 'Discount not applied',
+        description:
+          'Volume discount was not applied to this order. Customer is expecting 10% off.',
+      },
     ],
     inventory_shortage: [
-      { title: 'Partial shipment required', description: 'Only 60% of ordered quantity available in warehouse. Backorder created for remaining items.' },
-      { title: 'Out of stock - substitute offered', description: 'Product SKU out of stock. Customer offered alternative product at same price.' },
+      {
+        title: 'Partial shipment required',
+        description:
+          'Only 60% of ordered quantity available in warehouse. Backorder created for remaining items.',
+      },
+      {
+        title: 'Out of stock - substitute offered',
+        description:
+          'Product SKU out of stock. Customer offered alternative product at same price.',
+      },
     ],
     shipping_delay: [
-      { title: 'Carrier delay - weather related', description: 'Shipment delayed due to severe weather conditions in delivery region. ETA pushed by 3 days.' },
-      { title: 'Customs hold', description: 'International shipment held at customs. Additional documentation required.' },
+      {
+        title: 'Carrier delay - weather related',
+        description:
+          'Shipment delayed due to severe weather conditions in delivery region. ETA pushed by 3 days.',
+      },
+      {
+        title: 'Customs hold',
+        description: 'International shipment held at customs. Additional documentation required.',
+      },
     ],
     damaged_product: [
-      { title: 'Damaged packaging reported', description: 'Customer reported damaged packaging on 2 units. Photos received and replacement being processed.' },
-      { title: 'Product contamination', description: 'Customer reported unusual odor from product batch. QA investigation initiated.' },
+      {
+        title: 'Damaged packaging reported',
+        description:
+          'Customer reported damaged packaging on 2 units. Photos received and replacement being processed.',
+      },
+      {
+        title: 'Product contamination',
+        description:
+          'Customer reported unusual odor from product batch. QA investigation initiated.',
+      },
     ],
     wrong_item: [
-      { title: 'Wrong product variant shipped', description: 'Customer received lavender scent instead of unscented. Return label sent.' },
-      { title: 'Incorrect quantity', description: 'Order shows 10 units but only 8 were shipped. Shortage to be resolved.' },
+      {
+        title: 'Wrong product variant shipped',
+        description: 'Customer received lavender scent instead of unscented. Return label sent.',
+      },
+      {
+        title: 'Incorrect quantity',
+        description: 'Order shows 10 units but only 8 were shipped. Shortage to be resolved.',
+      },
     ],
     payment_issue: [
-      { title: 'Payment declined', description: 'Customer payment method declined. Order on hold pending new payment information.' },
-      { title: 'Duplicate charge', description: 'Customer charged twice for same order. Refund being processed.' },
+      {
+        title: 'Payment declined',
+        description:
+          'Customer payment method declined. Order on hold pending new payment information.',
+      },
+      {
+        title: 'Duplicate charge',
+        description: 'Customer charged twice for same order. Refund being processed.',
+      },
     ],
     address_issue: [
-      { title: 'Invalid delivery address', description: 'Carrier unable to deliver - address incomplete. Awaiting customer confirmation.' },
-      { title: 'Business closed at delivery', description: 'Multiple delivery attempts failed - business closed during delivery hours.' },
+      {
+        title: 'Invalid delivery address',
+        description:
+          'Carrier unable to deliver - address incomplete. Awaiting customer confirmation.',
+      },
+      {
+        title: 'Business closed at delivery',
+        description: 'Multiple delivery attempts failed - business closed during delivery hours.',
+      },
     ],
   }
 
@@ -471,7 +524,7 @@ export async function seedClientOrderIssues(db: NodePgDatabase<typeof schema>) {
     let resolvedAt: Date | null = null
     let resolution: string | null = null
     if (status === 'resolved' || status === 'dismissed') {
-      resolvedAt = new Date(createdAt.getTime() + (i % 3 + 1) * 24 * 60 * 60 * 1000)
+      resolvedAt = new Date(createdAt.getTime() + ((i % 3) + 1) * 24 * 60 * 60 * 1000)
       resolution = resolutions[i % resolutions.length]!
     }
 
@@ -639,7 +692,6 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
   }
 
   const clientByCode = Object.fromEntries(seedClientsList.map((c) => [c.clientCode, c]))
-
 
   const assortments: Array<{
     clientId: number

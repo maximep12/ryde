@@ -148,23 +148,17 @@ function UsersPage() {
       {
         accessorKey: 'givenName',
         header: 'First Name',
-        cell: ({ row }) => (
-          <span className="font-medium">{row.original.givenName || '-'}</span>
-        ),
+        cell: ({ row }) => <span className="font-medium">{row.original.givenName || '-'}</span>,
       },
       {
         accessorKey: 'familyName',
         header: 'Last Name',
-        cell: ({ row }) => (
-          <span className="font-medium">{row.original.familyName || '-'}</span>
-        ),
+        cell: ({ row }) => <span className="font-medium">{row.original.familyName || '-'}</span>,
       },
       {
         accessorKey: 'email',
         header: 'Email',
-        cell: ({ row }) => (
-          <span className="text-muted-foreground">{row.original.email}</span>
-        ),
+        cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,
       },
       {
         accessorKey: 'department',

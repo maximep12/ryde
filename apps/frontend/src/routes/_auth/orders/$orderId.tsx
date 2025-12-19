@@ -117,7 +117,13 @@ function getStatusIndex(status: string): number {
   return ORDER_STATUSES.indexOf(status as (typeof ORDER_STATUSES)[number])
 }
 
-function OrderProgressLastUpdated({ currentStatus, orderDate }: { currentStatus: string; orderDate: string }) {
+function OrderProgressLastUpdated({
+  currentStatus,
+  orderDate,
+}: {
+  currentStatus: string
+  orderDate: string
+}) {
   const timestamp = React.useMemo(() => {
     const baseDate = new Date(orderDate)
     const seed = baseDate.getTime()
@@ -172,7 +178,13 @@ function OrderProgressLastUpdated({ currentStatus, orderDate }: { currentStatus:
   )
 }
 
-function OrderStatusTimeline({ currentStatus, orderDate }: { currentStatus: string; orderDate: string }) {
+function OrderStatusTimeline({
+  currentStatus,
+  orderDate,
+}: {
+  currentStatus: string
+  orderDate: string
+}) {
   const isCancelled = currentStatus === 'cancelled'
   const currentIndex = getStatusIndex(currentStatus)
 
@@ -232,10 +244,10 @@ function OrderStatusTimeline({ currentStatus, orderDate }: { currentStatus: stri
       <div className="w-full">
         <div className="flex w-full items-start">
           {/* Cancelled indicator at the beginning */}
-          <div className="flex items-start mr-4">
+          <div className="mr-4 flex items-start">
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex flex-col items-center cursor-pointer">
+                <div className="flex cursor-pointer flex-col items-center">
                   <div className="flex size-10 items-center justify-center rounded-full border-2 border-red-500 bg-red-500 text-white transition-transform hover:scale-110">
                     <XCircleIcon className="size-5" />
                   </div>
@@ -248,7 +260,10 @@ function OrderStatusTimeline({ currentStatus, orderDate }: { currentStatus: stri
                 <p className="font-medium">Cancelled</p>
                 <p className="text-xs opacity-80">
                   {cancelledTimestamp?.toLocaleDateString('en-GB')} at{' '}
-                  {cancelledTimestamp?.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                  {cancelledTimestamp?.toLocaleTimeString('en-GB', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
                 </p>
               </TooltipContent>
             </Tooltip>
@@ -265,14 +280,12 @@ function OrderStatusTimeline({ currentStatus, orderDate }: { currentStatus: stri
                   <div className="flex size-10 items-center justify-center rounded-full border-2 border-gray-300 bg-gray-100 text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500">
                     <Icon className="size-5" />
                   </div>
-                  <span className="mt-2 text-xs font-medium text-muted-foreground">
+                  <span className="text-muted-foreground mt-2 text-xs font-medium">
                     {status.label}
                   </span>
                 </div>
 
-                {!isLast && (
-                  <div className="mt-5 h-0.5 flex-1 bg-gray-200 dark:bg-gray-700" />
-                )}
+                {!isLast && <div className="mt-5 h-0.5 flex-1 bg-gray-200 dark:bg-gray-700" />}
               </div>
             )
           })}
@@ -296,9 +309,9 @@ function OrderStatusTimeline({ currentStatus, orderDate }: { currentStatus: stri
               <div
                 className={`flex size-10 items-center justify-center rounded-full border-2 transition-transform ${
                   isCompleted
-                    ? 'border-green-500 bg-green-500 text-white hover:scale-110 cursor-pointer'
+                    ? 'cursor-pointer border-green-500 bg-green-500 text-white hover:scale-110'
                     : isCurrent
-                      ? 'border-primary bg-primary text-primary-foreground hover:scale-110 cursor-pointer'
+                      ? 'border-primary bg-primary text-primary-foreground cursor-pointer hover:scale-110'
                       : 'border-gray-300 bg-white text-gray-400 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-500'
                 }`}
               >
@@ -323,14 +336,15 @@ function OrderStatusTimeline({ currentStatus, orderDate }: { currentStatus: stri
               {/* Status Node with Tooltip for completed and current statuses */}
               {isCompleted || isCurrent ? (
                 <Tooltip>
-                  <TooltipTrigger asChild>
-                    {statusNode}
-                  </TooltipTrigger>
+                  <TooltipTrigger asChild>{statusNode}</TooltipTrigger>
                   <TooltipContent>
                     <p className="font-medium">{status.label}</p>
                     <p className="text-xs opacity-80">
                       {timestamp.toLocaleDateString('en-GB')} at{' '}
-                      {timestamp.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                      {timestamp.toLocaleTimeString('en-GB', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
                     </p>
                   </TooltipContent>
                 </Tooltip>
@@ -425,11 +439,11 @@ function OrderDetailsPage() {
           </Link>
         </Button>
         {order.approvedAt && order.approvedBy?.id && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-2 text-sm">
             <CheckCircle2Icon className="size-4 text-green-600" />
             <span>
               Approved by{' '}
-              <span className="font-medium text-foreground">
+              <span className="text-foreground font-medium">
                 {order.approvedBy.givenName} {order.approvedBy.familyName}
               </span>{' '}
               at {formatDateTime(order.approvedAt)}
@@ -437,10 +451,13 @@ function OrderDetailsPage() {
           </div>
         )}
         {order.requiresApproval && !order.approvedAt && (
-          <AlertDialog open={dialogOpen} onOpenChange={(open) => {
-            setDialogOpen(open)
-            if (!open) setApprovalConfirmed(false)
-          }}>
+          <AlertDialog
+            open={dialogOpen}
+            onOpenChange={(open) => {
+              setDialogOpen(open)
+              if (!open) setApprovalConfirmed(false)
+            }}
+          >
             <AlertDialogTrigger asChild>
               <Button>
                 <CheckIcon className="size-4" />
@@ -453,14 +470,18 @@ function OrderDetailsPage() {
                 <AlertDialogDescription className="space-y-4">
                   <p>
                     You are about to approve this order for{' '}
-                    <span className="font-medium text-foreground">{order.client.storeName}</span>{' '}
+                    <span className="text-foreground font-medium">{order.client.storeName}</span>{' '}
                     with a total of{' '}
-                    <span className="font-medium text-foreground">{formatCurrency(order.totalAmount)}</span>.
+                    <span className="text-foreground font-medium">
+                      {formatCurrency(order.totalAmount)}
+                    </span>
+                    .
                   </p>
                   <p>
-                    This action will be recorded and signed under your account. Please ensure you have thoroughly reviewed all order details before proceeding.
+                    This action will be recorded and signed under your account. Please ensure you
+                    have thoroughly reviewed all order details before proceeding.
                   </p>
-                  <div className="flex items-start gap-2 rounded-md border bg-muted/50 p-3">
+                  <div className="bg-muted/50 flex items-start gap-2 rounded-md border p-3">
                     <Checkbox
                       id="approval-confirmation"
                       checked={approvalConfirmed}
@@ -468,9 +489,10 @@ function OrderDetailsPage() {
                     />
                     <label
                       htmlFor="approval-confirmation"
-                      className="cursor-pointer text-sm leading-tight text-foreground"
+                      className="text-foreground cursor-pointer text-sm leading-tight"
                     >
-                      I confirm that I have reviewed this order and I authorize its approval under my responsibility.
+                      I confirm that I have reviewed this order and I authorize its approval under
+                      my responsibility.
                     </label>
                   </div>
                 </AlertDialogDescription>
@@ -508,7 +530,7 @@ function OrderDetailsPage() {
                 <ReceiptIcon className="size-8" />
               </div>
               <div>
-                <CardTitle className="text-2xl font-mono">{order.orderNumber}</CardTitle>
+                <CardTitle className="font-mono text-2xl">{order.orderNumber}</CardTitle>
                 <CardDescription className="mt-1 flex items-center gap-2">
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs capitalize ${getStatusColor(order.status)}`}
@@ -612,7 +634,8 @@ function OrderDetailsPage() {
               Order Issues
             </CardTitle>
             <CardDescription>
-              {order.issues.length} issue{order.issues.length !== 1 ? 's' : ''} reported for this order
+              {order.issues.length} issue{order.issues.length !== 1 ? 's' : ''} reported for this
+              order
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -628,67 +651,67 @@ function OrderDetailsPage() {
                   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
                 })
                 .map((issue) => (
-                <div
-                  key={issue.id}
-                  className={`rounded-lg border shadow-sm ${
-                    issue.status === 'resolved' || issue.status === 'dismissed'
-                      ? 'bg-green-50 border-green-200 dark:bg-green-950/30 dark:border-green-900/50'
-                      : 'bg-muted/30'
-                  }`}
-                >
-                  <div className="flex">
-                    {/* Main content */}
-                    <div className="flex-1 space-y-2 p-4">
-                      <h4 className="font-semibold">{issue.title}</h4>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="font-medium">{formatIssueType(issue.issueType)}</span>
-                        <span>•</span>
-                        <span>Reported {formatDate(issue.createdAt)}</span>
-                        {issue.resolvedAt && (
-                          <>
-                            <span>•</span>
-                            <span className="flex items-center gap-1">
-                              <CheckIcon className="size-3" />
-                              Resolved {formatDate(issue.resolvedAt)}
-                            </span>
-                          </>
+                  <div
+                    key={issue.id}
+                    className={`rounded-lg border shadow-sm ${
+                      issue.status === 'resolved' || issue.status === 'dismissed'
+                        ? 'border-green-200 bg-green-50 dark:border-green-900/50 dark:bg-green-950/30'
+                        : 'bg-muted/30'
+                    }`}
+                  >
+                    <div className="flex">
+                      {/* Main content */}
+                      <div className="flex-1 space-y-2 p-4">
+                        <h4 className="font-semibold">{issue.title}</h4>
+                        <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                          <span className="font-medium">{formatIssueType(issue.issueType)}</span>
+                          <span>•</span>
+                          <span>Reported {formatDate(issue.createdAt)}</span>
+                          {issue.resolvedAt && (
+                            <>
+                              <span>•</span>
+                              <span className="flex items-center gap-1">
+                                <CheckIcon className="size-3" />
+                                Resolved {formatDate(issue.resolvedAt)}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        {issue.description && (
+                          <p className="text-muted-foreground text-sm">{issue.description}</p>
+                        )}
+                        {issue.resolution && (
+                          <div className="mt-2 rounded-md bg-green-50 p-2 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">
+                            <span className="font-medium">Resolution:</span> {issue.resolution}
+                          </div>
                         )}
                       </div>
-                      {issue.description && (
-                        <p className="text-sm text-muted-foreground">{issue.description}</p>
-                      )}
-                      {issue.resolution && (
-                        <div className="mt-2 rounded-md bg-green-50 dark:bg-green-900/20 p-2 text-sm text-green-700 dark:text-green-400">
-                          <span className="font-medium">Resolution:</span> {issue.resolution}
+
+                      {/* Vertical divider */}
+                      <div className="bg-border my-4 w-px self-stretch" />
+
+                      {/* Severity and Status section */}
+                      <div className="flex min-w-[140px] flex-col items-center justify-center gap-4 p-4">
+                        <div className="flex flex-col items-center space-y-1">
+                          <p className="text-muted-foreground text-xs">Severity</p>
+                          <span
+                            className={`inline-block rounded-full px-2 py-0.5 text-xs capitalize ${getSeverityColor(issue.severity)}`}
+                          >
+                            {issue.severity}
+                          </span>
                         </div>
-                      )}
-                    </div>
-
-                    {/* Vertical divider */}
-                    <div className="w-px bg-border self-stretch my-4" />
-
-                    {/* Severity and Status section */}
-                    <div className="flex flex-col items-center justify-center gap-4 p-4 min-w-[140px]">
-                      <div className="flex flex-col items-center space-y-1">
-                        <p className="text-xs text-muted-foreground">Severity</p>
-                        <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-xs capitalize ${getSeverityColor(issue.severity)}`}
-                        >
-                          {issue.severity}
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-center space-y-1">
-                        <p className="text-xs text-muted-foreground">Status</p>
-                        <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-xs capitalize ${getIssueStatusColor(issue.status)}`}
-                        >
-                          {issue.status.replace(/_/g, ' ')}
-                        </span>
+                        <div className="flex flex-col items-center space-y-1">
+                          <p className="text-muted-foreground text-xs">Status</p>
+                          <span
+                            className={`inline-block rounded-full px-2 py-0.5 text-xs capitalize ${getIssueStatusColor(issue.status)}`}
+                          >
+                            {issue.status.replace(/_/g, ' ')}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </CardContent>
         </Card>
@@ -718,7 +741,7 @@ function OrderDetailsPage() {
                 <h4 className="text-lg font-semibold">{order.client.storeName}</h4>
                 <div className="mt-1 flex items-center gap-2">
                   <span className="font-mono text-sm">{order.client.clientCode}</span>
-                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium capitalize text-gray-700 dark:bg-gray-700 dark:text-gray-300">
+                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-700 capitalize dark:bg-gray-700 dark:text-gray-300">
                     {order.client.storeType.replace(/_/g, ' ')}
                   </span>
                   <span
@@ -810,7 +833,9 @@ function OrderDetailsPage() {
                     <Badge variant="default">{item.packageType.replace(/_/g, ' ')}</Badge>
                   </TableCell>
                   <TableCell className="py-2 text-center">{item.quantity}</TableCell>
-                  <TableCell className="py-2 text-right">{formatCurrency(item.unitPrice)}</TableCell>
+                  <TableCell className="py-2 text-right">
+                    {formatCurrency(item.unitPrice)}
+                  </TableCell>
                   <TableCell className="py-2 text-right font-medium">
                     {formatCurrency(item.unitPrice * item.quantity)}
                   </TableCell>
@@ -829,7 +854,6 @@ function OrderDetailsPage() {
           </Table>
         </CardContent>
       </Card>
-
     </div>
   )
 }

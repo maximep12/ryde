@@ -462,10 +462,14 @@ function BookDetailPage() {
                                   </TooltipTrigger>
                                   <TooltipContent>
                                     <div className="text-xs">
-                                      <p>Created: {new Date(review.createdAt).toLocaleString('en-GB')}</p>
+                                      <p>
+                                        Created:{' '}
+                                        {new Date(review.createdAt).toLocaleString('en-GB')}
+                                      </p>
                                       {isEdited && (
                                         <p>
-                                          Edited: {new Date(review.updatedAt!).toLocaleString('en-GB')}
+                                          Edited:{' '}
+                                          {new Date(review.updatedAt!).toLocaleString('en-GB')}
                                         </p>
                                       )}
                                     </div>

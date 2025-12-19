@@ -11,7 +11,14 @@ interface UseUsersParams {
 }
 
 export function useUsers(params: UseUsersParams = {}) {
-  const { search = '', departments, showActive = true, showInactive = true, page = 1, pageSize = 20 } = params
+  const {
+    search = '',
+    departments,
+    showActive = true,
+    showInactive = true,
+    page = 1,
+    pageSize = 20,
+  } = params
 
   return useQuery({
     queryKey: ['users', { search, departments, showActive, showInactive, page, pageSize }],

@@ -303,7 +303,7 @@ function ClientProfilePage() {
           className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'orders'
               ? 'bg-background text-foreground shadow-sm'
-              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
+              : 'text-muted-foreground hover:bg-background/50 hover:text-foreground cursor-pointer'
           }`}
         >
           <ShoppingCartIcon className="size-4" />
@@ -314,7 +314,7 @@ function ClientProfilePage() {
           className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'exchanges'
               ? 'bg-background text-foreground shadow-sm'
-              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
+              : 'text-muted-foreground hover:bg-background/50 hover:text-foreground cursor-pointer'
           }`}
         >
           <RefreshCwIcon className="size-4" />
@@ -325,7 +325,7 @@ function ClientProfilePage() {
           className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'assortments'
               ? 'bg-background text-foreground shadow-sm'
-              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
+              : 'text-muted-foreground hover:bg-background/50 hover:text-foreground cursor-pointer'
           }`}
         >
           <PackageIcon className="size-4" />
@@ -336,7 +336,7 @@ function ClientProfilePage() {
           className={`flex flex-1 items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium ${
             activeTab === 'notes'
               ? 'bg-background text-foreground shadow-sm'
-              : 'cursor-pointer text-muted-foreground hover:bg-background/50 hover:text-foreground'
+              : 'text-muted-foreground hover:bg-background/50 hover:text-foreground cursor-pointer'
           }`}
         >
           <MessageSquareIcon className="size-4" />
@@ -446,7 +446,9 @@ function ClientProfilePage() {
                 <TableBody>
                   {exchanges?.map((exchange) => (
                     <TableRow key={exchange.id}>
-                      <TableCell className="py-2 font-mono text-sm">{exchange.exchangeNumber}</TableCell>
+                      <TableCell className="py-2 font-mono text-sm">
+                        {exchange.exchangeNumber}
+                      </TableCell>
                       <TableCell className="py-2">
                         <div>
                           <p>{formatDate(exchange.exchangeDate)}</p>
@@ -693,7 +695,7 @@ function ClientProfilePage() {
                           </div>
                         </div>
                       ) : (
-                        <p className="text-sm whitespace-pre-wrap pt-2">{comment.content}</p>
+                        <p className="pt-2 text-sm whitespace-pre-wrap">{comment.content}</p>
                       )}
                     </div>
                   )
