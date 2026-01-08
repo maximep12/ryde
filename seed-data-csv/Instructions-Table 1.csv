@@ -1,0 +1,25 @@
+Next Steps,,,,,
+Add SS,✅,,,,
+Acheteur,✅,,,,
+Supplier,(Source List),,,,
+Make sure notes stays there,Back them up,,,,
+Cédule de Mise-à-Jour,Manuel,,,,
+Freight Order Complété,?,,,Inventaire,Quotidien
+% du mois terminé vs Commande Ouverte pour 6 semaine prochaines semaines,✅,,,Open PO,Quotidien
+Ajout des actuals? 3 mois,✅,,,Product Status,Au 2 semaines (aligné avec transitions)
+Vérifier relation des mastercase 1:1,,,,Forecast,Au mois
+,,,,PF to Packaging,Au mois
+,,,,Création d'une nouvelle section,
+ADD OH PF,,,,,
+ADD PO SCENARIO,QTY,Date,,,
+Instructions for update,,,,,
+Relocate,,,,,
+Validation List for plants,,,,,
+Copy and paste data,,,,,
+FIX PO Number,,,,,
+Status code to Text,,,,,
+,,,,,
+,,,,,
+Insérer ,,,,,
+,,,,,
+Formule 1 Canada: ,"SUM(SUMIFS(_unitscan,_sourcecan,$C$1,_codecan,$B3,_monthcan,E6,_yearcan,E5)+SUMIFS(_unitscan,_sourcecan,$C$1,_codecan,$C3,_monthcan,E6,_yearcan,E5)+SUMIFS(_unitscan,_sourcecan,$C$1,_codecan,$D3,_monthcan,E6,_yearcan,E5)+SUMIFS(_unitscan,_sourcecan,$C$1,_codecan,$E3,_monthcan,E6,_yearcan,E5))",,,,

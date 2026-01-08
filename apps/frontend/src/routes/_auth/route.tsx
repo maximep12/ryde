@@ -106,7 +106,7 @@ function AuthLayoutComponent() {
               className="bg-background-level-2 relative h-full w-full flex-1 overflow-y-auto"
               ref={viewportRef}
             >
-              <div className="mx-auto w-full max-w-5xl px-6 py-6">
+              <div className="mx-auto w-full max-w-6xl px-6 py-6">
                 <CatchBoundary getResetKey={() => 'reset'} errorComponent={ErrorComponent}>
                   <Outlet />
                 </CatchBoundary>

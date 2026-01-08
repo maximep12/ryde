@@ -295,16 +295,18 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
         const productIdx = (clientIdx + orderIdx + itemIdx) % SEED_PRODUCTS.length
         const product = SEED_PRODUCTS[productIdx]!
         const quantity = (itemIdx % 2) + 1
+        // Generate deterministic price based on product index (1000-5000 cents)
+        const unitPrice = 1000 + (productIdx % 40) * 100
 
-        totalAmount += product.price * quantity
+        totalAmount += unitPrice * quantity
 
         orderItems.push({
           orderNumber: orderNum,
-          productName: product.name,
-          productSku: product.sku,
-          packageType: product.packageType,
+          productName: product.description,
+          productSku: product.productCode,
+          packageType: product.productType ?? 'FERT',
           quantity,
-          unitPrice: product.price,
+          unitPrice,
         })
       }
 
@@ -731,8 +733,8 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
 
       assortments.push({
         clientId: client.id,
-        productName: product.name,
-        productCategory: product.category,
+        productName: product.description,
+        productCategory: product.productCategory ?? 'Product',
         subscriptionStatus: status,
         purchaseDate,
         expirationDate: null,

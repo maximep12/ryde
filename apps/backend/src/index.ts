@@ -12,7 +12,10 @@ import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition } from './routers/auth/handlers'
 import { clientsRouterDefinition } from './routers/clients/handlers'
 import { exampleRouterDefinition } from './routers/example/handlers'
+import { inventoryRouterDefinition } from './routers/inventory/handlers'
+import { openPurchaseOrdersRouterDefinition } from './routers/open-purchase-orders/handlers'
 import { ordersRouterDefinition } from './routers/orders/handlers'
+import { productsRouterDefinition } from './routers/products/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
@@ -49,6 +52,9 @@ const appDefinition = app
   .route('/users', usersRouterDefinition)
   .route('/clients', clientsRouterDefinition)
   .route('/orders', ordersRouterDefinition)
+  .route('/products', productsRouterDefinition)
+  .route('/inventory', inventoryRouterDefinition)
+  .route('/open-purchase-orders', openPurchaseOrdersRouterDefinition)
   .route('/example', exampleRouterDefinition)
   .onError(errorHandler)
 

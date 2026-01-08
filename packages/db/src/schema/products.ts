@@ -1,27 +1,32 @@
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
-import { index, integer, serial, varchar } from 'drizzle-orm/pg-core'
+import { date, index, serial, varchar } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { app } from './app'
 
 // ============================================================================
-// PRODUCTS
+// PRODUCTS (from SAP Product Status data)
 // ============================================================================
 
 export const products = app.table(
   'products',
   {
     id: serial('id').primaryKey(),
-    sku: varchar('sku', { length: 50 }).unique().notNull(),
-    name: varchar('name', { length: 255 }).notNull(),
-    category: varchar('category', { length: 100 }).notNull(), // OdourLock, Odour Buster, Classic
-    packageType: varchar('package_type', { length: 30 }).notNull(), // jug, bucket, box, plastic_bag
-    price: integer('price').notNull(), // stored in cents
+    productCode: varchar('product_code', { length: 20 }).unique().notNull(),
+    description: varchar('description', { length: 255 }).notNull(),
+    productType: varchar('product_type', { length: 20 }), // FERT, HALB, ZPAC, etc.
+    productGroup: varchar('product_group', { length: 20 }), // FP1000, L003, RG1000, etc.
+    gtin: varchar('gtin', { length: 50 }), // barcode/UPC
+    productCategory: varchar('product_category', { length: 50 }), // Product, etc.
+    status: varchar('status', { length: 10 }), // 03, 04, 05 (cross-plant status)
+    statusValidFrom: date('status_valid_from'),
+    oldProductNumber: varchar('old_product_number', { length: 20 }),
     ...timestamps,
   },
   (table) => [
-    index('products_sku_idx').on(table.sku),
-    index('products_category_idx').on(table.category),
-    index('products_package_type_idx').on(table.packageType),
+    index('products_product_code_idx').on(table.productCode),
+    index('products_product_type_idx').on(table.productType),
+    index('products_product_group_idx').on(table.productGroup),
+    index('products_status_idx').on(table.status),
   ],
 )
 

@@ -1,13 +1,18 @@
 import { FileRouteTypes } from '@/routeTree.gen'
 import {
+  BoxesIcon,
+  ClipboardListIcon,
   ExternalLinkIcon,
+  FileTextIcon,
   HomeIcon,
   LibraryIcon,
   ListIcon,
   LucideIcon,
+  PackageIcon,
   PaletteIcon,
   PlusCircleIcon,
   SearchIcon,
+  UploadIcon,
   UsersIcon,
 } from 'lucide-react'
 
@@ -31,6 +36,18 @@ export const clientsNavigation: NavigationItem[] = [
 export const ordersNavigation: NavigationItem[] = [
   { title: 'route.ordersMonitor', path: '/orders', icon: ListIcon },
   { title: 'route.ordersCreate', path: '/orders/new', icon: PlusCircleIcon },
+]
+
+export const supplyDemandNavigation: NavigationItem[] = [
+  { title: 'route.supplyDemandReports', path: '/supply-demand/reports', icon: FileTextIcon },
+  {
+    title: 'route.supplyDemandProductStatus',
+    path: '/supply-demand/product-status',
+    icon: PackageIcon,
+  },
+  { title: 'route.supplyDemandInventory', path: '/supply-demand/inventory', icon: BoxesIcon },
+  { title: 'route.supplyDemandOpenPO', path: '/supply-demand/open-po', icon: ClipboardListIcon },
+  { title: 'route.supplyDemandUpload', path: '/supply-demand/upload', icon: UploadIcon },
 ]
 
 export const examplesNavigation: NavigationItem[] = [

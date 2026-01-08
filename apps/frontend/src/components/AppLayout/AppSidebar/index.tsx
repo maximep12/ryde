@@ -24,6 +24,7 @@ import {
   navigation,
   NavigationItem,
   ordersNavigation,
+  supplyDemandNavigation,
   uiUxNavigation,
 } from './navigation'
 
@@ -225,6 +226,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         />
         <OrdersNavSection label={t('sidebar.orders')} />
         <ClientsNavSection label={t('sidebar.clients')} />
+        <NavSection
+          items={supplyDemandNavigation}
+          label={t('sidebar.supplyDemand')}
+          isActiveCheck={(path) => location.pathname.startsWith(path)}
+        />
         <NavSection
           items={examplesNavigation}
           label={t('sidebar.examples')}

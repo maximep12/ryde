@@ -14,5 +14,10 @@
   "route.orderCreation": "New Order",
   "route.ordersMonitor": "Monitor",
   "route.ordersCreate": "Create",
-  "route.orderDetails": "Order Details"
+  "route.orderDetails": "Order Details",
+  "route.supplyDemandReports": "Reports",
+  "route.supplyDemandUpload": "Upload Data",
+  "route.supplyDemandProductStatus": "Product Status",
+  "route.supplyDemandInventory": "Inventory",
+  "route.supplyDemandOpenPO": "Open PO"
 }

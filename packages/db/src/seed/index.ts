@@ -11,6 +11,9 @@ import {
   clientOrderItems,
   clientOrders,
   clients,
+  inventory,
+  openPurchaseOrders,
+  plants,
   products,
   users,
 } from '../schema'
@@ -23,6 +26,9 @@ import {
   seedClientOrders,
   seedClients,
 } from './clients'
+import { seedInventory } from './inventory'
+import { seedOpenPurchaseOrders } from './openPurchaseOrders'
+import { seedPlants } from './plants'
 import { seedProducts } from './products'
 import { seedUsers } from './users'
 
@@ -54,6 +60,9 @@ async function clearAllData() {
   await db.delete(clientOrders)
   await db.delete(clients)
   await db.delete(books)
+  await db.delete(inventory)
+  await db.delete(openPurchaseOrders)
+  await db.delete(plants)
   await db.delete(products)
   await db.delete(users)
 
@@ -69,7 +78,10 @@ async function main() {
   await seedUsers(db)
   await seedBooks(db)
   await seedBookReviews(db)
+  await seedPlants(db)
   await seedProducts(db)
+  await seedInventory(db)
+  await seedOpenPurchaseOrders(db)
   await seedClients(db)
   await seedClientOrders(db)
   await seedClientOrderIssues(db)

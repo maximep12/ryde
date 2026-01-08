@@ -16,6 +16,7 @@ type MultiSelectProps = {
   onChange: (value: string[]) => void
   placeholder?: string
   className?: string
+  popoverClassName?: string
 }
 
 function MultiSelect({
@@ -24,6 +25,7 @@ function MultiSelect({
   onChange,
   placeholder = 'Select...',
   className,
+  popoverClassName,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -92,7 +94,7 @@ function MultiSelect({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="!w-[--radix-popover-trigger-width] p-1" align="start">
+      <PopoverContent className={cn('min-w-[350px] p-1', popoverClassName)} align="start">
         <div className="flex flex-col">
           {options.map((option) => {
             const isSelected = value.includes(option.value)
@@ -102,13 +104,13 @@ function MultiSelect({
                 type="button"
                 onClick={() => toggleOption(option.value)}
                 className={cn(
-                  'hover:bg-accent flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm',
+                  'hover:bg-accent flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-left text-sm',
                   isSelected && 'bg-accent/50',
                 )}
               >
                 <div
                   className={cn(
-                    'flex size-4 items-center justify-center rounded-sm border',
+                    'flex size-4 shrink-0 items-center justify-center rounded-sm border',
                     isSelected
                       ? 'border-primary bg-primary text-primary-foreground'
                       : 'border-muted-foreground/30',
@@ -116,7 +118,7 @@ function MultiSelect({
                 >
                   {isSelected && <CheckIcon className="size-3" />}
                 </div>
-                <span>{option.label}</span>
+                <span className="text-left">{option.label}</span>
               </button>
             )
           })}
