@@ -286,8 +286,7 @@ function ReportsPage() {
         header: '',
         cell: ({ row }) => {
           const needsValidation =
-            row.original.validationStatus === 'pending' ||
-            row.original.validationStatus === 'stale'
+            row.original.validationStatus === 'pending' || row.original.validationStatus === 'stale'
           if (!needsValidation) return null
           return (
             <Tooltip>
@@ -413,7 +412,11 @@ function ReportsPage() {
           const date = new Date(row.original.validatedAt)
           return (
             <span className="text-xs">
-              {date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+              {date.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+              })}
             </span>
           )
         },
@@ -739,8 +742,10 @@ function ReportsPage() {
           )}
 
           {/* Alert boxes */}
-          {(problemsNext3MonthsCount > 0 || isProblemsNext3MonthsActive) ||
-          (data.reportsNeedingValidationCount > 0 || needsValidationFilter) ? (
+          {problemsNext3MonthsCount > 0 ||
+          isProblemsNext3MonthsActive ||
+          data.reportsNeedingValidationCount > 0 ||
+          needsValidationFilter ? (
             <AlertBoxContainer>
               {/* Problems alert box or active filter bar */}
               {problemsNext3MonthsCount > 0 && !isProblemsNext3MonthsActive && (
