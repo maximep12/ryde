@@ -9,6 +9,7 @@ import {
   getReportFilterOptions,
   getReports,
   updateReportComment,
+  validateReport,
 } from './helpers'
 import {
   commentParamsSchema,
@@ -133,5 +134,28 @@ export const reportsRouterDefinition = reportsRouter
       }
 
       return c.json({ message: 'Comment deleted' })
+    },
+  )
+
+  // ============================================================================
+  // VALIDATION ENDPOINTS
+  // ============================================================================
+
+  /**
+   * POST /reports/:plantName/:materialNumber/validate
+   * Validate a report (marks it as reviewed/verified by current user)
+   */
+  .post(
+    '/:plantName/:materialNumber/validate',
+    zValidatorThrow('param', reportDetailParamsSchema),
+    async (c) => {
+      const { plantName, materialNumber } = c.req.valid('param')
+      const { id: userId } = c.get('user')
+
+      const validation = await validateReport(plantName, materialNumber, userId)
+      return c.json({
+        message: 'Report validated',
+        validatedAt: validation?.validatedAt,
+      })
     },
   )

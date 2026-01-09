@@ -5,21 +5,25 @@ import { plants } from '../schema'
 export const SEED_PLANTS = [
   {
     acronym: 'IAW',
+    fullName: 'IAW - WINDSOR PLANT',
     city: 'Windsor',
     country: 'USA',
   },
   {
     acronym: 'ICS',
-    city: 'St-Alexis',
+    fullName: 'ICS - ST-ALEXIS PLANT',
+    city: 'Saint-Alexis',
     country: 'Canada',
   },
   {
     acronym: 'ICB',
+    fullName: 'ICB - BOUCHERVILLE PLANT',
     city: 'Boucherville',
     country: 'Canada',
   },
   {
     acronym: 'ICE',
+    fullName: 'ICE - ETOBICOKE PLANT',
     city: 'Etobicoke',
     country: 'Canada',
   },

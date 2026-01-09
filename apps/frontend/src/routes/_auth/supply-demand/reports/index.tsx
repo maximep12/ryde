@@ -1,6 +1,8 @@
 'use no memo'
 
+import { ActiveFilterBar, AlertBox, AlertBoxContainer } from '@/components/AlertBox'
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
+import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
 import {
   ProductStatus,
@@ -46,9 +48,9 @@ import {
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
-  CheckCircle2Icon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ClipboardCheckIcon,
   Columns3Icon,
   FileTextIcon,
   RotateCcwIcon,
@@ -166,6 +168,24 @@ function generateProblemPeriodOptions() {
 
 const PROBLEM_PERIOD_OPTIONS = generateProblemPeriodOptions()
 
+// Helper to get the next N months as YYYY-MM strings
+function getNextNMonths(n: number): string[] {
+  const months: string[] = []
+  const now = new Date()
+  let year = now.getFullYear()
+  let month = now.getMonth() + 1 // 1-indexed
+
+  for (let i = 0; i < n; i++) {
+    months.push(`${year}-${String(month).padStart(2, '0')}`)
+    month++
+    if (month > 12) {
+      month = 1
+      year++
+    }
+  }
+  return months
+}
+
 function ReportsPage() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
@@ -175,15 +195,23 @@ function ReportsPage() {
   const [riskLevelFilters, setRiskLevelFilters] = useState<string[]>([])
   const [productStatusFilters, setProductStatusFilters] = useState<string[]>([])
   const [nextProblemPeriodFilter, setNextProblemPeriodFilter] = useState<string[]>([])
+  const [needsValidationFilter, setNeedsValidationFilter] = useState(false)
   const pageSize = 25
 
-  // Derived state for quick filter buttons
-  const isProblemsOnly =
-    riskLevelFilters.length === 2 &&
-    riskLevelFilters.includes('high') &&
-    riskLevelFilters.includes('medium')
-  const isOkOnly = riskLevelFilters.length === 1 && riskLevelFilters.includes('low')
-  const isAllSelected = riskLevelFilters.length === 0
+  // Get the next 3 months for the "problems" shortcut
+  const next3Months = useMemo(() => getNextNMonths(3), [])
+
+  // Derived state - is the "problems in next 3 months" filter active?
+  const isProblemsNext3MonthsActive = useMemo(() => {
+    const hasHighMediumRisk =
+      riskLevelFilters.length === 2 &&
+      riskLevelFilters.includes('high') &&
+      riskLevelFilters.includes('medium')
+    const hasNext3MonthsPeriod =
+      nextProblemPeriodFilter.length === 3 &&
+      next3Months.every((m) => nextProblemPeriodFilter.includes(m))
+    return hasHighMediumRisk && hasNext3MonthsPeriod
+  }, [riskLevelFilters, nextProblemPeriodFilter, next3Months])
 
   // Sheet state
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -191,6 +219,7 @@ function ReportsPage() {
   const [sheetRiskLevelFilters, setSheetRiskLevelFilters] = useState<string[]>([])
   const [sheetProductStatusFilters, setSheetProductStatusFilters] = useState<string[]>([])
   const [sheetNextProblemPeriodFilter, setSheetNextProblemPeriodFilter] = useState<string[]>([])
+  const [sheetNeedsValidationFilter, setSheetNeedsValidationFilter] = useState(false)
 
   // Fetch filter options
   const { data: filterOptions } = useReportsFilterOptions()
@@ -210,6 +239,7 @@ function ReportsPage() {
       setSheetRiskLevelFilters(riskLevelFilters)
       setSheetProductStatusFilters(productStatusFilters)
       setSheetNextProblemPeriodFilter(nextProblemPeriodFilter)
+      setSheetNeedsValidationFilter(needsValidationFilter)
     }
     setSheetOpen(open)
   }
@@ -219,6 +249,7 @@ function ReportsPage() {
     setRiskLevelFilters(sheetRiskLevelFilters)
     setProductStatusFilters(sheetProductStatusFilters)
     setNextProblemPeriodFilter(sheetNextProblemPeriodFilter)
+    setNeedsValidationFilter(sheetNeedsValidationFilter)
     setPage(1)
     setSheetOpen(false)
   }
@@ -239,19 +270,43 @@ function ReportsPage() {
     plantNames: plantNameFilters.length > 0 ? plantNameFilters : undefined,
     riskLevels: riskLevelFilters.length > 0 ? riskLevelFilters : undefined,
     productStatuses: productStatusFilters.length > 0 ? productStatusFilters : undefined,
-    nextProblemPeriod: nextProblemPeriodFilter.length > 0 ? nextProblemPeriodFilter[0] : undefined,
+    nextProblemPeriods: nextProblemPeriodFilter.length > 0 ? nextProblemPeriodFilter : undefined,
+    needsValidation: needsValidationFilter || undefined,
     sortBy,
     sortOrder,
   })
 
-  // Count problems for alert box (only show when viewing all items)
-  const problemsCount = useMemo(() => {
-    if (!data || !isAllSelected) return 0
-    return data.items.filter((item) => item.risk === 'high' || item.risk === 'medium').length
-  }, [data, isAllSelected])
+  // Problems count from backend (counts reports with problems in next 3 months)
+  const problemsNext3MonthsCount = data?.reportsWithProblemsNext3MonthsCount ?? 0
 
   const columns = useMemo<ColumnDef<ReportItem>[]>(
     () => [
+      {
+        id: 'validationStatus',
+        header: '',
+        cell: ({ row }) => {
+          const needsValidation =
+            row.original.validationStatus === 'pending' ||
+            row.original.validationStatus === 'stale'
+          if (!needsValidation) return null
+          return (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <ClipboardCheckIcon className="size-4 text-blue-500" />
+              </TooltipTrigger>
+              <TooltipContent className="bg-black text-white">
+                {row.original.validationStatus === 'stale'
+                  ? 'Validation expired (older than 3 months)'
+                  : 'Requires validation'}
+              </TooltipContent>
+            </Tooltip>
+          )
+        },
+        enableSorting: false,
+        size: 8,
+        maxSize: 8,
+        minSize: 8,
+      },
       {
         accessorKey: 'materialNumber',
         header: 'Material',
@@ -348,6 +403,22 @@ function ReportsPage() {
         },
       },
       {
+        id: 'lastValidatedAt',
+        accessorKey: 'validatedAt',
+        header: 'Last Validated',
+        cell: ({ row }) => {
+          if (!row.original.validatedAt) {
+            return <span className="text-muted-foreground font-bold">-</span>
+          }
+          const date = new Date(row.original.validatedAt)
+          return (
+            <span className="text-xs">
+              {date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+            </span>
+          )
+        },
+      },
+      {
         id: 'actions',
         header: '',
         cell: ({ row }) => (
@@ -390,7 +461,8 @@ function ReportsPage() {
     plantNameFilters.length > 0 ||
     riskLevelFilters.length > 0 ||
     productStatusFilters.length > 0 ||
-    nextProblemPeriodFilter.length > 0
+    nextProblemPeriodFilter.length > 0 ||
+    needsValidationFilter
 
   return (
     <div className="space-y-8">
@@ -403,53 +475,6 @@ function ReportsPage() {
           Stock forecast analysis and problem detection by plant and material
         </p>
       </header>
-
-      {/* Quick filter buttons */}
-      <div className="flex items-center gap-2">
-        <span className="text-xs font-bold uppercase">View</span>
-        <Button
-          variant={isAllSelected ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => {
-            setRiskLevelFilters([])
-            setPage(1)
-          }}
-        >
-          All
-        </Button>
-        <Button
-          variant={isProblemsOnly ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => {
-            setRiskLevelFilters(['high', 'medium'])
-            setPage(1)
-          }}
-          className={
-            isProblemsOnly
-              ? 'bg-red-600 hover:bg-red-700'
-              : 'border-red-200 text-red-700 hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950'
-          }
-        >
-          <AlertTriangleIcon className="size-4" />
-          Problems Only
-        </Button>
-        <Button
-          variant={isOkOnly ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => {
-            setRiskLevelFilters(['low'])
-            setPage(1)
-          }}
-          className={
-            isOkOnly
-              ? 'bg-green-600 hover:bg-green-700'
-              : 'border-green-200 text-green-700 hover:bg-green-50 dark:border-green-900 dark:text-green-400 dark:hover:bg-green-950'
-          }
-        >
-          <CheckCircle2Icon className="size-4" />
-          OK Only
-        </Button>
-      </div>
 
       <div className="flex flex-wrap items-center gap-4">
         <DebouncedSearchInput
@@ -469,7 +494,8 @@ function ReportsPage() {
                   {plantNameFilters.length +
                     riskLevelFilters.length +
                     productStatusFilters.length +
-                    nextProblemPeriodFilter.length}
+                    nextProblemPeriodFilter.length +
+                    (needsValidationFilter ? 1 : 0)}
                 </span>
               )}
             </Button>
@@ -488,6 +514,7 @@ function ReportsPage() {
                   placeholder="All plants"
                 />
               </div>
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Risk Level</Label>
                 <MultiSelect
@@ -497,6 +524,7 @@ function ReportsPage() {
                   placeholder="All risk levels"
                 />
               </div>
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Material Status</Label>
                 <MultiSelect
@@ -506,6 +534,7 @@ function ReportsPage() {
                   placeholder="All statuses"
                 />
               </div>
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Next Problem Period</Label>
                 <MultiSelect
@@ -514,6 +543,17 @@ function ReportsPage() {
                   onChange={setSheetNextProblemPeriodFilter}
                   placeholder="Any period"
                 />
+              </div>
+              <FilterDivider />
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="needs-validation-filter"
+                  checked={sheetNeedsValidationFilter}
+                  onCheckedChange={(checked) => setSheetNeedsValidationFilter(!!checked)}
+                />
+                <Label htmlFor="needs-validation-filter" className="cursor-pointer text-sm">
+                  Show only reports requiring validation
+                </Label>
               </div>
             </div>
             <SheetFooter className="border-t p-4">
@@ -528,6 +568,7 @@ function ReportsPage() {
                   setRiskLevelFilters([])
                   setProductStatusFilters([])
                   setNextProblemPeriodFilter([])
+                  setNeedsValidationFilter(false)
                   setPage(1)
                   setSheetOpen(false)
                 }}
@@ -544,6 +585,7 @@ function ReportsPage() {
             setRiskLevelFilters([])
             setProductStatusFilters([])
             setNextProblemPeriodFilter([])
+            setNeedsValidationFilter(false)
             setSearch('')
             setPage(1)
           }}
@@ -568,7 +610,7 @@ function ReportsPage() {
           <PopoverContent align="end" className="w-48 p-2">
             <div className="space-y-2">
               {table.getAllLeafColumns().map((column) => {
-                if (column.id === 'actions') return null
+                if (column.id === 'actions' || column.id === 'validationStatus') return null
                 const columnHeader =
                   column.id === 'materialNumber'
                     ? 'Material'
@@ -582,7 +624,9 @@ function ReportsPage() {
                             ? 'Risk'
                             : column.id === 'firstProblemDate'
                               ? 'Next Problem'
-                              : column.id
+                              : column.id === 'lastValidatedAt'
+                                ? 'Last Validated'
+                                : column.id
                 return (
                   <div key={column.id} className="flex items-center gap-2">
                     <Checkbox
@@ -680,38 +724,79 @@ function ReportsPage() {
                   </span>
                 )
               })}
+              {needsValidationFilter && (
+                <span className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
+                  Requires Validation
+                  <button
+                    onClick={() => setNeedsValidationFilter(false)}
+                    className="ml-0.5 hover:text-gray-300"
+                  >
+                    <XIcon className="size-3" />
+                  </button>
+                </span>
+              )}
             </div>
           )}
 
-          {/* Problem alert box */}
-          {problemsCount > 0 && isAllSelected && (
-            <div className="flex items-center justify-between gap-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-950/30">
-              <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50">
-                  <AlertTriangleIcon className="size-5 text-red-600 dark:text-red-400" />
-                </div>
-                <div>
-                  <p className="font-medium text-red-800 dark:text-red-200">
-                    {problemsCount} item{problemsCount !== 1 ? 's' : ''} with stock problems
-                  </p>
-                  <p className="text-sm text-red-600 dark:text-red-400">
-                    These items have projected stock issues that need attention
-                  </p>
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-red-300 bg-white text-red-700 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900"
-                onClick={() => {
-                  setRiskLevelFilters(['high', 'medium'])
-                  setPage(1)
-                }}
-              >
-                Show problems only
-              </Button>
-            </div>
-          )}
+          {/* Alert boxes */}
+          {(problemsNext3MonthsCount > 0 || isProblemsNext3MonthsActive) ||
+          (data.reportsNeedingValidationCount > 0 || needsValidationFilter) ? (
+            <AlertBoxContainer>
+              {/* Problems alert box or active filter bar */}
+              {problemsNext3MonthsCount > 0 && !isProblemsNext3MonthsActive && (
+                <AlertBox
+                  variant="red"
+                  icon={AlertTriangleIcon}
+                  title={`${problemsNext3MonthsCount} item${problemsNext3MonthsCount !== 1 ? 's' : ''} with stock problems in the next 3 months`}
+                  description="These items have projected stock issues that need attention"
+                  actionLabel="Show problems only"
+                  onAction={() => {
+                    setRiskLevelFilters(['high', 'medium'])
+                    setNextProblemPeriodFilter(next3Months)
+                    setPage(1)
+                  }}
+                />
+              )}
+              {isProblemsNext3MonthsActive && (
+                <ActiveFilterBar
+                  variant="red"
+                  icon={AlertTriangleIcon}
+                  label="Showing reports with stock problems in the next 3 months"
+                  onClear={() => {
+                    setRiskLevelFilters([])
+                    setNextProblemPeriodFilter([])
+                    setPage(1)
+                  }}
+                />
+              )}
+
+              {/* Validation alert box or active filter bar */}
+              {data.reportsNeedingValidationCount > 0 && !needsValidationFilter && (
+                <AlertBox
+                  variant="blue"
+                  icon={ClipboardCheckIcon}
+                  title={`${data.reportsNeedingValidationCount} report${data.reportsNeedingValidationCount !== 1 ? 's' : ''} requiring validation`}
+                  description="These reports have never been validated or their validation is older than 3 months"
+                  actionLabel="Show reports requiring validation"
+                  onAction={() => {
+                    setNeedsValidationFilter(true)
+                    setPage(1)
+                  }}
+                />
+              )}
+              {needsValidationFilter && (
+                <ActiveFilterBar
+                  variant="blue"
+                  icon={ClipboardCheckIcon}
+                  label="Showing reports requiring validation"
+                  onClear={() => {
+                    setNeedsValidationFilter(false)
+                    setPage(1)
+                  }}
+                />
+              )}
+            </AlertBoxContainer>
+          ) : null}
 
           <div className="bg-card overflow-hidden rounded-lg border shadow-sm">
             <Table>
@@ -719,7 +804,16 @@ function ReportsPage() {
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id} className="hover:bg-muted/50 border-b">
                     {headerGroup.headers.map((header) => (
-                      <TableHead key={header.id} className="font-semibold">
+                      <TableHead
+                        key={header.id}
+                        className="font-semibold"
+                        style={{
+                          width:
+                            header.id === 'validationStatus'
+                              ? `${header.column.getSize()}px`
+                              : undefined,
+                        }}
+                      >
                         {header.isPlaceholder ? null : (
                           <div
                             className={
@@ -760,7 +854,16 @@ function ReportsPage() {
                       }}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <TableCell key={cell.id} className="py-2">
+                        <TableCell
+                          key={cell.id}
+                          className="py-2"
+                          style={{
+                            width:
+                              cell.column.id === 'validationStatus'
+                                ? `${cell.column.getSize()}px`
+                                : undefined,
+                          }}
+                        >
                           {flexRender(cell.column.columnDef.cell, cell.getContext())}
                         </TableCell>
                       ))}

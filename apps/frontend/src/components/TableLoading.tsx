@@ -48,18 +48,18 @@ export function TableLoading() {
   )
 
   return (
-    <div className="flex min-h-[300px] flex-col items-center justify-center gap-6">
-      <IntersandLogo className="table-loading-logo mt-16 size-32" />
-      <p className="loading-message font-mono text-sm">
+    <div className="flex min-h-[300px] flex-col items-center justify-center gap-8">
+      <IntersandLogo className="table-loading-logo mt-40 size-32" />
+      <p className="loading-message font-mono text-sm font-bold">
         {message}
         <span className="loading-ellipsis" />
       </p>
       <style>{`
         .loading-message {
-          color: #9ca3af;
+          color: #c9cdd4;
         }
         .dark .loading-message {
-          color: #6b7280;
+          color: #4b5563;
         }
         @keyframes logoColorPulse {
           0%, 100% {
@@ -84,13 +84,13 @@ export function TableLoading() {
           animation: logoColorPulseDark 2.5s ease-in-out infinite;
         }
         .logo-trace {
-          stroke: #d1d5db;
+          stroke: #c9cdd4;
           stroke-dasharray: 35 230;
           stroke-dashoffset: 0;
-          animation: traceMove 2s linear infinite;
+          animation: traceMove 1.5s linear infinite;
         }
         .dark .logo-trace {
-          stroke: #9ca3af;
+          stroke: #7f8694;
         }
         @keyframes traceMove {
           0% {
@@ -109,7 +109,7 @@ export function TableLoading() {
         }
         .loading-ellipsis::after {
           content: '';
-          animation: ellipsis 1.5s infinite;
+          animation: ellipsis 1s infinite;
           display: inline-block;
           width: 1.5em;
           text-align: left;

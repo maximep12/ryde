@@ -1,6 +1,8 @@
 'use no memo'
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
+import { FilterDivider } from '@/components/FilterDivider'
+import { TableLoading } from '@/components/TableLoading'
 import { Product, useProductFilterOptions, useProducts } from '@/hooks/queries/products/useProducts'
 import {
   Button,
@@ -16,7 +18,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -304,7 +305,7 @@ function ProductStatusPage() {
                   placeholder="All statuses"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Product Type</Label>
                 <MultiSelect
@@ -314,7 +315,7 @@ function ProductStatusPage() {
                   placeholder="All types"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Product Group</Label>
                 <MultiSelect
@@ -403,15 +404,7 @@ function ProductStatusPage() {
 
       {error && <div className="text-destructive">Failed to load products: {error.message}</div>}
 
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      )}
+      {isLoading && <TableLoading />}
 
       {data && (
         <>

@@ -10,6 +10,7 @@ import { app } from './app'
 export const plants = app.table('plants', {
   id: serial('id').primaryKey(),
   acronym: varchar('acronym', { length: 10 }).unique().notNull(),
+  fullName: varchar('full_name', { length: 255 }).notNull(),
   city: varchar('city', { length: 100 }).notNull(),
   country: varchar('country', { length: 100 }).notNull(),
   ...timestamps,

@@ -2,15 +2,26 @@ import { useMe } from '@/hooks/queries/auth/useMe'
 import { useCreateReportComment } from '@/hooks/mutations/reports/useCreateReportComment'
 import { useDeleteReportComment } from '@/hooks/mutations/reports/useDeleteReportComment'
 import { useUpdateReportComment } from '@/hooks/mutations/reports/useUpdateReportComment'
+import { useValidateReport } from '@/hooks/mutations/reports/useValidateReport'
 import { useReportComments } from '@/hooks/queries/reports/useReportComments'
 import { ProductStatus, useReportDetail } from '@/hooks/queries/reports/useReports'
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
   Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
+  Checkbox,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -29,6 +40,7 @@ import {
   AlertTriangleIcon,
   ArrowLeftIcon,
   CheckCircle2Icon,
+  CheckIcon,
   CircleIcon,
   ClockIcon,
   FileTextIcon,
@@ -103,8 +115,6 @@ function getRiskIcon(risk: string) {
       return <AlertTriangleIcon className="size-5 text-red-600 dark:text-red-400" />
     case 'medium':
       return <TrendingDownIcon className="size-5 text-yellow-600 dark:text-yellow-400" />
-    case 'low':
-      return <CheckCircle2Icon className="size-5 text-green-600 dark:text-green-400" />
     default:
       return null
   }
@@ -192,11 +202,27 @@ function ReportDetailPage() {
   const createComment = useCreateReportComment()
   const updateComment = useUpdateReportComment()
   const deleteComment = useDeleteReportComment()
+  const validateReport = useValidateReport()
 
   const [newComment, setNewComment] = useState('')
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
   const [editingContent, setEditingContent] = useState('')
   const [deletingCommentId, setDeletingCommentId] = useState<number | null>(null)
+  const [validationConfirmed, setValidationConfirmed] = useState(false)
+
+  const handleValidateReport = () => {
+    validateReport.mutate(
+      { plantName: decodedPlantName, materialNumber },
+      {
+        onSuccess: () => {
+          setValidationConfirmed(false)
+        },
+      },
+    )
+  }
+
+  const needsValidation =
+    report?.validationStatus === 'pending' || report?.validationStatus === 'stale'
 
   const handleSubmitComment = () => {
     if (!newComment.trim()) return
@@ -294,12 +320,90 @@ function ReportDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" size="sm" asChild>
-        <Link to="/supply-demand/reports">
-          <ArrowLeftIcon className="mr-2 size-4" />
-          Back to Reports
-        </Link>
-      </Button>
+      <div className="flex items-center justify-between">
+        <Button variant="ghost" size="sm" asChild>
+          <Link to="/supply-demand/reports">
+            <ArrowLeftIcon className="mr-2 size-4" />
+            Back to Reports
+          </Link>
+        </Button>
+        {/* Validation Status */}
+        {report.validationStatus === 'validated' && report.validatedAt && report.validatedBy && (
+          <div className="text-muted-foreground flex items-center gap-2 text-sm">
+            <CheckCircle2Icon className="size-4 text-green-600" />
+            <span>
+              Validated by{' '}
+              <span className="text-foreground font-medium">
+                {report.validatedBy.givenName} {report.validatedBy.familyName}
+              </span>{' '}
+              on {formatDate(report.validatedAt)}
+            </span>
+          </div>
+        )}
+        {/* Validate Button */}
+        {needsValidation && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button>
+                <CheckIcon className="size-4" />
+                Validate Report
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Validate Report</AlertDialogTitle>
+                <AlertDialogDescription className="space-y-4">
+                  <p>
+                    You are about to validate this report for{' '}
+                    <span className="text-foreground font-medium">{report.materialNumber}</span> at{' '}
+                    <span className="text-foreground font-medium">
+                      {getPlantAcronym(report.plantName)}
+                    </span>
+                    .
+                  </p>
+                  {report.validationStatus === 'stale' && (
+                    <p className="text-yellow-600">
+                      The previous validation has expired (older than 3 months).
+                    </p>
+                  )}
+                  <p>
+                    This action will be recorded and signed under your account. Please ensure you
+                    have reviewed all report details before proceeding.
+                  </p>
+                  <div className="bg-muted/50 flex items-start gap-2 rounded-md border p-3">
+                    <Checkbox
+                      id="validation-confirmation"
+                      checked={validationConfirmed}
+                      onCheckedChange={(checked) => setValidationConfirmed(!!checked)}
+                    />
+                    <label
+                      htmlFor="validation-confirmation"
+                      className="text-sm leading-tight peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    >
+                      I confirm that I have reviewed this report and I authorize its validation
+                      under my responsibility.
+                    </label>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel
+                  disabled={validateReport.isPending}
+                  onClick={() => setValidationConfirmed(false)}
+                >
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={!validationConfirmed || validateReport.isPending}
+                  onClick={handleValidateReport}
+                >
+                  {validateReport.isPending ? 'Validating...' : 'Confirm Validation'}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </div>
 
       {/* Header Card */}
       <Card>
@@ -316,8 +420,13 @@ function ReportDetailPage() {
                     Risk: {getRiskLabel(report.risk)}
                   </span>
                 </CardTitle>
-                <CardDescription className="mt-1">
+                <CardDescription className="mt-1 flex items-center gap-2">
                   {report.materialDescription ?? 'No description available'}
+                  {report.brand && (
+                    <span className="rounded bg-gray-100 px-2 py-0.5 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                      {report.brand}
+                    </span>
+                  )}
                 </CardDescription>
               </div>
             </div>
@@ -655,24 +764,24 @@ function ReportDetailPage() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
+
+          {/* Legend */}
+          <div className="mt-4 flex flex-wrap items-center gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="size-4 rounded border border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/30"></div>
+              <span className="text-muted-foreground">Actual (Past months)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="size-4 rounded border border-red-200 bg-red-100 dark:border-red-800 dark:bg-red-900/50"></div>
+              <span className="text-muted-foreground">High Risk (Negative stock)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="size-4 rounded border border-yellow-200 bg-yellow-100 dark:border-yellow-800 dark:bg-yellow-900/50"></div>
+              <span className="text-muted-foreground">Medium Risk (Below safety stock)</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
-
-      {/* Legend */}
-      <div className="flex flex-wrap items-center gap-6 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="size-4 rounded border border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/30"></div>
-          <span className="text-muted-foreground">Actual (Past months)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="size-4 rounded border border-red-200 bg-red-100 dark:border-red-800 dark:bg-red-900/50"></div>
-          <span className="text-muted-foreground">High Risk (Negative stock)</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="size-4 rounded border border-yellow-200 bg-yellow-100 dark:border-yellow-800 dark:bg-yellow-900/50"></div>
-          <span className="text-muted-foreground">Medium Risk (Below safety stock)</span>
-        </div>
-      </div>
 
       {/* Notes Card */}
       <Card>

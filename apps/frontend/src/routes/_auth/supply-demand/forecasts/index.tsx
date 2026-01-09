@@ -1,11 +1,14 @@
 'use no memo'
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
+import { FilterDivider } from '@/components/FilterDivider'
+import { TableLoading } from '@/components/TableLoading'
 import {
   ForecastItem,
   useForecasts,
   useForecastsFilterOptions,
 } from '@/hooks/queries/forecasts/useForecasts'
+import { usePlants } from '@/hooks/queries/plants/usePlants'
 import {
   Button,
   Checkbox,
@@ -20,7 +23,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -63,8 +65,15 @@ export const Route = createFileRoute('/_auth/supply-demand/forecasts/')({
   },
 })
 
-function getPlantAcronym(plantName: string | null) {
+function getPlantAcronym(
+  plantName: string | null,
+  cityToAcronymMap: Record<string, string>,
+): string {
   if (!plantName) return '-'
+  // Try to get acronym from the city-to-acronym map
+  const acronym = cityToAcronymMap[plantName]
+  if (acronym) return acronym
+  // Fallback: if plantName is in format "XXX - CITY PLANT", extract the acronym
   const parts = plantName.split(' - ')
   return parts[0] ?? plantName
 }
@@ -120,6 +129,19 @@ function ForecastsPage() {
 
   // Fetch filter options
   const { data: filterOptions } = useForecastsFilterOptions()
+
+  // Fetch plants for acronym mapping
+  const { data: plantsData } = usePlants()
+  const cityToAcronymMap = useMemo(() => {
+    if (!plantsData) return {}
+    return plantsData.items.reduce(
+      (acc, plant) => {
+        acc[plant.city] = plant.acronym
+        return acc
+      },
+      {} as Record<string, string>,
+    )
+  }, [plantsData])
 
   const regionOptions = useMemo(
     () =>
@@ -237,7 +259,7 @@ function ForecastsPage() {
       {
         accessorKey: 'region',
         header: () => <GlobeIcon className="size-4" />,
-        size: 60,
+        size: 40,
         cell: ({ row }) => <span className="text-xs">{row.original.region ?? '-'}</span>,
       },
       {
@@ -276,10 +298,10 @@ function ForecastsPage() {
       {
         accessorKey: 'brand',
         header: 'Brand',
-        size: 120,
+        size: 160,
         cell: ({ row }) => (
           <div className="flex justify-center">
-            <span className="max-w-[100px] rounded bg-blue-100 px-2 py-0.5 text-center text-xs dark:bg-blue-900">
+            <span className="max-w-[140px] rounded bg-blue-100 px-2 py-0.5 text-center text-xs dark:bg-blue-900">
               {row.original.brand ?? '-'}
             </span>
           </div>
@@ -319,7 +341,7 @@ function ForecastsPage() {
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="inline-flex rounded bg-slate-100 px-2 py-0.5 text-xs dark:bg-slate-800">
-                  {getPlantAcronym(row.original.plant)}
+                  {getPlantAcronym(row.original.plant, cityToAcronymMap)}
                 </span>
               </TooltipTrigger>
               <TooltipContent className="bg-black text-white">{row.original.plant}</TooltipContent>
@@ -413,7 +435,7 @@ function ForecastsPage() {
         cell: ({ row }) => <span className="text-xs">{row.original.sourceYear ?? '-'}</span>,
       },
     ],
-    [],
+    [cityToAcronymMap],
   )
 
   const table = useReactTable({
@@ -509,7 +531,7 @@ function ForecastsPage() {
                   placeholder="All regions"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Country</Label>
                 <MultiSelect
@@ -519,7 +541,7 @@ function ForecastsPage() {
                   placeholder="All countries"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Brand</Label>
                 <MultiSelect
@@ -529,7 +551,7 @@ function ForecastsPage() {
                   placeholder="All brands"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
@@ -539,7 +561,7 @@ function ForecastsPage() {
                   placeholder="All plants"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Year</Label>
                 <MultiSelect
@@ -549,7 +571,7 @@ function ForecastsPage() {
                   placeholder="All years"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Month</Label>
                 <MultiSelect
@@ -559,7 +581,7 @@ function ForecastsPage() {
                   placeholder="All months"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               {/* Client Status */}
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase">Client Status</Label>
@@ -590,7 +612,7 @@ function ForecastsPage() {
                   </div>
                 </div>
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               {/* Sales */}
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase">Sales</Label>
@@ -718,15 +740,7 @@ function ForecastsPage() {
 
       {error && <div className="text-destructive">Failed to load forecasts: {error.message}</div>}
 
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      )}
+      {isLoading && <TableLoading />}
 
       {data && (
         <>

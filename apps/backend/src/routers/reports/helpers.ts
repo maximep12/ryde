@@ -5,6 +5,7 @@ import {
   openPurchaseOrders,
   products,
   reportComments,
+  reportValidations,
   users,
 } from '@repo/db'
 import { and, asc, count, desc, eq, gte, ilike, lte, or, sql, sum, type SQL } from 'drizzle-orm'
@@ -47,6 +48,13 @@ interface ReportItem {
   safetyStock: number
   risk: RiskLevel
   firstProblemDate: string | null
+  validationStatus: 'validated' | 'stale' | 'pending'
+  validatedAt: string | null
+  validatedBy: {
+    id: string
+    givenName: string | null
+    familyName: string | null
+  } | null
 }
 
 // Extract city from plant name (e.g., "IAW - WINDSOR PLANT" -> "Windsor")
@@ -217,6 +225,32 @@ function isAllowedPlant(plantName: string): boolean {
   return ALLOWED_PLANT_ACRONYMS.includes(acronym ?? '')
 }
 
+// Helper to get the next N months as YYYY-MM strings
+function getNextNMonths(n: number): string[] {
+  const months: string[] = []
+  const now = new Date()
+  let year = now.getFullYear()
+  let month = now.getMonth() + 1 // 1-indexed
+
+  for (let i = 0; i < n; i++) {
+    months.push(`${year}-${String(month).padStart(2, '0')}`)
+    month++
+    if (month > 12) {
+      month = 1
+      year++
+    }
+  }
+  return months
+}
+
+// Helper to check if a problem date is in one of the specified months
+function isProblemInMonths(firstProblemDate: string | null, months: string[]): boolean {
+  if (!firstProblemDate) return false
+  const problemDate = new Date(firstProblemDate)
+  const problemMonth = `${problemDate.getFullYear()}-${String(problemDate.getMonth() + 1).padStart(2, '0')}`
+  return months.includes(problemMonth)
+}
+
 export async function getReports(query: ReportsQuery) {
   const {
     page,
@@ -225,7 +259,8 @@ export async function getReports(query: ReportsQuery) {
     plantNames,
     riskLevels,
     productStatuses,
-    nextProblemPeriod,
+    nextProblemPeriods,
+    needsValidation,
     status,
     sortBy,
     sortOrder,
@@ -313,6 +348,45 @@ export async function getReports(query: ReportsQuery) {
       safetyStock,
     )
 
+    // Get validation status
+    const staleDate = new Date()
+    staleDate.setDate(staleDate.getDate() - 90) // 90 days = 3 months
+
+    const [latestValidation] = await db
+      .select({
+        id: reportValidations.id,
+        validatedAt: reportValidations.validatedAt,
+        validatedBy: reportValidations.validatedBy,
+        validatorId: users.id,
+        validatorGivenName: users.givenName,
+        validatorFamilyName: users.familyName,
+      })
+      .from(reportValidations)
+      .innerJoin(users, eq(reportValidations.validatedBy, users.id))
+      .where(
+        and(
+          eq(reportValidations.plantName, inv.plantName),
+          eq(reportValidations.materialNumber, inv.materialNumber),
+        ),
+      )
+      .orderBy(desc(reportValidations.validatedAt))
+      .limit(1)
+
+    let validationStatus: 'validated' | 'stale' | 'pending' = 'pending'
+    let validatedAt: string | null = null
+    let validatedBy: { id: string; givenName: string | null; familyName: string | null } | null =
+      null
+
+    if (latestValidation) {
+      validatedAt = latestValidation.validatedAt.toISOString()
+      validatedBy = {
+        id: latestValidation.validatorId,
+        givenName: latestValidation.validatorGivenName,
+        familyName: latestValidation.validatorFamilyName,
+      }
+      validationStatus = latestValidation.validatedAt >= staleDate ? 'validated' : 'stale'
+    }
+
     itemsWithRisk.push({
       plantName: inv.plantName,
       materialNumber: inv.materialNumber,
@@ -322,6 +396,9 @@ export async function getReports(query: ReportsQuery) {
       safetyStock,
       risk: itemRisk,
       firstProblemDate,
+      validationStatus,
+      validatedAt,
+      validatedBy,
     })
   }
 
@@ -353,16 +430,24 @@ export async function getReports(query: ReportsQuery) {
     }
   }
 
-  // Filter by next problem period (YYYY-MM format)
-  if (nextProblemPeriod) {
-    const [year, month] = nextProblemPeriod.split('-').map(Number)
-    if (year && month) {
+  // Filter by next problem periods (comma-separated YYYY-MM values)
+  if (nextProblemPeriods) {
+    const periodList = nextProblemPeriods.split(',').filter(Boolean)
+    if (periodList.length > 0) {
       filteredItems = filteredItems.filter((item) => {
         if (!item.firstProblemDate) return false
         const problemDate = new Date(item.firstProblemDate)
-        return problemDate.getFullYear() === year && problemDate.getMonth() + 1 === month
+        const problemMonth = `${problemDate.getFullYear()}-${String(problemDate.getMonth() + 1).padStart(2, '0')}`
+        return periodList.includes(problemMonth)
       })
     }
+  }
+
+  // Filter by validation status (needs validation = pending or stale)
+  if (needsValidation) {
+    filteredItems = filteredItems.filter(
+      (item) => item.validationStatus === 'pending' || item.validationStatus === 'stale',
+    )
   }
 
   // Sort items
@@ -392,6 +477,20 @@ export async function getReports(query: ReportsQuery) {
   const total = filteredItems.length
   const paginatedItems = filteredItems.slice(offset, offset + pageSize)
 
+  // Count reports needing validation (pending or stale)
+  const reportsNeedingValidationCount = itemsWithRisk.filter(
+    (item) => item.validationStatus === 'pending' || item.validationStatus === 'stale',
+  ).length
+
+  // Count reports with problems (high or medium risk) in the next 3 months
+  // This count is from all items (before current filters) to show the alert box
+  const next3Months = getNextNMonths(3)
+  const reportsWithProblemsNext3MonthsCount = itemsWithRisk.filter(
+    (item) =>
+      (item.risk === 'high' || item.risk === 'medium') &&
+      isProblemInMonths(item.firstProblemDate, next3Months),
+  ).length
+
   return {
     items: paginatedItems,
     pagination: {
@@ -400,6 +499,8 @@ export async function getReports(query: ReportsQuery) {
       total,
       totalPages: Math.ceil(total / pageSize),
     },
+    reportsNeedingValidationCount,
+    reportsWithProblemsNext3MonthsCount,
   }
 }
 
@@ -468,6 +569,15 @@ export async function getReportDetail(plantName: string, materialNumber: string)
 
   const openPoCount = openPoCountData?.count ?? 0
 
+  // Get brand from forecasts table
+  const [forecastData] = await db
+    .select({ brand: forecasts.brand })
+    .from(forecasts)
+    .where(eq(forecasts.productCode, materialNumber))
+    .limit(1)
+
+  const brand = forecastData?.brand ?? null
+
   const safetyStock = sdData?.safetyStock ?? 0
   const currentStock = Number(inventoryData.totalStock) || 0
   const productStatus = (productData?.status as ProductStatus) ?? null
@@ -479,6 +589,44 @@ export async function getReportDetail(plantName: string, materialNumber: string)
     currentStock,
     safetyStock,
   )
+
+  // Get validation status
+  const staleDate = new Date()
+  staleDate.setDate(staleDate.getDate() - 90) // 90 days = 3 months
+
+  const [latestValidation] = await db
+    .select({
+      id: reportValidations.id,
+      validatedAt: reportValidations.validatedAt,
+      validatedBy: reportValidations.validatedBy,
+      validatorId: users.id,
+      validatorGivenName: users.givenName,
+      validatorFamilyName: users.familyName,
+    })
+    .from(reportValidations)
+    .innerJoin(users, eq(reportValidations.validatedBy, users.id))
+    .where(
+      and(
+        eq(reportValidations.plantName, plantName),
+        eq(reportValidations.materialNumber, materialNumber),
+      ),
+    )
+    .orderBy(desc(reportValidations.validatedAt))
+    .limit(1)
+
+  let validationStatus: 'validated' | 'stale' | 'pending' = 'pending'
+  let validatedAt: string | null = null
+  let validatedBy: { id: string; givenName: string | null; familyName: string | null } | null = null
+
+  if (latestValidation) {
+    validatedAt = latestValidation.validatedAt.toISOString()
+    validatedBy = {
+      id: latestValidation.validatorId,
+      givenName: latestValidation.validatorGivenName,
+      familyName: latestValidation.validatorFamilyName,
+    }
+    validationStatus = latestValidation.validatedAt >= staleDate ? 'validated' : 'stale'
+  }
 
   return {
     plantName,
@@ -494,6 +642,10 @@ export async function getReportDetail(plantName: string, materialNumber: string)
     leadTime: sdData?.plannedDeliveryTime ?? null,
     storageLocations,
     openPoCount,
+    brand,
+    validationStatus,
+    validatedAt,
+    validatedBy,
   }
 }
 
@@ -580,4 +732,135 @@ export async function deleteReportComment(commentId: number, userId: string) {
     .where(and(eq(reportComments.id, commentId), eq(reportComments.userId, userId)))
     .returning()
   return comment ?? null
+}
+
+// ============================================================================
+// REPORT VALIDATIONS HELPERS
+// ============================================================================
+
+// Validation is considered stale after 3 months (90 days)
+const VALIDATION_STALE_DAYS = 90
+
+export type ValidationStatus = 'validated' | 'stale' | 'pending'
+
+export interface ReportValidation {
+  id: number
+  plantName: string
+  materialNumber: string
+  validatedBy: string
+  validatedAt: Date
+  validator: {
+    id: string
+    givenName: string | null
+    familyName: string | null
+    email: string
+  }
+  status: ValidationStatus
+}
+
+function getValidationStatus(validatedAt: Date): ValidationStatus {
+  const now = new Date()
+  const diffDays = Math.floor((now.getTime() - validatedAt.getTime()) / (1000 * 60 * 60 * 24))
+  return diffDays > VALIDATION_STALE_DAYS ? 'stale' : 'validated'
+}
+
+export async function getReportValidation(
+  plantName: string,
+  materialNumber: string,
+): Promise<ReportValidation | null> {
+  // Get the most recent validation for this report
+  const [validation] = await db
+    .select({
+      id: reportValidations.id,
+      plantName: reportValidations.plantName,
+      materialNumber: reportValidations.materialNumber,
+      validatedBy: reportValidations.validatedBy,
+      validatedAt: reportValidations.validatedAt,
+      validator: {
+        id: users.id,
+        givenName: users.givenName,
+        familyName: users.familyName,
+        email: users.email,
+      },
+    })
+    .from(reportValidations)
+    .innerJoin(users, eq(reportValidations.validatedBy, users.id))
+    .where(
+      and(
+        eq(reportValidations.plantName, plantName),
+        eq(reportValidations.materialNumber, materialNumber),
+      ),
+    )
+    .orderBy(desc(reportValidations.validatedAt))
+    .limit(1)
+
+  if (!validation) {
+    return null
+  }
+
+  return {
+    ...validation,
+    status: getValidationStatus(validation.validatedAt),
+  }
+}
+
+export async function validateReport(plantName: string, materialNumber: string, userId: string) {
+  const now = new Date()
+
+  // Insert a new validation record (we keep history)
+  const [validation] = await db
+    .insert(reportValidations)
+    .values({
+      plantName,
+      materialNumber,
+      validatedBy: userId,
+      validatedAt: now,
+    })
+    .returning()
+
+  return validation
+}
+
+export async function getReportsNeedingValidationCount(): Promise<number> {
+  // Get all unique plant+material combinations from inventory (filtered by allowed plants)
+  const allowedPlantPatterns = ALLOWED_PLANT_ACRONYMS.map((acronym) =>
+    ilike(inventory.plantName, `${acronym} - %`),
+  )
+
+  const inventoryItems = await db
+    .select({
+      plantName: inventory.plantName,
+      materialNumber: inventory.material,
+    })
+    .from(inventory)
+    .where(or(...allowedPlantPatterns)!)
+    .groupBy(inventory.plantName, inventory.material)
+
+  // Check each one for validation status
+  let needsValidationCount = 0
+  const staleDate = new Date()
+  staleDate.setDate(staleDate.getDate() - VALIDATION_STALE_DAYS)
+
+  for (const item of inventoryItems) {
+    if (!item.plantName || !item.materialNumber) continue
+
+    // Check if there's a recent (non-stale) validation
+    const [recentValidation] = await db
+      .select({ id: reportValidations.id })
+      .from(reportValidations)
+      .where(
+        and(
+          eq(reportValidations.plantName, item.plantName),
+          eq(reportValidations.materialNumber, item.materialNumber),
+          gte(reportValidations.validatedAt, staleDate),
+        ),
+      )
+      .limit(1)
+
+    if (!recentValidation) {
+      needsValidationCount++
+    }
+  }
+
+  return needsValidationCount
 }

@@ -7,6 +7,9 @@ export type RiskLevel = 'high' | 'medium' | 'low'
 // Product status from SAP (03=Active/In-Use, 04=Phase Out, 05=Obsolete)
 export type ProductStatus = '03' | '04' | '05' | null
 
+// Validation status (validated=recent, stale=older than 3 months, pending=never validated)
+export type ValidationStatus = 'validated' | 'stale' | 'pending'
+
 export type ReportsQueryParams = {
   page?: number
   pageSize?: number
@@ -14,7 +17,8 @@ export type ReportsQueryParams = {
   plantNames?: string[]
   riskLevels?: string[]
   productStatuses?: string[]
-  nextProblemPeriod?: string
+  nextProblemPeriods?: string[]
+  needsValidation?: boolean
   status?: 'all' | 'problems' | 'ok'
   sortBy?: string
   sortOrder?: 'asc' | 'desc'
@@ -29,6 +33,13 @@ export type ReportItem = {
   safetyStock: number
   risk: RiskLevel
   firstProblemDate: string | null
+  validationStatus: ValidationStatus
+  validatedAt: string | null
+  validatedBy: {
+    id: string
+    givenName: string | null
+    familyName: string | null
+  } | null
 }
 
 export type ReportsResponse = {
@@ -39,6 +50,8 @@ export type ReportsResponse = {
     total: number
     totalPages: number
   }
+  reportsNeedingValidationCount: number
+  reportsWithProblemsNext3MonthsCount: number
 }
 
 export function useReports(params: ReportsQueryParams = {}) {
@@ -49,7 +62,8 @@ export function useReports(params: ReportsQueryParams = {}) {
     plantNames,
     riskLevels,
     productStatuses,
-    nextProblemPeriod,
+    nextProblemPeriods,
+    needsValidation,
     status = 'all',
     sortBy,
     sortOrder,
@@ -65,7 +79,8 @@ export function useReports(params: ReportsQueryParams = {}) {
         plantNames,
         riskLevels,
         productStatuses,
-        nextProblemPeriod,
+        nextProblemPeriods,
+        needsValidation,
         status,
         sortBy,
         sortOrder,
@@ -83,7 +98,9 @@ export function useReports(params: ReportsQueryParams = {}) {
           ...(riskLevels && riskLevels.length > 0 && { riskLevels: riskLevels.join(',') }),
           ...(productStatuses &&
             productStatuses.length > 0 && { productStatuses: productStatuses.join(',') }),
-          ...(nextProblemPeriod && { nextProblemPeriod }),
+          ...(nextProblemPeriods &&
+            nextProblemPeriods.length > 0 && { nextProblemPeriods: nextProblemPeriods.join(',') }),
+          ...(needsValidation !== undefined && { needsValidation: needsValidation.toString() }),
           ...(sortBy && { sortBy }),
           ...(sortOrder && { sortOrder }),
         },
@@ -125,6 +142,14 @@ export type ReportDetailResponse = {
   leadTime: number | null
   storageLocations: StorageLocation[]
   openPoCount: number
+  brand: string | null
+  validationStatus: ValidationStatus
+  validatedAt: string | null
+  validatedBy: {
+    id: string
+    givenName: string | null
+    familyName: string | null
+  } | null
 }
 
 export function useReportDetail(plantName: string, materialNumber: string) {

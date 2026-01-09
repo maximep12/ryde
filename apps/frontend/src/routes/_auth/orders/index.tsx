@@ -1,6 +1,9 @@
 'use no memo'
 
+import { ActiveFilterBar, AlertBox, AlertBoxContainer } from '@/components/AlertBox'
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
+import { FilterDivider } from '@/components/FilterDivider'
+import { TableLoading } from '@/components/TableLoading'
 import { useOrders } from '@/hooks/queries/orders/useOrders'
 import {
   Button,
@@ -17,7 +20,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -397,7 +399,7 @@ function OrdersMonitorPage() {
                   placeholder="All statuses"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Source</Label>
                 <MultiSelect
@@ -407,7 +409,7 @@ function OrdersMonitorPage() {
                   placeholder="All sources"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase">Issues</Label>
                 <div className="space-y-3">
@@ -435,7 +437,7 @@ function OrdersMonitorPage() {
                   </div>
                 </div>
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase">Approval</Label>
                 <div className="space-y-2">
@@ -549,15 +551,7 @@ function OrdersMonitorPage() {
 
       {error && <div className="text-destructive">Failed to load orders: {error.message}</div>}
 
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      )}
+      {isLoading && <TableLoading />}
 
       {data && (
         <>
@@ -677,113 +671,63 @@ function OrdersMonitorPage() {
             data.ordersRequiringApprovalCount > 0 ||
             hasIssuesFilter ||
             requiresApprovalFilter) && (
-            <div className="space-y-2">
+            <AlertBoxContainer>
               {/* Warning box for orders with issues */}
               {data.ordersWithIssuesCount > 0 && !hasIssuesFilter && (
-                <div className="flex items-center justify-between gap-4 rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-900/50 dark:bg-orange-950/30">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/50">
-                      <AlertTriangleIcon className="size-5 text-orange-600 dark:text-orange-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-orange-800 dark:text-orange-200">
-                        {data.ordersWithIssuesCount} order
-                        {data.ordersWithIssuesCount !== 1 ? 's' : ''} with open issues
-                      </p>
-                      <p className="text-sm text-orange-600 dark:text-orange-400">
-                        These orders require attention due to unresolved issues
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-orange-300 bg-white text-orange-700 hover:bg-orange-100 dark:border-orange-800 dark:bg-orange-950 dark:text-orange-300 dark:hover:bg-orange-900"
-                    onClick={() => {
-                      setHasIssuesFilter(true)
-                      setPage(1)
-                    }}
-                  >
-                    Show orders with issues
-                  </Button>
-                </div>
+                <AlertBox
+                  variant="orange"
+                  icon={AlertTriangleIcon}
+                  title={`${data.ordersWithIssuesCount} order${data.ordersWithIssuesCount !== 1 ? 's' : ''} with open issues`}
+                  description="These orders require attention due to unresolved issues"
+                  actionLabel="Show orders with issues"
+                  onAction={() => {
+                    setHasIssuesFilter(true)
+                    setPage(1)
+                  }}
+                />
               )}
 
               {/* Active filter indicator for issues */}
               {hasIssuesFilter && (
-                <div className="flex items-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-4 py-2 dark:border-orange-900/50 dark:bg-orange-950/30">
-                  <AlertTriangleIcon className="size-4 text-orange-600 dark:text-orange-400" />
-                  <span className="text-sm font-medium text-orange-800 dark:text-orange-200">
-                    Showing orders with open issues
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="ml-auto h-6 px-2 text-orange-600 hover:bg-orange-100 hover:text-orange-800 dark:text-orange-400 dark:hover:bg-orange-900 dark:hover:text-orange-200"
-                    onClick={() => {
-                      setHasIssuesFilter(false)
-                      setPage(1)
-                    }}
-                  >
-                    <XIcon className="size-4" />
-                    Clear filter
-                  </Button>
-                </div>
+                <ActiveFilterBar
+                  variant="orange"
+                  icon={AlertTriangleIcon}
+                  label="Showing orders with open issues"
+                  onClear={() => {
+                    setHasIssuesFilter(false)
+                    setPage(1)
+                  }}
+                />
               )}
 
               {/* Info box for orders requiring approval */}
               {data.ordersRequiringApprovalCount > 0 && !requiresApprovalFilter && (
-                <div className="flex items-center justify-between gap-4 rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900/50 dark:bg-blue-950/30">
-                  <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-900/50">
-                      <ClipboardCheckIcon className="size-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium text-blue-800 dark:text-blue-200">
-                        {data.ordersRequiringApprovalCount} order
-                        {data.ordersRequiringApprovalCount !== 1 ? 's' : ''} requiring approval
-                      </p>
-                      <p className="text-sm text-blue-600 dark:text-blue-400">
-                        These orders need to be reviewed and approved before processing
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-blue-300 bg-white text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
-                    onClick={() => {
-                      setRequiresApprovalFilter(true)
-                      setPage(1)
-                    }}
-                  >
-                    Show orders requiring approval
-                  </Button>
-                </div>
+                <AlertBox
+                  variant="blue"
+                  icon={ClipboardCheckIcon}
+                  title={`${data.ordersRequiringApprovalCount} order${data.ordersRequiringApprovalCount !== 1 ? 's' : ''} requiring approval`}
+                  description="These orders need to be reviewed and approved before processing"
+                  actionLabel="Show orders requiring approval"
+                  onAction={() => {
+                    setRequiresApprovalFilter(true)
+                    setPage(1)
+                  }}
+                />
               )}
 
               {/* Active filter indicator for approval */}
               {requiresApprovalFilter && (
-                <div className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 dark:border-blue-900/50 dark:bg-blue-950/30">
-                  <ClipboardCheckIcon className="size-4 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                    Showing orders requiring approval
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="ml-auto h-6 px-2 text-blue-600 hover:bg-blue-100 hover:text-blue-800 dark:text-blue-400 dark:hover:bg-blue-900 dark:hover:text-blue-200"
-                    onClick={() => {
-                      setRequiresApprovalFilter(false)
-                      setPage(1)
-                    }}
-                  >
-                    <XIcon className="size-4" />
-                    Clear filter
-                  </Button>
-                </div>
+                <ActiveFilterBar
+                  variant="blue"
+                  icon={ClipboardCheckIcon}
+                  label="Showing orders requiring approval"
+                  onClear={() => {
+                    setRequiresApprovalFilter(false)
+                    setPage(1)
+                  }}
+                />
               )}
-            </div>
+            </AlertBoxContainer>
           )}
 
           <div className="bg-card overflow-hidden rounded-lg border shadow-sm">

@@ -7,7 +7,8 @@ export const reportsQuerySchema = z.object({
   plantNames: z.string().optional(), // Comma-separated list of plant names
   riskLevels: z.string().optional(), // Comma-separated list of risk levels (high, medium, low)
   productStatuses: z.string().optional(), // Comma-separated list of product statuses (03, 04, 05)
-  nextProblemPeriod: z.string().optional(), // Format: YYYY-MM (filters items with firstProblemDate in this month)
+  nextProblemPeriods: z.string().optional(), // Comma-separated YYYY-MM values (filters items with firstProblemDate in these months)
+  needsValidation: z.coerce.boolean().optional(), // Filter for reports needing validation (pending or stale)
   status: z.enum(['all', 'problems', 'ok']).default('all'), // Quick filter
   sortBy: z.string().optional(), // Column to sort by
   sortOrder: z.enum(['asc', 'desc']).optional(), // Sort direction

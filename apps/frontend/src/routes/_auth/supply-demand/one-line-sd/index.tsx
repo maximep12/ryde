@@ -1,6 +1,8 @@
 'use no memo'
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
+import { FilterDivider } from '@/components/FilterDivider'
+import { TableLoading } from '@/components/TableLoading'
 import {
   OneLineSdItem,
   useOneLineSd,
@@ -20,7 +22,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -311,7 +312,7 @@ function OneLineSdPage() {
                   placeholder="All plants"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Material Group</Label>
                 <MultiSelect
@@ -321,7 +322,7 @@ function OneLineSdPage() {
                   placeholder="All material groups"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase">Purchasing Group</Label>
                 <MultiSelect
@@ -417,15 +418,7 @@ function OneLineSdPage() {
 
       {error && <div className="text-destructive">Failed to load data: {error.message}</div>}
 
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      )}
+      {isLoading && <TableLoading />}
 
       {data && (
         <>

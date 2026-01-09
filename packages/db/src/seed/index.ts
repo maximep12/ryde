@@ -18,6 +18,7 @@ import {
   plants,
   products,
   reportComments,
+  reportValidations,
   users,
 } from '../schema'
 import { seedBookReviews, seedBooks } from './books'
@@ -36,6 +37,7 @@ import { seedOpenPurchaseOrders } from './openPurchaseOrders'
 import { seedPlants } from './plants'
 import { seedProducts } from './products'
 import { seedReportComments } from './reportComments'
+import { seedReportValidations } from './reportValidations'
 import { seedUsers } from './users'
 
 config({ path: '../../.env' })
@@ -60,6 +62,7 @@ async function clearAllData() {
   await db.delete(bookReviews)
   await db.delete(clientComments)
   await db.delete(reportComments)
+  await db.delete(reportValidations)
   await db.delete(clientOrderIssues)
   await db.delete(clientOrderItems)
   await db.delete(clientExchanges)
@@ -100,6 +103,7 @@ async function main() {
   await seedClientAssortments(db)
   await seedClientComments(db)
   await seedReportComments(db)
+  await seedReportValidations(db)
 
   console.log('Database seed completed!')
   process.exit(0)

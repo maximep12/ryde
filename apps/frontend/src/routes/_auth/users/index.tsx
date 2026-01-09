@@ -1,6 +1,8 @@
 'use no memo'
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
+import { FilterDivider } from '@/components/FilterDivider'
+import { TableLoading } from '@/components/TableLoading'
 import { useUsers } from '@/hooks/queries/users/useUsers'
 import {
   Avatar,
@@ -15,7 +17,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  Skeleton,
   Table,
   TableBody,
   TableCell,
@@ -263,7 +264,7 @@ function UsersPage() {
                   placeholder="All departments"
                 />
               </div>
-              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              <FilterDivider />
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase">Status</Label>
                 <div className="space-y-3">
@@ -376,14 +377,7 @@ function UsersPage() {
 
       {error && <div className="text-destructive">Failed to load users: {error.message}</div>}
 
-      {isLoading && (
-        <div className="space-y-4">
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-10 w-full" />
-        </div>
-      )}
+      {isLoading && <TableLoading />}
 
       {data && (
         <div className="bg-card overflow-hidden rounded-lg border shadow-sm">
