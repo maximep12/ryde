@@ -8,6 +8,8 @@ export type OpenPurchaseOrdersQueryParams = {
   plants?: string[]
   orderTypes?: string[]
   suppliers?: string[]
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type OpenPurchaseOrder = {
@@ -39,7 +41,7 @@ export type OpenPurchaseOrdersResponse = {
 }
 
 export function useOpenPurchaseOrders(params: OpenPurchaseOrdersQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, plants, orderTypes, suppliers } = params
+  const { page = 1, pageSize = 25, search, plants, orderTypes, suppliers, sortBy, sortOrder } = params
 
   return useQuery({
     queryKey: [
@@ -51,6 +53,8 @@ export function useOpenPurchaseOrders(params: OpenPurchaseOrdersQueryParams = {}
         plants,
         orderTypes,
         suppliers,
+        sortBy,
+        sortOrder,
       },
     ],
     queryFn: async () => {
@@ -63,6 +67,8 @@ export function useOpenPurchaseOrders(params: OpenPurchaseOrdersQueryParams = {}
           ...(plants && plants.length > 0 && { plants: plants.join(',') }),
           ...(orderTypes && orderTypes.length > 0 && { orderTypes: orderTypes.join(',') }),
           ...(suppliers && suppliers.length > 0 && { suppliers: suppliers.join(',') }),
+          ...(sortBy && { sortBy }),
+          ...(sortOrder && { sortOrder }),
         },
       })
       if (!res.ok) {

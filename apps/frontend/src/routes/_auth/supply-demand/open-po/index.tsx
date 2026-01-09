@@ -9,6 +9,7 @@ import {
 import {
   Button,
   Checkbox,
+  Label,
   MultiSelect,
   Popover,
   PopoverContent,
@@ -35,7 +36,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -153,6 +153,10 @@ function OpenPOPage() {
     setPage(1)
   }
 
+  // Extract sort params from sorting state
+  const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
+  const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
+
   const { data, isLoading, error } = useOpenPurchaseOrders({
     page,
     pageSize,
@@ -160,6 +164,8 @@ function OpenPOPage() {
     plants: plantFilters.length > 0 ? plantFilters : undefined,
     orderTypes: orderTypeFilters.length > 0 ? orderTypeFilters : undefined,
     suppliers: supplierFilters.length > 0 ? supplierFilters : undefined,
+    sortBy,
+    sortOrder,
   })
 
   const columns = useMemo<ColumnDef<OpenPurchaseOrder>[]>(
@@ -271,8 +277,11 @@ function OpenPOPage() {
     data: data?.items ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
+    manualSorting: true,
+    onSortingChange: (updater) => {
+      setSorting(updater)
+      setPage(1)
+    },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -323,7 +332,7 @@ function OpenPOPage() {
             </SheetHeader>
             <div className="flex-1 space-y-6 overflow-y-auto p-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Plant</label>
+                <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantOptions}
                   value={sheetPlantFilters}
@@ -333,7 +342,7 @@ function OpenPOPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Order Type</label>
+                <Label className="text-xs font-bold uppercase">Order Type</Label>
                 <MultiSelect
                   options={orderTypeOptions}
                   value={sheetOrderTypeFilters}
@@ -343,7 +352,7 @@ function OpenPOPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Supplier</label>
+                <Label className="text-xs font-bold uppercase">Supplier</Label>
                 <MultiSelect
                   options={supplierOptions}
                   value={sheetSupplierFilters}
@@ -410,7 +419,10 @@ function OpenPOPage() {
                           checked={column.getIsVisible()}
                           onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
                         />
-                        <label htmlFor={`column-${column.id}`} className="cursor-pointer text-sm capitalize">
+                        <label
+                          htmlFor={`column-${column.id}`}
+                          className="cursor-pointer text-sm capitalize"
+                        >
                           {typeof column.columnDef.header === 'string'
                             ? column.columnDef.header
                             : column.id.replace(/([A-Z])/g, ' $1').trim()}

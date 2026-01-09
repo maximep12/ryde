@@ -9,6 +9,7 @@ import {
 import {
   Button,
   Checkbox,
+  Label,
   MultiSelect,
   Popover,
   PopoverContent,
@@ -35,7 +36,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -91,6 +91,7 @@ function ForecastsPage() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     country: false,
     seller: false,
+    sourceYear: false,
   })
   const [regionFilters, setRegionFilters] = useState<string[]>([])
   const [countryFilters, setCountryFilters] = useState<string[]>([])
@@ -99,6 +100,8 @@ function ForecastsPage() {
   const [yearFilters, setYearFilters] = useState<number[]>([])
   const [monthFilters, setMonthFilters] = useState<number[]>([])
   const [negativeSalesOnly, setNegativeSalesOnly] = useState(false)
+  const [positiveSalesOnly, setPositiveSalesOnly] = useState(false)
+  const [clientStatusFilter, setClientStatusFilter] = useState<'active' | 'inactive' | null>(null)
   const pageSize = 25
 
   // Sheet state
@@ -110,6 +113,8 @@ function ForecastsPage() {
   const [sheetYearFilters, setSheetYearFilters] = useState<string[]>([])
   const [sheetMonthFilters, setSheetMonthFilters] = useState<string[]>([])
   const [sheetNegativeSalesOnly, setSheetNegativeSalesOnly] = useState(false)
+  const [sheetPositiveSalesOnly, setSheetPositiveSalesOnly] = useState(false)
+  const [sheetClientStatusFilter, setSheetClientStatusFilter] = useState<'active' | 'inactive' | null>(null)
 
   // Fetch filter options
   const { data: filterOptions } = useForecastsFilterOptions()
@@ -179,6 +184,8 @@ function ForecastsPage() {
       setSheetYearFilters(yearFilters.map(String))
       setSheetMonthFilters(monthFilters.map(String))
       setSheetNegativeSalesOnly(negativeSalesOnly)
+      setSheetPositiveSalesOnly(positiveSalesOnly)
+      setSheetClientStatusFilter(clientStatusFilter)
     }
     setSheetOpen(open)
   }
@@ -191,6 +198,8 @@ function ForecastsPage() {
     setYearFilters(sheetYearFilters.map(Number))
     setMonthFilters(sheetMonthFilters.map(Number))
     setNegativeSalesOnly(sheetNegativeSalesOnly)
+    setPositiveSalesOnly(sheetPositiveSalesOnly)
+    setClientStatusFilter(sheetClientStatusFilter)
     setPage(1)
     setSheetOpen(false)
   }
@@ -199,6 +208,10 @@ function ForecastsPage() {
     setSearch(value)
     setPage(1)
   }
+
+  // Extract sort params from sorting state
+  const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
+  const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useForecasts({
     page,
@@ -211,6 +224,10 @@ function ForecastsPage() {
     years: yearFilters.length > 0 ? yearFilters : undefined,
     months: monthFilters.length > 0 ? monthFilters : undefined,
     negativeSalesOnly: negativeSalesOnly || undefined,
+    positiveSalesOnly: positiveSalesOnly || undefined,
+    clientStatus: clientStatusFilter || undefined,
+    sortBy,
+    sortOrder,
   })
 
   const columns = useMemo<ColumnDef<ForecastItem>[]>(
@@ -219,16 +236,14 @@ function ForecastsPage() {
         accessorKey: 'region',
         header: () => <GlobeIcon className="size-4" />,
         size: 60,
-        cell: ({ row }) => (
-          <span className="text-xs">{row.original.region ?? '-'}</span>
-        ),
+        cell: ({ row }) => <span className="text-xs">{row.original.region ?? '-'}</span>,
       },
       {
         accessorKey: 'country',
-        header: 'Country',
-        size: 70,
+        header: 'Ctry',
+        size: 50,
         cell: ({ row }) => (
-          <span className="inline-flex rounded bg-slate-100 px-2 py-0.5 text-xs font-medium dark:bg-slate-800">
+          <span className="inline-flex rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium dark:bg-slate-800">
             {row.original.country}
           </span>
         ),
@@ -236,26 +251,36 @@ function ForecastsPage() {
       {
         accessorKey: 'client',
         header: 'Client',
-        cell: ({ row }) => (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span className="block max-w-[120px] truncate text-xs">{row.original.client ?? '-'}</span>
-            </TooltipTrigger>
-            {row.original.client && (
-              <TooltipContent className="max-w-[400px] bg-black text-white">
-                {row.original.client}
-              </TooltipContent>
-            )}
-          </Tooltip>
-        ),
+        cell: ({ row }) => {
+          const isInactive = row.original.clientActive?.toLowerCase() === 'n'
+          return (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="flex max-w-[120px] items-center gap-1 text-xs">
+                  {isInactive && <XIcon className="size-3 shrink-0 text-red-500" />}
+                  <span className="truncate">{row.original.client ?? '-'}</span>
+                </span>
+              </TooltipTrigger>
+              {row.original.client && (
+                <TooltipContent className="max-w-[400px] bg-black text-white">
+                  {row.original.client}
+                  {isInactive && <span className="ml-1 text-red-400">(Inactive)</span>}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          )
+        },
       },
       {
         accessorKey: 'brand',
         header: 'Brand',
+        size: 120,
         cell: ({ row }) => (
-          <span className="inline-flex items-center justify-center rounded bg-blue-100 px-2 py-0.5 text-xs dark:bg-blue-900">
-            {row.original.brand ?? '-'}
-          </span>
+          <div className="flex justify-center">
+            <span className="max-w-[100px] rounded bg-blue-100 px-2 py-0.5 text-center text-xs dark:bg-blue-900">
+              {row.original.brand ?? '-'}
+            </span>
+          </div>
         ),
       },
       {
@@ -267,7 +292,9 @@ function ForecastsPage() {
               <div className="max-w-[200px]">
                 <p className="truncate text-sm">{row.original.productDescription ?? '-'}</p>
                 {row.original.productCode && (
-                  <p className="text-muted-foreground font-mono text-xs">{row.original.productCode}</p>
+                  <p className="text-muted-foreground font-mono text-xs">
+                    {row.original.productCode}
+                  </p>
                 )}
               </div>
             </TooltipTrigger>
@@ -275,7 +302,7 @@ function ForecastsPage() {
               <TooltipContent className="max-w-[400px] bg-black text-white">
                 <p>{row.original.productDescription}</p>
                 {row.original.productCode && (
-                  <p className="text-gray-400 text-xs">{row.original.productCode}</p>
+                  <p className="text-xs text-gray-400">{row.original.productCode}</p>
                 )}
               </TooltipContent>
             )}
@@ -317,30 +344,42 @@ function ForecastsPage() {
         accessorKey: 'quantity',
         header: 'Qty',
         cell: ({ row }) => (
-          <span className="inline-flex min-w-[50px] items-center justify-center rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-medium dark:bg-slate-800">
-            {row.original.quantity.toLocaleString()}
-          </span>
+          <div className="flex justify-end">
+            <span className="inline-flex min-w-[50px] items-center justify-center rounded bg-slate-100 px-2 py-0.5 font-mono text-xs font-medium dark:bg-slate-800">
+              {row.original.quantity.toLocaleString()}
+            </span>
+          </div>
         ),
       },
       {
         accessorKey: 'volume',
-        header: 'Volume',
+        header: 'Vol.',
+        size: 70,
         cell: ({ row }) => (
-          <span className="font-mono text-xs">
-            {row.original.volume ? parseFloat(row.original.volume).toLocaleString() : '-'}
-          </span>
+          <div className="text-right font-mono text-xs">
+            {row.original.volume
+              ? parseFloat(row.original.volume).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              : '-'}
+          </div>
         ),
       },
       {
         accessorKey: 'sales',
         header: 'Sales',
-        cell: ({ row }) => (
-          <span className="font-mono text-xs">
-            {row.original.sales
-              ? `$${parseFloat(row.original.sales).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-              : '-'}
-          </span>
-        ),
+        cell: ({ row }) => {
+          const sales = row.original.sales ? parseFloat(row.original.sales) : null
+          if (sales === null) return <div className="flex justify-end"><span className="font-mono text-xs">-</span></div>
+
+          const formattedSales = `$${sales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
+          return (
+            <div className="flex justify-end">
+              <span className={`rounded px-2 py-0.5 font-mono text-xs text-white ${sales < 0 ? 'bg-red-600' : 'bg-green-600'}`}>
+                {formattedSales}
+              </span>
+            </div>
+          )
+        },
       },
       {
         accessorKey: 'seller',
@@ -351,11 +390,16 @@ function ForecastsPage() {
               <span className="max-w-[120px] truncate text-xs">{row.original.seller ?? '-'}</span>
             </TooltipTrigger>
             {row.original.seller && (
-              <TooltipContent className="bg-black text-white">
-                {row.original.seller}
-              </TooltipContent>
+              <TooltipContent className="bg-black text-white">{row.original.seller}</TooltipContent>
             )}
           </Tooltip>
+        ),
+      },
+      {
+        accessorKey: 'sourceYear',
+        header: 'Source Year',
+        cell: ({ row }) => (
+          <span className="text-xs">{row.original.sourceYear ?? '-'}</span>
         ),
       },
     ],
@@ -366,8 +410,11 @@ function ForecastsPage() {
     data: data?.items ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
+    manualSorting: true,
+    onSortingChange: (updater) => {
+      setSorting(updater)
+      setPage(1)
+    },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -384,7 +431,9 @@ function ForecastsPage() {
     plantFilters.length > 0 ||
     yearFilters.length > 0 ||
     monthFilters.length > 0 ||
-    negativeSalesOnly
+    negativeSalesOnly ||
+    positiveSalesOnly ||
+    clientStatusFilter !== null
 
   const resetFilters = () => {
     setRegionFilters([])
@@ -392,6 +441,8 @@ function ForecastsPage() {
     setBrandFilters([])
     setPlantFilters([])
     setNegativeSalesOnly(false)
+    setPositiveSalesOnly(false)
+    setClientStatusFilter(null)
     setYearFilters([])
     setMonthFilters([])
     setSearch('')
@@ -440,7 +491,7 @@ function ForecastsPage() {
             </SheetHeader>
             <div className="flex-1 space-y-6 overflow-y-auto p-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Region</label>
+                <Label className="text-xs font-bold uppercase">Region</Label>
                 <MultiSelect
                   options={regionOptions}
                   value={sheetRegionFilters}
@@ -450,7 +501,7 @@ function ForecastsPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Country</label>
+                <Label className="text-xs font-bold uppercase">Country</Label>
                 <MultiSelect
                   options={countryOptions}
                   value={sheetCountryFilters}
@@ -460,7 +511,7 @@ function ForecastsPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Brand</label>
+                <Label className="text-xs font-bold uppercase">Brand</Label>
                 <MultiSelect
                   options={brandOptions}
                   value={sheetBrandFilters}
@@ -470,7 +521,7 @@ function ForecastsPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Plant</label>
+                <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantOptions}
                   value={sheetPlantFilters}
@@ -480,7 +531,7 @@ function ForecastsPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Year</label>
+                <Label className="text-xs font-bold uppercase">Year</Label>
                 <MultiSelect
                   options={yearOptions}
                   value={sheetYearFilters}
@@ -490,7 +541,7 @@ function ForecastsPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Month</label>
+                <Label className="text-xs font-bold uppercase">Month</Label>
                 <MultiSelect
                   options={monthOptions}
                   value={sheetMonthFilters}
@@ -499,15 +550,68 @@ function ForecastsPage() {
                 />
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="negative-sales"
-                  checked={sheetNegativeSalesOnly}
-                  onCheckedChange={(checked) => setSheetNegativeSalesOnly(checked === true)}
-                />
-                <label htmlFor="negative-sales" className="cursor-pointer text-sm">
-                  Show only negative sales
-                </label>
+              {/* Client Status */}
+              <div className="space-y-3">
+                <Label className="text-xs font-bold uppercase">Client Status</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="active-clients"
+                      checked={sheetClientStatusFilter === 'active'}
+                      onCheckedChange={(checked) =>
+                        setSheetClientStatusFilter(checked ? 'active' : null)
+                      }
+                    />
+                    <label htmlFor="active-clients" className="cursor-pointer text-sm">
+                      Show only active clients
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="inactive-clients"
+                      checked={sheetClientStatusFilter === 'inactive'}
+                      onCheckedChange={(checked) =>
+                        setSheetClientStatusFilter(checked ? 'inactive' : null)
+                      }
+                    />
+                    <label htmlFor="inactive-clients" className="cursor-pointer text-sm">
+                      Show only inactive clients
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
+              {/* Sales */}
+              <div className="space-y-3">
+                <Label className="text-xs font-bold uppercase">Sales</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="positive-sales"
+                      checked={sheetPositiveSalesOnly}
+                      onCheckedChange={(checked) => {
+                        setSheetPositiveSalesOnly(checked === true)
+                        if (checked) setSheetNegativeSalesOnly(false)
+                      }}
+                    />
+                    <label htmlFor="positive-sales" className="cursor-pointer text-sm">
+                      Show only positive sales
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="negative-sales"
+                      checked={sheetNegativeSalesOnly}
+                      onCheckedChange={(checked) => {
+                        setSheetNegativeSalesOnly(checked === true)
+                        if (checked) setSheetPositiveSalesOnly(false)
+                      }}
+                    />
+                    <label htmlFor="negative-sales" className="cursor-pointer text-sm">
+                      Show only negative sales
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
             <SheetFooter className="border-t p-4">
@@ -525,6 +629,8 @@ function ForecastsPage() {
                   setYearFilters([])
                   setMonthFilters([])
                   setNegativeSalesOnly(false)
+                  setPositiveSalesOnly(false)
+                  setClientStatusFilter(null)
                   setPage(1)
                   setSheetOpen(false)
                 }}
@@ -560,7 +666,7 @@ function ForecastsPage() {
                   columnId === 'region'
                     ? 'Region'
                     : columnId === 'country'
-                      ? 'Country'
+                      ? 'Ctry'
                       : columnId === 'client'
                         ? 'Client'
                         : columnId === 'brand'
@@ -574,12 +680,14 @@ function ForecastsPage() {
                                 : columnId === 'quantity'
                                   ? 'Qty'
                                   : columnId === 'volume'
-                                    ? 'Volume'
+                                    ? 'Vol.'
                                     : columnId === 'sales'
                                       ? 'Sales'
                                       : columnId === 'seller'
                                         ? 'Seller'
-                                        : columnId
+                                        : columnId === 'sourceYear'
+                                          ? 'Source Year'
+                                          : columnId
                 return (
                   <div key={column.id} className="flex items-center gap-2">
                     <Checkbox
@@ -623,9 +731,7 @@ function ForecastsPage() {
                 >
                   Region: {region}
                   <button
-                    onClick={() =>
-                      setRegionFilters((prev) => prev.filter((r) => r !== region))
-                    }
+                    onClick={() => setRegionFilters((prev) => prev.filter((r) => r !== region))}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -639,9 +745,7 @@ function ForecastsPage() {
                 >
                   Country: {country}
                   <button
-                    onClick={() =>
-                      setCountryFilters((prev) => prev.filter((c) => c !== country))
-                    }
+                    onClick={() => setCountryFilters((prev) => prev.filter((c) => c !== country))}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -704,11 +808,33 @@ function ForecastsPage() {
                   </button>
                 </span>
               ))}
+              {positiveSalesOnly && (
+                <span className="inline-flex items-center justify-center gap-1 rounded-full bg-green-600 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
+                  Positive Sales Only
+                  <button
+                    onClick={() => setPositiveSalesOnly(false)}
+                    className="ml-0.5 hover:text-gray-300"
+                  >
+                    <XIcon className="size-3" />
+                  </button>
+                </span>
+              )}
               {negativeSalesOnly && (
                 <span className="inline-flex items-center justify-center gap-1 rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
                   Negative Sales Only
                   <button
                     onClick={() => setNegativeSalesOnly(false)}
+                    className="ml-0.5 hover:text-gray-300"
+                  >
+                    <XIcon className="size-3" />
+                  </button>
+                </span>
+              )}
+              {clientStatusFilter && (
+                <span className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
+                  {clientStatusFilter === 'active' ? 'Active Clients' : 'Inactive Clients'}
+                  <button
+                    onClick={() => setClientStatusFilter(null)}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -755,20 +881,11 @@ function ForecastsPage() {
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row, index) => {
-                    const sales = row.original.sales ? parseFloat(row.original.sales) : 0
-                    const isNegativeSales = sales < 0
-                    return (
+                  table.getRowModel().rows.map((row, index) => (
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && 'selected'}
-                      className={
-                        isNegativeSales
-                          ? 'bg-red-50 dark:bg-red-950/30'
-                          : index % 2 === 0
-                            ? 'bg-background'
-                            : 'bg-muted/30'
-                      }
+                      className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id} className="py-2">
@@ -776,8 +893,7 @@ function ForecastsPage() {
                         </TableCell>
                       ))}
                     </TableRow>
-                    )
-                  })
+                  ))
                 ) : (
                   <TableRow>
                     <TableCell

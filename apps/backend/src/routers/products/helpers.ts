@@ -1,10 +1,21 @@
 import { products } from '@repo/db'
-import { and, count, countDistinct, eq, ilike, or, sql } from 'drizzle-orm'
+import { and, asc, count, countDistinct, desc, eq, ilike, or, sql, type SQL } from 'drizzle-orm'
 import { db } from '../../db'
 import type { ProductsQuery } from './schemas'
 
+// Map column names to product table columns
+const sortableColumns = {
+  productCode: products.productCode,
+  description: products.description,
+  productType: products.productType,
+  productGroup: products.productGroup,
+  gtin: products.gtin,
+  status: products.status,
+  statusValidFrom: products.statusValidFrom,
+} as const
+
 export async function getProducts(query: ProductsQuery) {
-  const { page, pageSize, search, productTypes, productGroups, statuses } = query
+  const { page, pageSize, search, productTypes, productGroups, statuses, sortBy, sortOrder } = query
   const offset = (page - 1) * pageSize
 
   const conditions = []
@@ -49,12 +60,21 @@ export async function getProducts(query: ProductsQuery) {
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
+  // Build order by clause
+  let orderByClause: SQL | undefined
+  if (sortBy && sortBy in sortableColumns) {
+    const column = sortableColumns[sortBy as keyof typeof sortableColumns]
+    orderByClause = sortOrder === 'desc' ? desc(column) : asc(column)
+  } else {
+    orderByClause = asc(products.productCode)
+  }
+
   // Get items
   const items = await db
     .select()
     .from(products)
     .where(whereClause)
-    .orderBy(products.productCode)
+    .orderBy(orderByClause)
     .limit(pageSize)
     .offset(offset)
 

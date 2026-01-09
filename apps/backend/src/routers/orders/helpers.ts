@@ -1,6 +1,7 @@
 import { clientOrderIssues, clientOrderItems, clientOrders, clients, users } from '@repo/db'
 import {
   and,
+  asc,
   count,
   countDistinct,
   desc,
@@ -12,11 +13,22 @@ import {
   lt,
   ne,
   or,
+  type SQL,
 } from 'drizzle-orm'
 import { PDFParse } from 'pdf-parse'
 import { db } from '../../db'
 import { parseOrderFormText } from './parsers/orderFormParser'
 import type { CreateOrderInput, OrdersQuery, ParsedOrderForm } from './schemas'
+
+// Map column names to order table columns
+const sortableColumns = {
+  orderNumber: clientOrders.orderNumber,
+  orderDate: clientOrders.orderDate,
+  totalAmount: clientOrders.totalAmount,
+  status: clientOrders.status,
+  createdAt: clientOrders.createdAt,
+  'client.storeName': clients.storeName,
+} as const
 
 export async function getOrders(query: OrdersQuery) {
   const {
@@ -30,6 +42,8 @@ export async function getOrders(query: OrdersQuery) {
     hasResolvedIssues,
     requiresApproval,
     wasApproved,
+    sortBy,
+    sortOrder,
   } = query
   const offset = (page - 1) * pageSize
 
@@ -121,6 +135,15 @@ export async function getOrders(query: OrdersQuery) {
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
+  // Build order by clause
+  let orderByClause: SQL | undefined
+  if (sortBy && sortBy in sortableColumns) {
+    const column = sortableColumns[sortBy as keyof typeof sortableColumns]
+    orderByClause = sortOrder === 'desc' ? desc(column) : asc(column)
+  } else {
+    orderByClause = desc(clientOrders.orderDate)
+  }
+
   const [items, countResult, ordersWithIssuesCount, ordersRequiringApprovalCount] =
     await Promise.all([
       db
@@ -146,7 +169,7 @@ export async function getOrders(query: OrdersQuery) {
         .from(clientOrders)
         .innerJoin(clients, eq(clientOrders.clientId, clients.id))
         .where(whereClause)
-        .orderBy(desc(clientOrders.orderDate))
+        .orderBy(orderByClause)
         .limit(pageSize)
         .offset(offset),
       db

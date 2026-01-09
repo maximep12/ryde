@@ -12,6 +12,10 @@ export type ForecastsQueryParams = {
   years?: number[]
   months?: number[]
   negativeSalesOnly?: boolean
+  positiveSalesOnly?: boolean
+  clientStatus?: 'active' | 'inactive'
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type ForecastItem = {
@@ -32,6 +36,7 @@ export type ForecastItem = {
   seller: string | null
   clientActive: string | null
   plant: string | null
+  sourceYear: number | null
   createdAt: string
   updatedAt: string | null
 }
@@ -47,7 +52,22 @@ export type ForecastsResponse = {
 }
 
 export function useForecasts(params: ForecastsQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, regions, countries, brands, plants, years, months, negativeSalesOnly } = params
+  const {
+    page = 1,
+    pageSize = 25,
+    search,
+    regions,
+    countries,
+    brands,
+    plants,
+    years,
+    months,
+    negativeSalesOnly,
+    positiveSalesOnly,
+    clientStatus,
+    sortBy,
+    sortOrder,
+  } = params
 
   return useQuery({
     queryKey: [
@@ -63,6 +83,10 @@ export function useForecasts(params: ForecastsQueryParams = {}) {
         years,
         months,
         negativeSalesOnly,
+        positiveSalesOnly,
+        clientStatus,
+        sortBy,
+        sortOrder,
       },
     ],
     queryFn: async () => {
@@ -79,6 +103,10 @@ export function useForecasts(params: ForecastsQueryParams = {}) {
           ...(years && years.length > 0 && { years: years.join(',') }),
           ...(months && months.length > 0 && { months: months.join(',') }),
           ...(negativeSalesOnly && { negativeSalesOnly: 'true' }),
+          ...(positiveSalesOnly && { positiveSalesOnly: 'true' }),
+          ...(clientStatus && { clientStatus }),
+          ...(sortBy && { sortBy }),
+          ...(sortOrder && { sortOrder }),
         },
       })
       if (!res.ok) {

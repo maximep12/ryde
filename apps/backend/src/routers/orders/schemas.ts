@@ -11,6 +11,8 @@ export const ordersQuerySchema = z.object({
   hasResolvedIssues: z.coerce.boolean().optional(), // Filter orders that have resolved issues
   requiresApproval: z.coerce.boolean().optional(), // Filter orders that require approval
   wasApproved: z.coerce.boolean().optional(), // Filter orders that were manually approved by users
+  sortBy: z.string().optional(), // Column to sort by
+  sortOrder: z.enum(['asc', 'desc']).optional(), // Sort direction
 })
 
 export type OrdersQuery = z.infer<typeof ordersQuerySchema>

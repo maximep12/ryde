@@ -8,6 +8,8 @@ export type InventoryQueryParams = {
   plants?: string[]
   storageLocations?: string[]
   baseUnits?: string[]
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type InventoryItem = {
@@ -39,7 +41,7 @@ export type InventoryResponse = {
 }
 
 export function useInventory(params: InventoryQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, plants, storageLocations, baseUnits } = params
+  const { page = 1, pageSize = 25, search, plants, storageLocations, baseUnits, sortBy, sortOrder } = params
 
   return useQuery({
     queryKey: [
@@ -51,6 +53,8 @@ export function useInventory(params: InventoryQueryParams = {}) {
         plants,
         storageLocations,
         baseUnits,
+        sortBy,
+        sortOrder,
       },
     ],
     queryFn: async () => {
@@ -64,6 +68,8 @@ export function useInventory(params: InventoryQueryParams = {}) {
           ...(storageLocations &&
             storageLocations.length > 0 && { storageLocations: storageLocations.join(',') }),
           ...(baseUnits && baseUnits.length > 0 && { baseUnits: baseUnits.join(',') }),
+          ...(sortBy && { sortBy }),
+          ...(sortOrder && { sortOrder }),
         },
       })
       if (!res.ok) {

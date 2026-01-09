@@ -33,7 +33,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -160,6 +159,10 @@ function OrdersMonitorPage() {
 
   const dateString = selectedDate ? selectedDate.toISOString().split('T')[0] : undefined
 
+  // Extract sort params from sorting state
+  const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
+  const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
+
   const { data, isLoading, error } = useOrders({
     page,
     pageSize,
@@ -171,6 +174,8 @@ function OrdersMonitorPage() {
     hasResolvedIssues: hasResolvedIssuesFilter || undefined,
     requiresApproval: requiresApprovalFilter || undefined,
     wasApproved: wasApprovedFilter || undefined,
+    sortBy,
+    sortOrder,
   })
 
   const columns = useMemo<ColumnDef<Order>[]>(
@@ -232,12 +237,14 @@ function OrdersMonitorPage() {
                 >
                   {row.original.client.storeName}
                 </Link>
-                <p className="text-muted-foreground truncate text-xs">{row.original.client.clientCode}</p>
+                <p className="text-muted-foreground truncate text-xs">
+                  {row.original.client.clientCode}
+                </p>
               </div>
             </TooltipTrigger>
             <TooltipContent className="bg-black text-white">
               <p>{row.original.client.storeName}</p>
-              <p className="text-gray-400 text-xs">{row.original.client.clientCode}</p>
+              <p className="text-xs text-gray-400">{row.original.client.clientCode}</p>
             </TooltipContent>
           </Tooltip>
         ),
@@ -309,8 +316,11 @@ function OrdersMonitorPage() {
     data: (data?.items as unknown as Order[]) ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
+    manualSorting: true,
+    onSortingChange: (updater) => {
+      setSorting(updater)
+      setPage(1)
+    },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -519,7 +529,10 @@ function OrdersMonitorPage() {
                           checked={column.getIsVisible()}
                           onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
                         />
-                        <label htmlFor={`column-${column.id}`} className="cursor-pointer text-sm capitalize">
+                        <label
+                          htmlFor={`column-${column.id}`}
+                          className="cursor-pointer text-sm capitalize"
+                        >
                           {typeof column.columnDef.header === 'string'
                             ? column.columnDef.header
                             : column.id.replace(/([A-Z])/g, ' $1').trim()}

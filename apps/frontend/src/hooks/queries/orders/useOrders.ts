@@ -12,6 +12,8 @@ export type OrdersQueryParams = {
   hasResolvedIssues?: boolean
   requiresApproval?: boolean
   wasApproved?: boolean
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type OrdersResponse = {
@@ -55,6 +57,8 @@ export function useOrders(params: OrdersQueryParams = {}) {
     hasResolvedIssues,
     requiresApproval,
     wasApproved,
+    sortBy,
+    sortOrder,
   } = params
 
   return useQuery({
@@ -71,6 +75,8 @@ export function useOrders(params: OrdersQueryParams = {}) {
         hasResolvedIssues,
         requiresApproval,
         wasApproved,
+        sortBy,
+        sortOrder,
       },
     ],
     queryFn: async () => {
@@ -89,6 +95,8 @@ export function useOrders(params: OrdersQueryParams = {}) {
           }),
           ...(requiresApproval !== undefined && { requiresApproval: requiresApproval.toString() }),
           ...(wasApproved !== undefined && { wasApproved: wasApproved.toString() }),
+          ...(sortBy && { sortBy }),
+          ...(sortOrder && { sortOrder }),
         },
       })
       if (!res.ok) {

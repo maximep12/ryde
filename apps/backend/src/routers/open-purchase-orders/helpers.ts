@@ -1,10 +1,22 @@
 import { openPurchaseOrders } from '@repo/db'
-import { and, count, eq, ilike, or } from 'drizzle-orm'
+import { and, asc, count, desc, eq, ilike, or, type SQL } from 'drizzle-orm'
 import { db } from '../../db'
 import type { OpenPurchaseOrdersQuery } from './schemas'
 
+// Map column names to open purchase orders table columns
+const sortableColumns = {
+  purchaseOrder: openPurchaseOrders.purchaseOrder,
+  material: openPurchaseOrders.material,
+  materialNumber: openPurchaseOrders.materialNumber,
+  plantName: openPurchaseOrders.plantName,
+  supplier: openPurchaseOrders.supplier,
+  orderQuantity: openPurchaseOrders.orderQuantity,
+  quantityToBeDelivered: openPurchaseOrders.quantityToBeDelivered,
+  nextScheduleLineDate: openPurchaseOrders.nextScheduleLineDate,
+} as const
+
 export async function getOpenPurchaseOrders(query: OpenPurchaseOrdersQuery) {
-  const { page, pageSize, search, plants, orderTypes, suppliers } = query
+  const { page, pageSize, search, plants, orderTypes, suppliers, sortBy, sortOrder } = query
   const offset = (page - 1) * pageSize
 
   const conditions = []
@@ -50,12 +62,21 @@ export async function getOpenPurchaseOrders(query: OpenPurchaseOrdersQuery) {
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
+  // Build order by clause
+  let orderByClause: SQL | undefined
+  if (sortBy && sortBy in sortableColumns) {
+    const column = sortableColumns[sortBy as keyof typeof sortableColumns]
+    orderByClause = sortOrder === 'desc' ? desc(column) : asc(column)
+  } else {
+    orderByClause = asc(openPurchaseOrders.nextScheduleLineDate)
+  }
+
   // Get items
   const items = await db
     .select()
     .from(openPurchaseOrders)
     .where(whereClause)
-    .orderBy(openPurchaseOrders.nextScheduleLineDate)
+    .orderBy(orderByClause)
     .limit(pageSize)
     .offset(offset)
 

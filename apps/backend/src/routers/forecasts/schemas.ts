@@ -11,6 +11,10 @@ export const forecastsQuerySchema = z.object({
   years: z.string().optional(), // Comma-separated list
   months: z.string().optional(), // Comma-separated list
   negativeSalesOnly: z.coerce.boolean().optional(), // Filter for negative sales
+  positiveSalesOnly: z.coerce.boolean().optional(), // Filter for positive sales
+  clientStatus: z.enum(['active', 'inactive']).optional(), // Filter by client status
+  sortBy: z.string().optional(), // Column to sort by
+  sortOrder: z.enum(['asc', 'desc']).optional(), // Sort direction
 })
 
 export type ForecastsQuery = z.infer<typeof forecastsQuerySchema>

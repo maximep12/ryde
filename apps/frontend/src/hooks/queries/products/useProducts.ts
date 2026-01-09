@@ -8,6 +8,8 @@ export type ProductsQueryParams = {
   productTypes?: string[]
   productGroups?: string[]
   statuses?: string[]
+  sortBy?: string
+  sortOrder?: 'asc' | 'desc'
 }
 
 export type Product = {
@@ -36,7 +38,7 @@ export type ProductsResponse = {
 }
 
 export function useProducts(params: ProductsQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, productTypes, productGroups, statuses } = params
+  const { page = 1, pageSize = 25, search, productTypes, productGroups, statuses, sortBy, sortOrder } = params
 
   return useQuery({
     queryKey: [
@@ -48,6 +50,8 @@ export function useProducts(params: ProductsQueryParams = {}) {
         productTypes,
         productGroups,
         statuses,
+        sortBy,
+        sortOrder,
       },
     ],
     queryFn: async () => {
@@ -61,6 +65,8 @@ export function useProducts(params: ProductsQueryParams = {}) {
           ...(productGroups &&
             productGroups.length > 0 && { productGroups: productGroups.join(',') }),
           ...(statuses && statuses.length > 0 && { statuses: statuses.join(',') }),
+          ...(sortBy && { sortBy }),
+          ...(sortOrder && { sortOrder }),
         },
       })
       if (!res.ok) {

@@ -5,6 +5,7 @@ import { Product, useProductFilterOptions, useProducts } from '@/hooks/queries/p
 import {
   Button,
   Checkbox,
+  Label,
   MultiSelect,
   Popover,
   PopoverContent,
@@ -31,7 +32,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -144,6 +144,10 @@ function ProductStatusPage() {
     setPage(1)
   }
 
+  // Extract sort params from sorting state
+  const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
+  const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
+
   const { data, isLoading, error } = useProducts({
     page,
     pageSize,
@@ -151,6 +155,8 @@ function ProductStatusPage() {
     productTypes: productTypeFilters.length > 0 ? productTypeFilters : undefined,
     productGroups: productGroupFilters.length > 0 ? productGroupFilters : undefined,
     statuses: statusFilters.length > 0 ? statusFilters : undefined,
+    sortBy,
+    sortOrder,
   })
 
   const columns = useMemo<ColumnDef<Product>[]>(
@@ -240,8 +246,11 @@ function ProductStatusPage() {
     data: data?.items ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
+    manualSorting: true,
+    onSortingChange: (updater) => {
+      setSorting(updater)
+      setPage(1)
+    },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -287,7 +296,7 @@ function ProductStatusPage() {
             </SheetHeader>
             <div className="flex-1 space-y-6 overflow-y-auto p-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Status</label>
+                <Label className="text-xs font-bold uppercase">Status</Label>
                 <MultiSelect
                   options={statusOptions}
                   value={sheetStatusFilters}
@@ -297,7 +306,7 @@ function ProductStatusPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Product Type</label>
+                <Label className="text-xs font-bold uppercase">Product Type</Label>
                 <MultiSelect
                   options={productTypeOptions}
                   value={sheetProductTypeFilters}
@@ -307,7 +316,7 @@ function ProductStatusPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Product Group</label>
+                <Label className="text-xs font-bold uppercase">Product Group</Label>
                 <MultiSelect
                   options={productGroupOptions}
                   value={sheetProductGroupFilters}
@@ -374,7 +383,10 @@ function ProductStatusPage() {
                           checked={column.getIsVisible()}
                           onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
                         />
-                        <label htmlFor={`column-${column.id}`} className="cursor-pointer text-sm capitalize">
+                        <label
+                          htmlFor={`column-${column.id}`}
+                          className="cursor-pointer text-sm capitalize"
+                        >
                           {typeof column.columnDef.header === 'string'
                             ? column.columnDef.header
                             : column.id.replace(/([A-Z])/g, ' $1').trim()}

@@ -1,10 +1,41 @@
 import { forecasts } from '@repo/db'
-import { and, count, eq, ilike, lt, or } from 'drizzle-orm'
+import { and, asc, count, desc, eq, gt, ilike, lt, or, type SQL } from 'drizzle-orm'
 import { db } from '../../db'
 import type { ForecastsQuery } from './schemas'
 
+// Map column names to forecast table columns
+const sortableColumns = {
+  region: forecasts.region,
+  country: forecasts.country,
+  client: forecasts.client,
+  brand: forecasts.brand,
+  productDescription: forecasts.productDescription,
+  plant: forecasts.plant,
+  quantity: forecasts.quantity,
+  volume: forecasts.volume,
+  sales: forecasts.sales,
+  seller: forecasts.seller,
+  year: forecasts.year,
+  month: forecasts.month,
+} as const
+
 export async function getForecasts(query: ForecastsQuery) {
-  const { page, pageSize, search, regions, countries, brands, plants, years, months, negativeSalesOnly } = query
+  const {
+    page,
+    pageSize,
+    search,
+    regions,
+    countries,
+    brands,
+    plants,
+    years,
+    months,
+    negativeSalesOnly,
+    positiveSalesOnly,
+    clientStatus,
+    sortBy,
+    sortOrder,
+  } = query
   const offset = (page - 1) * pageSize
 
   const conditions = []
@@ -86,14 +117,33 @@ export async function getForecasts(query: ForecastsQuery) {
     conditions.push(lt(forecasts.sales, '0'))
   }
 
+  if (positiveSalesOnly) {
+    conditions.push(gt(forecasts.sales, '0'))
+  }
+
+  if (clientStatus === 'active') {
+    conditions.push(eq(forecasts.clientActive, 'Y'))
+  } else if (clientStatus === 'inactive') {
+    conditions.push(eq(forecasts.clientActive, 'N'))
+  }
+
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
+
+  // Build order by clause
+  let orderByClause: SQL | undefined
+  if (sortBy && sortBy in sortableColumns) {
+    const column = sortableColumns[sortBy as keyof typeof sortableColumns]
+    orderByClause = sortOrder === 'desc' ? desc(column) : asc(column)
+  } else {
+    orderByClause = asc(forecasts.client)
+  }
 
   // Get items
   const items = await db
     .select()
     .from(forecasts)
     .where(whereClause)
-    .orderBy(forecasts.client)
+    .orderBy(orderByClause)
     .limit(pageSize)
     .offset(offset)
 

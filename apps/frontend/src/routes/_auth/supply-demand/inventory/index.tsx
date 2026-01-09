@@ -9,6 +9,7 @@ import {
 import {
   Button,
   Checkbox,
+  Label,
   MultiSelect,
   Popover,
   PopoverContent,
@@ -35,7 +36,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getSortedRowModel,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -139,6 +139,10 @@ function InventoryPage() {
     setPage(1)
   }
 
+  // Extract sort params from sorting state
+  const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
+  const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
+
   const { data, isLoading, error } = useInventory({
     page,
     pageSize,
@@ -146,6 +150,8 @@ function InventoryPage() {
     plants: plantFilters.length > 0 ? plantFilters : undefined,
     storageLocations: storageLocationFilters.length > 0 ? storageLocationFilters : undefined,
     baseUnits: baseUnitFilters.length > 0 ? baseUnitFilters : undefined,
+    sortBy,
+    sortOrder,
   })
 
   const columns = useMemo<ColumnDef<InventoryItem>[]>(
@@ -238,8 +244,11 @@ function InventoryPage() {
     data: data?.items ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
+    manualSorting: true,
+    onSortingChange: (updater) => {
+      setSorting(updater)
+      setPage(1)
+    },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
@@ -302,7 +311,7 @@ function InventoryPage() {
             </SheetHeader>
             <div className="flex-1 space-y-6 overflow-y-auto p-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Plant</label>
+                <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantOptions}
                   value={sheetPlantFilters}
@@ -312,7 +321,7 @@ function InventoryPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Storage Location</label>
+                <Label className="text-xs font-bold uppercase">Storage Location</Label>
                 <MultiSelect
                   options={storageLocationOptions}
                   value={sheetStorageLocationFilters}
@@ -322,7 +331,7 @@ function InventoryPage() {
               </div>
               <div className="mx-auto h-px w-1/2 bg-gray-200 dark:bg-gray-700" />
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase">Base Unit</label>
+                <Label className="text-xs font-bold uppercase">Base Unit</Label>
                 <MultiSelect
                   options={baseUnitOptions}
                   value={sheetBaseUnitFilters}

@@ -27,6 +27,7 @@ export const forecasts = app.table(
     seller: varchar('seller', { length: 100 }),
     clientActive: varchar('client_active', { length: 20 }),
     plant: varchar('plant', { length: 100 }),
+    sourceYear: integer('source_year'),
     ...timestamps,
   },
   (table) => [

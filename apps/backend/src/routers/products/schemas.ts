@@ -7,6 +7,8 @@ export const productsQuerySchema = z.object({
   productTypes: z.string().optional(), // Comma-separated list
   productGroups: z.string().optional(), // Comma-separated list
   statuses: z.string().optional(), // Comma-separated list (03, 04, 05)
+  sortBy: z.string().optional(), // Column to sort by
+  sortOrder: z.enum(['asc', 'desc']).optional(), // Sort direction
 })
 
 export type ProductsQuery = z.infer<typeof productsQuerySchema>
