@@ -12,6 +12,7 @@ import {
   PaletteIcon,
   PlusCircleIcon,
   SearchIcon,
+  TrendingUpIcon,
   UploadIcon,
   UsersIcon,
 } from 'lucide-react'
@@ -45,6 +46,7 @@ export const supplyDemandNavigation: NavigationItem[] = [
     path: '/supply-demand/product-status',
     icon: PackageIcon,
   },
+  { title: 'route.supplyDemandForecasts', path: '/supply-demand/forecasts', icon: TrendingUpIcon },
   { title: 'route.supplyDemandInventory', path: '/supply-demand/inventory', icon: BoxesIcon },
   { title: 'route.supplyDemandOpenPO', path: '/supply-demand/open-po', icon: ClipboardListIcon },
   { title: 'route.supplyDemandUpload', path: '/supply-demand/upload', icon: UploadIcon },

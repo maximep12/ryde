@@ -12,6 +12,7 @@ import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition } from './routers/auth/handlers'
 import { clientsRouterDefinition } from './routers/clients/handlers'
 import { exampleRouterDefinition } from './routers/example/handlers'
+import { forecastsRouterDefinition } from './routers/forecasts/handlers'
 import { inventoryRouterDefinition } from './routers/inventory/handlers'
 import { openPurchaseOrdersRouterDefinition } from './routers/open-purchase-orders/handlers'
 import { ordersRouterDefinition } from './routers/orders/handlers'
@@ -53,6 +54,7 @@ const appDefinition = app
   .route('/clients', clientsRouterDefinition)
   .route('/orders', ordersRouterDefinition)
   .route('/products', productsRouterDefinition)
+  .route('/forecasts', forecastsRouterDefinition)
   .route('/inventory', inventoryRouterDefinition)
   .route('/open-purchase-orders', openPurchaseOrdersRouterDefinition)
   .route('/example', exampleRouterDefinition)

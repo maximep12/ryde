@@ -5,6 +5,7 @@ This document describes the methodology for generating a new Supply & Demand dat
 ## Overview
 
 When a CSV file is provided (e.g., from `seed-data-csv/` directory), the process involves:
+
 1. Analyzing the CSV structure using shell commands
 2. Creating/updating database schema
 3. Embedding data directly in seed files (no CSV parsing at runtime)
@@ -151,10 +152,7 @@ export async function getItems(params: QueryParams) {
 
   if (search) {
     conditions.push(
-      or(
-        ilike(tableName.code, `%${search}%`),
-        ilike(tableName.description, `%${search}%`)
-      )
+      or(ilike(tableName.code, `%${search}%`), ilike(tableName.description, `%${search}%`)),
     )
   }
 
@@ -292,6 +290,7 @@ Create `apps/frontend/src/routes/_auth/supply-demand/<name>/index.tsx`.
 **Important**: Add `'use no memo'` directive at the top when using TanStack Table (React Compiler compatibility).
 
 Base the page on the Product Status page pattern:
+
 - DebouncedSearchInput for text search
 - Sheet with MultiSelect filters
 - TanStack Table with sorting
@@ -299,6 +298,7 @@ Base the page on the Product Status page pattern:
 - Filter badges display
 
 Key components to import from `@repo/ui/components`:
+
 - Button, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter
 - MultiSelect, Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 - Skeleton, Tooltip, TooltipContent, TooltipTrigger
@@ -309,8 +309,12 @@ Update `apps/frontend/src/components/AppLayout/AppSidebar/navigation.ts`:
 
 ```typescript
 export const supplyDemandNavigation: NavigationItem[] = [
-  { title: 'route.supplyDemandProductStatus', path: '/supply-demand/product-status', icon: PackageIcon },
-  { title: 'route.supplyDemandNewPage', path: '/supply-demand/new-page', icon: SomeIcon },  // Add between existing items
+  {
+    title: 'route.supplyDemandProductStatus',
+    path: '/supply-demand/product-status',
+    icon: PackageIcon,
+  },
+  { title: 'route.supplyDemandNewPage', path: '/supply-demand/new-page', icon: SomeIcon }, // Add between existing items
   { title: 'route.supplyDemandReports', path: '/supply-demand/reports', icon: FileTextIcon },
   { title: 'route.supplyDemandUpload', path: '/supply-demand/upload', icon: UploadIcon },
 ]

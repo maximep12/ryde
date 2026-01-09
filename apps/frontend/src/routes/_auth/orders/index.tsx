@@ -36,6 +36,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table'
 import {
   AlertTriangleIcon,
@@ -46,6 +47,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ClipboardCheckIcon,
+  Columns3Icon,
   RotateCcwIcon,
   SlidersHorizontalIcon,
   XIcon,
@@ -97,6 +99,7 @@ function OrdersMonitorPage() {
   const [search, setSearch] = useState('')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [hasIssuesFilter, setHasIssuesFilter] = useState(false)
   const [hasResolvedIssuesFilter, setHasResolvedIssuesFilter] = useState(false)
   const [sourceFilters, setSourceFilters] = useState<string[]>([])
@@ -219,16 +222,24 @@ function OrdersMonitorPage() {
         accessorKey: 'client.storeName',
         header: 'Client',
         cell: ({ row }) => (
-          <div>
-            <Link
-              to="/clients/$clientId"
-              params={{ clientId: row.original.clientId.toString() }}
-              className="font-medium hover:underline"
-            >
-              {row.original.client.storeName}
-            </Link>
-            <p className="text-muted-foreground text-xs">{row.original.client.clientCode}</p>
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="max-w-[180px]">
+                <Link
+                  to="/clients/$clientId"
+                  params={{ clientId: row.original.clientId.toString() }}
+                  className="block truncate font-medium hover:underline"
+                >
+                  {row.original.client.storeName}
+                </Link>
+                <p className="text-muted-foreground truncate text-xs">{row.original.client.clientCode}</p>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="bg-black text-white">
+              <p>{row.original.client.storeName}</p>
+              <p className="text-gray-400 text-xs">{row.original.client.clientCode}</p>
+            </TooltipContent>
+          </Tooltip>
         ),
       },
       {
@@ -300,8 +311,10 @@ function OrdersMonitorPage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
+      columnVisibility,
     },
   })
 
@@ -482,11 +495,42 @@ function OrdersMonitorPage() {
           Reset Filters
         </Button>
         {pagination && (
-          <div className="text-muted-foreground ml-auto text-sm">
-            Showing {(pagination.page - 1) * pagination.pageSize + 1}-
-            {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
-            {pagination.total} orders
-          </div>
+          <>
+            <div className="text-muted-foreground ml-auto text-sm">
+              Showing {(pagination.page - 1) * pagination.pageSize + 1}-
+              {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
+              {pagination.total} orders
+            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Columns3Icon className="size-4" />
+                  Columns
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-48">
+                <div className="space-y-2">
+                  {table.getAllColumns().map((column) => {
+                    if (!column.getCanHide()) return null
+                    return (
+                      <div key={column.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`column-${column.id}`}
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
+                        />
+                        <label htmlFor={`column-${column.id}`} className="cursor-pointer text-sm capitalize">
+                          {typeof column.columnDef.header === 'string'
+                            ? column.columnDef.header
+                            : column.id.replace(/([A-Z])/g, ' $1').trim()}
+                        </label>
+                      </div>
+                    )
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
         )}
       </div>
 

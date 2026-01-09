@@ -19,5 +19,6 @@
   "route.supplyDemandUpload": "Upload Data",
   "route.supplyDemandProductStatus": "Product Status",
   "route.supplyDemandInventory": "Inventory",
-  "route.supplyDemandOpenPO": "Open PO"
+  "route.supplyDemandOpenPO": "Open PO",
+  "route.supplyDemandForecasts": "Forecasts"
 }

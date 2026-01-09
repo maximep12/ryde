@@ -11,6 +11,7 @@ import {
   clientOrderItems,
   clientOrders,
   clients,
+  forecasts,
   inventory,
   openPurchaseOrders,
   plants,
@@ -26,6 +27,7 @@ import {
   seedClientOrders,
   seedClients,
 } from './clients'
+import { seedForecasts } from './forecasts'
 import { seedInventory } from './inventory'
 import { seedOpenPurchaseOrders } from './openPurchaseOrders'
 import { seedPlants } from './plants'
@@ -60,6 +62,7 @@ async function clearAllData() {
   await db.delete(clientOrders)
   await db.delete(clients)
   await db.delete(books)
+  await db.delete(forecasts)
   await db.delete(inventory)
   await db.delete(openPurchaseOrders)
   await db.delete(plants)
@@ -80,6 +83,7 @@ async function main() {
   await seedBookReviews(db)
   await seedPlants(db)
   await seedProducts(db)
+  await seedForecasts(db)
   await seedInventory(db)
   await seedOpenPurchaseOrders(db)
   await seedClients(db)

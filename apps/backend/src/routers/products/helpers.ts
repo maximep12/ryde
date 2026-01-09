@@ -59,10 +59,7 @@ export async function getProducts(query: ProductsQuery) {
     .offset(offset)
 
   // Get total count
-  const [countResult] = await db
-    .select({ count: count() })
-    .from(products)
-    .where(whereClause)
+  const [countResult] = await db.select({ count: count() }).from(products).where(whereClause)
 
   const total = countResult?.count ?? 0
 

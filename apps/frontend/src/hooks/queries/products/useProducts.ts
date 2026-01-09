@@ -36,14 +36,7 @@ export type ProductsResponse = {
 }
 
 export function useProducts(params: ProductsQueryParams = {}) {
-  const {
-    page = 1,
-    pageSize = 25,
-    search,
-    productTypes,
-    productGroups,
-    statuses,
-  } = params
+  const { page = 1, pageSize = 25, search, productTypes, productGroups, statuses } = params
 
   return useQuery({
     queryKey: [
@@ -65,7 +58,8 @@ export function useProducts(params: ProductsQueryParams = {}) {
           pageSize: pageSize.toString(),
           ...(search && { search }),
           ...(productTypes && productTypes.length > 0 && { productTypes: productTypes.join(',') }),
-          ...(productGroups && productGroups.length > 0 && { productGroups: productGroups.join(',') }),
+          ...(productGroups &&
+            productGroups.length > 0 && { productGroups: productGroups.join(',') }),
           ...(statuses && statuses.length > 0 && { statuses: statuses.join(',') }),
         },
       })

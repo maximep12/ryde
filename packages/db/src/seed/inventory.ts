@@ -1995,7 +1995,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291B',
@@ -2009,7 +2009,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2912',
     plantName: 'ICN - NEWTON PLANT',
     storageLocation: '291B',
@@ -2023,7 +2023,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -2037,7 +2037,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -2051,7 +2051,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -2065,7 +2065,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2917',
     plantName: 'ICE - ETOBICOKE PLANT',
     storageLocation: '291A',
@@ -2079,7 +2079,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000027',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 120''",
     plant: '2917',
     plantName: 'ICE - ETOBICOKE PLANT',
     storageLocation: '291B',
@@ -2093,7 +2093,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291B',
@@ -2107,7 +2107,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2912',
     plantName: 'ICN - NEWTON PLANT',
     storageLocation: '291B',
@@ -2121,7 +2121,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -2135,7 +2135,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -2149,7 +2149,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -2163,7 +2163,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2917',
     plantName: 'ICE - ETOBICOKE PLANT',
     storageLocation: '291A',
@@ -2177,7 +2177,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000026',
-    materialDescription: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    materialDescription: "INFLATABLE SHIPPING BAGS 96''",
     plant: '2917',
     plantName: 'ICE - ETOBICOKE PLANT',
     storageLocation: '291B',
@@ -3227,7 +3227,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000004',
-    materialDescription: 'SHEETING 70\'\'X2MIL',
+    materialDescription: "SHEETING 70''X2MIL",
     plant: '1710',
     plantName: 'IAW - WINDSOR PLANT',
     storageLocation: '171C',
@@ -3241,7 +3241,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000004',
-    materialDescription: 'SHEETING 70\'\'X2MIL',
+    materialDescription: "SHEETING 70''X2MIL",
     plant: '1710',
     plantName: 'IAW - WINDSOR PLANT',
     storageLocation: '171E',
@@ -3255,7 +3255,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000004',
-    materialDescription: 'SHEETING 70\'\'X2MIL',
+    materialDescription: "SHEETING 70''X2MIL",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291A',
@@ -3269,7 +3269,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000004',
-    materialDescription: 'SHEETING 70\'\'X2MIL',
+    materialDescription: "SHEETING 70''X2MIL",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291B',
@@ -3283,7 +3283,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '400000004',
-    materialDescription: 'SHEETING 70\'\'X2MIL',
+    materialDescription: "SHEETING 70''X2MIL",
     plant: '2912',
     plantName: 'ICN - NEWTON PLANT',
     storageLocation: '291A',
@@ -3815,7 +3815,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000537',
-    materialDescription: 'BAG O\'SELECT NATURE UN 12.7KG',
+    materialDescription: "BAG O'SELECT NATURE UN 12.7KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -4179,7 +4179,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000496',
-    materialDescription: 'BAG (SUPL) O\'SELECT UP Un 7KG',
+    materialDescription: "BAG (SUPL) O'SELECT UP Un 7KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -4193,7 +4193,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000496',
-    materialDescription: 'BAG (SUPL) O\'SELECT UP Un 7KG',
+    materialDescription: "BAG (SUPL) O'SELECT UP Un 7KG",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -4431,7 +4431,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000473',
-    materialDescription: 'NEW BAG O\'SELECT NATURE UN 6.35KG',
+    materialDescription: "NEW BAG O'SELECT NATURE UN 6.35KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291A',
@@ -4445,7 +4445,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000473',
-    materialDescription: 'NEW BAG O\'SELECT NATURE UN 6.35KG',
+    materialDescription: "NEW BAG O'SELECT NATURE UN 6.35KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -5691,7 +5691,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000387',
-    materialDescription: 'BAG O\'SELECT UN 10KG',
+    materialDescription: "BAG O'SELECT UN 10KG",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291A',
@@ -5705,7 +5705,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000387',
-    materialDescription: 'BAG O\'SELECT UN 10KG',
+    materialDescription: "BAG O'SELECT UN 10KG",
     plant: '2912',
     plantName: 'ICN - NEWTON PLANT',
     storageLocation: '291A',
@@ -5719,7 +5719,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000385',
-    materialDescription: 'BAG O\'SELECT MA 14KG',
+    materialDescription: "BAG O'SELECT MA 14KG",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291A',
@@ -5733,7 +5733,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000385',
-    materialDescription: 'BAG O\'SELECT MA 14KG',
+    materialDescription: "BAG O'SELECT MA 14KG",
     plant: '2912',
     plantName: 'ICN - NEWTON PLANT',
     storageLocation: '291A',
@@ -5887,7 +5887,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000372',
-    materialDescription: 'BAG O\'SELECT NATURE UN 12.7KG',
+    materialDescription: "BAG O'SELECT NATURE UN 12.7KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291A',
@@ -5901,7 +5901,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000372',
-    materialDescription: 'BAG O\'SELECT NATURE UN 12.7KG',
+    materialDescription: "BAG O'SELECT NATURE UN 12.7KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -5915,7 +5915,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000371',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP FB 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP FB 12KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -5929,7 +5929,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000371',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP FB 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP FB 12KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -5943,7 +5943,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000371',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP FB 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP FB 12KG",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -5957,7 +5957,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000369',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP UN 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP UN 12KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291A',
@@ -5971,7 +5971,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000369',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP UN 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP UN 12KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -5985,7 +5985,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000369',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP UN 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP UN 12KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -5999,7 +5999,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000369',
-    materialDescription: 'LAMINATED BAG O\'SELECT UP UN 12KG',
+    materialDescription: "LAMINATED BAG O'SELECT UP UN 12KG",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -6013,7 +6013,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000365',
-    materialDescription: 'BAG CANADA\'S BEST BP 15KG',
+    materialDescription: "BAG CANADA'S BEST BP 15KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -6027,7 +6027,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000365',
-    materialDescription: 'BAG CANADA\'S BEST BP 15KG',
+    materialDescription: "BAG CANADA'S BEST BP 15KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -6041,7 +6041,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000363',
-    materialDescription: 'BAG CANADA\'S BEST FB 10KG',
+    materialDescription: "BAG CANADA'S BEST FB 10KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -6055,7 +6055,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000362',
-    materialDescription: 'BAG CANADA\'S BEST LA 10KG',
+    materialDescription: "BAG CANADA'S BEST LA 10KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291B',
@@ -6069,7 +6069,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000362',
-    materialDescription: 'BAG CANADA\'S BEST LA 10KG',
+    materialDescription: "BAG CANADA'S BEST LA 10KG",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -9317,7 +9317,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000005',
-    materialDescription: 'BAG IT\'S JUST CAT LITTER 18KG',
+    materialDescription: "BAG IT'S JUST CAT LITTER 18KG",
     plant: '1710',
     plantName: 'IAW - WINDSOR PLANT',
     storageLocation: '171B',
@@ -9331,7 +9331,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '300000005',
-    materialDescription: 'BAG IT\'S JUST CAT LITTER 18KG',
+    materialDescription: "BAG IT'S JUST CAT LITTER 18KG",
     plant: '2912',
     plantName: 'ICN - NEWTON PLANT',
     storageLocation: '291A',
@@ -12495,7 +12495,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '53210001',
-    materialDescription: 'O\'SELECT Un 10KG BAG CHEP PAL',
+    materialDescription: "O'SELECT Un 10KG BAG CHEP PAL",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291A',
@@ -12509,7 +12509,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '53014001',
-    materialDescription: 'O\'SELECT MA 14KG BAG CHEP PAL',
+    materialDescription: "O'SELECT MA 14KG BAG CHEP PAL",
     plant: '2911',
     plantName: 'ICB - BOUCHERVILLE PLANT',
     storageLocation: '291B',
@@ -13293,7 +13293,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '44122004',
-    materialDescription: 'O\'SELECT NATURE Un 12.7KG BAG CHEP PAL',
+    materialDescription: "O'SELECT NATURE Un 12.7KG BAG CHEP PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291A',
@@ -13307,7 +13307,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '44120345',
-    materialDescription: 'O\'SELECT UP FB 12KG BAG CHEP PAL',
+    materialDescription: "O'SELECT UP FB 12KG BAG CHEP PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -13321,7 +13321,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '44120005',
-    materialDescription: 'O\'SELECT UP Un 12KG BAG CHEP PAL',
+    materialDescription: "O'SELECT UP Un 12KG BAG CHEP PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -13335,7 +13335,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '44120005',
-    materialDescription: 'O\'SELECT UP Un 12KG BAG CHEP PAL',
+    materialDescription: "O'SELECT UP Un 12KG BAG CHEP PAL",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -13349,7 +13349,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '44080004',
-    materialDescription: 'O\'SELECT UP Un 7KG SUPL CHEP PAL',
+    materialDescription: "O'SELECT UP Un 7KG SUPL CHEP PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -13363,7 +13363,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '44062005',
-    materialDescription: 'O\'SELECT NAT Un 6.35KG BAG CHEP PAL',
+    materialDescription: "O'SELECT NAT Un 6.35KG BAG CHEP PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291A',
@@ -13377,7 +13377,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42150043',
-    materialDescription: 'CANADA\'S BEST BP 15KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST BP 15KG BAG EURO PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -13391,7 +13391,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42150043',
-    materialDescription: 'CANADA\'S BEST BP 15KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST BP 15KG BAG EURO PAL",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: null,
@@ -13405,7 +13405,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42150043',
-    materialDescription: 'CANADA\'S BEST BP 15KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST BP 15KG BAG EURO PAL",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -13419,7 +13419,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42150043',
-    materialDescription: 'CANADA\'S BEST BP 15KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST BP 15KG BAG EURO PAL",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291B',
@@ -13433,7 +13433,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42100343',
-    materialDescription: 'CANADA\'S BEST FB 10KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST FB 10KG BAG EURO PAL",
     plant: '2915',
     plantName: 'ICS - ST-ALEXIS PLANT',
     storageLocation: '291P',
@@ -13447,7 +13447,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42100343',
-    materialDescription: 'CANADA\'S BEST FB 10KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST FB 10KG BAG EURO PAL",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',
@@ -13461,7 +13461,7 @@ export const SEED_INVENTORY: SeedInventory[] = [
   },
   {
     material: '42100233',
-    materialDescription: 'CANADA\'S BEST LA 10KG BAG EURO PAL',
+    materialDescription: "CANADA'S BEST LA 10KG BAG EURO PAL",
     plant: '2916',
     plantName: 'ICP - ST-ALEXIS WAREHOUSE',
     storageLocation: '291A',

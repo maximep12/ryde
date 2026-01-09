@@ -1,14 +1,14 @@
 'use no memo'
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
-import {
-  Product,
-  useProductFilterOptions,
-  useProducts,
-} from '@/hooks/queries/products/useProducts'
+import { Product, useProductFilterOptions, useProducts } from '@/hooks/queries/products/useProducts'
 import {
   Button,
+  Checkbox,
   MultiSelect,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Sheet,
   SheetContent,
   SheetFooter,
@@ -34,6 +34,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table'
 import {
   ArrowDownIcon,
@@ -42,6 +43,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ClockIcon,
+  Columns3Icon,
   RotateCcwIcon,
   SlidersHorizontalIcon,
   XIcon,
@@ -78,6 +80,7 @@ function ProductStatusPage() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [productTypeFilters, setProductTypeFilters] = useState<string[]>([])
   const [productGroupFilters, setProductGroupFilters] = useState<string[]>([])
   const [statusFilters, setStatusFilters] = useState<string[]>([])
@@ -181,24 +184,20 @@ function ProductStatusPage() {
         accessorKey: 'productGroup',
         header: 'Group',
         cell: ({ row }) => (
-          <span className="text-muted-foreground text-sm">
-            {row.original.productGroup ?? '-'}
-          </span>
+          <span className="text-muted-foreground text-sm">{row.original.productGroup ?? '-'}</span>
         ),
       },
       {
         accessorKey: 'gtin',
         header: 'GTIN',
-        cell: ({ row }) => (
-          <span className="font-mono text-xs">{row.original.gtin ?? '-'}</span>
-        ),
+        cell: ({ row }) => <span className="font-mono text-xs">{row.original.gtin ?? '-'}</span>,
       },
       {
         accessorKey: 'status',
         header: 'Status',
         cell: ({ row }) => (
           <span
-            className={`inline-flex items-center justify-center whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium ${getStatusColor(row.original.status)}`}
+            className={`inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium whitespace-nowrap ${getStatusColor(row.original.status)}`}
           >
             {getStatusLabel(row.original.status)}
           </span>
@@ -243,8 +242,10 @@ function ProductStatusPage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
+      columnVisibility,
     },
   })
 
@@ -257,9 +258,7 @@ function ProductStatusPage() {
     <div className="space-y-8">
       <header>
         <h1 className="text-2xl font-bold">Product Status</h1>
-        <p className="text-muted-foreground mt-1">
-          View and filter all products in the system
-        </p>
+        <p className="text-muted-foreground mt-1">View and filter all products in the system</p>
       </header>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -351,11 +350,42 @@ function ProductStatusPage() {
           Reset
         </Button>
         {pagination && (
-          <div className="text-muted-foreground ml-auto text-sm">
-            Showing {(pagination.page - 1) * pagination.pageSize + 1}-
-            {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
-            {pagination.total} products
-          </div>
+          <>
+            <div className="text-muted-foreground ml-auto text-sm">
+              Showing {(pagination.page - 1) * pagination.pageSize + 1}-
+              {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
+              {pagination.total} products
+            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Columns3Icon className="size-4" />
+                  Columns
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-48">
+                <div className="space-y-2">
+                  {table.getAllColumns().map((column) => {
+                    if (!column.getCanHide()) return null
+                    return (
+                      <div key={column.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`column-${column.id}`}
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
+                        />
+                        <label htmlFor={`column-${column.id}`} className="cursor-pointer text-sm capitalize">
+                          {typeof column.columnDef.header === 'string'
+                            ? column.columnDef.header
+                            : column.id.replace(/([A-Z])/g, ' $1').trim()}
+                        </label>
+                      </div>
+                    )
+                  })}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </>
         )}
       </div>
 
@@ -380,7 +410,7 @@ function ProductStatusPage() {
               {statusFilters.map((status) => (
                 <span
                   key={`status-${status}`}
-                  className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
+                  className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white"
                 >
                   Status: {getStatusLabel(status)}
                   <button
@@ -394,7 +424,7 @@ function ProductStatusPage() {
               {productTypeFilters.map((type) => (
                 <span
                   key={`type-${type}`}
-                  className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
+                  className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white"
                 >
                   Type: {type}
                   <button
@@ -408,7 +438,7 @@ function ProductStatusPage() {
               {productGroupFilters.map((group) => (
                 <span
                   key={`group-${group}`}
-                  className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
+                  className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white"
                 >
                   Group: {group}
                   <button

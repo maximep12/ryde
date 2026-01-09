@@ -8,7 +8,11 @@ import {
 } from '@/hooks/queries/inventory/useInventory'
 import {
   Button,
+  Checkbox,
   MultiSelect,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Sheet,
   SheetContent,
   SheetFooter,
@@ -34,6 +38,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table'
 import {
   ArrowDownIcon,
@@ -41,6 +46,7 @@ import {
   ArrowUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  Columns3Icon,
   PackageIcon,
   RotateCcwIcon,
   SlidersHorizontalIcon,
@@ -66,6 +72,7 @@ function InventoryPage() {
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [sorting, setSorting] = useState<SortingState>([])
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [plantFilters, setPlantFilters] = useState<string[]>([])
   const [storageLocationFilters, setStorageLocationFilters] = useState<string[]>([])
   const [baseUnitFilters, setBaseUnitFilters] = useState<string[]>([])
@@ -233,8 +240,10 @@ function InventoryPage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
       sorting,
+      columnVisibility,
     },
   })
 
@@ -358,10 +367,49 @@ function InventoryPage() {
         {pagination && (
           <div className="text-muted-foreground ml-auto text-sm">
             Showing {(pagination.page - 1) * pagination.pageSize + 1}-
-            {Math.min(pagination.page * pagination.pageSize, pagination.total)} of {pagination.total}{' '}
-            items
+            {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{' '}
+            {pagination.total} items
           </div>
         )}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm">
+              <Columns3Icon className="size-4" />
+              Columns
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" className="w-48 p-2">
+            <div className="space-y-2">
+              {table.getAllLeafColumns().map((column) => {
+                const columnId = column.id
+                const columnHeader =
+                  columnId === 'material'
+                    ? 'Material'
+                    : columnId === 'plant'
+                      ? 'Plant'
+                      : columnId === 'storageLocation'
+                        ? 'Storage'
+                        : columnId === 'unrestrictedStock'
+                          ? 'Stock'
+                          : columnId === 'baseUnit'
+                            ? 'Unit'
+                            : columnId
+                return (
+                  <div key={column.id} className="flex items-center gap-2">
+                    <Checkbox
+                      id={`col-${column.id}`}
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(checked) => column.toggleVisibility(!!checked)}
+                    />
+                    <label htmlFor={`col-${column.id}`} className="cursor-pointer text-sm">
+                      {columnHeader}
+                    </label>
+                  </div>
+                )
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
 
       {error && <div className="text-destructive">Failed to load inventory: {error.message}</div>}
@@ -385,7 +433,7 @@ function InventoryPage() {
               {plantFilters.map((plant) => (
                 <span
                   key={`plant-${plant}`}
-                  className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
+                  className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white"
                 >
                   Plant: {getPlantLabel(plant)}
                   <button
@@ -399,7 +447,7 @@ function InventoryPage() {
               {storageLocationFilters.map((location) => (
                 <span
                   key={`location-${location}`}
-                  className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
+                  className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white"
                 >
                   Location: {getStorageLocationLabel(location)}
                   <button
@@ -415,7 +463,7 @@ function InventoryPage() {
               {baseUnitFilters.map((unit) => (
                 <span
                   key={`unit-${unit}`}
-                  className="inline-flex items-center justify-center gap-1 whitespace-nowrap rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
+                  className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white"
                 >
                   Unit: {unit}
                   <button

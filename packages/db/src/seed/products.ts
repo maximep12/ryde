@@ -2042,7 +2042,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '42100233',
-    description: 'CANADA\'S BEST LA 10KG BAG EURO PAL',
+    description: "CANADA'S BEST LA 10KG BAG EURO PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '2770070040371',
@@ -2053,7 +2053,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '42100343',
-    description: 'CANADA\'S BEST FB 10KG BAG EURO PAL',
+    description: "CANADA'S BEST FB 10KG BAG EURO PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '2770070040388',
@@ -2064,7 +2064,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '42150003',
-    description: 'CANADA\'S BEST Un 15KG BAG EURO PAL',
+    description: "CANADA'S BEST Un 15KG BAG EURO PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '895792000464',
@@ -2075,7 +2075,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '42150043',
-    description: 'CANADA\'S BEST BP 15KG BAG EURO PAL',
+    description: "CANADA'S BEST BP 15KG BAG EURO PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '2770070011616',
@@ -2086,7 +2086,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44062004',
-    description: 'O\'SELECT NAT Un 6.35KG BAG CHEP PAL',
+    description: "O'SELECT NAT Un 6.35KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127599387',
@@ -2097,7 +2097,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44062005',
-    description: 'O\'SELECT NAT Un 6.35KG BAG CHEP PAL',
+    description: "O'SELECT NAT Un 6.35KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127599387',
@@ -2108,7 +2108,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44070004',
-    description: 'O\'SELECT UP Un 7KG BAG CHEP PAL',
+    description: "O'SELECT UP Un 7KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598410',
@@ -2119,7 +2119,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44080004',
-    description: 'O\'SELECT UP Un 7KG SUPL CHEP PAL',
+    description: "O'SELECT UP Un 7KG SUPL CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598410',
@@ -2130,7 +2130,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44120004',
-    description: 'O\'SELECT UP Un 12KG BAG CHEP PAL',
+    description: "O'SELECT UP Un 12KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598427',
@@ -2141,7 +2141,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44120005',
-    description: 'O\'SELECT UP Un 12KG BAG CHEP PAL',
+    description: "O'SELECT UP Un 12KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598427',
@@ -2152,7 +2152,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44120344',
-    description: 'O\'SELECT UP FB 12KG BAG CHEP PAL',
+    description: "O'SELECT UP FB 12KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127602780',
@@ -2163,7 +2163,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44120345',
-    description: 'O\'SELECT UP FB 12KG BAG CHEP PAL',
+    description: "O'SELECT UP FB 12KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598427',
@@ -2174,7 +2174,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44122004',
-    description: 'O\'SELECT NATURE Un 12.7KG BAG CHEP PAL',
+    description: "O'SELECT NATURE Un 12.7KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127599394',
@@ -2185,7 +2185,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '44133004',
-    description: 'O\'SELECT NATURE Un 12.7KG BAG CHEP PAL',
+    description: "O'SELECT NATURE Un 12.7KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127599394',
@@ -2691,7 +2691,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '53014000',
-    description: 'O\'SELECT MA 14KG BAG CHEP PAL',
+    description: "O'SELECT MA 14KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598489',
@@ -2702,7 +2702,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '53014001',
-    description: 'O\'SELECT MA 14KG BAG CHEP PAL',
+    description: "O'SELECT MA 14KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598489',
@@ -2713,7 +2713,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '53210000',
-    description: 'O\'SELECT Un 10KG BAG CHEP PAL',
+    description: "O'SELECT Un 10KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598397',
@@ -2724,7 +2724,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '53210001',
-    description: 'O\'SELECT Un 10KG BAG CHEP PAL',
+    description: "O'SELECT Un 10KG BAG CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598397',
@@ -2735,7 +2735,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '53218000',
-    description: 'O\'SELECT Un 18KG BOX CHEP PAL',
+    description: "O'SELECT Un 18KG BOX CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598403',
@@ -2746,7 +2746,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '53218001',
-    description: 'O\'SELECT Un 18KG BOX CHEP PAL',
+    description: "O'SELECT Un 18KG BOX CHEP PAL",
     productType: 'FERT',
     productGroup: 'FP1000',
     gtin: '771127598403',
@@ -5606,7 +5606,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000005',
-    description: 'BAG IT\'S JUST CAT LITTER 18KG',
+    description: "BAG IT'S JUST CAT LITTER 18KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000005',
@@ -7828,7 +7828,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000362',
-    description: 'BAG CANADA\'S BEST LA 10KG',
+    description: "BAG CANADA'S BEST LA 10KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000362',
@@ -7839,7 +7839,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000363',
-    description: 'BAG CANADA\'S BEST FB 10KG',
+    description: "BAG CANADA'S BEST FB 10KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000363',
@@ -7850,7 +7850,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000364',
-    description: 'BAG CANADA\'S BEST UN 15KG',
+    description: "BAG CANADA'S BEST UN 15KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000364',
@@ -7861,7 +7861,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000365',
-    description: 'BAG CANADA\'S BEST BP 15KG',
+    description: "BAG CANADA'S BEST BP 15KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000365',
@@ -7872,7 +7872,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000366',
-    description: 'BAG O\'SELECT NATURE UN 6.35KG',
+    description: "BAG O'SELECT NATURE UN 6.35KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000366',
@@ -7883,7 +7883,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000367',
-    description: 'BAG O\'SELECT UP UN 7KG',
+    description: "BAG O'SELECT UP UN 7KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000367',
@@ -7894,7 +7894,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000368',
-    description: 'LAMINATED BAG O\'SELECT UP UN 12KG',
+    description: "LAMINATED BAG O'SELECT UP UN 12KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000368',
@@ -7905,7 +7905,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000369',
-    description: 'LAMINATED BAG O\'SELECT UP UN 12KG',
+    description: "LAMINATED BAG O'SELECT UP UN 12KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000369',
@@ -7916,7 +7916,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000370',
-    description: 'LAMINATED BAG O\'SELECT UP FB 12KG',
+    description: "LAMINATED BAG O'SELECT UP FB 12KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000370',
@@ -7927,7 +7927,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000371',
-    description: 'LAMINATED BAG O\'SELECT UP FB 12KG',
+    description: "LAMINATED BAG O'SELECT UP FB 12KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000371',
@@ -7938,7 +7938,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000372',
-    description: 'BAG O\'SELECT NATURE UN 12.7KG',
+    description: "BAG O'SELECT NATURE UN 12.7KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000372',
@@ -8070,7 +8070,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000384',
-    description: 'BAG  O\'SELECT MA 14KG',
+    description: "BAG  O'SELECT MA 14KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000384',
@@ -8081,7 +8081,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000385',
-    description: 'BAG O\'SELECT MA 14KG',
+    description: "BAG O'SELECT MA 14KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000385',
@@ -8092,7 +8092,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000386',
-    description: 'BAG O\'SELECT UN 10KG',
+    description: "BAG O'SELECT UN 10KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000386',
@@ -8103,7 +8103,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000387',
-    description: 'BAG O\'SELECT UN 10KG',
+    description: "BAG O'SELECT UN 10KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000387',
@@ -8114,7 +8114,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000388',
-    description: 'BOX O\'SELECT UN 18KG',
+    description: "BOX O'SELECT UN 18KG",
     productType: 'ZPAC',
     productGroup: 'RG3000',
     gtin: '300000388',
@@ -8125,7 +8125,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000389',
-    description: 'BOX O\'SELECT UN 18KG',
+    description: "BOX O'SELECT UN 18KG",
     productType: 'ZPAC',
     productGroup: 'RG3000',
     gtin: '300000389',
@@ -9049,7 +9049,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000473',
-    description: 'NEW BAG O\'SELECT NATURE UN 6.35KG',
+    description: "NEW BAG O'SELECT NATURE UN 6.35KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000473',
@@ -9269,7 +9269,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000496',
-    description: 'BAG (SUPL) O\'SELECT UP Un 7KG',
+    description: "BAG (SUPL) O'SELECT UP Un 7KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: '300000496',
@@ -9720,7 +9720,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '300000537',
-    description: 'BAG O\'SELECT NATURE UN 12.7KG',
+    description: "BAG O'SELECT NATURE UN 12.7KG",
     productType: 'ZPAC',
     productGroup: 'RG1000',
     gtin: null,
@@ -10215,7 +10215,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '400000004',
-    description: 'SHEETING 70\'\'X2MIL',
+    description: "SHEETING 70''X2MIL",
     productType: 'ZPST',
     productGroup: 'RP3000',
     gtin: '400000004',
@@ -10446,7 +10446,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '400000026',
-    description: 'INFLATABLE SHIPPING BAGS 96\'\'',
+    description: "INFLATABLE SHIPPING BAGS 96''",
     productType: 'ZPST',
     productGroup: 'RP3000',
     gtin: '400000026',
@@ -10457,7 +10457,7 @@ export const SEED_PRODUCTS: SeedProduct[] = [
   },
   {
     productCode: '400000027',
-    description: 'INFLATABLE SHIPPING BAGS 120\'\'',
+    description: "INFLATABLE SHIPPING BAGS 120''",
     productType: 'ZPST',
     productGroup: 'RP3000',
     gtin: '400000027',

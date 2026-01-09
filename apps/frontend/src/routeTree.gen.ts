@@ -30,6 +30,7 @@ import { Route as AuthSupplyDemandReportsIndexRouteImport } from './routes/_auth
 import { Route as AuthSupplyDemandProductStatusIndexRouteImport } from './routes/_auth/supply-demand/product-status/index'
 import { Route as AuthSupplyDemandOpenPoIndexRouteImport } from './routes/_auth/supply-demand/open-po/index'
 import { Route as AuthSupplyDemandInventoryIndexRouteImport } from './routes/_auth/supply-demand/inventory/index'
+import { Route as AuthSupplyDemandForecastsIndexRouteImport } from './routes/_auth/supply-demand/forecasts/index'
 import { Route as AuthExamplesBooksIndexRouteImport } from './routes/_auth/examples/books/index'
 import { Route as AuthExamplesBooksBookIdRouteImport } from './routes/_auth/examples/books/$bookId'
 
@@ -142,6 +143,12 @@ const AuthSupplyDemandInventoryIndexRoute =
     path: '/supply-demand/inventory/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
+const AuthSupplyDemandForecastsIndexRoute =
+  AuthSupplyDemandForecastsIndexRouteImport.update({
+    id: '/supply-demand/forecasts/',
+    path: '/supply-demand/forecasts/',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
 const AuthExamplesBooksIndexRoute = AuthExamplesBooksIndexRouteImport.update({
   id: '/books/',
   path: '/books/',
@@ -171,6 +178,7 @@ export interface FileRoutesByFullPath {
   '/users': typeof AuthUsersIndexRoute
   '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
   '/examples/books': typeof AuthExamplesBooksIndexRoute
+  '/supply-demand/forecasts': typeof AuthSupplyDemandForecastsIndexRoute
   '/supply-demand/inventory': typeof AuthSupplyDemandInventoryIndexRoute
   '/supply-demand/open-po': typeof AuthSupplyDemandOpenPoIndexRoute
   '/supply-demand/product-status': typeof AuthSupplyDemandProductStatusIndexRoute
@@ -195,6 +203,7 @@ export interface FileRoutesByTo {
   '/users': typeof AuthUsersIndexRoute
   '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
   '/examples/books': typeof AuthExamplesBooksIndexRoute
+  '/supply-demand/forecasts': typeof AuthSupplyDemandForecastsIndexRoute
   '/supply-demand/inventory': typeof AuthSupplyDemandInventoryIndexRoute
   '/supply-demand/open-po': typeof AuthSupplyDemandOpenPoIndexRoute
   '/supply-demand/product-status': typeof AuthSupplyDemandProductStatusIndexRoute
@@ -221,6 +230,7 @@ export interface FileRoutesById {
   '/_auth/users/': typeof AuthUsersIndexRoute
   '/_auth/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
   '/_auth/examples/books/': typeof AuthExamplesBooksIndexRoute
+  '/_auth/supply-demand/forecasts/': typeof AuthSupplyDemandForecastsIndexRoute
   '/_auth/supply-demand/inventory/': typeof AuthSupplyDemandInventoryIndexRoute
   '/_auth/supply-demand/open-po/': typeof AuthSupplyDemandOpenPoIndexRoute
   '/_auth/supply-demand/product-status/': typeof AuthSupplyDemandProductStatusIndexRoute
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/examples/books/$bookId'
     | '/examples/books'
+    | '/supply-demand/forecasts'
     | '/supply-demand/inventory'
     | '/supply-demand/open-po'
     | '/supply-demand/product-status'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/users'
     | '/examples/books/$bookId'
     | '/examples/books'
+    | '/supply-demand/forecasts'
     | '/supply-demand/inventory'
     | '/supply-demand/open-po'
     | '/supply-demand/product-status'
@@ -296,6 +308,7 @@ export interface FileRouteTypes {
     | '/_auth/users/'
     | '/_auth/examples/books/$bookId'
     | '/_auth/examples/books/'
+    | '/_auth/supply-demand/forecasts/'
     | '/_auth/supply-demand/inventory/'
     | '/_auth/supply-demand/open-po/'
     | '/_auth/supply-demand/product-status/'
@@ -457,6 +470,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSupplyDemandInventoryIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/supply-demand/forecasts/': {
+      id: '/_auth/supply-demand/forecasts/'
+      path: '/supply-demand/forecasts'
+      fullPath: '/supply-demand/forecasts'
+      preLoaderRoute: typeof AuthSupplyDemandForecastsIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/examples/books/': {
       id: '/_auth/examples/books/'
       path: '/books'
@@ -502,6 +522,7 @@ interface AuthRouteRouteChildren {
   AuthOrdersIndexRoute: typeof AuthOrdersIndexRoute
   AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
   AuthUsersIndexRoute: typeof AuthUsersIndexRoute
+  AuthSupplyDemandForecastsIndexRoute: typeof AuthSupplyDemandForecastsIndexRoute
   AuthSupplyDemandInventoryIndexRoute: typeof AuthSupplyDemandInventoryIndexRoute
   AuthSupplyDemandOpenPoIndexRoute: typeof AuthSupplyDemandOpenPoIndexRoute
   AuthSupplyDemandProductStatusIndexRoute: typeof AuthSupplyDemandProductStatusIndexRoute
@@ -524,6 +545,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthOrdersIndexRoute: AuthOrdersIndexRoute,
   AuthSettingsIndexRoute: AuthSettingsIndexRoute,
   AuthUsersIndexRoute: AuthUsersIndexRoute,
+  AuthSupplyDemandForecastsIndexRoute: AuthSupplyDemandForecastsIndexRoute,
   AuthSupplyDemandInventoryIndexRoute: AuthSupplyDemandInventoryIndexRoute,
   AuthSupplyDemandOpenPoIndexRoute: AuthSupplyDemandOpenPoIndexRoute,
   AuthSupplyDemandProductStatusIndexRoute:

@@ -1,6 +1,7 @@
 export * from './app'
 export * from './clients'
 export * from './examples'
+export * from './forecasts'
 export * from './inventory'
 export * from './jobs'
 export * from './openPurchaseOrders'
