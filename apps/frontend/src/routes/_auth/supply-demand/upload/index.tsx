@@ -1,6 +1,14 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/components'
-import { createFileRoute } from '@tanstack/react-router'
-import { FileSpreadsheetIcon, FileTextIcon, UploadCloudIcon } from 'lucide-react'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import type { FileRouteTypes } from '@/routeTree.gen'
+import {
+  BoxesIcon,
+  ClipboardListIcon,
+  FileSpreadsheetIcon,
+  PackageIcon,
+  TrendingUpIcon,
+  UploadCloudIcon,
+} from 'lucide-react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/upload/')({
@@ -16,9 +24,11 @@ type DropzoneProps = {
   description: string
   accept: string
   icon: React.ReactNode
+  linkTo: FileRouteTypes['to']
+  linkLabel: string
 }
 
-function MockDropzone({ title, description, accept, icon }: DropzoneProps) {
+function MockDropzone({ title, description, accept, icon, linkTo, linkLabel }: DropzoneProps) {
   const [isDragging, setIsDragging] = useState(false)
   const [files, setFiles] = useState<File[]>([])
 
@@ -53,10 +63,18 @@ function MockDropzone({ title, description, accept, icon }: DropzoneProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          {icon}
-          {title}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            {icon}
+            {title}
+          </CardTitle>
+          <Link
+            to={linkTo}
+            className="text-primary hover:text-primary/80 text-sm font-medium hover:underline"
+          >
+            {linkLabel} &rarr;
+          </Link>
+        </div>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -128,31 +146,48 @@ function UploadDataPage() {
 
       <div className="grid gap-6 md:grid-cols-2">
         <MockDropzone
-          title="Supply Data"
-          description="Upload supply inventory and stock level files"
+          title="Product Status"
+          description="Upload product status and lifecycle data"
           accept=".csv,.xlsx,.xls"
-          icon={<FileSpreadsheetIcon className="size-5" />}
+          icon={<PackageIcon className="size-5" />}
+          linkTo="/supply-demand/product-status"
+          linkLabel="View Product Status"
         />
 
         <MockDropzone
-          title="Demand Forecasts"
+          title="Forecasts"
           description="Upload demand forecast and projection files"
           accept=".csv,.xlsx,.xls"
+          icon={<TrendingUpIcon className="size-5" />}
+          linkTo="/supply-demand/forecasts"
+          linkLabel="View Forecasts"
+        />
+
+        <MockDropzone
+          title="Inventory"
+          description="Upload inventory and stock level data"
+          accept=".csv,.xlsx,.xls"
+          icon={<BoxesIcon className="size-5" />}
+          linkTo="/supply-demand/inventory"
+          linkLabel="View Inventory"
+        />
+
+        <MockDropzone
+          title="One Line S&D"
+          description="Upload one-line supply and demand data"
+          accept=".csv,.xlsx,.xls"
           icon={<FileSpreadsheetIcon className="size-5" />}
+          linkTo="/supply-demand/one-line-sd"
+          linkLabel="View One Line S&D"
         />
 
         <MockDropzone
-          title="Historical Data"
-          description="Upload historical sales and transaction records"
-          accept=".csv,.xlsx,.xls,.json"
-          icon={<FileTextIcon className="size-5" />}
-        />
-
-        <MockDropzone
-          title="Configuration Files"
-          description="Upload configuration and settings files"
-          accept=".json,.xml,.yaml,.yml"
-          icon={<FileTextIcon className="size-5" />}
+          title="Open PO"
+          description="Upload open purchase order data"
+          accept=".csv,.xlsx,.xls"
+          icon={<ClipboardListIcon className="size-5" />}
+          linkTo="/supply-demand/open-po"
+          linkLabel="View Open PO"
         />
       </div>
     </div>

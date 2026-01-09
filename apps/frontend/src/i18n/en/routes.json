@@ -16,9 +16,11 @@
   "route.ordersCreate": "Create",
   "route.orderDetails": "Order Details",
   "route.supplyDemandReports": "Reports",
+  "route.supplyDemandReportDetail": "Report Detail",
   "route.supplyDemandUpload": "Upload Data",
   "route.supplyDemandProductStatus": "Product Status",
   "route.supplyDemandInventory": "Inventory",
   "route.supplyDemandOpenPO": "Open PO",
-  "route.supplyDemandForecasts": "Forecasts"
+  "route.supplyDemandForecasts": "Forecasts",
+  "route.supplyDemandOneLineSd": "One Line S&D"
 }

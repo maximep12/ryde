@@ -38,7 +38,16 @@ export type ProductsResponse = {
 }
 
 export function useProducts(params: ProductsQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, productTypes, productGroups, statuses, sortBy, sortOrder } = params
+  const {
+    page = 1,
+    pageSize = 25,
+    search,
+    productTypes,
+    productGroups,
+    statuses,
+    sortBy,
+    sortOrder,
+  } = params
 
   return useQuery({
     queryKey: [

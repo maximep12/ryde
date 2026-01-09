@@ -2,3 +2,8 @@
 
 # Helm templates contain Go template syntax, not valid YAML
 helm/**/templates/**
+
+# Large generated seed files that cause Prettier to hang
+packages/db/src/seed/forecasts.ts
+packages/db/src/seed/products.ts
+packages/db/src/seed/inventory.ts

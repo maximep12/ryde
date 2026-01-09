@@ -41,7 +41,16 @@ export type OpenPurchaseOrdersResponse = {
 }
 
 export function useOpenPurchaseOrders(params: OpenPurchaseOrdersQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, plants, orderTypes, suppliers, sortBy, sortOrder } = params
+  const {
+    page = 1,
+    pageSize = 25,
+    search,
+    plants,
+    orderTypes,
+    suppliers,
+    sortBy,
+    sortOrder,
+  } = params
 
   return useQuery({
     queryKey: [

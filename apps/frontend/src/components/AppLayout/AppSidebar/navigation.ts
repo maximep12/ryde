@@ -3,6 +3,7 @@ import {
   BoxesIcon,
   ClipboardListIcon,
   ExternalLinkIcon,
+  FileSpreadsheetIcon,
   FileTextIcon,
   HomeIcon,
   LibraryIcon,
@@ -48,6 +49,11 @@ export const supplyDemandNavigation: NavigationItem[] = [
   },
   { title: 'route.supplyDemandForecasts', path: '/supply-demand/forecasts', icon: TrendingUpIcon },
   { title: 'route.supplyDemandInventory', path: '/supply-demand/inventory', icon: BoxesIcon },
+  {
+    title: 'route.supplyDemandOneLineSd',
+    path: '/supply-demand/one-line-sd',
+    icon: FileSpreadsheetIcon,
+  },
   { title: 'route.supplyDemandOpenPO', path: '/supply-demand/open-po', icon: ClipboardListIcon },
   { title: 'route.supplyDemandUpload', path: '/supply-demand/upload', icon: UploadIcon },
 ]

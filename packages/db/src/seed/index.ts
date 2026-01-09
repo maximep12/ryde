@@ -13,9 +13,11 @@ import {
   clients,
   forecasts,
   inventory,
+  oneLineSd,
   openPurchaseOrders,
   plants,
   products,
+  reportComments,
   users,
 } from '../schema'
 import { seedBookReviews, seedBooks } from './books'
@@ -29,9 +31,11 @@ import {
 } from './clients'
 import { seedForecasts } from './forecasts'
 import { seedInventory } from './inventory'
+import { seedOneLineSd } from './oneLineSd'
 import { seedOpenPurchaseOrders } from './openPurchaseOrders'
 import { seedPlants } from './plants'
 import { seedProducts } from './products'
+import { seedReportComments } from './reportComments'
 import { seedUsers } from './users'
 
 config({ path: '../../.env' })
@@ -55,6 +59,7 @@ async function clearAllData() {
   // Delete in order: child tables first, then parent tables
   await db.delete(bookReviews)
   await db.delete(clientComments)
+  await db.delete(reportComments)
   await db.delete(clientOrderIssues)
   await db.delete(clientOrderItems)
   await db.delete(clientExchanges)
@@ -64,6 +69,7 @@ async function clearAllData() {
   await db.delete(books)
   await db.delete(forecasts)
   await db.delete(inventory)
+  await db.delete(oneLineSd)
   await db.delete(openPurchaseOrders)
   await db.delete(plants)
   await db.delete(products)
@@ -85,6 +91,7 @@ async function main() {
   await seedProducts(db)
   await seedForecasts(db)
   await seedInventory(db)
+  await seedOneLineSd(db)
   await seedOpenPurchaseOrders(db)
   await seedClients(db)
   await seedClientOrders(db)
@@ -92,6 +99,7 @@ async function main() {
   await seedClientExchanges(db)
   await seedClientAssortments(db)
   await seedClientComments(db)
+  await seedReportComments(db)
 
   console.log('Database seed completed!')
   process.exit(0)

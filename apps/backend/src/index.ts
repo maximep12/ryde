@@ -14,8 +14,10 @@ import { clientsRouterDefinition } from './routers/clients/handlers'
 import { exampleRouterDefinition } from './routers/example/handlers'
 import { forecastsRouterDefinition } from './routers/forecasts/handlers'
 import { inventoryRouterDefinition } from './routers/inventory/handlers'
+import { oneLineSdRouterDefinition } from './routers/one-line-sd/handlers'
 import { openPurchaseOrdersRouterDefinition } from './routers/open-purchase-orders/handlers'
 import { ordersRouterDefinition } from './routers/orders/handlers'
+import { reportsRouterDefinition } from './routers/reports/handlers'
 import { productsRouterDefinition } from './routers/products/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
 
@@ -56,7 +58,9 @@ const appDefinition = app
   .route('/products', productsRouterDefinition)
   .route('/forecasts', forecastsRouterDefinition)
   .route('/inventory', inventoryRouterDefinition)
+  .route('/one-line-sd', oneLineSdRouterDefinition)
   .route('/open-purchase-orders', openPurchaseOrdersRouterDefinition)
+  .route('/reports', reportsRouterDefinition)
   .route('/example', exampleRouterDefinition)
   .onError(errorHandler)
 

@@ -57,17 +57,10 @@ function MultiSelect({
           <div className="flex flex-1 items-center gap-1 overflow-hidden">
             {value.length === 0 ? (
               <span className="text-muted-foreground">{placeholder}</span>
-            ) : value.length <= 2 ? (
-              <div className="flex flex-wrap gap-1">
-                {selectedLabels.map((label) => (
-                  <span
-                    key={label}
-                    className="rounded-full bg-black px-2 py-0.5 text-xs font-medium text-white"
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
+            ) : value.length === 1 ? (
+              <span className="truncate rounded-full bg-black px-2 py-0.5 text-xs font-medium text-white">
+                {selectedLabels[0]}
+              </span>
             ) : (
               <span className="rounded-full bg-black px-2 py-0.5 text-xs font-medium text-white">
                 {value.length} selected

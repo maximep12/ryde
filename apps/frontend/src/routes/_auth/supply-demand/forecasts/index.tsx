@@ -114,7 +114,9 @@ function ForecastsPage() {
   const [sheetMonthFilters, setSheetMonthFilters] = useState<string[]>([])
   const [sheetNegativeSalesOnly, setSheetNegativeSalesOnly] = useState(false)
   const [sheetPositiveSalesOnly, setSheetPositiveSalesOnly] = useState(false)
-  const [sheetClientStatusFilter, setSheetClientStatusFilter] = useState<'active' | 'inactive' | null>(null)
+  const [sheetClientStatusFilter, setSheetClientStatusFilter] = useState<
+    'active' | 'inactive' | null
+  >(null)
 
   // Fetch filter options
   const { data: filterOptions } = useForecastsFilterOptions()
@@ -358,7 +360,10 @@ function ForecastsPage() {
         cell: ({ row }) => (
           <div className="text-right font-mono text-xs">
             {row.original.volume
-              ? parseFloat(row.original.volume).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+              ? parseFloat(row.original.volume).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })
               : '-'}
           </div>
         ),
@@ -368,13 +373,20 @@ function ForecastsPage() {
         header: 'Sales',
         cell: ({ row }) => {
           const sales = row.original.sales ? parseFloat(row.original.sales) : null
-          if (sales === null) return <div className="flex justify-end"><span className="font-mono text-xs">-</span></div>
+          if (sales === null)
+            return (
+              <div className="flex justify-end">
+                <span className="font-mono text-xs">-</span>
+              </div>
+            )
 
           const formattedSales = `$${sales.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
           return (
             <div className="flex justify-end">
-              <span className={`rounded px-2 py-0.5 font-mono text-xs text-white ${sales < 0 ? 'bg-red-600' : 'bg-green-600'}`}>
+              <span
+                className={`rounded px-2 py-0.5 font-mono text-xs text-white ${sales < 0 ? 'bg-red-600' : 'bg-green-600'}`}
+              >
                 {formattedSales}
               </span>
             </div>
@@ -398,9 +410,7 @@ function ForecastsPage() {
       {
         accessorKey: 'sourceYear',
         header: 'Source Year',
-        cell: ({ row }) => (
-          <span className="text-xs">{row.original.sourceYear ?? '-'}</span>
-        ),
+        cell: ({ row }) => <span className="text-xs">{row.original.sourceYear ?? '-'}</span>,
       },
     ],
     [],

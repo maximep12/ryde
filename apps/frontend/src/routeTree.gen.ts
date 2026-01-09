@@ -29,10 +29,12 @@ import { Route as AuthSupplyDemandUploadIndexRouteImport } from './routes/_auth/
 import { Route as AuthSupplyDemandReportsIndexRouteImport } from './routes/_auth/supply-demand/reports/index'
 import { Route as AuthSupplyDemandProductStatusIndexRouteImport } from './routes/_auth/supply-demand/product-status/index'
 import { Route as AuthSupplyDemandOpenPoIndexRouteImport } from './routes/_auth/supply-demand/open-po/index'
+import { Route as AuthSupplyDemandOneLineSdIndexRouteImport } from './routes/_auth/supply-demand/one-line-sd/index'
 import { Route as AuthSupplyDemandInventoryIndexRouteImport } from './routes/_auth/supply-demand/inventory/index'
 import { Route as AuthSupplyDemandForecastsIndexRouteImport } from './routes/_auth/supply-demand/forecasts/index'
 import { Route as AuthExamplesBooksIndexRouteImport } from './routes/_auth/examples/books/index'
 import { Route as AuthExamplesBooksBookIdRouteImport } from './routes/_auth/examples/books/$bookId'
+import { Route as AuthSupplyDemandReportsPlantNameMaterialNumberRouteImport } from './routes/_auth/supply-demand/reports/$plantName.$materialNumber'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -137,6 +139,12 @@ const AuthSupplyDemandOpenPoIndexRoute =
     path: '/supply-demand/open-po/',
     getParentRoute: () => AuthRouteRoute,
   } as any)
+const AuthSupplyDemandOneLineSdIndexRoute =
+  AuthSupplyDemandOneLineSdIndexRouteImport.update({
+    id: '/supply-demand/one-line-sd/',
+    path: '/supply-demand/one-line-sd/',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
 const AuthSupplyDemandInventoryIndexRoute =
   AuthSupplyDemandInventoryIndexRouteImport.update({
     id: '/supply-demand/inventory/',
@@ -159,6 +167,12 @@ const AuthExamplesBooksBookIdRoute = AuthExamplesBooksBookIdRouteImport.update({
   path: '/books/$bookId',
   getParentRoute: () => AuthExamplesRouteRoute,
 } as any)
+const AuthSupplyDemandReportsPlantNameMaterialNumberRoute =
+  AuthSupplyDemandReportsPlantNameMaterialNumberRouteImport.update({
+    id: '/supply-demand/reports/$plantName/$materialNumber',
+    path: '/supply-demand/reports/$plantName/$materialNumber',
+    getParentRoute: () => AuthRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
@@ -180,10 +194,12 @@ export interface FileRoutesByFullPath {
   '/examples/books': typeof AuthExamplesBooksIndexRoute
   '/supply-demand/forecasts': typeof AuthSupplyDemandForecastsIndexRoute
   '/supply-demand/inventory': typeof AuthSupplyDemandInventoryIndexRoute
+  '/supply-demand/one-line-sd': typeof AuthSupplyDemandOneLineSdIndexRoute
   '/supply-demand/open-po': typeof AuthSupplyDemandOpenPoIndexRoute
   '/supply-demand/product-status': typeof AuthSupplyDemandProductStatusIndexRoute
   '/supply-demand/reports': typeof AuthSupplyDemandReportsIndexRoute
   '/supply-demand/upload': typeof AuthSupplyDemandUploadIndexRoute
+  '/supply-demand/reports/$plantName/$materialNumber': typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -205,10 +221,12 @@ export interface FileRoutesByTo {
   '/examples/books': typeof AuthExamplesBooksIndexRoute
   '/supply-demand/forecasts': typeof AuthSupplyDemandForecastsIndexRoute
   '/supply-demand/inventory': typeof AuthSupplyDemandInventoryIndexRoute
+  '/supply-demand/one-line-sd': typeof AuthSupplyDemandOneLineSdIndexRoute
   '/supply-demand/open-po': typeof AuthSupplyDemandOpenPoIndexRoute
   '/supply-demand/product-status': typeof AuthSupplyDemandProductStatusIndexRoute
   '/supply-demand/reports': typeof AuthSupplyDemandReportsIndexRoute
   '/supply-demand/upload': typeof AuthSupplyDemandUploadIndexRoute
+  '/supply-demand/reports/$plantName/$materialNumber': typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -232,10 +250,12 @@ export interface FileRoutesById {
   '/_auth/examples/books/': typeof AuthExamplesBooksIndexRoute
   '/_auth/supply-demand/forecasts/': typeof AuthSupplyDemandForecastsIndexRoute
   '/_auth/supply-demand/inventory/': typeof AuthSupplyDemandInventoryIndexRoute
+  '/_auth/supply-demand/one-line-sd/': typeof AuthSupplyDemandOneLineSdIndexRoute
   '/_auth/supply-demand/open-po/': typeof AuthSupplyDemandOpenPoIndexRoute
   '/_auth/supply-demand/product-status/': typeof AuthSupplyDemandProductStatusIndexRoute
   '/_auth/supply-demand/reports/': typeof AuthSupplyDemandReportsIndexRoute
   '/_auth/supply-demand/upload/': typeof AuthSupplyDemandUploadIndexRoute
+  '/_auth/supply-demand/reports/$plantName/$materialNumber': typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -259,10 +279,12 @@ export interface FileRouteTypes {
     | '/examples/books'
     | '/supply-demand/forecasts'
     | '/supply-demand/inventory'
+    | '/supply-demand/one-line-sd'
     | '/supply-demand/open-po'
     | '/supply-demand/product-status'
     | '/supply-demand/reports'
     | '/supply-demand/upload'
+    | '/supply-demand/reports/$plantName/$materialNumber'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -284,10 +306,12 @@ export interface FileRouteTypes {
     | '/examples/books'
     | '/supply-demand/forecasts'
     | '/supply-demand/inventory'
+    | '/supply-demand/one-line-sd'
     | '/supply-demand/open-po'
     | '/supply-demand/product-status'
     | '/supply-demand/reports'
     | '/supply-demand/upload'
+    | '/supply-demand/reports/$plantName/$materialNumber'
   id:
     | '__root__'
     | '/_auth'
@@ -310,10 +334,12 @@ export interface FileRouteTypes {
     | '/_auth/examples/books/'
     | '/_auth/supply-demand/forecasts/'
     | '/_auth/supply-demand/inventory/'
+    | '/_auth/supply-demand/one-line-sd/'
     | '/_auth/supply-demand/open-po/'
     | '/_auth/supply-demand/product-status/'
     | '/_auth/supply-demand/reports/'
     | '/_auth/supply-demand/upload/'
+    | '/_auth/supply-demand/reports/$plantName/$materialNumber'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -463,6 +489,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSupplyDemandOpenPoIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/supply-demand/one-line-sd/': {
+      id: '/_auth/supply-demand/one-line-sd/'
+      path: '/supply-demand/one-line-sd'
+      fullPath: '/supply-demand/one-line-sd'
+      preLoaderRoute: typeof AuthSupplyDemandOneLineSdIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/supply-demand/inventory/': {
       id: '/_auth/supply-demand/inventory/'
       path: '/supply-demand/inventory'
@@ -490,6 +523,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/examples/books/$bookId'
       preLoaderRoute: typeof AuthExamplesBooksBookIdRouteImport
       parentRoute: typeof AuthExamplesRouteRoute
+    }
+    '/_auth/supply-demand/reports/$plantName/$materialNumber': {
+      id: '/_auth/supply-demand/reports/$plantName/$materialNumber'
+      path: '/supply-demand/reports/$plantName/$materialNumber'
+      fullPath: '/supply-demand/reports/$plantName/$materialNumber'
+      preLoaderRoute: typeof AuthSupplyDemandReportsPlantNameMaterialNumberRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
   }
 }
@@ -524,10 +564,12 @@ interface AuthRouteRouteChildren {
   AuthUsersIndexRoute: typeof AuthUsersIndexRoute
   AuthSupplyDemandForecastsIndexRoute: typeof AuthSupplyDemandForecastsIndexRoute
   AuthSupplyDemandInventoryIndexRoute: typeof AuthSupplyDemandInventoryIndexRoute
+  AuthSupplyDemandOneLineSdIndexRoute: typeof AuthSupplyDemandOneLineSdIndexRoute
   AuthSupplyDemandOpenPoIndexRoute: typeof AuthSupplyDemandOpenPoIndexRoute
   AuthSupplyDemandProductStatusIndexRoute: typeof AuthSupplyDemandProductStatusIndexRoute
   AuthSupplyDemandReportsIndexRoute: typeof AuthSupplyDemandReportsIndexRoute
   AuthSupplyDemandUploadIndexRoute: typeof AuthSupplyDemandUploadIndexRoute
+  AuthSupplyDemandReportsPlantNameMaterialNumberRoute: typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -547,11 +589,14 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthUsersIndexRoute: AuthUsersIndexRoute,
   AuthSupplyDemandForecastsIndexRoute: AuthSupplyDemandForecastsIndexRoute,
   AuthSupplyDemandInventoryIndexRoute: AuthSupplyDemandInventoryIndexRoute,
+  AuthSupplyDemandOneLineSdIndexRoute: AuthSupplyDemandOneLineSdIndexRoute,
   AuthSupplyDemandOpenPoIndexRoute: AuthSupplyDemandOpenPoIndexRoute,
   AuthSupplyDemandProductStatusIndexRoute:
     AuthSupplyDemandProductStatusIndexRoute,
   AuthSupplyDemandReportsIndexRoute: AuthSupplyDemandReportsIndexRoute,
   AuthSupplyDemandUploadIndexRoute: AuthSupplyDemandUploadIndexRoute,
+  AuthSupplyDemandReportsPlantNameMaterialNumberRoute:
+    AuthSupplyDemandReportsPlantNameMaterialNumberRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

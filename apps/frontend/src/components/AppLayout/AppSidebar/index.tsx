@@ -180,6 +180,65 @@ function OrdersNavSection({ label }: { label: string }) {
   )
 }
 
+function SupplyDemandNavSection({ label }: { label: string }) {
+  const { t } = useTranslation(['ui', 'routes'])
+  const location = useLocation()
+
+  // Extract plantName and materialNumber from URL if on a report detail page
+  const reportMatch = location.pathname.match(/^\/supply-demand\/reports\/([^/]+)\/([^/]+)/)
+  const plantName = reportMatch ? decodeURIComponent(reportMatch[1]!) : null
+  const materialNumber = reportMatch ? decodeURIComponent(reportMatch[2]!) : null
+
+  // Format the report ID as [PLANT ACRONYM] - [MATERIAL ID]
+  const getReportId = () => {
+    if (!plantName || !materialNumber) return null
+    const acronym = plantName.split(' - ')[0] || plantName
+    const reportId = `${acronym} - ${materialNumber}`
+    // Truncate with ellipsis if over 15 characters
+    if (reportId.length > 15) {
+      return reportId.slice(0, 15) + '…'
+    }
+    return reportId
+  }
+
+  const visibleItems = supplyDemandNavigation.filter((item) => !item.shouldHide)
+
+  if (visibleItems.length === 0) return null
+
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      <SidebarMenu>
+        {visibleItems.map((item) => {
+          const isActive =
+            item.path === '/supply-demand/reports'
+              ? location.pathname === '/supply-demand/reports' ||
+                location.pathname.startsWith('/supply-demand/reports/')
+              : location.pathname.startsWith(item.path)
+
+          const suffix = item.path === '/supply-demand/reports' ? getReportId() : null
+
+          return (
+            <SidebarMenuItem key={item.path}>
+              <SidebarMenuButton asChild isActive={isActive}>
+                <Link to={item.path}>
+                  <item.icon className="size-4" />
+                  <span className="flex-1">{t(`routes:${item.title}`)}</span>
+                  {suffix && (
+                    <span className="text-muted-foreground ml-auto font-mono text-xs">
+                      {suffix}
+                    </span>
+                  )}
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )
+        })}
+      </SidebarMenu>
+    </SidebarGroup>
+  )
+}
+
 function ExternalNavSection({ items, label }: { items: ExternalLinkItem[]; label: string }) {
   const { t } = useTranslation('ui')
 
@@ -226,11 +285,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         />
         <OrdersNavSection label={t('sidebar.orders')} />
         <ClientsNavSection label={t('sidebar.clients')} />
-        <NavSection
-          items={supplyDemandNavigation}
-          label={t('sidebar.supplyDemand')}
-          isActiveCheck={(path) => location.pathname.startsWith(path)}
-        />
+        <SupplyDemandNavSection label={t('sidebar.supplyDemand')} />
         <NavSection
           items={examplesNavigation}
           label={t('sidebar.examples')}

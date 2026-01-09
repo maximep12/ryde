@@ -41,7 +41,16 @@ export type InventoryResponse = {
 }
 
 export function useInventory(params: InventoryQueryParams = {}) {
-  const { page = 1, pageSize = 25, search, plants, storageLocations, baseUnits, sortBy, sortOrder } = params
+  const {
+    page = 1,
+    pageSize = 25,
+    search,
+    plants,
+    storageLocations,
+    baseUnits,
+    sortBy,
+    sortOrder,
+  } = params
 
   return useQuery({
     queryKey: [
