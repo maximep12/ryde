@@ -270,7 +270,8 @@ function ReportsPage() {
   const applyFilters = () => {
     setFilters({
       plants: sheetFilters.plants.length > 0 ? sheetFilters.plants.join(',') : undefined,
-      riskLevels: sheetFilters.riskLevels.length > 0 ? sheetFilters.riskLevels.join(',') : undefined,
+      riskLevels:
+        sheetFilters.riskLevels.length > 0 ? sheetFilters.riskLevels.join(',') : undefined,
       productStatuses:
         sheetFilters.productStatuses.length > 0
           ? sheetFilters.productStatuses.join(',')

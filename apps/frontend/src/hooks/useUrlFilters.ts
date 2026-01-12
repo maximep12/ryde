@@ -1,6 +1,13 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useCallback, useMemo } from 'react'
-import { parseSort, serializeSort, serializeArray, serializeDate, parseDate, parseArray } from '@repo/zod-schemas'
+import {
+  parseSort,
+  serializeSort,
+  serializeArray,
+  serializeDate,
+  parseDate,
+  parseArray,
+} from '@repo/zod-schemas'
 
 type FilterValue = string | number | boolean | undefined
 
@@ -99,7 +106,7 @@ export function useUrlFilters<T extends SearchParams>({
 
       return result
     },
-    [search, defaults]
+    [search, defaults],
   )
 
   const setFilter = useCallback(
@@ -107,7 +114,7 @@ export function useUrlFilters<T extends SearchParams>({
       const newSearch = buildSearchParams({ [key]: value } as unknown as Partial<T>)
       navigate({ search: newSearch as never })
     },
-    [buildSearchParams, navigate]
+    [buildSearchParams, navigate],
   )
 
   const setFilters = useCallback(
@@ -117,7 +124,7 @@ export function useUrlFilters<T extends SearchParams>({
       const newSearch = buildSearchParams(withPageReset as Partial<T>)
       navigate({ search: newSearch as never })
     },
-    [buildSearchParams, navigate]
+    [buildSearchParams, navigate],
   )
 
   const resetFilters = useCallback(() => {
@@ -143,7 +150,7 @@ export function useUrlFilters<T extends SearchParams>({
       if (typeof value !== 'string' || !value) return []
       return parseArray(value)
     },
-    [search]
+    [search],
   )
 
   const setArrayFilter = useCallback(
@@ -151,7 +158,7 @@ export function useUrlFilters<T extends SearchParams>({
       const serialized = serializeArray(values)
       setFilters({ [key]: serialized } as unknown as Partial<T>)
     },
-    [setFilters]
+    [setFilters],
   )
 
   // Date filter helpers
@@ -160,7 +167,7 @@ export function useUrlFilters<T extends SearchParams>({
       const value = search[key]
       return parseDate(value as string | undefined)
     },
-    [search]
+    [search],
   )
 
   const setDateFilter = useCallback(
@@ -168,7 +175,7 @@ export function useUrlFilters<T extends SearchParams>({
       const serialized = serializeDate(date)
       setFilters({ [key]: serialized } as unknown as Partial<T>)
     },
-    [setFilters]
+    [setFilters],
   )
 
   // Sort helpers for TanStack Table
@@ -182,14 +189,14 @@ export function useUrlFilters<T extends SearchParams>({
       const serialized = serializeSort(sorting)
       setFilters({ sort: serialized, page: 1 } as unknown as Partial<T>)
     },
-    [setFilters]
+    [setFilters],
   )
 
   const setPage = useCallback(
     (page: number) => {
       setFilter('page' as keyof T, page as T[keyof T])
     },
-    [setFilter]
+    [setFilter],
   )
 
   return {

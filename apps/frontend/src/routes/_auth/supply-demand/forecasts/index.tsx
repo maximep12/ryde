@@ -845,10 +845,7 @@ function ForecastsPage() {
                   Year: {year}
                   <button
                     onClick={() =>
-                      setArrayFilter(
-                        'years',
-                        yearFilters.filter((y) => y !== year).map(String),
-                      )
+                      setArrayFilter('years', yearFilters.filter((y) => y !== year).map(String))
                     }
                     className="ml-0.5 hover:text-gray-300"
                   >
@@ -864,10 +861,7 @@ function ForecastsPage() {
                   Month: {MONTH_NAMES[month - 1]}
                   <button
                     onClick={() =>
-                      setArrayFilter(
-                        'months',
-                        monthFilters.filter((m) => m !== month).map(String),
-                      )
+                      setArrayFilter('months', monthFilters.filter((m) => m !== month).map(String))
                     }
                     className="ml-0.5 hover:text-gray-300"
                   >

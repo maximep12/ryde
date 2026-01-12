@@ -104,7 +104,7 @@ export const sortParam = z
  * Only takes first sort column (single-column sort).
  */
 export function serializeSort(
-  sorting: Array<{ id: string; desc: boolean }> | undefined
+  sorting: Array<{ id: string; desc: boolean }> | undefined,
 ): string | undefined {
   if (!sorting || sorting.length === 0) return undefined
   const first = sorting[0]

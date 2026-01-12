@@ -459,7 +459,10 @@ function OrdersMonitorPage() {
                       id="resolved-issues"
                       checked={sheetFilters.hasResolvedIssues}
                       onCheckedChange={(checked) =>
-                        setSheetFilters((prev) => ({ ...prev, hasResolvedIssues: checked === true }))
+                        setSheetFilters((prev) => ({
+                          ...prev,
+                          hasResolvedIssues: checked === true,
+                        }))
                       }
                     />
                     <label htmlFor="resolved-issues" className="cursor-pointer text-sm">

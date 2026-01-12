@@ -337,7 +337,9 @@ function ProductStatusPage() {
                 <MultiSelect
                   options={productTypeOptions}
                   value={sheetFilters.productTypes}
-                  onChange={(productTypes) => setSheetFilters((prev) => ({ ...prev, productTypes }))}
+                  onChange={(productTypes) =>
+                    setSheetFilters((prev) => ({ ...prev, productTypes }))
+                  }
                   placeholder="All types"
                 />
               </div>

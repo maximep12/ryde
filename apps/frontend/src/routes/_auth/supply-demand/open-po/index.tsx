@@ -162,7 +162,8 @@ function OpenPOPage() {
   const applyFilters = () => {
     setFilters({
       plants: sheetFilters.plants.length > 0 ? sheetFilters.plants.join(',') : undefined,
-      orderTypes: sheetFilters.orderTypes.length > 0 ? sheetFilters.orderTypes.join(',') : undefined,
+      orderTypes:
+        sheetFilters.orderTypes.length > 0 ? sheetFilters.orderTypes.join(',') : undefined,
       suppliers: sheetFilters.suppliers.length > 0 ? sheetFilters.suppliers.join(',') : undefined,
     })
     setSheetOpen(false)
