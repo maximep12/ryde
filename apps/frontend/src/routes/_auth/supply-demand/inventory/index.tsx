@@ -8,6 +8,8 @@ import {
   useInventory,
   useInventoryFilterOptions,
 } from '@/hooks/queries/inventory/useInventory'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
+import { inventorySearchDefaults, inventorySearchSchema } from './searchSchema'
 import {
   Button,
   Checkbox,
@@ -37,7 +39,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -57,6 +58,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/inventory/')({
   component: InventoryPage,
+  validateSearch: inventorySearchSchema,
   staticData: {
     title: 'route.supplyDemandInventory',
     crumb: 'route.supplyDemandInventory',
@@ -70,20 +72,39 @@ function getPlantAcronym(plantName: string | null) {
 }
 
 function InventoryPage() {
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [plantFilters, setPlantFilters] = useState<string[]>([])
-  const [storageLocationFilters, setStorageLocationFilters] = useState<string[]>([])
-  const [baseUnitFilters, setBaseUnitFilters] = useState<string[]>([])
-  const pageSize = 25
+  // URL-based state
+  const search = Route.useSearch()
+  const {
+    filters,
+    setFilter,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: inventorySearchDefaults,
+  })
 
-  // Sheet state
+  // Derived filter values from URL
+  const plantFilters = getArrayFilter('plants')
+  const storageLocationFilters = getArrayFilter('storageLocations')
+  const baseUnitFilters = getArrayFilter('baseUnits')
+  const pageSize = filters.pageSize ?? 25
+
+  // Local state (UI-only)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+  // Sheet state - single object pattern
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetPlantFilters, setSheetPlantFilters] = useState<string[]>([])
-  const [sheetStorageLocationFilters, setSheetStorageLocationFilters] = useState<string[]>([])
-  const [sheetBaseUnitFilters, setSheetBaseUnitFilters] = useState<string[]>([])
+  const [sheetFilters, setSheetFilters] = useState({
+    plants: [] as string[],
+    storageLocations: [] as string[],
+    baseUnits: [] as string[],
+  })
 
   // Fetch filter options
   const { data: filterOptions } = useInventoryFilterOptions()
@@ -120,34 +141,40 @@ function InventoryPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      setSheetPlantFilters(plantFilters)
-      setSheetStorageLocationFilters(storageLocationFilters)
-      setSheetBaseUnitFilters(baseUnitFilters)
+      setSheetFilters({
+        plants: plantFilters,
+        storageLocations: storageLocationFilters,
+        baseUnits: baseUnitFilters,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setPlantFilters(sheetPlantFilters)
-    setStorageLocationFilters(sheetStorageLocationFilters)
-    setBaseUnitFilters(sheetBaseUnitFilters)
-    setPage(1)
+    setFilters({
+      plants: sheetFilters.plants.length > 0 ? sheetFilters.plants.join(',') : undefined,
+      storageLocations:
+        sheetFilters.storageLocations.length > 0
+          ? sheetFilters.storageLocations.join(',')
+          : undefined,
+      baseUnits: sheetFilters.baseUnits.length > 0 ? sheetFilters.baseUnits.join(',') : undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilter('search', value || undefined)
   }
 
   // Extract sort params from sorting state
+  const sorting = getSortingState()
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useInventory({
-    page,
+    page: filters.page ?? 1,
     pageSize,
-    search: search || undefined,
+    search: filters.search || undefined,
     plants: plantFilters.length > 0 ? plantFilters : undefined,
     storageLocations: storageLocationFilters.length > 0 ? storageLocationFilters : undefined,
     baseUnits: baseUnitFilters.length > 0 ? baseUnitFilters : undefined,
@@ -247,8 +274,8 @@ function InventoryPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -290,7 +317,7 @@ function InventoryPage() {
         <DebouncedSearchInput
           placeholder="Search by material, description, or plant..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[350px] min-w-[200px] flex-1"
         />
@@ -315,8 +342,8 @@ function InventoryPage() {
                 <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantOptions}
-                  value={sheetPlantFilters}
-                  onChange={setSheetPlantFilters}
+                  value={sheetFilters.plants}
+                  onChange={(plants) => setSheetFilters((prev) => ({ ...prev, plants }))}
                   placeholder="All plants"
                 />
               </div>
@@ -325,8 +352,10 @@ function InventoryPage() {
                 <Label className="text-xs font-bold uppercase">Storage Location</Label>
                 <MultiSelect
                   options={storageLocationOptions}
-                  value={sheetStorageLocationFilters}
-                  onChange={setSheetStorageLocationFilters}
+                  value={sheetFilters.storageLocations}
+                  onChange={(storageLocations) =>
+                    setSheetFilters((prev) => ({ ...prev, storageLocations }))
+                  }
                   placeholder="All locations"
                 />
               </div>
@@ -335,8 +364,8 @@ function InventoryPage() {
                 <Label className="text-xs font-bold uppercase">Base Unit</Label>
                 <MultiSelect
                   options={baseUnitOptions}
-                  value={sheetBaseUnitFilters}
-                  onChange={setSheetBaseUnitFilters}
+                  value={sheetFilters.baseUnits}
+                  onChange={(baseUnits) => setSheetFilters((prev) => ({ ...prev, baseUnits }))}
                   placeholder="All units"
                 />
               </div>
@@ -349,10 +378,7 @@ function InventoryPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setPlantFilters([])
-                  setStorageLocationFilters([])
-                  setBaseUnitFilters([])
-                  setPage(1)
+                  resetFilters()
                   setSheetOpen(false)
                 }}
               >
@@ -361,16 +387,7 @@ function InventoryPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setPlantFilters([])
-            setStorageLocationFilters([])
-            setBaseUnitFilters([])
-            setSearch('')
-            setPage(1)
-          }}
-        >
+        <Button variant="outline" onClick={resetFilters}>
           <RotateCcwIcon className="size-4" />
           Reset
         </Button>
@@ -439,7 +456,12 @@ function InventoryPage() {
                 >
                   Plant: {getPlantLabel(plant)}
                   <button
-                    onClick={() => setPlantFilters((prev) => prev.filter((p) => p !== plant))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'plants',
+                        plantFilters.filter((p) => p !== plant),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -454,7 +476,10 @@ function InventoryPage() {
                   Location: {getStorageLocationLabel(location)}
                   <button
                     onClick={() =>
-                      setStorageLocationFilters((prev) => prev.filter((l) => l !== location))
+                      setArrayFilter(
+                        'storageLocations',
+                        storageLocationFilters.filter((l) => l !== location),
+                      )
                     }
                     className="ml-0.5 hover:text-gray-300"
                   >
@@ -469,7 +494,12 @@ function InventoryPage() {
                 >
                   Unit: {unit}
                   <button
-                    onClick={() => setBaseUnitFilters((prev) => prev.filter((u) => u !== unit))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'baseUnits',
+                        baseUnitFilters.filter((u) => u !== unit),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -548,8 +578,8 @@ function InventoryPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, (filters.page ?? 1) - 1))}
+                disabled={(filters.page ?? 1) === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -560,8 +590,8 @@ function InventoryPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, (filters.page ?? 1) + 1))}
+                disabled={(filters.page ?? 1) === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />

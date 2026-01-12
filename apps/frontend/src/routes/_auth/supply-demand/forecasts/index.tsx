@@ -9,6 +9,8 @@ import {
   useForecastsFilterOptions,
 } from '@/hooks/queries/forecasts/useForecasts'
 import { usePlants } from '@/hooks/queries/plants/usePlants'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
+import { forecastsSearchDefaults, forecastsSearchSchema } from './searchSchema'
 import {
   Button,
   Checkbox,
@@ -38,7 +40,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -59,6 +60,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/forecasts/')({
   component: ForecastsPage,
+  validateSearch: forecastsSearchSchema,
   staticData: {
     title: 'route.supplyDemandForecasts',
     crumb: 'route.supplyDemandForecasts',
@@ -94,38 +96,57 @@ const MONTH_NAMES = [
 ]
 
 function ForecastsPage() {
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const [sorting, setSorting] = useState<SortingState>([])
+  // URL-based state
+  const search = Route.useSearch()
+  const {
+    filters,
+    setFilter,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: forecastsSearchDefaults,
+  })
+
+  // Derived filter values from URL
+  const regionFilters = getArrayFilter('regions')
+  const countryFilters = getArrayFilter('countries')
+  const brandFilters = getArrayFilter('brands')
+  const plantFilters = getArrayFilter('plants')
+  const yearFiltersStr = getArrayFilter('years')
+  const monthFiltersStr = getArrayFilter('months')
+  const yearFilters = yearFiltersStr.map(Number)
+  const monthFilters = monthFiltersStr.map(Number)
+  const negativeSalesOnly = filters.negativeSales ?? false
+  const positiveSalesOnly = filters.positiveSales ?? false
+  const clientStatusFilter = filters.clientStatus ?? null
+  const pageSize = filters.pageSize ?? 25
+
+  // Local state (UI-only)
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     country: false,
     seller: false,
     sourceYear: false,
   })
-  const [regionFilters, setRegionFilters] = useState<string[]>([])
-  const [countryFilters, setCountryFilters] = useState<string[]>([])
-  const [brandFilters, setBrandFilters] = useState<string[]>([])
-  const [plantFilters, setPlantFilters] = useState<string[]>([])
-  const [yearFilters, setYearFilters] = useState<number[]>([])
-  const [monthFilters, setMonthFilters] = useState<number[]>([])
-  const [negativeSalesOnly, setNegativeSalesOnly] = useState(false)
-  const [positiveSalesOnly, setPositiveSalesOnly] = useState(false)
-  const [clientStatusFilter, setClientStatusFilter] = useState<'active' | 'inactive' | null>(null)
-  const pageSize = 25
 
-  // Sheet state
+  // Sheet state - single object pattern
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetRegionFilters, setSheetRegionFilters] = useState<string[]>([])
-  const [sheetCountryFilters, setSheetCountryFilters] = useState<string[]>([])
-  const [sheetBrandFilters, setSheetBrandFilters] = useState<string[]>([])
-  const [sheetPlantFilters, setSheetPlantFilters] = useState<string[]>([])
-  const [sheetYearFilters, setSheetYearFilters] = useState<string[]>([])
-  const [sheetMonthFilters, setSheetMonthFilters] = useState<string[]>([])
-  const [sheetNegativeSalesOnly, setSheetNegativeSalesOnly] = useState(false)
-  const [sheetPositiveSalesOnly, setSheetPositiveSalesOnly] = useState(false)
-  const [sheetClientStatusFilter, setSheetClientStatusFilter] = useState<
-    'active' | 'inactive' | null
-  >(null)
+  const [sheetFilters, setSheetFilters] = useState({
+    regions: [] as string[],
+    countries: [] as string[],
+    brands: [] as string[],
+    plants: [] as string[],
+    years: [] as string[],
+    months: [] as string[],
+    negativeSales: false,
+    positiveSales: false,
+    clientStatus: null as 'active' | 'inactive' | null,
+  })
 
   // Fetch filter options
   const { data: filterOptions } = useForecastsFilterOptions()
@@ -201,46 +222,49 @@ function ForecastsPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      setSheetRegionFilters(regionFilters)
-      setSheetCountryFilters(countryFilters)
-      setSheetBrandFilters(brandFilters)
-      setSheetPlantFilters(plantFilters)
-      setSheetYearFilters(yearFilters.map(String))
-      setSheetMonthFilters(monthFilters.map(String))
-      setSheetNegativeSalesOnly(negativeSalesOnly)
-      setSheetPositiveSalesOnly(positiveSalesOnly)
-      setSheetClientStatusFilter(clientStatusFilter)
+      setSheetFilters({
+        regions: regionFilters,
+        countries: countryFilters,
+        brands: brandFilters,
+        plants: plantFilters,
+        years: yearFilters.map(String),
+        months: monthFilters.map(String),
+        negativeSales: negativeSalesOnly,
+        positiveSales: positiveSalesOnly,
+        clientStatus: clientStatusFilter,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setRegionFilters(sheetRegionFilters)
-    setCountryFilters(sheetCountryFilters)
-    setBrandFilters(sheetBrandFilters)
-    setPlantFilters(sheetPlantFilters)
-    setYearFilters(sheetYearFilters.map(Number))
-    setMonthFilters(sheetMonthFilters.map(Number))
-    setNegativeSalesOnly(sheetNegativeSalesOnly)
-    setPositiveSalesOnly(sheetPositiveSalesOnly)
-    setClientStatusFilter(sheetClientStatusFilter)
-    setPage(1)
+    setFilters({
+      regions: sheetFilters.regions.length > 0 ? sheetFilters.regions.join(',') : undefined,
+      countries: sheetFilters.countries.length > 0 ? sheetFilters.countries.join(',') : undefined,
+      brands: sheetFilters.brands.length > 0 ? sheetFilters.brands.join(',') : undefined,
+      plants: sheetFilters.plants.length > 0 ? sheetFilters.plants.join(',') : undefined,
+      years: sheetFilters.years.length > 0 ? sheetFilters.years.join(',') : undefined,
+      months: sheetFilters.months.length > 0 ? sheetFilters.months.join(',') : undefined,
+      negativeSales: sheetFilters.negativeSales || undefined,
+      positiveSales: sheetFilters.positiveSales || undefined,
+      clientStatus: sheetFilters.clientStatus || undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilter('search', value || undefined)
   }
 
   // Extract sort params from sorting state
+  const sorting = getSortingState()
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useForecasts({
-    page,
+    page: filters.page ?? 1,
     pageSize,
-    search: search || undefined,
+    search: filters.search || undefined,
     regions: regionFilters.length > 0 ? regionFilters : undefined,
     countries: countryFilters.length > 0 ? countryFilters : undefined,
     brands: brandFilters.length > 0 ? brandFilters : undefined,
@@ -444,8 +468,8 @@ function ForecastsPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -467,20 +491,6 @@ function ForecastsPage() {
     positiveSalesOnly ||
     clientStatusFilter !== null
 
-  const resetFilters = () => {
-    setRegionFilters([])
-    setCountryFilters([])
-    setBrandFilters([])
-    setPlantFilters([])
-    setNegativeSalesOnly(false)
-    setPositiveSalesOnly(false)
-    setClientStatusFilter(null)
-    setYearFilters([])
-    setMonthFilters([])
-    setSearch('')
-    setPage(1)
-  }
-
   return (
     <div className="space-y-8">
       <header>
@@ -497,7 +507,7 @@ function ForecastsPage() {
         <DebouncedSearchInput
           placeholder="Search by client, brand, product..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[350px] min-w-[200px] flex-1"
         />
@@ -526,8 +536,8 @@ function ForecastsPage() {
                 <Label className="text-xs font-bold uppercase">Region</Label>
                 <MultiSelect
                   options={regionOptions}
-                  value={sheetRegionFilters}
-                  onChange={setSheetRegionFilters}
+                  value={sheetFilters.regions}
+                  onChange={(regions) => setSheetFilters((prev) => ({ ...prev, regions }))}
                   placeholder="All regions"
                 />
               </div>
@@ -536,8 +546,8 @@ function ForecastsPage() {
                 <Label className="text-xs font-bold uppercase">Country</Label>
                 <MultiSelect
                   options={countryOptions}
-                  value={sheetCountryFilters}
-                  onChange={setSheetCountryFilters}
+                  value={sheetFilters.countries}
+                  onChange={(countries) => setSheetFilters((prev) => ({ ...prev, countries }))}
                   placeholder="All countries"
                 />
               </div>
@@ -546,8 +556,8 @@ function ForecastsPage() {
                 <Label className="text-xs font-bold uppercase">Brand</Label>
                 <MultiSelect
                   options={brandOptions}
-                  value={sheetBrandFilters}
-                  onChange={setSheetBrandFilters}
+                  value={sheetFilters.brands}
+                  onChange={(brands) => setSheetFilters((prev) => ({ ...prev, brands }))}
                   placeholder="All brands"
                 />
               </div>
@@ -556,8 +566,8 @@ function ForecastsPage() {
                 <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantOptions}
-                  value={sheetPlantFilters}
-                  onChange={setSheetPlantFilters}
+                  value={sheetFilters.plants}
+                  onChange={(plants) => setSheetFilters((prev) => ({ ...prev, plants }))}
                   placeholder="All plants"
                 />
               </div>
@@ -566,8 +576,8 @@ function ForecastsPage() {
                 <Label className="text-xs font-bold uppercase">Year</Label>
                 <MultiSelect
                   options={yearOptions}
-                  value={sheetYearFilters}
-                  onChange={setSheetYearFilters}
+                  value={sheetFilters.years}
+                  onChange={(years) => setSheetFilters((prev) => ({ ...prev, years }))}
                   placeholder="All years"
                 />
               </div>
@@ -576,8 +586,8 @@ function ForecastsPage() {
                 <Label className="text-xs font-bold uppercase">Month</Label>
                 <MultiSelect
                   options={monthOptions}
-                  value={sheetMonthFilters}
-                  onChange={setSheetMonthFilters}
+                  value={sheetFilters.months}
+                  onChange={(months) => setSheetFilters((prev) => ({ ...prev, months }))}
                   placeholder="All months"
                 />
               </div>
@@ -589,9 +599,12 @@ function ForecastsPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="active-clients"
-                      checked={sheetClientStatusFilter === 'active'}
+                      checked={sheetFilters.clientStatus === 'active'}
                       onCheckedChange={(checked) =>
-                        setSheetClientStatusFilter(checked ? 'active' : null)
+                        setSheetFilters((prev) => ({
+                          ...prev,
+                          clientStatus: checked ? 'active' : null,
+                        }))
                       }
                     />
                     <label htmlFor="active-clients" className="cursor-pointer text-sm">
@@ -601,9 +614,12 @@ function ForecastsPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="inactive-clients"
-                      checked={sheetClientStatusFilter === 'inactive'}
+                      checked={sheetFilters.clientStatus === 'inactive'}
                       onCheckedChange={(checked) =>
-                        setSheetClientStatusFilter(checked ? 'inactive' : null)
+                        setSheetFilters((prev) => ({
+                          ...prev,
+                          clientStatus: checked ? 'inactive' : null,
+                        }))
                       }
                     />
                     <label htmlFor="inactive-clients" className="cursor-pointer text-sm">
@@ -620,10 +636,13 @@ function ForecastsPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="positive-sales"
-                      checked={sheetPositiveSalesOnly}
+                      checked={sheetFilters.positiveSales}
                       onCheckedChange={(checked) => {
-                        setSheetPositiveSalesOnly(checked === true)
-                        if (checked) setSheetNegativeSalesOnly(false)
+                        setSheetFilters((prev) => ({
+                          ...prev,
+                          positiveSales: checked === true,
+                          negativeSales: checked ? false : prev.negativeSales,
+                        }))
                       }}
                     />
                     <label htmlFor="positive-sales" className="cursor-pointer text-sm">
@@ -633,10 +652,13 @@ function ForecastsPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="negative-sales"
-                      checked={sheetNegativeSalesOnly}
+                      checked={sheetFilters.negativeSales}
                       onCheckedChange={(checked) => {
-                        setSheetNegativeSalesOnly(checked === true)
-                        if (checked) setSheetPositiveSalesOnly(false)
+                        setSheetFilters((prev) => ({
+                          ...prev,
+                          negativeSales: checked === true,
+                          positiveSales: checked ? false : prev.positiveSales,
+                        }))
                       }}
                     />
                     <label htmlFor="negative-sales" className="cursor-pointer text-sm">
@@ -654,16 +676,7 @@ function ForecastsPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setRegionFilters([])
-                  setCountryFilters([])
-                  setBrandFilters([])
-                  setPlantFilters([])
-                  setYearFilters([])
-                  setMonthFilters([])
-                  setNegativeSalesOnly(false)
-                  setPositiveSalesOnly(false)
-                  setClientStatusFilter(null)
-                  setPage(1)
+                  resetFilters()
                   setSheetOpen(false)
                 }}
               >
@@ -755,7 +768,12 @@ function ForecastsPage() {
                 >
                   Region: {region}
                   <button
-                    onClick={() => setRegionFilters((prev) => prev.filter((r) => r !== region))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'regions',
+                        regionFilters.filter((r) => r !== region),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -769,7 +787,12 @@ function ForecastsPage() {
                 >
                   Country: {country}
                   <button
-                    onClick={() => setCountryFilters((prev) => prev.filter((c) => c !== country))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'countries',
+                        countryFilters.filter((c) => c !== country),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -783,7 +806,12 @@ function ForecastsPage() {
                 >
                   Brand: {brand}
                   <button
-                    onClick={() => setBrandFilters((prev) => prev.filter((b) => b !== brand))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'brands',
+                        brandFilters.filter((b) => b !== brand),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -797,7 +825,12 @@ function ForecastsPage() {
                 >
                   Plant: {plant}
                   <button
-                    onClick={() => setPlantFilters((prev) => prev.filter((p) => p !== plant))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'plants',
+                        plantFilters.filter((p) => p !== plant),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -811,7 +844,12 @@ function ForecastsPage() {
                 >
                   Year: {year}
                   <button
-                    onClick={() => setYearFilters((prev) => prev.filter((y) => y !== year))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'years',
+                        yearFilters.filter((y) => y !== year).map(String),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -825,7 +863,12 @@ function ForecastsPage() {
                 >
                   Month: {MONTH_NAMES[month - 1]}
                   <button
-                    onClick={() => setMonthFilters((prev) => prev.filter((m) => m !== month))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'months',
+                        monthFilters.filter((m) => m !== month).map(String),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -836,7 +879,7 @@ function ForecastsPage() {
                 <span className="inline-flex items-center justify-center gap-1 rounded-full bg-green-600 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
                   Positive Sales Only
                   <button
-                    onClick={() => setPositiveSalesOnly(false)}
+                    onClick={() => setFilter('positiveSales', undefined)}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -847,7 +890,7 @@ function ForecastsPage() {
                 <span className="inline-flex items-center justify-center gap-1 rounded-full bg-red-600 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
                   Negative Sales Only
                   <button
-                    onClick={() => setNegativeSalesOnly(false)}
+                    onClick={() => setFilter('negativeSales', undefined)}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -858,7 +901,7 @@ function ForecastsPage() {
                 <span className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
                   {clientStatusFilter === 'active' ? 'Active Clients' : 'Inactive Clients'}
                   <button
-                    onClick={() => setClientStatusFilter(null)}
+                    onClick={() => setFilter('clientStatus', undefined)}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -937,8 +980,8 @@ function ForecastsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, (filters.page ?? 1) - 1))}
+                disabled={(filters.page ?? 1) === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -949,8 +992,8 @@ function ForecastsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, (filters.page ?? 1) + 1))}
+                disabled={(filters.page ?? 1) === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />

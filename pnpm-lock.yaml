@@ -190,6 +190,9 @@ importers:
       '@repo/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@repo/zod-schemas':
+        specifier: workspace:*
+        version: link:../../packages/zod-schemas
       '@tanstack/react-query':
         specifier: ^5.90.12
         version: 5.90.12(react@19.2.3)

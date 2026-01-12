@@ -4,6 +4,8 @@ import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
 import { Product, useProductFilterOptions, useProducts } from '@/hooks/queries/products/useProducts'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
+import { productStatusSearchDefaults, productStatusSearchSchema } from './searchSchema'
 import {
   Button,
   Checkbox,
@@ -33,7 +35,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -53,6 +54,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/product-status/')({
   component: ProductStatusPage,
+  validateSearch: productStatusSearchSchema,
   staticData: {
     title: 'route.supplyDemandProductStatus',
     crumb: 'route.supplyDemandProductStatus',
@@ -78,20 +80,39 @@ function getStatusLabel(status: string | null) {
 }
 
 function ProductStatusPage() {
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [productTypeFilters, setProductTypeFilters] = useState<string[]>([])
-  const [productGroupFilters, setProductGroupFilters] = useState<string[]>([])
-  const [statusFilters, setStatusFilters] = useState<string[]>([])
-  const pageSize = 25
+  // URL-based state
+  const search = Route.useSearch()
+  const {
+    filters,
+    setFilter,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: productStatusSearchDefaults,
+  })
 
-  // Sheet state
+  // Derived filter values from URL
+  const productTypeFilters = getArrayFilter('productTypes')
+  const productGroupFilters = getArrayFilter('productGroups')
+  const statusFilters = getArrayFilter('statuses')
+  const pageSize = filters.pageSize ?? 25
+
+  // Local state (UI-only)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+  // Sheet state - single object pattern
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetProductTypeFilters, setSheetProductTypeFilters] = useState<string[]>([])
-  const [sheetProductGroupFilters, setSheetProductGroupFilters] = useState<string[]>([])
-  const [sheetStatusFilters, setSheetStatusFilters] = useState<string[]>([])
+  const [sheetFilters, setSheetFilters] = useState({
+    productTypes: [] as string[],
+    productGroups: [] as string[],
+    statuses: [] as string[],
+  })
 
   // Fetch filter options
   const { data: filterOptions } = useProductFilterOptions()
@@ -125,34 +146,39 @@ function ProductStatusPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      setSheetProductTypeFilters(productTypeFilters)
-      setSheetProductGroupFilters(productGroupFilters)
-      setSheetStatusFilters(statusFilters)
+      setSheetFilters({
+        productTypes: productTypeFilters,
+        productGroups: productGroupFilters,
+        statuses: statusFilters,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setProductTypeFilters(sheetProductTypeFilters)
-    setProductGroupFilters(sheetProductGroupFilters)
-    setStatusFilters(sheetStatusFilters)
-    setPage(1)
+    setFilters({
+      productTypes:
+        sheetFilters.productTypes.length > 0 ? sheetFilters.productTypes.join(',') : undefined,
+      productGroups:
+        sheetFilters.productGroups.length > 0 ? sheetFilters.productGroups.join(',') : undefined,
+      statuses: sheetFilters.statuses.length > 0 ? sheetFilters.statuses.join(',') : undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilter('search', value || undefined)
   }
 
   // Extract sort params from sorting state
+  const sorting = getSortingState()
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useProducts({
-    page,
+    page: filters.page ?? 1,
     pageSize,
-    search: search || undefined,
+    search: filters.search || undefined,
     productTypes: productTypeFilters.length > 0 ? productTypeFilters : undefined,
     productGroups: productGroupFilters.length > 0 ? productGroupFilters : undefined,
     statuses: statusFilters.length > 0 ? statusFilters : undefined,
@@ -249,8 +275,8 @@ function ProductStatusPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -275,7 +301,7 @@ function ProductStatusPage() {
         <DebouncedSearchInput
           placeholder="Search by code, description, or GTIN..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[350px] min-w-[200px] flex-1"
         />
@@ -300,8 +326,8 @@ function ProductStatusPage() {
                 <Label className="text-xs font-bold uppercase">Status</Label>
                 <MultiSelect
                   options={statusOptions}
-                  value={sheetStatusFilters}
-                  onChange={setSheetStatusFilters}
+                  value={sheetFilters.statuses}
+                  onChange={(statuses) => setSheetFilters((prev) => ({ ...prev, statuses }))}
                   placeholder="All statuses"
                 />
               </div>
@@ -310,8 +336,8 @@ function ProductStatusPage() {
                 <Label className="text-xs font-bold uppercase">Product Type</Label>
                 <MultiSelect
                   options={productTypeOptions}
-                  value={sheetProductTypeFilters}
-                  onChange={setSheetProductTypeFilters}
+                  value={sheetFilters.productTypes}
+                  onChange={(productTypes) => setSheetFilters((prev) => ({ ...prev, productTypes }))}
                   placeholder="All types"
                 />
               </div>
@@ -320,8 +346,10 @@ function ProductStatusPage() {
                 <Label className="text-xs font-bold uppercase">Product Group</Label>
                 <MultiSelect
                   options={productGroupOptions}
-                  value={sheetProductGroupFilters}
-                  onChange={setSheetProductGroupFilters}
+                  value={sheetFilters.productGroups}
+                  onChange={(productGroups) =>
+                    setSheetFilters((prev) => ({ ...prev, productGroups }))
+                  }
                   placeholder="All groups"
                 />
               </div>
@@ -334,10 +362,7 @@ function ProductStatusPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setProductTypeFilters([])
-                  setProductGroupFilters([])
-                  setStatusFilters([])
-                  setPage(1)
+                  resetFilters()
                   setSheetOpen(false)
                 }}
               >
@@ -346,16 +371,7 @@ function ProductStatusPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setProductTypeFilters([])
-            setProductGroupFilters([])
-            setStatusFilters([])
-            setSearch('')
-            setPage(1)
-          }}
-        >
+        <Button variant="outline" onClick={resetFilters}>
           <RotateCcwIcon className="size-4" />
           Reset
         </Button>
@@ -419,7 +435,12 @@ function ProductStatusPage() {
                 >
                   Status: {getStatusLabel(status)}
                   <button
-                    onClick={() => setStatusFilters((prev) => prev.filter((s) => s !== status))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'statuses',
+                        statusFilters.filter((s) => s !== status),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -433,7 +454,12 @@ function ProductStatusPage() {
                 >
                   Type: {type}
                   <button
-                    onClick={() => setProductTypeFilters((prev) => prev.filter((t) => t !== type))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'productTypes',
+                        productTypeFilters.filter((t) => t !== type),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -448,7 +474,10 @@ function ProductStatusPage() {
                   Group: {group}
                   <button
                     onClick={() =>
-                      setProductGroupFilters((prev) => prev.filter((g) => g !== group))
+                      setArrayFilter(
+                        'productGroups',
+                        productGroupFilters.filter((g) => g !== group),
+                      )
                     }
                     className="ml-0.5 hover:text-gray-300"
                   >
@@ -528,8 +557,8 @@ function ProductStatusPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, (filters.page ?? 1) - 1))}
+                disabled={(filters.page ?? 1) === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -540,8 +569,8 @@ function ProductStatusPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, (filters.page ?? 1) + 1))}
+                disabled={(filters.page ?? 1) === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />

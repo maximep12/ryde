@@ -8,6 +8,8 @@ import {
   useOpenPurchaseOrders,
   useOpenPurchaseOrdersFilterOptions,
 } from '@/hooks/queries/open-purchase-orders/useOpenPurchaseOrders'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
+import { openPoSearchDefaults, openPoSearchSchema } from './searchSchema'
 import {
   Button,
   Checkbox,
@@ -37,7 +39,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -57,6 +58,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/open-po/')({
   component: OpenPOPage,
+  validateSearch: openPoSearchSchema,
   staticData: {
     title: 'route.supplyDemandOpenPO',
     crumb: 'route.supplyDemandOpenPO',
@@ -85,20 +87,34 @@ function parseSupplier(supplier: string | null): { name: string; id: string | nu
 }
 
 function OpenPOPage() {
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [plantFilters, setPlantFilters] = useState<string[]>([])
-  const [orderTypeFilters, setOrderTypeFilters] = useState<string[]>([])
-  const [supplierFilters, setSupplierFilters] = useState<string[]>([])
-  const pageSize = 25
+  const search = Route.useSearch()
+  const {
+    filters,
+    setFilter,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: openPoSearchDefaults,
+  })
 
-  // Sheet state
+  const plantFilters = getArrayFilter('plants')
+  const orderTypeFilters = getArrayFilter('orderTypes')
+  const supplierFilters = getArrayFilter('suppliers')
+  const pageSize = filters.pageSize ?? 25
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetPlantFilters, setSheetPlantFilters] = useState<string[]>([])
-  const [sheetOrderTypeFilters, setSheetOrderTypeFilters] = useState<string[]>([])
-  const [sheetSupplierFilters, setSheetSupplierFilters] = useState<string[]>([])
+  const [sheetFilters, setSheetFilters] = useState({
+    plants: [] as string[],
+    orderTypes: [] as string[],
+    suppliers: [] as string[],
+  })
 
   // Fetch filter options
   const { data: filterOptions } = useOpenPurchaseOrdersFilterOptions()
@@ -134,34 +150,37 @@ function OpenPOPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      setSheetPlantFilters(plantFilters)
-      setSheetOrderTypeFilters(orderTypeFilters)
-      setSheetSupplierFilters(supplierFilters)
+      setSheetFilters({
+        plants: plantFilters,
+        orderTypes: orderTypeFilters,
+        suppliers: supplierFilters,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setPlantFilters(sheetPlantFilters)
-    setOrderTypeFilters(sheetOrderTypeFilters)
-    setSupplierFilters(sheetSupplierFilters)
-    setPage(1)
+    setFilters({
+      plants: sheetFilters.plants.length > 0 ? sheetFilters.plants.join(',') : undefined,
+      orderTypes: sheetFilters.orderTypes.length > 0 ? sheetFilters.orderTypes.join(',') : undefined,
+      suppliers: sheetFilters.suppliers.length > 0 ? sheetFilters.suppliers.join(',') : undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilter('search', value || undefined)
   }
 
   // Extract sort params from sorting state
+  const sorting = getSortingState()
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useOpenPurchaseOrders({
-    page,
+    page: filters.page ?? 1,
     pageSize,
-    search: search || undefined,
+    search: filters.search || undefined,
     plants: plantFilters.length > 0 ? plantFilters : undefined,
     orderTypes: orderTypeFilters.length > 0 ? orderTypeFilters : undefined,
     suppliers: supplierFilters.length > 0 ? supplierFilters : undefined,
@@ -280,8 +299,8 @@ function OpenPOPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -311,7 +330,7 @@ function OpenPOPage() {
         <DebouncedSearchInput
           placeholder="Search by PO, material, or supplier..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[350px] min-w-[200px] flex-1"
         />
@@ -336,8 +355,8 @@ function OpenPOPage() {
                 <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantOptions}
-                  value={sheetPlantFilters}
-                  onChange={setSheetPlantFilters}
+                  value={sheetFilters.plants}
+                  onChange={(plants) => setSheetFilters((prev) => ({ ...prev, plants }))}
                   placeholder="All plants"
                 />
               </div>
@@ -346,8 +365,8 @@ function OpenPOPage() {
                 <Label className="text-xs font-bold uppercase">Order Type</Label>
                 <MultiSelect
                   options={orderTypeOptions}
-                  value={sheetOrderTypeFilters}
-                  onChange={setSheetOrderTypeFilters}
+                  value={sheetFilters.orderTypes}
+                  onChange={(orderTypes) => setSheetFilters((prev) => ({ ...prev, orderTypes }))}
                   placeholder="All types"
                 />
               </div>
@@ -356,8 +375,8 @@ function OpenPOPage() {
                 <Label className="text-xs font-bold uppercase">Supplier</Label>
                 <MultiSelect
                   options={supplierOptions}
-                  value={sheetSupplierFilters}
-                  onChange={setSheetSupplierFilters}
+                  value={sheetFilters.suppliers}
+                  onChange={(suppliers) => setSheetFilters((prev) => ({ ...prev, suppliers }))}
                   placeholder="All suppliers"
                 />
               </div>
@@ -370,10 +389,7 @@ function OpenPOPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setPlantFilters([])
-                  setOrderTypeFilters([])
-                  setSupplierFilters([])
-                  setPage(1)
+                  resetFilters()
                   setSheetOpen(false)
                 }}
               >
@@ -382,16 +398,7 @@ function OpenPOPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setPlantFilters([])
-            setOrderTypeFilters([])
-            setSupplierFilters([])
-            setSearch('')
-            setPage(1)
-          }}
-        >
+        <Button variant="outline" onClick={resetFilters}>
           <RotateCcwIcon className="size-4" />
           Reset
         </Button>
@@ -457,7 +464,12 @@ function OpenPOPage() {
                 >
                   Plant: {plant}
                   <button
-                    onClick={() => setPlantFilters((prev) => prev.filter((p) => p !== plant))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'plants',
+                        plantFilters.filter((p) => p !== plant),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -471,7 +483,12 @@ function OpenPOPage() {
                 >
                   Type: {type}
                   <button
-                    onClick={() => setOrderTypeFilters((prev) => prev.filter((t) => t !== type))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'orderTypes',
+                        orderTypeFilters.filter((t) => t !== type),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -485,7 +502,12 @@ function OpenPOPage() {
                 >
                   Supplier: {supplier.substring(0, 30)}...
                   <button
-                    onClick={() => setSupplierFilters((prev) => prev.filter((s) => s !== supplier))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'suppliers',
+                        supplierFilters.filter((s) => s !== supplier),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -564,8 +586,8 @@ function OpenPOPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, (filters.page ?? 1) - 1))}
+                disabled={(filters.page ?? 1) === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -576,8 +598,8 @@ function OpenPOPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, (filters.page ?? 1) + 1))}
+                disabled={(filters.page ?? 1) === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />

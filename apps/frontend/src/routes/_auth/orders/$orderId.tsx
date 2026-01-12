@@ -388,7 +388,7 @@ function OrderDetailsPage() {
     return (
       <div className="space-y-6">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/orders">
+          <Link to="/orders" search={{}}>
             <ArrowLeftIcon className="mr-2 size-4" />
             Back to Orders
           </Link>
@@ -419,7 +419,7 @@ function OrderDetailsPage() {
     return (
       <div className="space-y-6">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/orders">
+          <Link to="/orders" search={{}}>
             <ArrowLeftIcon className="mr-2 size-4" />
             Back to Orders
           </Link>
@@ -433,7 +433,7 @@ function OrderDetailsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Button variant="ghost" size="sm" asChild>
-          <Link to="/orders">
+          <Link to="/orders" search={{}}>
             <ArrowLeftIcon className="mr-2 size-4" />
             Back to Orders
           </Link>

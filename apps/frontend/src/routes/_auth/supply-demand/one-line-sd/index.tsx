@@ -8,6 +8,8 @@ import {
   useOneLineSd,
   useOneLineSdFilterOptions,
 } from '@/hooks/queries/one-line-sd/useOneLineSd'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
+import { oneLineSdSearchDefaults, oneLineSdSearchSchema } from './searchSchema'
 import {
   Button,
   Checkbox,
@@ -37,7 +39,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -57,6 +58,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/one-line-sd/')({
   component: OneLineSdPage,
+  validateSearch: oneLineSdSearchSchema,
   staticData: {
     title: 'route.supplyDemandOneLineSd',
     crumb: 'route.supplyDemandOneLineSd',
@@ -69,20 +71,34 @@ function getPlantAcronym(plantName: string) {
 }
 
 function OneLineSdPage() {
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [plantNameFilters, setPlantNameFilters] = useState<string[]>([])
-  const [materialGroupFilters, setMaterialGroupFilters] = useState<string[]>([])
-  const [purchasingGroupFilters, setPurchasingGroupFilters] = useState<string[]>([])
-  const pageSize = 25
+  const search = Route.useSearch()
+  const {
+    filters,
+    setFilter,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: oneLineSdSearchDefaults,
+  })
 
-  // Sheet state
+  const plantNameFilters = getArrayFilter('plantNames')
+  const materialGroupFilters = getArrayFilter('materialGroups')
+  const purchasingGroupFilters = getArrayFilter('purchasingGroups')
+  const pageSize = filters.pageSize ?? 25
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetPlantNameFilters, setSheetPlantNameFilters] = useState<string[]>([])
-  const [sheetMaterialGroupFilters, setSheetMaterialGroupFilters] = useState<string[]>([])
-  const [sheetPurchasingGroupFilters, setSheetPurchasingGroupFilters] = useState<string[]>([])
+  const [sheetFilters, setSheetFilters] = useState({
+    plantNames: [] as string[],
+    materialGroups: [] as string[],
+    purchasingGroups: [] as string[],
+  })
 
   // Fetch filter options
   const { data: filterOptions } = useOneLineSdFilterOptions()
@@ -116,34 +132,42 @@ function OneLineSdPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      setSheetPlantNameFilters(plantNameFilters)
-      setSheetMaterialGroupFilters(materialGroupFilters)
-      setSheetPurchasingGroupFilters(purchasingGroupFilters)
+      setSheetFilters({
+        plantNames: plantNameFilters,
+        materialGroups: materialGroupFilters,
+        purchasingGroups: purchasingGroupFilters,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setPlantNameFilters(sheetPlantNameFilters)
-    setMaterialGroupFilters(sheetMaterialGroupFilters)
-    setPurchasingGroupFilters(sheetPurchasingGroupFilters)
-    setPage(1)
+    setFilters({
+      plantNames:
+        sheetFilters.plantNames.length > 0 ? sheetFilters.plantNames.join(',') : undefined,
+      materialGroups:
+        sheetFilters.materialGroups.length > 0 ? sheetFilters.materialGroups.join(',') : undefined,
+      purchasingGroups:
+        sheetFilters.purchasingGroups.length > 0
+          ? sheetFilters.purchasingGroups.join(',')
+          : undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilter('search', value || undefined)
   }
 
   // Extract sort params from sorting state
+  const sorting = getSortingState()
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useOneLineSd({
-    page,
+    page: filters.page ?? 1,
     pageSize,
-    search: search || undefined,
+    search: filters.search || undefined,
     plantNames: plantNameFilters.length > 0 ? plantNameFilters : undefined,
     materialGroups: materialGroupFilters.length > 0 ? materialGroupFilters : undefined,
     purchasingGroups: purchasingGroupFilters.length > 0 ? purchasingGroupFilters : undefined,
@@ -241,8 +265,8 @@ function OneLineSdPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -280,7 +304,7 @@ function OneLineSdPage() {
         <DebouncedSearchInput
           placeholder="Search by material, description, or plant..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[350px] min-w-[200px] flex-1"
         />
@@ -307,8 +331,8 @@ function OneLineSdPage() {
                 <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantNameOptions}
-                  value={sheetPlantNameFilters}
-                  onChange={setSheetPlantNameFilters}
+                  value={sheetFilters.plantNames}
+                  onChange={(plantNames) => setSheetFilters((prev) => ({ ...prev, plantNames }))}
                   placeholder="All plants"
                 />
               </div>
@@ -317,8 +341,10 @@ function OneLineSdPage() {
                 <Label className="text-xs font-bold uppercase">Material Group</Label>
                 <MultiSelect
                   options={materialGroupOptions}
-                  value={sheetMaterialGroupFilters}
-                  onChange={setSheetMaterialGroupFilters}
+                  value={sheetFilters.materialGroups}
+                  onChange={(materialGroups) =>
+                    setSheetFilters((prev) => ({ ...prev, materialGroups }))
+                  }
                   placeholder="All material groups"
                 />
               </div>
@@ -327,8 +353,10 @@ function OneLineSdPage() {
                 <Label className="text-xs font-bold uppercase">Purchasing Group</Label>
                 <MultiSelect
                   options={purchasingGroupOptions}
-                  value={sheetPurchasingGroupFilters}
-                  onChange={setSheetPurchasingGroupFilters}
+                  value={sheetFilters.purchasingGroups}
+                  onChange={(purchasingGroups) =>
+                    setSheetFilters((prev) => ({ ...prev, purchasingGroups }))
+                  }
                   placeholder="All purchasing groups"
                 />
               </div>
@@ -341,10 +369,7 @@ function OneLineSdPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setPlantNameFilters([])
-                  setMaterialGroupFilters([])
-                  setPurchasingGroupFilters([])
-                  setPage(1)
+                  resetFilters()
                   setSheetOpen(false)
                 }}
               >
@@ -353,16 +378,7 @@ function OneLineSdPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setPlantNameFilters([])
-            setMaterialGroupFilters([])
-            setPurchasingGroupFilters([])
-            setSearch('')
-            setPage(1)
-          }}
-        >
+        <Button variant="outline" onClick={resetFilters}>
           <RotateCcwIcon className="size-4" />
           Reset
         </Button>
@@ -433,7 +449,12 @@ function OneLineSdPage() {
                 >
                   Plant: {plant}
                   <button
-                    onClick={() => setPlantNameFilters((prev) => prev.filter((p) => p !== plant))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'plantNames',
+                        plantNameFilters.filter((p) => p !== plant),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -448,7 +469,10 @@ function OneLineSdPage() {
                   Material Group: {group}
                   <button
                     onClick={() =>
-                      setMaterialGroupFilters((prev) => prev.filter((g) => g !== group))
+                      setArrayFilter(
+                        'materialGroups',
+                        materialGroupFilters.filter((g) => g !== group),
+                      )
                     }
                     className="ml-0.5 hover:text-gray-300"
                   >
@@ -464,7 +488,10 @@ function OneLineSdPage() {
                   Purchasing: {getPurchasingGroupLabel(group)}
                   <button
                     onClick={() =>
-                      setPurchasingGroupFilters((prev) => prev.filter((g) => g !== group))
+                      setArrayFilter(
+                        'purchasingGroups',
+                        purchasingGroupFilters.filter((g) => g !== group),
+                      )
                     }
                     className="ml-0.5 hover:text-gray-300"
                   >
@@ -544,8 +571,8 @@ function OneLineSdPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, (filters.page ?? 1) - 1))}
+                disabled={(filters.page ?? 1) === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -556,8 +583,8 @@ function OneLineSdPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, (filters.page ?? 1) + 1))}
+                disabled={(filters.page ?? 1) === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />

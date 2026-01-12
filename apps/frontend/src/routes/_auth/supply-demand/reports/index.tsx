@@ -10,6 +10,8 @@ import {
   useReports,
   useReportsFilterOptions,
 } from '@/hooks/queries/reports/useReports'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
+import { reportsSearchDefaults, reportsSearchSchema } from './searchSchema'
 import {
   Button,
   Checkbox,
@@ -39,7 +41,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -61,6 +62,7 @@ import { useMemo, useState } from 'react'
 
 export const Route = createFileRoute('/_auth/supply-demand/reports/')({
   component: ReportsPage,
+  validateSearch: reportsSearchSchema,
   staticData: {
     title: 'route.supplyDemandReports',
     crumb: 'route.supplyDemandReports',
@@ -187,16 +189,33 @@ function getNextNMonths(n: number): string[] {
 }
 
 function ReportsPage() {
-  const [page, setPage] = useState(1)
-  const [search, setSearch] = useState('')
-  const [sorting, setSorting] = useState<SortingState>([])
+  // URL-based state
+  const search = Route.useSearch()
+  const {
+    filters,
+    setFilter,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: reportsSearchDefaults,
+  })
+
+  // Derived filter values from URL
+  const plantNameFilters = getArrayFilter('plants')
+  const riskLevelFilters = getArrayFilter('riskLevels')
+  const productStatusFilters = getArrayFilter('productStatuses')
+  const nextProblemPeriodFilter = getArrayFilter('problemPeriods')
+  const needsValidationFilter = filters.needsValidation ?? false
+  const pageSize = filters.pageSize ?? 25
+
+  // Local state (UI-only)
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [plantNameFilters, setPlantNameFilters] = useState<string[]>([])
-  const [riskLevelFilters, setRiskLevelFilters] = useState<string[]>([])
-  const [productStatusFilters, setProductStatusFilters] = useState<string[]>([])
-  const [nextProblemPeriodFilter, setNextProblemPeriodFilter] = useState<string[]>([])
-  const [needsValidationFilter, setNeedsValidationFilter] = useState(false)
-  const pageSize = 25
 
   // Get the next 3 months for the "problems" shortcut
   const next3Months = useMemo(() => getNextNMonths(3), [])
@@ -213,13 +232,15 @@ function ReportsPage() {
     return hasHighMediumRisk && hasNext3MonthsPeriod
   }, [riskLevelFilters, nextProblemPeriodFilter, next3Months])
 
-  // Sheet state
+  // Sheet state - single object pattern
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetPlantNameFilters, setSheetPlantNameFilters] = useState<string[]>([])
-  const [sheetRiskLevelFilters, setSheetRiskLevelFilters] = useState<string[]>([])
-  const [sheetProductStatusFilters, setSheetProductStatusFilters] = useState<string[]>([])
-  const [sheetNextProblemPeriodFilter, setSheetNextProblemPeriodFilter] = useState<string[]>([])
-  const [sheetNeedsValidationFilter, setSheetNeedsValidationFilter] = useState(false)
+  const [sheetFilters, setSheetFilters] = useState({
+    plants: [] as string[],
+    riskLevels: [] as string[],
+    productStatuses: [] as string[],
+    problemPeriods: [] as string[],
+    needsValidation: false,
+  })
 
   // Fetch filter options
   const { data: filterOptions } = useReportsFilterOptions()
@@ -235,38 +256,45 @@ function ReportsPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      setSheetPlantNameFilters(plantNameFilters)
-      setSheetRiskLevelFilters(riskLevelFilters)
-      setSheetProductStatusFilters(productStatusFilters)
-      setSheetNextProblemPeriodFilter(nextProblemPeriodFilter)
-      setSheetNeedsValidationFilter(needsValidationFilter)
+      setSheetFilters({
+        plants: plantNameFilters,
+        riskLevels: riskLevelFilters,
+        productStatuses: productStatusFilters,
+        problemPeriods: nextProblemPeriodFilter,
+        needsValidation: needsValidationFilter,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setPlantNameFilters(sheetPlantNameFilters)
-    setRiskLevelFilters(sheetRiskLevelFilters)
-    setProductStatusFilters(sheetProductStatusFilters)
-    setNextProblemPeriodFilter(sheetNextProblemPeriodFilter)
-    setNeedsValidationFilter(sheetNeedsValidationFilter)
-    setPage(1)
+    setFilters({
+      plants: sheetFilters.plants.length > 0 ? sheetFilters.plants.join(',') : undefined,
+      riskLevels: sheetFilters.riskLevels.length > 0 ? sheetFilters.riskLevels.join(',') : undefined,
+      productStatuses:
+        sheetFilters.productStatuses.length > 0
+          ? sheetFilters.productStatuses.join(',')
+          : undefined,
+      problemPeriods:
+        sheetFilters.problemPeriods.length > 0 ? sheetFilters.problemPeriods.join(',') : undefined,
+      needsValidation: sheetFilters.needsValidation || undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilter('search', value || undefined)
   }
 
   // Extract sort params from sorting state
+  const sorting = getSortingState()
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useReports({
-    page,
+    page: filters.page ?? 1,
     pageSize,
-    search: search || undefined,
+    search: filters.search || undefined,
     plantNames: plantNameFilters.length > 0 ? plantNameFilters : undefined,
     riskLevels: riskLevelFilters.length > 0 ? riskLevelFilters : undefined,
     productStatuses: productStatusFilters.length > 0 ? productStatusFilters : undefined,
@@ -448,8 +476,8 @@ function ReportsPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -483,7 +511,7 @@ function ReportsPage() {
         <DebouncedSearchInput
           placeholder="Search by material, description, or plant..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[350px] min-w-[200px] flex-1"
         />
@@ -512,8 +540,8 @@ function ReportsPage() {
                 <Label className="text-xs font-bold uppercase">Plant</Label>
                 <MultiSelect
                   options={plantNameOptions}
-                  value={sheetPlantNameFilters}
-                  onChange={setSheetPlantNameFilters}
+                  value={sheetFilters.plants}
+                  onChange={(plants) => setSheetFilters((prev) => ({ ...prev, plants }))}
                   placeholder="All plants"
                 />
               </div>
@@ -522,8 +550,8 @@ function ReportsPage() {
                 <Label className="text-xs font-bold uppercase">Risk Level</Label>
                 <MultiSelect
                   options={RISK_LEVEL_OPTIONS}
-                  value={sheetRiskLevelFilters}
-                  onChange={setSheetRiskLevelFilters}
+                  value={sheetFilters.riskLevels}
+                  onChange={(riskLevels) => setSheetFilters((prev) => ({ ...prev, riskLevels }))}
                   placeholder="All risk levels"
                 />
               </div>
@@ -532,8 +560,10 @@ function ReportsPage() {
                 <Label className="text-xs font-bold uppercase">Material Status</Label>
                 <MultiSelect
                   options={PRODUCT_STATUS_OPTIONS}
-                  value={sheetProductStatusFilters}
-                  onChange={setSheetProductStatusFilters}
+                  value={sheetFilters.productStatuses}
+                  onChange={(productStatuses) =>
+                    setSheetFilters((prev) => ({ ...prev, productStatuses }))
+                  }
                   placeholder="All statuses"
                 />
               </div>
@@ -542,8 +572,10 @@ function ReportsPage() {
                 <Label className="text-xs font-bold uppercase">Next Problem Period</Label>
                 <MultiSelect
                   options={PROBLEM_PERIOD_OPTIONS}
-                  value={sheetNextProblemPeriodFilter}
-                  onChange={setSheetNextProblemPeriodFilter}
+                  value={sheetFilters.problemPeriods}
+                  onChange={(problemPeriods) =>
+                    setSheetFilters((prev) => ({ ...prev, problemPeriods }))
+                  }
                   placeholder="Any period"
                 />
               </div>
@@ -551,8 +583,10 @@ function ReportsPage() {
               <div className="flex items-center gap-2">
                 <Checkbox
                   id="needs-validation-filter"
-                  checked={sheetNeedsValidationFilter}
-                  onCheckedChange={(checked) => setSheetNeedsValidationFilter(!!checked)}
+                  checked={sheetFilters.needsValidation}
+                  onCheckedChange={(checked) =>
+                    setSheetFilters((prev) => ({ ...prev, needsValidation: !!checked }))
+                  }
                 />
                 <Label htmlFor="needs-validation-filter" className="cursor-pointer text-sm">
                   Show only reports requiring validation
@@ -567,12 +601,7 @@ function ReportsPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setPlantNameFilters([])
-                  setRiskLevelFilters([])
-                  setProductStatusFilters([])
-                  setNextProblemPeriodFilter([])
-                  setNeedsValidationFilter(false)
-                  setPage(1)
+                  resetFilters()
                   setSheetOpen(false)
                 }}
               >
@@ -581,18 +610,7 @@ function ReportsPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setPlantNameFilters([])
-            setRiskLevelFilters([])
-            setProductStatusFilters([])
-            setNextProblemPeriodFilter([])
-            setNeedsValidationFilter(false)
-            setSearch('')
-            setPage(1)
-          }}
-        >
+        <Button variant="outline" onClick={resetFilters}>
           <RotateCcwIcon className="size-4" />
           Reset
         </Button>
@@ -665,7 +683,12 @@ function ReportsPage() {
                 >
                   Plant: {plant}
                   <button
-                    onClick={() => setPlantNameFilters((prev) => prev.filter((p) => p !== plant))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'plants',
+                        plantNameFilters.filter((p) => p !== plant),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -681,7 +704,12 @@ function ReportsPage() {
                   >
                     Risk: {option?.label ?? risk}
                     <button
-                      onClick={() => setRiskLevelFilters((prev) => prev.filter((r) => r !== risk))}
+                      onClick={() =>
+                        setArrayFilter(
+                          'riskLevels',
+                          riskLevelFilters.filter((r) => r !== risk),
+                        )
+                      }
                       className="ml-0.5 hover:text-gray-300"
                     >
                       <XIcon className="size-3" />
@@ -699,7 +727,10 @@ function ReportsPage() {
                     Status: {option?.label ?? status}
                     <button
                       onClick={() =>
-                        setProductStatusFilters((prev) => prev.filter((s) => s !== status))
+                        setArrayFilter(
+                          'productStatuses',
+                          productStatusFilters.filter((s) => s !== status),
+                        )
                       }
                       className="ml-0.5 hover:text-gray-300"
                     >
@@ -718,7 +749,10 @@ function ReportsPage() {
                     Next Problem: {option?.label ?? period}
                     <button
                       onClick={() =>
-                        setNextProblemPeriodFilter((prev) => prev.filter((p) => p !== period))
+                        setArrayFilter(
+                          'problemPeriods',
+                          nextProblemPeriodFilter.filter((p) => p !== period),
+                        )
                       }
                       className="ml-0.5 hover:text-gray-300"
                     >
@@ -731,7 +765,7 @@ function ReportsPage() {
                 <span className="inline-flex items-center justify-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium whitespace-nowrap text-white">
                   Requires Validation
                   <button
-                    onClick={() => setNeedsValidationFilter(false)}
+                    onClick={() => setFilter('needsValidation', undefined)}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -756,9 +790,10 @@ function ReportsPage() {
                   description="These items have projected stock issues that need attention"
                   actionLabel="Show problems only"
                   onAction={() => {
-                    setRiskLevelFilters(['high', 'medium'])
-                    setNextProblemPeriodFilter(next3Months)
-                    setPage(1)
+                    setFilters({
+                      riskLevels: 'high,medium',
+                      problemPeriods: next3Months.join(','),
+                    })
                   }}
                 />
               )}
@@ -768,9 +803,10 @@ function ReportsPage() {
                   icon={AlertTriangleIcon}
                   label="Showing reports with stock problems in the next 3 months"
                   onClear={() => {
-                    setRiskLevelFilters([])
-                    setNextProblemPeriodFilter([])
-                    setPage(1)
+                    setFilters({
+                      riskLevels: undefined,
+                      problemPeriods: undefined,
+                    })
                   }}
                 />
               )}
@@ -784,8 +820,7 @@ function ReportsPage() {
                   description="These reports have never been validated or their validation is older than 3 months"
                   actionLabel="Show reports requiring validation"
                   onAction={() => {
-                    setNeedsValidationFilter(true)
-                    setPage(1)
+                    setFilter('needsValidation', true)
                   }}
                 />
               )}
@@ -795,8 +830,7 @@ function ReportsPage() {
                   icon={ClipboardCheckIcon}
                   label="Showing reports requiring validation"
                   onClear={() => {
-                    setNeedsValidationFilter(false)
-                    setPage(1)
+                    setFilter('needsValidation', undefined)
                   }}
                 />
               )}
@@ -893,8 +927,8 @@ function ReportsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, (filters.page ?? 1) - 1))}
+                disabled={(filters.page ?? 1) === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -905,8 +939,8 @@ function ReportsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, (filters.page ?? 1) + 1))}
+                disabled={(filters.page ?? 1) === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />

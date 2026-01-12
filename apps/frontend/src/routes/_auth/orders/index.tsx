@@ -5,6 +5,7 @@ import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
 import { useOrders } from '@/hooks/queries/orders/useOrders'
+import { useUrlFilters } from '@/hooks/useUrlFilters'
 import {
   Button,
   Calendar,
@@ -30,12 +31,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@repo/ui/components'
+import { serializeArray } from '@repo/zod-schemas'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
@@ -54,9 +55,11 @@ import {
   XIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { ordersSearchDefaults, ordersSearchSchema } from './searchSchema'
 
 export const Route = createFileRoute('/_auth/orders/')({
   component: OrdersMonitorPage,
+  validateSearch: ordersSearchSchema,
   staticData: {
     title: 'route.ordersMonitor',
     crumb: 'route.ordersMonitor',
@@ -95,27 +98,45 @@ function getStatusColor(status: string) {
 }
 
 function OrdersMonitorPage() {
-  const [page, setPage] = useState(1)
-  const [statusFilters, setStatusFilters] = useState<string[]>([])
-  const [search, setSearch] = useState('')
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
-  const [hasIssuesFilter, setHasIssuesFilter] = useState(false)
-  const [hasResolvedIssuesFilter, setHasResolvedIssuesFilter] = useState(false)
-  const [sourceFilters, setSourceFilters] = useState<string[]>([])
-  const [requiresApprovalFilter, setRequiresApprovalFilter] = useState(false)
-  const [wasApprovedFilter, setWasApprovedFilter] = useState(false)
-  const pageSize = 15
+  // Get search params from URL
+  const search = Route.useSearch()
 
-  // Sheet state
+  // Initialize URL filters hook
+  const {
+    filters,
+    setFilters,
+    resetFilters,
+    getArrayFilter,
+    setArrayFilter,
+    getDateFilter,
+    setDateFilter,
+    getSortingState,
+    setSortingState,
+    setPage,
+  } = useUrlFilters({
+    search,
+    defaults: ordersSearchDefaults,
+  })
+
+  // Derived state from URL
+  const statusFilters = getArrayFilter('statuses')
+  const sourceFilters = getArrayFilter('sources')
+  const selectedDate = getDateFilter('date')
+  const sorting = getSortingState()
+
+  // Column visibility (local only - not in URL)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+
+  // Sheet state (local only - for batching filter changes before applying to URL)
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetStatusFilters, setSheetStatusFilters] = useState<string[]>([])
-  const [sheetSourceFilters, setSheetSourceFilters] = useState<string[]>([])
-  const [sheetHasIssuesFilter, setSheetHasIssuesFilter] = useState(false)
-  const [sheetHasResolvedIssuesFilter, setSheetHasResolvedIssuesFilter] = useState(false)
-  const [sheetRequiresApprovalFilter, setSheetRequiresApprovalFilter] = useState(false)
-  const [sheetWasApprovedFilter, setSheetWasApprovedFilter] = useState(false)
+  const [sheetFilters, setSheetFilters] = useState({
+    statuses: [] as string[],
+    sources: [] as string[],
+    hasIssues: false,
+    hasResolvedIssues: false,
+    requiresApproval: false,
+    wasApproved: false,
+  })
 
   const statusOptions = [
     { value: 'pending', label: 'Pending' },
@@ -132,50 +153,50 @@ function OrdersMonitorPage() {
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      // Sync sheet state with current filters when opening
-      setSheetStatusFilters(statusFilters)
-      setSheetSourceFilters(sourceFilters)
-      setSheetHasIssuesFilter(hasIssuesFilter)
-      setSheetHasResolvedIssuesFilter(hasResolvedIssuesFilter)
-      setSheetRequiresApprovalFilter(requiresApprovalFilter)
-      setSheetWasApprovedFilter(wasApprovedFilter)
+      // Sync sheet state with current URL filters when opening
+      setSheetFilters({
+        statuses: statusFilters,
+        sources: sourceFilters,
+        hasIssues: filters.hasIssues ?? false,
+        hasResolvedIssues: filters.hasResolvedIssues ?? false,
+        requiresApproval: filters.requiresApproval ?? false,
+        wasApproved: filters.wasApproved ?? false,
+      })
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setStatusFilters(sheetStatusFilters)
-    setSourceFilters(sheetSourceFilters)
-    setHasIssuesFilter(sheetHasIssuesFilter)
-    setHasResolvedIssuesFilter(sheetHasResolvedIssuesFilter)
-    setRequiresApprovalFilter(sheetRequiresApprovalFilter)
-    setWasApprovedFilter(sheetWasApprovedFilter)
-    setPage(1)
+    setFilters({
+      statuses: serializeArray(sheetFilters.statuses),
+      sources: serializeArray(sheetFilters.sources),
+      hasIssues: sheetFilters.hasIssues || undefined,
+      hasResolvedIssues: sheetFilters.hasResolvedIssues || undefined,
+      requiresApproval: sheetFilters.requiresApproval || undefined,
+      wasApproved: sheetFilters.wasApproved || undefined,
+    })
     setSheetOpen(false)
   }
 
   const handleSearch = (value: string) => {
-    setSearch(value)
-    setPage(1)
+    setFilters({ search: value || undefined })
   }
-
-  const dateString = selectedDate ? selectedDate.toISOString().split('T')[0] : undefined
 
   // Extract sort params from sorting state
   const sortBy = sorting.length > 0 ? sorting[0]?.id : undefined
   const sortOrder = sorting.length > 0 ? (sorting[0]?.desc ? 'desc' : 'asc') : undefined
 
   const { data, isLoading, error } = useOrders({
-    page,
-    pageSize,
+    page: filters.page,
+    pageSize: filters.pageSize,
     statuses: statusFilters.length > 0 ? statusFilters : undefined,
     sources: sourceFilters.length > 0 ? sourceFilters : undefined,
-    search: search || undefined,
-    date: dateString,
-    hasIssues: hasIssuesFilter || undefined,
-    hasResolvedIssues: hasResolvedIssuesFilter || undefined,
-    requiresApproval: requiresApprovalFilter || undefined,
-    wasApproved: wasApprovedFilter || undefined,
+    search: filters.search || undefined,
+    date: filters.date,
+    hasIssues: filters.hasIssues || undefined,
+    hasResolvedIssues: filters.hasResolvedIssues || undefined,
+    requiresApproval: filters.requiresApproval || undefined,
+    wasApproved: filters.wasApproved || undefined,
     sortBy,
     sortOrder,
   })
@@ -320,8 +341,8 @@ function OrdersMonitorPage() {
     getCoreRowModel: getCoreRowModel(),
     manualSorting: true,
     onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
+      const newSorting = typeof updater === 'function' ? updater(sorting) : updater
+      setSortingState(newSorting)
     },
     onColumnVisibilityChange: setColumnVisibility,
     state: {
@@ -331,6 +352,16 @@ function OrdersMonitorPage() {
   })
 
   const pagination = data?.pagination
+
+  // Check if any filters are active (for badge display)
+  const hasActiveFilters =
+    statusFilters.length > 0 ||
+    sourceFilters.length > 0 ||
+    selectedDate ||
+    filters.hasIssues ||
+    filters.hasResolvedIssues ||
+    filters.requiresApproval ||
+    filters.wasApproved
 
   return (
     <div className="space-y-8">
@@ -343,7 +374,7 @@ function OrdersMonitorPage() {
         <DebouncedSearchInput
           placeholder="Search orders..."
           onSearch={handleSearch}
-          value={search}
+          value={filters.search ?? ''}
           delay={300}
           className="max-w-[300px] min-w-[200px] flex-1"
         />
@@ -359,8 +390,7 @@ function OrdersMonitorPage() {
               mode="single"
               selected={selectedDate}
               onSelect={(date) => {
-                setSelectedDate(date)
-                setPage(1)
+                setDateFilter('date', date)
               }}
             />
             <div className="border-t p-2">
@@ -369,8 +399,7 @@ function OrdersMonitorPage() {
                 size="sm"
                 className="w-full"
                 onClick={() => {
-                  setSelectedDate(undefined)
-                  setPage(1)
+                  setDateFilter('date', undefined)
                 }}
               >
                 All time
@@ -394,8 +423,8 @@ function OrdersMonitorPage() {
                 <Label className="text-xs font-bold uppercase">Status</Label>
                 <MultiSelect
                   options={statusOptions}
-                  value={sheetStatusFilters}
-                  onChange={setSheetStatusFilters}
+                  value={sheetFilters.statuses}
+                  onChange={(statuses) => setSheetFilters((prev) => ({ ...prev, statuses }))}
                   placeholder="All statuses"
                 />
               </div>
@@ -404,8 +433,8 @@ function OrdersMonitorPage() {
                 <Label className="text-xs font-bold uppercase">Source</Label>
                 <MultiSelect
                   options={sourceOptions}
-                  value={sheetSourceFilters}
-                  onChange={setSheetSourceFilters}
+                  value={sheetFilters.sources}
+                  onChange={(sources) => setSheetFilters((prev) => ({ ...prev, sources }))}
                   placeholder="All sources"
                 />
               </div>
@@ -416,8 +445,10 @@ function OrdersMonitorPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="open-issues"
-                      checked={sheetHasIssuesFilter}
-                      onCheckedChange={(checked) => setSheetHasIssuesFilter(checked === true)}
+                      checked={sheetFilters.hasIssues}
+                      onCheckedChange={(checked) =>
+                        setSheetFilters((prev) => ({ ...prev, hasIssues: checked === true }))
+                      }
                     />
                     <label htmlFor="open-issues" className="cursor-pointer text-sm">
                       Show orders with open issues
@@ -426,9 +457,9 @@ function OrdersMonitorPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="resolved-issues"
-                      checked={sheetHasResolvedIssuesFilter}
+                      checked={sheetFilters.hasResolvedIssues}
                       onCheckedChange={(checked) =>
-                        setSheetHasResolvedIssuesFilter(checked === true)
+                        setSheetFilters((prev) => ({ ...prev, hasResolvedIssues: checked === true }))
                       }
                     />
                     <label htmlFor="resolved-issues" className="cursor-pointer text-sm">
@@ -444,9 +475,9 @@ function OrdersMonitorPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="requires-approval"
-                      checked={sheetRequiresApprovalFilter}
+                      checked={sheetFilters.requiresApproval}
                       onCheckedChange={(checked) =>
-                        setSheetRequiresApprovalFilter(checked === true)
+                        setSheetFilters((prev) => ({ ...prev, requiresApproval: checked === true }))
                       }
                     />
                     <label htmlFor="requires-approval" className="cursor-pointer text-sm">
@@ -456,8 +487,10 @@ function OrdersMonitorPage() {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       id="was-approved"
-                      checked={sheetWasApprovedFilter}
-                      onCheckedChange={(checked) => setSheetWasApprovedFilter(checked === true)}
+                      checked={sheetFilters.wasApproved}
+                      onCheckedChange={(checked) =>
+                        setSheetFilters((prev) => ({ ...prev, wasApproved: checked === true }))
+                      }
                     />
                     <label htmlFor="was-approved" className="cursor-pointer text-sm">
                       Show manually approved orders
@@ -474,13 +507,14 @@ function OrdersMonitorPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setStatusFilters([])
-                  setSourceFilters([])
-                  setHasIssuesFilter(false)
-                  setHasResolvedIssuesFilter(false)
-                  setRequiresApprovalFilter(false)
-                  setWasApprovedFilter(false)
-                  setPage(1)
+                  setFilters({
+                    statuses: undefined,
+                    sources: undefined,
+                    hasIssues: undefined,
+                    hasResolvedIssues: undefined,
+                    requiresApproval: undefined,
+                    wasApproved: undefined,
+                  })
                   setSheetOpen(false)
                 }}
               >
@@ -489,20 +523,7 @@ function OrdersMonitorPage() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setStatusFilters([])
-            setSourceFilters([])
-            setSearch('')
-            setSelectedDate(undefined)
-            setHasIssuesFilter(false)
-            setHasResolvedIssuesFilter(false)
-            setRequiresApprovalFilter(false)
-            setWasApprovedFilter(false)
-            setPage(1)
-          }}
-        >
+        <Button variant="outline" onClick={resetFilters}>
           <RotateCcwIcon className="size-4" />
           Reset Filters
         </Button>
@@ -556,13 +577,7 @@ function OrdersMonitorPage() {
       {data && (
         <>
           {/* Active filter badges */}
-          {(statusFilters.length > 0 ||
-            sourceFilters.length > 0 ||
-            selectedDate ||
-            hasIssuesFilter ||
-            hasResolvedIssuesFilter ||
-            requiresApprovalFilter ||
-            wasApprovedFilter) && (
+          {hasActiveFilters && (
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-muted-foreground text-sm">Active filters:</span>
               {statusFilters.map((status) => (
@@ -572,7 +587,12 @@ function OrdersMonitorPage() {
                 >
                   Status: {status}
                   <button
-                    onClick={() => setStatusFilters((prev) => prev.filter((s) => s !== status))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'statuses',
+                        statusFilters.filter((s) => s !== status),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -586,7 +606,12 @@ function OrdersMonitorPage() {
                 >
                   Source: {source.toUpperCase()}
                   <button
-                    onClick={() => setSourceFilters((prev) => prev.filter((s) => s !== source))}
+                    onClick={() =>
+                      setArrayFilter(
+                        'sources',
+                        sourceFilters.filter((s) => s !== source),
+                      )
+                    }
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -597,66 +622,51 @@ function OrdersMonitorPage() {
                 <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
                   Date: {selectedDate.toLocaleDateString('en-GB')}
                   <button
-                    onClick={() => {
-                      setSelectedDate(undefined)
-                      setPage(1)
-                    }}
+                    onClick={() => setDateFilter('date', undefined)}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
                   </button>
                 </span>
               )}
-              {hasIssuesFilter && (
+              {filters.hasIssues && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
                   Has Open Issues
                   <button
-                    onClick={() => {
-                      setHasIssuesFilter(false)
-                      setPage(1)
-                    }}
+                    onClick={() => setFilters({ hasIssues: undefined })}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
                   </button>
                 </span>
               )}
-              {hasResolvedIssuesFilter && (
+              {filters.hasResolvedIssues && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
                   Has Resolved Issues
                   <button
-                    onClick={() => {
-                      setHasResolvedIssuesFilter(false)
-                      setPage(1)
-                    }}
+                    onClick={() => setFilters({ hasResolvedIssues: undefined })}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
                   </button>
                 </span>
               )}
-              {requiresApprovalFilter && (
+              {filters.requiresApproval && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
                   Requires Approval
                   <button
-                    onClick={() => {
-                      setRequiresApprovalFilter(false)
-                      setPage(1)
-                    }}
+                    onClick={() => setFilters({ requiresApproval: undefined })}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
                   </button>
                 </span>
               )}
-              {wasApprovedFilter && (
+              {filters.wasApproved && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
                   Manually Approved
                   <button
-                    onClick={() => {
-                      setWasApprovedFilter(false)
-                      setPage(1)
-                    }}
+                    onClick={() => setFilters({ wasApproved: undefined })}
                     className="ml-0.5 hover:text-gray-300"
                   >
                     <XIcon className="size-3" />
@@ -669,11 +679,11 @@ function OrdersMonitorPage() {
           {/* Alert boxes and active filter indicators */}
           {(data.ordersWithIssuesCount > 0 ||
             data.ordersRequiringApprovalCount > 0 ||
-            hasIssuesFilter ||
-            requiresApprovalFilter) && (
+            filters.hasIssues ||
+            filters.requiresApproval) && (
             <AlertBoxContainer>
               {/* Warning box for orders with issues */}
-              {data.ordersWithIssuesCount > 0 && !hasIssuesFilter && (
+              {data.ordersWithIssuesCount > 0 && !filters.hasIssues && (
                 <AlertBox
                   variant="orange"
                   icon={AlertTriangleIcon}
@@ -681,27 +691,25 @@ function OrdersMonitorPage() {
                   description="These orders require attention due to unresolved issues"
                   actionLabel="Show orders with issues"
                   onAction={() => {
-                    setHasIssuesFilter(true)
-                    setPage(1)
+                    setFilters({ hasIssues: true })
                   }}
                 />
               )}
 
               {/* Active filter indicator for issues */}
-              {hasIssuesFilter && (
+              {filters.hasIssues && (
                 <ActiveFilterBar
                   variant="orange"
                   icon={AlertTriangleIcon}
                   label="Showing orders with open issues"
                   onClear={() => {
-                    setHasIssuesFilter(false)
-                    setPage(1)
+                    setFilters({ hasIssues: undefined })
                   }}
                 />
               )}
 
               {/* Info box for orders requiring approval */}
-              {data.ordersRequiringApprovalCount > 0 && !requiresApprovalFilter && (
+              {data.ordersRequiringApprovalCount > 0 && !filters.requiresApproval && (
                 <AlertBox
                   variant="blue"
                   icon={ClipboardCheckIcon}
@@ -709,21 +717,19 @@ function OrdersMonitorPage() {
                   description="These orders need to be reviewed and approved before processing"
                   actionLabel="Show orders requiring approval"
                   onAction={() => {
-                    setRequiresApprovalFilter(true)
-                    setPage(1)
+                    setFilters({ requiresApproval: true })
                   }}
                 />
               )}
 
               {/* Active filter indicator for approval */}
-              {requiresApprovalFilter && (
+              {filters.requiresApproval && (
                 <ActiveFilterBar
                   variant="blue"
                   icon={ClipboardCheckIcon}
                   label="Showing orders requiring approval"
                   onClear={() => {
-                    setRequiresApprovalFilter(false)
-                    setPage(1)
+                    setFilters({ requiresApproval: undefined })
                   }}
                 />
               )}
@@ -805,8 +811,8 @@ function OrdersMonitorPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page === 1}
+                onClick={() => setPage(Math.max(1, filters.page - 1))}
+                disabled={filters.page === 1}
               >
                 <ChevronLeftIcon className="size-4" />
                 Previous
@@ -817,8 +823,8 @@ function OrdersMonitorPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                disabled={page === pagination.totalPages}
+                onClick={() => setPage(Math.min(pagination.totalPages, filters.page + 1))}
+                disabled={filters.page === pagination.totalPages}
               >
                 Next
                 <ChevronRightIcon className="size-4" />
