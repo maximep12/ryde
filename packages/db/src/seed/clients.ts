@@ -202,7 +202,8 @@ export async function seedClientOrders(db: NodePgDatabase<typeof schema>) {
           productIndex = 10 + Math.floor(seededRandom(itemSeed) * (SEED_PRODUCTS.length - 10))
         }
         const product = SEED_PRODUCTS[productIndex]!
-        const packageType = PACKAGE_TYPES[Math.floor(seededRandom(itemSeed + 1) * PACKAGE_TYPES.length)]!
+        const packageType =
+          PACKAGE_TYPES[Math.floor(seededRandom(itemSeed + 1) * PACKAGE_TYPES.length)]!
         const quantity = 5 + Math.floor(seededRandom(itemSeed + 2) * 15) // 5-20 units
         const unitPrice = 499 + Math.floor(seededRandom(itemSeed + 3) * 1500) // $4.99 - $19.99
 
@@ -310,7 +311,7 @@ export async function seedClientAssortments(db: NodePgDatabase<typeof schema>) {
       const productIndex = (client.id + i) % SEED_PRODUCTS.length
       const product = SEED_PRODUCTS[productIndex]!
       const purchaseDate = new Date()
-      purchaseDate.setDate(purchaseDate.getDate() - (client.id * 10 + i * 5) % 90)
+      purchaseDate.setDate(purchaseDate.getDate() - ((client.id * 10 + i * 5) % 90))
 
       await db.insert(clientAssortments).values({
         clientId: client.id,
@@ -332,10 +333,7 @@ export async function seedClientComments(db: NodePgDatabase<typeof schema>) {
   console.log('Seeding client comments...')
 
   const allClients = await db.select().from(clients)
-  const allUsers = await db
-    .select()
-    .from(users)
-    .where(inArray(users.email, SEED_USER_EMAILS))
+  const allUsers = await db.select().from(users).where(inArray(users.email, SEED_USER_EMAILS))
   let commentCount = 0
 
   if (allUsers.length === 0) {

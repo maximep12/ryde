@@ -153,7 +153,9 @@ function MockDropzone({ title, description, accept, icon, expectedColumns }: Dro
               </DialogHeader>
               <div className="space-y-4">
                 <div className="bg-muted rounded-md p-4">
-                  <p className="text-muted-foreground mb-2 text-sm font-medium">Expected columns:</p>
+                  <p className="text-muted-foreground mb-2 text-sm font-medium">
+                    Expected columns:
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {expectedColumns.map((col) => (
                       <span

@@ -1,10 +1,5 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
 
-type CurrentItemInfo = {
-  path: string
-  label: string
-}
-
 type CurrentItemContextType = {
   currentItems: Map<string, string>
   setCurrentItem: (path: string, label: string) => void
@@ -41,7 +36,9 @@ export function CurrentItemProvider({ children }: { children: ReactNode }) {
   )
 
   return (
-    <CurrentItemContext.Provider value={{ currentItems, setCurrentItem, clearCurrentItem, getLabel }}>
+    <CurrentItemContext.Provider
+      value={{ currentItems, setCurrentItem, clearCurrentItem, getLabel }}
+    >
       {children}
     </CurrentItemContext.Provider>
   )
@@ -61,7 +58,7 @@ export function useCurrentItem() {
  * @param label - The label to display (e.g., 'GRO-001'), or null/undefined to clear
  */
 export function useRegisterCurrentItem(path: string, label: string | null | undefined) {
-  const { setCurrentItem, clearCurrentItem } = useCurrentItem()
+  const { setCurrentItem } = useCurrentItem()
 
   // Register/update the label when it changes
   if (label) {

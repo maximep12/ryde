@@ -40,11 +40,11 @@ export type UpdateComment = z.infer<typeof updateCommentSchema>
 // ============================================================================
 
 export const storeTypes = [
-  'pet_store',
-  'veterinary_clinic',
+  'grocery',
+  'corner_store',
+  'pharmacy',
+  'convenience_store',
   'supermarket',
-  'online_retailer',
-  'distributor',
 ] as const
 
 export const createClientSchema = z.object({

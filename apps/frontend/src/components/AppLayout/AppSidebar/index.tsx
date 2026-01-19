@@ -15,12 +15,7 @@ import { Link, useLocation } from '@tanstack/react-router'
 import { LogOutIcon, BoxIcon } from 'lucide-react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  adminNavigation,
-  exampleNavigation,
-  navigation,
-  NavigationItem,
-} from './navigation'
+import { adminNavigation, exampleNavigation, navigation, NavigationItem } from './navigation'
 
 function NavSection({
   items,

@@ -43,10 +43,9 @@ type StoreType = (typeof STORE_TYPES)[number]['value']
 
 const clientFormSchema = z.object({
   storeName: z.string().min(1, { error: 'Store name is required' }),
-  storeType: z.enum(
-    ['grocery', 'corner_store', 'pharmacy', 'convenience_store', 'supermarket'],
-    { error: 'Store type is required' },
-  ),
+  storeType: z.enum(['grocery', 'corner_store', 'pharmacy', 'convenience_store', 'supermarket'], {
+    error: 'Store type is required',
+  }),
   contactName: z.string().optional(),
   email: z
     .string()
@@ -151,7 +150,7 @@ function AddClientPage() {
       toast.success('Client created successfully', {
         description: `${data.client.storeName} has been added to the system.`,
       })
-      navigate({ to: '/clients/$clientId', params: { clientId: String(data.client.id) } })
+      navigate({ to: '/example/clients/$clientId', params: { clientId: String(data.client.id) } })
     },
     onError: (err) => {
       toast.error('Failed to create client', {

@@ -60,7 +60,7 @@ function LoginPage() {
     <div className="flex min-h-svh items-center justify-center p-6">
       <div className="w-full max-w-sm space-y-6">
         <LoginForm />
-        <p className="text-muted-foreground bg-muted text-center text-sm rounded-md px-4 py-2">
+        <p className="text-muted-foreground bg-muted rounded-md px-4 py-2 text-center text-sm">
           Demo: admin@example.com / admin123
         </p>
       </div>

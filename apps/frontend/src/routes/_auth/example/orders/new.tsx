@@ -131,7 +131,12 @@ const PRODUCTS = [
   { sku: 'LOL-001', name: 'Rainbow Swirl Lollipops - Box of 24', price: 12.99, packageType: 'Box' },
   { sku: 'LIC-001', name: 'Red Licorice Twists - 400g Bag', price: 6.49, packageType: 'Bag' },
   { sku: 'SFR-001', name: 'Sugar-Free Gummy Bears - 250g', price: 9.99, packageType: 'Bag' },
-  { sku: 'SEA-001', name: 'Valentine Heart Chocolates - Gift Box', price: 24.99, packageType: 'Gift Box' },
+  {
+    sku: 'SEA-001',
+    name: 'Valentine Heart Chocolates - Gift Box',
+    price: 24.99,
+    packageType: 'Gift Box',
+  },
   { sku: 'NIC-001', name: 'Wasabi Ginger Candy - 100g Tin', price: 11.99, packageType: 'Tin' },
   { sku: 'NIC-002', name: 'Lavender Honey Drops - 80g Bag', price: 8.49, packageType: 'Bag' },
   { sku: 'NIC-003', name: 'Activated Charcoal Mints - 50g', price: 6.99, packageType: 'Tin' },
@@ -737,7 +742,7 @@ function OrderCreationPage() {
           toast.success('Order created successfully', {
             description: `Order ${data.order.orderNumber} for ${data.order.storeName} has been created.`,
           })
-          navigate({ to: '/orders/$orderId', params: { orderId: String(data.order.id) } })
+          navigate({ to: '/example/orders/$orderId', params: { orderId: String(data.order.id) } })
         },
         onError: (err) => {
           toast.error('Failed to create order', {

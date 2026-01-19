@@ -9,17 +9,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   SidebarTrigger,
 } from '@repo/ui/components'
-import { Link } from '@tanstack/react-router'
 import {
   GlobeIcon,
   LogOutIcon,
   MonitorIcon,
   MoonIcon,
-  SettingsIcon,
   SunIcon,
   UserIcon,
 } from 'lucide-react'
@@ -123,13 +120,6 @@ export function AppHeader() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link to="/settings">
-                <SettingsIcon className="size-4" />
-                <span>{t('settings')}</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout} variant="destructive">
               <LogOutIcon className="size-4" />
               <span>{t('auth.logOut')}</span>

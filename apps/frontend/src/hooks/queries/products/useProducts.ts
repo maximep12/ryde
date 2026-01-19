@@ -102,7 +102,7 @@ export function useProductFilterOptions() {
     queryKey: ['products', 'filter-options'],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.products['filter-options'].$get()
+      const res = await api.example.products['filter-options'].$get()
       if (!res.ok) {
         throw new Error('Failed to fetch filter options')
       }
