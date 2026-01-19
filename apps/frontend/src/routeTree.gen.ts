@@ -15,26 +15,17 @@ import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
 import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
-import { Route as AuthExamplesRouteRouteImport } from './routes/_auth/examples/route'
-import { Route as AuthUsersIndexRouteImport } from './routes/_auth/users/index'
-import { Route as AuthSettingsIndexRouteImport } from './routes/_auth/settings/index'
-import { Route as AuthOrdersIndexRouteImport } from './routes/_auth/orders/index'
-import { Route as AuthKitchenSinkIndexRouteImport } from './routes/_auth/kitchen-sink/index'
-import { Route as AuthClientsIndexRouteImport } from './routes/_auth/clients/index'
-import { Route as AuthOrdersNewRouteImport } from './routes/_auth/orders/new'
-import { Route as AuthOrdersOrderIdRouteImport } from './routes/_auth/orders/$orderId'
-import { Route as AuthClientsNewRouteImport } from './routes/_auth/clients/new'
-import { Route as AuthClientsClientIdRouteImport } from './routes/_auth/clients/$clientId'
-import { Route as AuthSupplyDemandUploadIndexRouteImport } from './routes/_auth/supply-demand/upload/index'
-import { Route as AuthSupplyDemandReportsIndexRouteImport } from './routes/_auth/supply-demand/reports/index'
-import { Route as AuthSupplyDemandProductStatusIndexRouteImport } from './routes/_auth/supply-demand/product-status/index'
-import { Route as AuthSupplyDemandOpenPoIndexRouteImport } from './routes/_auth/supply-demand/open-po/index'
-import { Route as AuthSupplyDemandOneLineSdIndexRouteImport } from './routes/_auth/supply-demand/one-line-sd/index'
-import { Route as AuthSupplyDemandInventoryIndexRouteImport } from './routes/_auth/supply-demand/inventory/index'
-import { Route as AuthSupplyDemandForecastsIndexRouteImport } from './routes/_auth/supply-demand/forecasts/index'
-import { Route as AuthExamplesBooksIndexRouteImport } from './routes/_auth/examples/books/index'
-import { Route as AuthExamplesBooksBookIdRouteImport } from './routes/_auth/examples/books/$bookId'
-import { Route as AuthSupplyDemandReportsPlantNameMaterialNumberRouteImport } from './routes/_auth/supply-demand/reports/$plantName.$materialNumber'
+import { Route as AuthExampleRouteRouteImport } from './routes/_auth/example/route'
+import { Route as AuthExampleUploadIndexRouteImport } from './routes/_auth/example/upload/index'
+import { Route as AuthExampleSettingsIndexRouteImport } from './routes/_auth/example/settings/index'
+import { Route as AuthExampleOrdersIndexRouteImport } from './routes/_auth/example/orders/index'
+import { Route as AuthExampleKitchenSinkIndexRouteImport } from './routes/_auth/example/kitchen-sink/index'
+import { Route as AuthExampleClientsIndexRouteImport } from './routes/_auth/example/clients/index'
+import { Route as AuthAdminUsersIndexRouteImport } from './routes/_auth/admin/users/index'
+import { Route as AuthExampleOrdersNewRouteImport } from './routes/_auth/example/orders/new'
+import { Route as AuthExampleOrdersOrderIdRouteImport } from './routes/_auth/example/orders/$orderId'
+import { Route as AuthExampleClientsNewRouteImport } from './routes/_auth/example/clients/new'
+import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/example/clients/$clientId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -65,281 +56,178 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/error',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthExamplesRouteRoute = AuthExamplesRouteRouteImport.update({
-  id: '/examples',
-  path: '/examples',
+const AuthExampleRouteRoute = AuthExampleRouteRouteImport.update({
+  id: '/example',
+  path: '/example',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthUsersIndexRoute = AuthUsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
-  getParentRoute: () => AuthRouteRoute,
+const AuthExampleUploadIndexRoute = AuthExampleUploadIndexRouteImport.update({
+  id: '/upload/',
+  path: '/upload/',
+  getParentRoute: () => AuthExampleRouteRoute,
 } as any)
-const AuthSettingsIndexRoute = AuthSettingsIndexRouteImport.update({
-  id: '/settings/',
-  path: '/settings/',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthOrdersIndexRoute = AuthOrdersIndexRouteImport.update({
+const AuthExampleSettingsIndexRoute =
+  AuthExampleSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
+    getParentRoute: () => AuthExampleRouteRoute,
+  } as any)
+const AuthExampleOrdersIndexRoute = AuthExampleOrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthExampleRouteRoute,
 } as any)
-const AuthKitchenSinkIndexRoute = AuthKitchenSinkIndexRouteImport.update({
-  id: '/kitchen-sink/',
-  path: '/kitchen-sink/',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthClientsIndexRoute = AuthClientsIndexRouteImport.update({
+const AuthExampleKitchenSinkIndexRoute =
+  AuthExampleKitchenSinkIndexRouteImport.update({
+    id: '/kitchen-sink/',
+    path: '/kitchen-sink/',
+    getParentRoute: () => AuthExampleRouteRoute,
+  } as any)
+const AuthExampleClientsIndexRoute = AuthExampleClientsIndexRouteImport.update({
   id: '/clients/',
   path: '/clients/',
+  getParentRoute: () => AuthExampleRouteRoute,
+} as any)
+const AuthAdminUsersIndexRoute = AuthAdminUsersIndexRouteImport.update({
+  id: '/admin/users/',
+  path: '/admin/users/',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthOrdersNewRoute = AuthOrdersNewRouteImport.update({
+const AuthExampleOrdersNewRoute = AuthExampleOrdersNewRouteImport.update({
   id: '/orders/new',
   path: '/orders/new',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthExampleRouteRoute,
 } as any)
-const AuthOrdersOrderIdRoute = AuthOrdersOrderIdRouteImport.update({
-  id: '/orders/$orderId',
-  path: '/orders/$orderId',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthClientsNewRoute = AuthClientsNewRouteImport.update({
+const AuthExampleOrdersOrderIdRoute =
+  AuthExampleOrdersOrderIdRouteImport.update({
+    id: '/orders/$orderId',
+    path: '/orders/$orderId',
+    getParentRoute: () => AuthExampleRouteRoute,
+  } as any)
+const AuthExampleClientsNewRoute = AuthExampleClientsNewRouteImport.update({
   id: '/clients/new',
   path: '/clients/new',
-  getParentRoute: () => AuthRouteRoute,
+  getParentRoute: () => AuthExampleRouteRoute,
 } as any)
-const AuthClientsClientIdRoute = AuthClientsClientIdRouteImport.update({
-  id: '/clients/$clientId',
-  path: '/clients/$clientId',
-  getParentRoute: () => AuthRouteRoute,
-} as any)
-const AuthSupplyDemandUploadIndexRoute =
-  AuthSupplyDemandUploadIndexRouteImport.update({
-    id: '/supply-demand/upload/',
-    path: '/supply-demand/upload/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthSupplyDemandReportsIndexRoute =
-  AuthSupplyDemandReportsIndexRouteImport.update({
-    id: '/supply-demand/reports/',
-    path: '/supply-demand/reports/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthSupplyDemandProductStatusIndexRoute =
-  AuthSupplyDemandProductStatusIndexRouteImport.update({
-    id: '/supply-demand/product-status/',
-    path: '/supply-demand/product-status/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthSupplyDemandOpenPoIndexRoute =
-  AuthSupplyDemandOpenPoIndexRouteImport.update({
-    id: '/supply-demand/open-po/',
-    path: '/supply-demand/open-po/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthSupplyDemandOneLineSdIndexRoute =
-  AuthSupplyDemandOneLineSdIndexRouteImport.update({
-    id: '/supply-demand/one-line-sd/',
-    path: '/supply-demand/one-line-sd/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthSupplyDemandInventoryIndexRoute =
-  AuthSupplyDemandInventoryIndexRouteImport.update({
-    id: '/supply-demand/inventory/',
-    path: '/supply-demand/inventory/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthSupplyDemandForecastsIndexRoute =
-  AuthSupplyDemandForecastsIndexRouteImport.update({
-    id: '/supply-demand/forecasts/',
-    path: '/supply-demand/forecasts/',
-    getParentRoute: () => AuthRouteRoute,
-  } as any)
-const AuthExamplesBooksIndexRoute = AuthExamplesBooksIndexRouteImport.update({
-  id: '/books/',
-  path: '/books/',
-  getParentRoute: () => AuthExamplesRouteRoute,
-} as any)
-const AuthExamplesBooksBookIdRoute = AuthExamplesBooksBookIdRouteImport.update({
-  id: '/books/$bookId',
-  path: '/books/$bookId',
-  getParentRoute: () => AuthExamplesRouteRoute,
-} as any)
-const AuthSupplyDemandReportsPlantNameMaterialNumberRoute =
-  AuthSupplyDemandReportsPlantNameMaterialNumberRouteImport.update({
-    id: '/supply-demand/reports/$plantName/$materialNumber',
-    path: '/supply-demand/reports/$plantName/$materialNumber',
-    getParentRoute: () => AuthRouteRoute,
+const AuthExampleClientsClientIdRoute =
+  AuthExampleClientsClientIdRouteImport.update({
+    id: '/clients/$clientId',
+    path: '/clients/$clientId',
+    getParentRoute: () => AuthExampleRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
-  '/examples': typeof AuthExamplesRouteRouteWithChildren
+  '/example': typeof AuthExampleRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/clients/$clientId': typeof AuthClientsClientIdRoute
-  '/clients/new': typeof AuthClientsNewRoute
-  '/orders/$orderId': typeof AuthOrdersOrderIdRoute
-  '/orders/new': typeof AuthOrdersNewRoute
-  '/clients': typeof AuthClientsIndexRoute
-  '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
-  '/orders': typeof AuthOrdersIndexRoute
-  '/settings': typeof AuthSettingsIndexRoute
-  '/users': typeof AuthUsersIndexRoute
-  '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
-  '/examples/books': typeof AuthExamplesBooksIndexRoute
-  '/supply-demand/forecasts': typeof AuthSupplyDemandForecastsIndexRoute
-  '/supply-demand/inventory': typeof AuthSupplyDemandInventoryIndexRoute
-  '/supply-demand/one-line-sd': typeof AuthSupplyDemandOneLineSdIndexRoute
-  '/supply-demand/open-po': typeof AuthSupplyDemandOpenPoIndexRoute
-  '/supply-demand/product-status': typeof AuthSupplyDemandProductStatusIndexRoute
-  '/supply-demand/reports': typeof AuthSupplyDemandReportsIndexRoute
-  '/supply-demand/upload': typeof AuthSupplyDemandUploadIndexRoute
-  '/supply-demand/reports/$plantName/$materialNumber': typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
+  '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
+  '/example/clients/new': typeof AuthExampleClientsNewRoute
+  '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
+  '/example/orders/new': typeof AuthExampleOrdersNewRoute
+  '/admin/users': typeof AuthAdminUsersIndexRoute
+  '/example/clients': typeof AuthExampleClientsIndexRoute
+  '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
+  '/example/orders': typeof AuthExampleOrdersIndexRoute
+  '/example/settings': typeof AuthExampleSettingsIndexRoute
+  '/example/upload': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/examples': typeof AuthExamplesRouteRouteWithChildren
+  '/example': typeof AuthExampleRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/clients/$clientId': typeof AuthClientsClientIdRoute
-  '/clients/new': typeof AuthClientsNewRoute
-  '/orders/$orderId': typeof AuthOrdersOrderIdRoute
-  '/orders/new': typeof AuthOrdersNewRoute
-  '/clients': typeof AuthClientsIndexRoute
-  '/kitchen-sink': typeof AuthKitchenSinkIndexRoute
-  '/orders': typeof AuthOrdersIndexRoute
-  '/settings': typeof AuthSettingsIndexRoute
-  '/users': typeof AuthUsersIndexRoute
-  '/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
-  '/examples/books': typeof AuthExamplesBooksIndexRoute
-  '/supply-demand/forecasts': typeof AuthSupplyDemandForecastsIndexRoute
-  '/supply-demand/inventory': typeof AuthSupplyDemandInventoryIndexRoute
-  '/supply-demand/one-line-sd': typeof AuthSupplyDemandOneLineSdIndexRoute
-  '/supply-demand/open-po': typeof AuthSupplyDemandOpenPoIndexRoute
-  '/supply-demand/product-status': typeof AuthSupplyDemandProductStatusIndexRoute
-  '/supply-demand/reports': typeof AuthSupplyDemandReportsIndexRoute
-  '/supply-demand/upload': typeof AuthSupplyDemandUploadIndexRoute
-  '/supply-demand/reports/$plantName/$materialNumber': typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
+  '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
+  '/example/clients/new': typeof AuthExampleClientsNewRoute
+  '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
+  '/example/orders/new': typeof AuthExampleOrdersNewRoute
+  '/admin/users': typeof AuthAdminUsersIndexRoute
+  '/example/clients': typeof AuthExampleClientsIndexRoute
+  '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
+  '/example/orders': typeof AuthExampleOrdersIndexRoute
+  '/example/settings': typeof AuthExampleSettingsIndexRoute
+  '/example/upload': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/_auth/examples': typeof AuthExamplesRouteRouteWithChildren
+  '/_auth/example': typeof AuthExampleRouteRouteWithChildren
   '/_auth/error': typeof AuthErrorRoute
   '/_auth/not-found': typeof AuthNotFoundRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
-  '/_auth/clients/$clientId': typeof AuthClientsClientIdRoute
-  '/_auth/clients/new': typeof AuthClientsNewRoute
-  '/_auth/orders/$orderId': typeof AuthOrdersOrderIdRoute
-  '/_auth/orders/new': typeof AuthOrdersNewRoute
-  '/_auth/clients/': typeof AuthClientsIndexRoute
-  '/_auth/kitchen-sink/': typeof AuthKitchenSinkIndexRoute
-  '/_auth/orders/': typeof AuthOrdersIndexRoute
-  '/_auth/settings/': typeof AuthSettingsIndexRoute
-  '/_auth/users/': typeof AuthUsersIndexRoute
-  '/_auth/examples/books/$bookId': typeof AuthExamplesBooksBookIdRoute
-  '/_auth/examples/books/': typeof AuthExamplesBooksIndexRoute
-  '/_auth/supply-demand/forecasts/': typeof AuthSupplyDemandForecastsIndexRoute
-  '/_auth/supply-demand/inventory/': typeof AuthSupplyDemandInventoryIndexRoute
-  '/_auth/supply-demand/one-line-sd/': typeof AuthSupplyDemandOneLineSdIndexRoute
-  '/_auth/supply-demand/open-po/': typeof AuthSupplyDemandOpenPoIndexRoute
-  '/_auth/supply-demand/product-status/': typeof AuthSupplyDemandProductStatusIndexRoute
-  '/_auth/supply-demand/reports/': typeof AuthSupplyDemandReportsIndexRoute
-  '/_auth/supply-demand/upload/': typeof AuthSupplyDemandUploadIndexRoute
-  '/_auth/supply-demand/reports/$plantName/$materialNumber': typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
+  '/_auth/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
+  '/_auth/example/clients/new': typeof AuthExampleClientsNewRoute
+  '/_auth/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
+  '/_auth/example/orders/new': typeof AuthExampleOrdersNewRoute
+  '/_auth/admin/users/': typeof AuthAdminUsersIndexRoute
+  '/_auth/example/clients/': typeof AuthExampleClientsIndexRoute
+  '/_auth/example/kitchen-sink/': typeof AuthExampleKitchenSinkIndexRoute
+  '/_auth/example/orders/': typeof AuthExampleOrdersIndexRoute
+  '/_auth/example/settings/': typeof AuthExampleSettingsIndexRoute
+  '/_auth/example/upload/': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/login'
-    | '/examples'
+    | '/example'
     | '/error'
     | '/not-found'
     | '/unauthorized'
     | '/'
-    | '/clients/$clientId'
-    | '/clients/new'
-    | '/orders/$orderId'
-    | '/orders/new'
-    | '/clients'
-    | '/kitchen-sink'
-    | '/orders'
-    | '/settings'
-    | '/users'
-    | '/examples/books/$bookId'
-    | '/examples/books'
-    | '/supply-demand/forecasts'
-    | '/supply-demand/inventory'
-    | '/supply-demand/one-line-sd'
-    | '/supply-demand/open-po'
-    | '/supply-demand/product-status'
-    | '/supply-demand/reports'
-    | '/supply-demand/upload'
-    | '/supply-demand/reports/$plantName/$materialNumber'
+    | '/example/clients/$clientId'
+    | '/example/clients/new'
+    | '/example/orders/$orderId'
+    | '/example/orders/new'
+    | '/admin/users'
+    | '/example/clients'
+    | '/example/kitchen-sink'
+    | '/example/orders'
+    | '/example/settings'
+    | '/example/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
-    | '/examples'
+    | '/example'
     | '/error'
     | '/not-found'
     | '/unauthorized'
     | '/'
-    | '/clients/$clientId'
-    | '/clients/new'
-    | '/orders/$orderId'
-    | '/orders/new'
-    | '/clients'
-    | '/kitchen-sink'
-    | '/orders'
-    | '/settings'
-    | '/users'
-    | '/examples/books/$bookId'
-    | '/examples/books'
-    | '/supply-demand/forecasts'
-    | '/supply-demand/inventory'
-    | '/supply-demand/one-line-sd'
-    | '/supply-demand/open-po'
-    | '/supply-demand/product-status'
-    | '/supply-demand/reports'
-    | '/supply-demand/upload'
-    | '/supply-demand/reports/$plantName/$materialNumber'
+    | '/example/clients/$clientId'
+    | '/example/clients/new'
+    | '/example/orders/$orderId'
+    | '/example/orders/new'
+    | '/admin/users'
+    | '/example/clients'
+    | '/example/kitchen-sink'
+    | '/example/orders'
+    | '/example/settings'
+    | '/example/upload'
   id:
     | '__root__'
     | '/_auth'
     | '/login'
-    | '/_auth/examples'
+    | '/_auth/example'
     | '/_auth/error'
     | '/_auth/not-found'
     | '/_auth/unauthorized'
     | '/_auth/'
-    | '/_auth/clients/$clientId'
-    | '/_auth/clients/new'
-    | '/_auth/orders/$orderId'
-    | '/_auth/orders/new'
-    | '/_auth/clients/'
-    | '/_auth/kitchen-sink/'
-    | '/_auth/orders/'
-    | '/_auth/settings/'
-    | '/_auth/users/'
-    | '/_auth/examples/books/$bookId'
-    | '/_auth/examples/books/'
-    | '/_auth/supply-demand/forecasts/'
-    | '/_auth/supply-demand/inventory/'
-    | '/_auth/supply-demand/one-line-sd/'
-    | '/_auth/supply-demand/open-po/'
-    | '/_auth/supply-demand/product-status/'
-    | '/_auth/supply-demand/reports/'
-    | '/_auth/supply-demand/upload/'
-    | '/_auth/supply-demand/reports/$plantName/$materialNumber'
+    | '/_auth/example/clients/$clientId'
+    | '/_auth/example/clients/new'
+    | '/_auth/example/orders/$orderId'
+    | '/_auth/example/orders/new'
+    | '/_auth/admin/users/'
+    | '/_auth/example/clients/'
+    | '/_auth/example/kitchen-sink/'
+    | '/_auth/example/orders/'
+    | '/_auth/example/settings/'
+    | '/_auth/example/upload/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -391,212 +279,129 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/examples': {
-      id: '/_auth/examples'
-      path: '/examples'
-      fullPath: '/examples'
-      preLoaderRoute: typeof AuthExamplesRouteRouteImport
+    '/_auth/example': {
+      id: '/_auth/example'
+      path: '/example'
+      fullPath: '/example'
+      preLoaderRoute: typeof AuthExampleRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/users/': {
-      id: '/_auth/users/'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AuthUsersIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
+    '/_auth/example/upload/': {
+      id: '/_auth/example/upload/'
+      path: '/upload'
+      fullPath: '/example/upload'
+      preLoaderRoute: typeof AuthExampleUploadIndexRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/settings/': {
-      id: '/_auth/settings/'
+    '/_auth/example/settings/': {
+      id: '/_auth/example/settings/'
       path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthSettingsIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/settings'
+      preLoaderRoute: typeof AuthExampleSettingsIndexRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/orders/': {
-      id: '/_auth/orders/'
+    '/_auth/example/orders/': {
+      id: '/_auth/example/orders/'
       path: '/orders'
-      fullPath: '/orders'
-      preLoaderRoute: typeof AuthOrdersIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/orders'
+      preLoaderRoute: typeof AuthExampleOrdersIndexRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/kitchen-sink/': {
-      id: '/_auth/kitchen-sink/'
+    '/_auth/example/kitchen-sink/': {
+      id: '/_auth/example/kitchen-sink/'
       path: '/kitchen-sink'
-      fullPath: '/kitchen-sink'
-      preLoaderRoute: typeof AuthKitchenSinkIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/kitchen-sink'
+      preLoaderRoute: typeof AuthExampleKitchenSinkIndexRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/clients/': {
-      id: '/_auth/clients/'
+    '/_auth/example/clients/': {
+      id: '/_auth/example/clients/'
       path: '/clients'
-      fullPath: '/clients'
-      preLoaderRoute: typeof AuthClientsIndexRouteImport
+      fullPath: '/example/clients'
+      preLoaderRoute: typeof AuthExampleClientsIndexRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
+    }
+    '/_auth/admin/users/': {
+      id: '/_auth/admin/users/'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthAdminUsersIndexRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/orders/new': {
-      id: '/_auth/orders/new'
+    '/_auth/example/orders/new': {
+      id: '/_auth/example/orders/new'
       path: '/orders/new'
-      fullPath: '/orders/new'
-      preLoaderRoute: typeof AuthOrdersNewRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/orders/new'
+      preLoaderRoute: typeof AuthExampleOrdersNewRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/orders/$orderId': {
-      id: '/_auth/orders/$orderId'
+    '/_auth/example/orders/$orderId': {
+      id: '/_auth/example/orders/$orderId'
       path: '/orders/$orderId'
-      fullPath: '/orders/$orderId'
-      preLoaderRoute: typeof AuthOrdersOrderIdRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/orders/$orderId'
+      preLoaderRoute: typeof AuthExampleOrdersOrderIdRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/clients/new': {
-      id: '/_auth/clients/new'
+    '/_auth/example/clients/new': {
+      id: '/_auth/example/clients/new'
       path: '/clients/new'
-      fullPath: '/clients/new'
-      preLoaderRoute: typeof AuthClientsNewRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/clients/new'
+      preLoaderRoute: typeof AuthExampleClientsNewRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
-    '/_auth/clients/$clientId': {
-      id: '/_auth/clients/$clientId'
+    '/_auth/example/clients/$clientId': {
+      id: '/_auth/example/clients/$clientId'
       path: '/clients/$clientId'
-      fullPath: '/clients/$clientId'
-      preLoaderRoute: typeof AuthClientsClientIdRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/upload/': {
-      id: '/_auth/supply-demand/upload/'
-      path: '/supply-demand/upload'
-      fullPath: '/supply-demand/upload'
-      preLoaderRoute: typeof AuthSupplyDemandUploadIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/reports/': {
-      id: '/_auth/supply-demand/reports/'
-      path: '/supply-demand/reports'
-      fullPath: '/supply-demand/reports'
-      preLoaderRoute: typeof AuthSupplyDemandReportsIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/product-status/': {
-      id: '/_auth/supply-demand/product-status/'
-      path: '/supply-demand/product-status'
-      fullPath: '/supply-demand/product-status'
-      preLoaderRoute: typeof AuthSupplyDemandProductStatusIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/open-po/': {
-      id: '/_auth/supply-demand/open-po/'
-      path: '/supply-demand/open-po'
-      fullPath: '/supply-demand/open-po'
-      preLoaderRoute: typeof AuthSupplyDemandOpenPoIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/one-line-sd/': {
-      id: '/_auth/supply-demand/one-line-sd/'
-      path: '/supply-demand/one-line-sd'
-      fullPath: '/supply-demand/one-line-sd'
-      preLoaderRoute: typeof AuthSupplyDemandOneLineSdIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/inventory/': {
-      id: '/_auth/supply-demand/inventory/'
-      path: '/supply-demand/inventory'
-      fullPath: '/supply-demand/inventory'
-      preLoaderRoute: typeof AuthSupplyDemandInventoryIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/supply-demand/forecasts/': {
-      id: '/_auth/supply-demand/forecasts/'
-      path: '/supply-demand/forecasts'
-      fullPath: '/supply-demand/forecasts'
-      preLoaderRoute: typeof AuthSupplyDemandForecastsIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
-    }
-    '/_auth/examples/books/': {
-      id: '/_auth/examples/books/'
-      path: '/books'
-      fullPath: '/examples/books'
-      preLoaderRoute: typeof AuthExamplesBooksIndexRouteImport
-      parentRoute: typeof AuthExamplesRouteRoute
-    }
-    '/_auth/examples/books/$bookId': {
-      id: '/_auth/examples/books/$bookId'
-      path: '/books/$bookId'
-      fullPath: '/examples/books/$bookId'
-      preLoaderRoute: typeof AuthExamplesBooksBookIdRouteImport
-      parentRoute: typeof AuthExamplesRouteRoute
-    }
-    '/_auth/supply-demand/reports/$plantName/$materialNumber': {
-      id: '/_auth/supply-demand/reports/$plantName/$materialNumber'
-      path: '/supply-demand/reports/$plantName/$materialNumber'
-      fullPath: '/supply-demand/reports/$plantName/$materialNumber'
-      preLoaderRoute: typeof AuthSupplyDemandReportsPlantNameMaterialNumberRouteImport
-      parentRoute: typeof AuthRouteRoute
+      fullPath: '/example/clients/$clientId'
+      preLoaderRoute: typeof AuthExampleClientsClientIdRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
     }
   }
 }
 
-interface AuthExamplesRouteRouteChildren {
-  AuthExamplesBooksBookIdRoute: typeof AuthExamplesBooksBookIdRoute
-  AuthExamplesBooksIndexRoute: typeof AuthExamplesBooksIndexRoute
+interface AuthExampleRouteRouteChildren {
+  AuthExampleClientsClientIdRoute: typeof AuthExampleClientsClientIdRoute
+  AuthExampleClientsNewRoute: typeof AuthExampleClientsNewRoute
+  AuthExampleOrdersOrderIdRoute: typeof AuthExampleOrdersOrderIdRoute
+  AuthExampleOrdersNewRoute: typeof AuthExampleOrdersNewRoute
+  AuthExampleClientsIndexRoute: typeof AuthExampleClientsIndexRoute
+  AuthExampleKitchenSinkIndexRoute: typeof AuthExampleKitchenSinkIndexRoute
+  AuthExampleOrdersIndexRoute: typeof AuthExampleOrdersIndexRoute
+  AuthExampleSettingsIndexRoute: typeof AuthExampleSettingsIndexRoute
+  AuthExampleUploadIndexRoute: typeof AuthExampleUploadIndexRoute
 }
 
-const AuthExamplesRouteRouteChildren: AuthExamplesRouteRouteChildren = {
-  AuthExamplesBooksBookIdRoute: AuthExamplesBooksBookIdRoute,
-  AuthExamplesBooksIndexRoute: AuthExamplesBooksIndexRoute,
+const AuthExampleRouteRouteChildren: AuthExampleRouteRouteChildren = {
+  AuthExampleClientsClientIdRoute: AuthExampleClientsClientIdRoute,
+  AuthExampleClientsNewRoute: AuthExampleClientsNewRoute,
+  AuthExampleOrdersOrderIdRoute: AuthExampleOrdersOrderIdRoute,
+  AuthExampleOrdersNewRoute: AuthExampleOrdersNewRoute,
+  AuthExampleClientsIndexRoute: AuthExampleClientsIndexRoute,
+  AuthExampleKitchenSinkIndexRoute: AuthExampleKitchenSinkIndexRoute,
+  AuthExampleOrdersIndexRoute: AuthExampleOrdersIndexRoute,
+  AuthExampleSettingsIndexRoute: AuthExampleSettingsIndexRoute,
+  AuthExampleUploadIndexRoute: AuthExampleUploadIndexRoute,
 }
 
-const AuthExamplesRouteRouteWithChildren =
-  AuthExamplesRouteRoute._addFileChildren(AuthExamplesRouteRouteChildren)
+const AuthExampleRouteRouteWithChildren =
+  AuthExampleRouteRoute._addFileChildren(AuthExampleRouteRouteChildren)
 
 interface AuthRouteRouteChildren {
-  AuthExamplesRouteRoute: typeof AuthExamplesRouteRouteWithChildren
+  AuthExampleRouteRoute: typeof AuthExampleRouteRouteWithChildren
   AuthErrorRoute: typeof AuthErrorRoute
   AuthNotFoundRoute: typeof AuthNotFoundRoute
   AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
   AuthIndexRoute: typeof AuthIndexRoute
-  AuthClientsClientIdRoute: typeof AuthClientsClientIdRoute
-  AuthClientsNewRoute: typeof AuthClientsNewRoute
-  AuthOrdersOrderIdRoute: typeof AuthOrdersOrderIdRoute
-  AuthOrdersNewRoute: typeof AuthOrdersNewRoute
-  AuthClientsIndexRoute: typeof AuthClientsIndexRoute
-  AuthKitchenSinkIndexRoute: typeof AuthKitchenSinkIndexRoute
-  AuthOrdersIndexRoute: typeof AuthOrdersIndexRoute
-  AuthSettingsIndexRoute: typeof AuthSettingsIndexRoute
-  AuthUsersIndexRoute: typeof AuthUsersIndexRoute
-  AuthSupplyDemandForecastsIndexRoute: typeof AuthSupplyDemandForecastsIndexRoute
-  AuthSupplyDemandInventoryIndexRoute: typeof AuthSupplyDemandInventoryIndexRoute
-  AuthSupplyDemandOneLineSdIndexRoute: typeof AuthSupplyDemandOneLineSdIndexRoute
-  AuthSupplyDemandOpenPoIndexRoute: typeof AuthSupplyDemandOpenPoIndexRoute
-  AuthSupplyDemandProductStatusIndexRoute: typeof AuthSupplyDemandProductStatusIndexRoute
-  AuthSupplyDemandReportsIndexRoute: typeof AuthSupplyDemandReportsIndexRoute
-  AuthSupplyDemandUploadIndexRoute: typeof AuthSupplyDemandUploadIndexRoute
-  AuthSupplyDemandReportsPlantNameMaterialNumberRoute: typeof AuthSupplyDemandReportsPlantNameMaterialNumberRoute
+  AuthAdminUsersIndexRoute: typeof AuthAdminUsersIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
-  AuthExamplesRouteRoute: AuthExamplesRouteRouteWithChildren,
+  AuthExampleRouteRoute: AuthExampleRouteRouteWithChildren,
   AuthErrorRoute: AuthErrorRoute,
   AuthNotFoundRoute: AuthNotFoundRoute,
   AuthUnauthorizedRoute: AuthUnauthorizedRoute,
   AuthIndexRoute: AuthIndexRoute,
-  AuthClientsClientIdRoute: AuthClientsClientIdRoute,
-  AuthClientsNewRoute: AuthClientsNewRoute,
-  AuthOrdersOrderIdRoute: AuthOrdersOrderIdRoute,
-  AuthOrdersNewRoute: AuthOrdersNewRoute,
-  AuthClientsIndexRoute: AuthClientsIndexRoute,
-  AuthKitchenSinkIndexRoute: AuthKitchenSinkIndexRoute,
-  AuthOrdersIndexRoute: AuthOrdersIndexRoute,
-  AuthSettingsIndexRoute: AuthSettingsIndexRoute,
-  AuthUsersIndexRoute: AuthUsersIndexRoute,
-  AuthSupplyDemandForecastsIndexRoute: AuthSupplyDemandForecastsIndexRoute,
-  AuthSupplyDemandInventoryIndexRoute: AuthSupplyDemandInventoryIndexRoute,
-  AuthSupplyDemandOneLineSdIndexRoute: AuthSupplyDemandOneLineSdIndexRoute,
-  AuthSupplyDemandOpenPoIndexRoute: AuthSupplyDemandOpenPoIndexRoute,
-  AuthSupplyDemandProductStatusIndexRoute:
-    AuthSupplyDemandProductStatusIndexRoute,
-  AuthSupplyDemandReportsIndexRoute: AuthSupplyDemandReportsIndexRoute,
-  AuthSupplyDemandUploadIndexRoute: AuthSupplyDemandUploadIndexRoute,
-  AuthSupplyDemandReportsPlantNameMaterialNumberRoute:
-    AuthSupplyDemandReportsPlantNameMaterialNumberRoute,
+  AuthAdminUsersIndexRoute: AuthAdminUsersIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

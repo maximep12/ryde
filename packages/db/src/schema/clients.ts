@@ -14,7 +14,7 @@ export const clients = app.table(
     id: serial('id').primaryKey(),
     clientCode: varchar('client_code', { length: 20 }).unique().notNull(),
     storeName: varchar('store_name', { length: 255 }).notNull(),
-    storeType: varchar('store_type', { length: 50 }).notNull(), // pet_store, veterinary_clinic, supermarket, online_retailer, distributor
+    storeType: varchar('store_type', { length: 50 }).notNull(), // grocery, corner_store, pharmacy, convenience_store, supermarket
     contactName: varchar('contact_name', { length: 200 }),
     email: varchar('email', { length: 255 }).unique().notNull(),
     phone: varchar('phone', { length: 20 }),
@@ -84,7 +84,7 @@ export const clientOrderItems = app.table(
       .notNull(),
     productName: varchar('product_name', { length: 255 }).notNull(),
     productSku: varchar('product_sku', { length: 50 }),
-    packageType: varchar('package_type', { length: 30 }).notNull(), // jug, bucket, box, plastic_bag
+    packageType: varchar('package_type', { length: 30 }).notNull(), // bag, box, display_box, case, single
     quantity: integer('quantity').notNull().default(1),
     unitPrice: integer('unit_price').notNull(), // stored in cents
     ...timestamps,

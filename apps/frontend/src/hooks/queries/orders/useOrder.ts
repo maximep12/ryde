@@ -63,7 +63,7 @@ export function useOrder(orderId: number) {
     queryKey: ['order', orderId],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.orders[':orderId'].$get({
+      const res = await api.example.orders[':orderId'].$get({
         param: { orderId: orderId.toString() },
       })
 

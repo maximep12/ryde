@@ -81,7 +81,7 @@ export function useOrders(params: OrdersQueryParams = {}) {
     ],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.orders.$get({
+      const res = await api.example.orders.$get({
         query: {
           page: page.toString(),
           pageSize: pageSize.toString(),

@@ -1,0 +1,14 @@
+sku,name,price,packageType,productType,productGroup
+CHO-001,Dark Chocolate Truffles - 12 Pack,18.99,Box,chocolate,premium
+CHO-002,Milk Chocolate Bar - 100g,4.99,Wrapper,chocolate,classic
+GUM-001,Gummy Bears - 500g Bag,8.99,Bag,gummy,classic
+GUM-002,Sour Gummy Worms - 300g Bag,6.99,Bag,gummy,classic
+HRD-001,Butterscotch Drops - 200g Tin,7.49,Tin,hard_candy,classic
+HRD-002,Fruit Drops Assorted - 300g Bag,5.99,Bag,hard_candy,classic
+LOL-001,Rainbow Swirl Lollipops - Box of 24,12.99,Box,lollipop,classic
+LIC-001,Red Licorice Twists - 400g Bag,6.49,Bag,licorice,classic
+SFR-001,Sugar-Free Gummy Bears - 250g,9.99,Bag,gummy,sugar_free
+SEA-001,Valentine Heart Chocolates - Gift Box,24.99,Gift Box,chocolate,seasonal
+NIC-001,Wasabi Ginger Candy - 100g Tin,11.99,Tin,hard_candy,premium
+NIC-002,Lavender Honey Drops - 80g Bag,8.49,Bag,hard_candy,premium
+NIC-003,Activated Charcoal Mints - 50g,6.99,Tin,hard_candy,premium

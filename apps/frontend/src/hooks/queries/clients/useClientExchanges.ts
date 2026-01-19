@@ -6,7 +6,7 @@ export function useClientExchanges(clientId: number) {
     queryKey: ['client', clientId, 'exchanges'],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.clients[':id'].exchanges.$get({
+      const res = await api.example.clients[':id'].exchanges.$get({
         param: { id: clientId.toString() },
       })
       if (!res.ok) {

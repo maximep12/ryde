@@ -50,11 +50,11 @@ const lineChartData = [
 
 // Sales by client type (in $K)
 const pieChartData = [
-  { name: 'Pet Stores', value: 425 },
-  { name: 'Distributors', value: 380 },
-  { name: 'Online Retailers', value: 245 },
-  { name: 'Supermarkets', value: 165 },
-  { name: 'Veterinary Clinics', value: 85 },
+  { name: 'Grocery Stores', value: 425 },
+  { name: 'Supermarkets', value: 380 },
+  { name: 'Corner Stores', value: 245 },
+  { name: 'Convenience Stores', value: 165 },
+  { name: 'Pharmacies', value: 85 },
 ]
 
 const PIE_COLORS = [
@@ -65,11 +65,12 @@ const PIE_COLORS = [
   'var(--chart-5)',
 ]
 
-// Sales by product line (in tons) and returns
+// Sales by product line (in units K) and returns
 const barChartData = [
-  { category: 'OdourLock', sales: 485, returns: 8 },
-  { category: 'Odour Buster', sales: 380, returns: 10 },
-  { category: 'Classic', sales: 520, returns: 12 },
+  { category: 'Chocolate', sales: 485, returns: 8 },
+  { category: 'Gummy', sales: 380, returns: 10 },
+  { category: 'Hard Candy', sales: 320, returns: 6 },
+  { category: 'Lollipops', sales: 220, returns: 4 },
 ]
 
 function AnimatedNumber({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -260,7 +261,7 @@ function WelcomePage() {
         <Card>
           <CardHeader>
             <CardTitle>Sales by Product Line</CardTitle>
-            <CardDescription>Volume sold and returns by litter type (tons)</CardDescription>
+            <CardDescription>Volume sold and returns by candy type (units K)</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-80">
@@ -281,13 +282,13 @@ function WelcomePage() {
                   <Legend />
                   <Bar
                     dataKey="sales"
-                    name="Sold (tons)"
+                    name="Sold (K units)"
                     fill="var(--chart-1)"
                     radius={[4, 4, 0, 0]}
                   />
                   <Bar
                     dataKey="returns"
-                    name="Returns (tons)"
+                    name="Returns (K units)"
                     fill="var(--chart-3)"
                     radius={[4, 4, 0, 0]}
                   />

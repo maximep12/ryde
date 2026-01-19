@@ -42,15 +42,16 @@ function extractField(text: string, pattern: RegExp): string | undefined {
   return value
 }
 
-// Parse sold-to party (format: "CLI-001 – Paws & Claws Pet Emporium")
+// Parse sold-to party (format: "GRO-001 – Fresh Market Grocers" or "CLI-001 – Store Name")
 function parseSoldToParty(value: string | undefined): {
   code: string | undefined
   name: string | undefined
 } {
   if (!value) return { code: undefined, name: undefined }
-  const match = value.match(/^(CLI-\d+)\s*[–-]\s*(.+)$/i)
+  // Match client codes like GRO-001, PHR-001, CRN-001, CNV-001, SPM-001, CLI-001, etc.
+  const match = value.match(/^([A-Z]{2,3}-\d+)\s*[–-]\s*(.+)$/i)
   if (match && match[1] && match[2]) {
-    return { code: match[1], name: match[2].trim() }
+    return { code: match[1].toUpperCase(), name: match[2].trim() }
   }
   // Try SAP number format
   const sapMatch = value.match(/^(\d+)\s*[–/-]\s*(.+)$/i)

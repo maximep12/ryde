@@ -10,17 +10,7 @@ import { timeoutHandler } from './lib/utils/timeoutHandler'
 import { attachUser, verifySession } from './middlewares/auth'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition } from './routers/auth/handlers'
-import { clientsRouterDefinition } from './routers/clients/handlers'
 import { exampleRouterDefinition } from './routers/example/handlers'
-import { forecastsRouterDefinition } from './routers/forecasts/handlers'
-import { inventoryRouterDefinition } from './routers/inventory/handlers'
-import { oneLineSdRouterDefinition } from './routers/one-line-sd/handlers'
-import { openPurchaseOrdersRouterDefinition } from './routers/open-purchase-orders/handlers'
-import { ordersRouterDefinition } from './routers/orders/handlers'
-import { plantsRouterDefinition } from './routers/plants/handlers'
-import { reportsRouterDefinition } from './routers/reports/handlers'
-import { productsRouterDefinition } from './routers/products/handlers'
-import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
   id: string
@@ -53,16 +43,6 @@ const appDefinition = app
   .route('/auth', authRouterDefinition)
   .use(verifySession)
   .use(attachUser)
-  .route('/users', usersRouterDefinition)
-  .route('/clients', clientsRouterDefinition)
-  .route('/orders', ordersRouterDefinition)
-  .route('/products', productsRouterDefinition)
-  .route('/forecasts', forecastsRouterDefinition)
-  .route('/inventory', inventoryRouterDefinition)
-  .route('/one-line-sd', oneLineSdRouterDefinition)
-  .route('/open-purchase-orders', openPurchaseOrdersRouterDefinition)
-  .route('/reports', reportsRouterDefinition)
-  .route('/plants', plantsRouterDefinition)
   .route('/example', exampleRouterDefinition)
   .onError(errorHandler)
 

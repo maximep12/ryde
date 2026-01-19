@@ -38,7 +38,7 @@ export async function createSession(userId: string, accessToken: string, refresh
 
   const expiresAt = featureFlags['infinite-user-sessions']
     ? new Date(Date.now() + 100 * 365 * 24 * 60 * 60 * 1000) // 100 years
-    : new Date(Date.now() + 20 * 60 * 1000) // 20 minutes
+    : new Date(Date.now() + 60 * 60 * 1000) // 60 minutes
 
   const [session] = await db
     .insert(usersSessions)
@@ -66,7 +66,7 @@ export async function extendSession(
 ) {
   const interval = featureFlags['infinite-user-sessions']
     ? sql`now() + INTERVAL '100 years'`
-    : sql`now() + INTERVAL '20 minutes'`
+    : sql`now() + INTERVAL '60 minutes'`
 
   return db
     .update(usersSessions)

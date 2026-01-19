@@ -42,11 +42,11 @@ const activeFilterStyles: Record<
       'text-blue-600 hover:bg-blue-100 hover:text-blue-800 dark:text-blue-400 dark:hover:bg-blue-900 dark:hover:text-blue-200',
   },
   green: {
-    container: 'border-green-200 bg-green-50 dark:border-green-900/50 dark:bg-green-950/30',
-    icon: 'text-green-600 dark:text-green-400',
-    text: 'text-green-800 dark:text-green-200',
+    container: 'border-green-300 bg-green-100 dark:border-green-900/50 dark:bg-green-950/30',
+    icon: 'text-green-700 dark:text-green-400',
+    text: 'text-green-900 dark:text-green-200',
     button:
-      'text-green-600 hover:bg-green-100 hover:text-green-800 dark:text-green-400 dark:hover:bg-green-900 dark:hover:text-green-200',
+      'text-green-700 hover:bg-green-200 hover:text-green-900 dark:text-green-400 dark:hover:bg-green-900 dark:hover:text-green-200',
   },
 }
 
@@ -98,13 +98,13 @@ const variantStyles: Record<
       'border-blue-300 bg-white text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900',
   },
   green: {
-    container: 'border-green-200 bg-green-50 dark:border-green-900/50 dark:bg-green-950/30',
-    iconBg: 'bg-green-100 dark:bg-green-900/50',
-    iconColor: 'text-green-600 dark:text-green-400',
-    title: 'text-green-800 dark:text-green-200',
-    description: 'text-green-600 dark:text-green-400',
+    container: 'border-green-300 bg-green-100 dark:border-green-900/50 dark:bg-green-950/30',
+    iconBg: 'bg-green-200 dark:bg-green-900/50',
+    iconColor: 'text-green-700 dark:text-green-400',
+    title: 'text-green-900 dark:text-green-200',
+    description: 'text-green-700 dark:text-green-400',
     button:
-      'border-green-300 bg-white text-green-700 hover:bg-green-100 dark:border-green-800 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900',
+      'border-green-400 bg-white text-green-800 hover:bg-green-200 dark:border-green-800 dark:bg-green-950 dark:text-green-300 dark:hover:bg-green-900',
   },
 }
 

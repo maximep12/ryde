@@ -65,7 +65,7 @@ export function useProducts(params: ProductsQueryParams = {}) {
     ],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.products.$get({
+      const res = await api.example.products.$get({
         query: {
           page: page.toString(),
           pageSize: pageSize.toString(),

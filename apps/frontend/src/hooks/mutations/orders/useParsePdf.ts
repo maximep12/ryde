@@ -74,7 +74,7 @@ export function useParsePdf() {
         headers.Authorization = `${AUTHORIZATION_HEADER_PREFIX}${sessionToken}`
       }
 
-      const res = await fetch(`${config.backendURL}/orders/parse-pdf`, {
+      const res = await fetch(`${config.backendURL}/example/orders/parse-pdf`, {
         method: 'POST',
         body: formData,
         headers,

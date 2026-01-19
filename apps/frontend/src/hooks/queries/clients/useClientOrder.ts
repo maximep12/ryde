@@ -6,7 +6,7 @@ export function useClientOrder(clientId: number, orderId: number) {
     queryKey: ['client', clientId, 'order', orderId],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.clients[':id'].orders[':orderId'].$get({
+      const res = await api.example.clients[':id'].orders[':orderId'].$get({
         param: { id: clientId.toString(), orderId: orderId.toString() },
       })
       if (!res.ok) {

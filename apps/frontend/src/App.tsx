@@ -1,3 +1,4 @@
+import { CurrentItemProvider } from '@/contexts/CurrentItemContext'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Register, RouterProvider } from '@tanstack/react-router'
 
@@ -13,7 +14,9 @@ function InnerApp({ router }: { router: Register['router'] }) {
 export default function App({ queryClient, router }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <InnerApp router={router} />
+      <CurrentItemProvider>
+        <InnerApp router={router} />
+      </CurrentItemProvider>
     </QueryClientProvider>
   )
 }

@@ -24,7 +24,7 @@ export function useUsers(params: UseUsersParams = {}) {
     queryKey: ['users', { search, departments, showActive, showInactive, page, pageSize }],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.users.$get({
+      const res = await api.example.users.$get({
         query: {
           search: search || undefined,
           departments: departments?.length ? departments.join(',') : undefined,

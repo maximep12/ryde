@@ -1,19 +1,11 @@
 import { FileRouteTypes } from '@/routeTree.gen'
 import {
-  BoxesIcon,
-  ClipboardListIcon,
-  ExternalLinkIcon,
-  FileSpreadsheetIcon,
-  FileTextIcon,
   HomeIcon,
-  LibraryIcon,
   ListIcon,
   LucideIcon,
-  PackageIcon,
   PaletteIcon,
   PlusCircleIcon,
   SearchIcon,
-  TrendingUpIcon,
   UploadIcon,
   UsersIcon,
 } from 'lucide-react'
@@ -23,55 +15,23 @@ export type NavigationItem = {
   path: FileRouteTypes['to']
   icon: LucideIcon
   shouldHide?: boolean
+  /** If true, this item will be active when the current path starts with this path (but not for other nav items that also start with it) */
+  matchChildRoutes?: boolean
 }
 
 export const navigation: NavigationItem[] = [
   { title: 'route.welcome', path: '/', icon: HomeIcon },
-  { title: 'route.users', path: '/users', icon: UsersIcon },
 ]
 
-export const clientsNavigation: NavigationItem[] = [
-  { title: 'route.clientsLookup', path: '/clients', icon: SearchIcon },
-  { title: 'route.clientsAdd', path: '/clients/new', icon: PlusCircleIcon },
+export const adminNavigation: NavigationItem[] = [
+  { title: 'route.users', path: '/admin/users', icon: UsersIcon },
 ]
 
-export const ordersNavigation: NavigationItem[] = [
-  { title: 'route.ordersMonitor', path: '/orders', icon: ListIcon },
-  { title: 'route.ordersCreate', path: '/orders/new', icon: PlusCircleIcon },
-]
-
-export const supplyDemandNavigation: NavigationItem[] = [
-  { title: 'route.supplyDemandReports', path: '/supply-demand/reports', icon: FileTextIcon },
-  {
-    title: 'route.supplyDemandProductStatus',
-    path: '/supply-demand/product-status',
-    icon: PackageIcon,
-  },
-  { title: 'route.supplyDemandForecasts', path: '/supply-demand/forecasts', icon: TrendingUpIcon },
-  { title: 'route.supplyDemandInventory', path: '/supply-demand/inventory', icon: BoxesIcon },
-  {
-    title: 'route.supplyDemandOneLineSd',
-    path: '/supply-demand/one-line-sd',
-    icon: FileSpreadsheetIcon,
-  },
-  { title: 'route.supplyDemandOpenPO', path: '/supply-demand/open-po', icon: ClipboardListIcon },
-  { title: 'route.supplyDemandUpload', path: '/supply-demand/upload', icon: UploadIcon },
-]
-
-export const examplesNavigation: NavigationItem[] = [
-  { title: 'route.books', path: '/examples/books', icon: LibraryIcon, shouldHide: true },
-]
-
-export const uiUxNavigation: NavigationItem[] = [
-  { title: 'route.kitchenSink', path: '/kitchen-sink', icon: PaletteIcon, shouldHide: true },
-]
-
-export type ExternalLinkItem = {
-  title: string
-  url: string
-  icon: LucideIcon
-}
-
-export const externalNavigation: ExternalLinkItem[] = [
-  { title: 'external.mistyNet', url: 'https://google.com', icon: ExternalLinkIcon },
+export const exampleNavigation: NavigationItem[] = [
+  { title: 'route.clientsLookup', path: '/example/clients', icon: SearchIcon, matchChildRoutes: true },
+  { title: 'route.clientsAdd', path: '/example/clients/new', icon: PlusCircleIcon },
+  { title: 'route.ordersMonitor', path: '/example/orders', icon: ListIcon, matchChildRoutes: true },
+  { title: 'route.ordersCreate', path: '/example/orders/new', icon: PlusCircleIcon },
+  { title: 'route.uploadData', path: '/example/upload', icon: UploadIcon },
+  { title: 'route.kitchenSink', path: '/example/kitchen-sink', icon: PaletteIcon },
 ]

@@ -1,0 +1,53 @@
+MANUAL SALES ORDER REQUEST FORM
+
+A. Order Identification
+
+Order request date: 2026-01-15
+Requested by: Sarah Johnson (orders@freshmarketgrocers.com)
+Customer PO number: PO-2026-0142
+Sales Document Type: OR – Standard Sales Order
+Reason for order: Store Replenishment
+
+B. Customer and Partner Data
+
+Sold-to party: GRO-001 – Fresh Market Grocers
+Ship-to party: San Francisco, CA
+Bill-to party: Same as Sold-To
+Payer: Same as Sold-To
+Customer contact phone: +1-555-123-4567
+
+C. Commercial Terms
+
+Currency: USD – US Dollar
+Payment terms: NET 30
+Incoterms: DAP – San Francisco, CA
+Price agreement: FY26 Retail Price List
+Tax status: Taxable
+
+D. Delivery and Logistics
+
+Requested delivery date: 2026-01-22
+Partial deliveries allowed: Yes
+Substitutions allowed: No
+Carrier: Vendor Arranged
+Delivery instructions: Deliver to rear loading dock
+Receiving hours: Monday to Friday, 08:00–16:00
+Special packaging: Pallets must be shrink-wrapped
+
+E. Order Line Items
+
+Item | SKU       | Description                          | Qty | UoM | Price
+10   | CHO-001   | Dark Chocolate Truffles - 12 Pack    | 48  | EA  | $18.99
+20   | GUM-001   | Gummy Bears - 500g Bag               | 120 | EA  | $8.99
+30   | HRD-001   | Butterscotch Drops - 200g Tin        | 36  | EA  | $7.49
+40   | LOL-001   | Rainbow Swirl Lollipops - Box of 24  | 24  | EA  | $12.99
+
+F. Attachments
+
+[ ] Customer PO / Order Form attached
+[ ] Tax Exemption Certificate attached
+
+G. Internal Use Only
+
+Order entered by: _______________
+Order entry date: _______________

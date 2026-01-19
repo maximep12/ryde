@@ -13,13 +13,11 @@
   "pdf.errors.PDF_PARSE_FAILED": "Échec de l'analyse du document PDF",
 
   "sidebar.navigation": "Général",
+  "sidebar.admin": "Administration",
   "sidebar.orders": "Commandes",
   "sidebar.clients": "Clients",
   "sidebar.examples": "Exemples",
   "sidebar.uiUx": "UI/UX",
-  "sidebar.external": "Externe",
-
-  "external.mistyNet": "Misty .NET",
 
   "dropdown.empty": "Aucun résultat trouvé",
   "dropdown.placeholder": "Sélectionner une option...",

@@ -1,9 +1,9 @@
 import nodeConfig from '@repo/config-eslint-custom/node'
 
 export default [
-  // Ignore large generated seed files that cause ESLint to hang
+  // Ignore seed files - they use non-null assertions for simplicity
   {
-    ignores: ['src/seed/forecasts.ts', 'src/seed/products.ts', 'src/seed/inventory.ts'],
+    ignores: ['src/seed/**'],
   },
   ...nodeConfig,
   {

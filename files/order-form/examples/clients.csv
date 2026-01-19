@@ -1,0 +1,7 @@
+clientCode,storeName,storeType,contactName,email,phone,billingAddress,city,state,postalCode,country,status
+GRO-001,Fresh Market Grocers,grocery,Sarah Johnson,orders@freshmarketgrocers.com,+1-555-123-4567,123 Main Street,San Francisco,CA,94102,USA,active
+CRN-001,Joe's Corner Store,corner_store,Joe Martinez,joe@joescorner.com,+1-555-456-7890,321 Oak Street,Los Angeles,CA,90001,USA,active
+PHR-001,Wellness Pharmacy,pharmacy,Dr. Lisa Park,orders@wellnesspharmacy.com,+1-555-789-0123,100 Health Plaza,Boston,MA,02101,USA,active
+CNV-001,QuickStop Express,convenience_store,David Kim,orders@quickstopexpress.com,+1-555-901-2345,777 Highway 101,Portland,OR,97201,USA,active
+SPM-001,MegaMart Superstore,supermarket,James Williams,candy-aisle@megamart.com,+1-555-111-2222,500 Retail Boulevard,Denver,CO,80201,USA,active
+GRO-002,Village Foods,grocery,Michael Chen,purchasing@villagefoods.com,+1-555-234-5678,456 Commerce Street,New York,NY,10001,USA,inactive

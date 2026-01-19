@@ -1,45 +1,42 @@
 import { useState } from 'react'
 
-const LOGO_PATH =
-  'M122.346 22.4028C123.674 20.3705 124.92 16.9171 124.954 13.498C125.05 6.04181 120.463 0 113.404 0C106.346 0 101.231 6.04181 101.135 13.5048C101.087 16.6356 101.56 19.1622 102.772 21.8054C91.5846 25.1696 84.2863 34.6168 82.8622 45.6706C82.8691 45.65 82.8759 45.65 82.8759 45.65C82.7527 46.6043 82.7184 47.1948 82.7184 47.1948C82.3967 50.1608 84.6217 52.8041 87.689 53.1267C90.7562 53.4288 93.1456 51.5476 93.8302 48.3139C94.5286 45.1007 96.9043 40.5694 101.32 39.1413C101.628 37.6789 101.615 33.4359 102.019 28.5682C104.607 28.5682 107.147 31.7401 107.147 31.7401C108.954 30.2983 111.152 29.4264 113.507 29.4264C115.862 29.4264 118.436 30.2983 120.394 31.7401C120.394 31.7401 121.791 28.5682 125.598 28.5682C126.679 38.8873 126.543 45.6637 116.198 45.6637H111.734C108.708 45.6637 106.695 48.1217 107.236 51.1494C107.783 54.1909 110.679 56.6557 113.705 56.6557H122.551C122.921 56.6557 123.338 56.6214 123.77 56.539C134.094 55.6396 138.654 48.9661 138.051 41.9425C137.415 34.4383 132.561 26.1789 122.332 22.4028'
-
-function IntersandLogo({ className }: { className?: string }) {
+function BoxLoader({ className }: { className?: string }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="82 0 57 57"
+      viewBox="0 0 24 24"
       className={className}
-      fill="currentColor"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <path d={LOGO_PATH} />
-      <path d={LOGO_PATH} fill="none" strokeWidth="2" className="logo-trace" />
+      {/* Box base */}
+      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+      {/* Inner lines */}
+      <path d="m3.3 7 8.7 5 8.7-5" />
+      <path d="M12 22V12" />
     </svg>
   )
 }
 
 const LOADING_MESSAGES = [
-  // Cat-themed
-  'Herding the data cats',
-  'Pawsing for your data',
-  'Curiosity loading the cat',
-  'Chasing down those numbers',
-  'Knocking data off the table',
-  'Taking a quick catnap',
-  'Grooming the datasets',
-  'Sharpening claws on the server',
-  'Following the red dot of data',
-  'Purring through the records',
-  // Data-themed
   'Crunching the numbers',
   'Fetching fresh data',
-  'Aggregating inventory',
-  'Calculating forecasts',
-  'Analyzing stock levels',
-  'Processing supply data',
-  'Querying the warehouse',
+  'Aggregating results',
+  'Calculating totals',
+  'Analyzing the data',
+  'Processing records',
+  'Querying the database',
   'Compiling your report',
   'Sifting through records',
-  'Loading the good stuff',
+  'Loading your data',
+  'Gathering information',
+  'Building the view',
+  'Preparing results',
+  'Syncing data',
+  'Almost there',
 ]
 
 export function TableLoading() {
@@ -48,57 +45,44 @@ export function TableLoading() {
   )
 
   return (
-    <div className="flex min-h-[300px] flex-col items-center justify-center gap-8">
-      <IntersandLogo className="table-loading-logo mt-40 size-32" />
-      <p className="loading-message font-mono text-sm font-bold">
+    <div className="flex min-h-[300px] flex-col items-center justify-center gap-6">
+      <BoxLoader className="table-loading-logo size-16" />
+      <p className="loading-message font-mono text-sm font-medium">
         {message}
         <span className="loading-ellipsis" />
       </p>
       <style>{`
         .loading-message {
-          color: #c9cdd4;
+          color: #9ca3af;
         }
         .dark .loading-message {
-          color: #4b5563;
+          color: #6b7280;
         }
-        @keyframes logoColorPulse {
+        @keyframes boxPulse {
           0%, 100% {
-            color: #f3f4f6;
+            color: #d1d5db;
+            transform: scale(1);
           }
           50% {
-            color: #f0f1f3;
+            color: #9ca3af;
+            transform: scale(1.05);
           }
         }
-        @keyframes logoColorPulseDark {
+        @keyframes boxPulseDark {
           0%, 100% {
-            color: #374151;
+            color: #4b5563;
+            transform: scale(1);
           }
           50% {
-            color: #3f4a5c;
+            color: #6b7280;
+            transform: scale(1.05);
           }
         }
         .table-loading-logo {
-          animation: logoColorPulse 2.5s ease-in-out infinite;
+          animation: boxPulse 1.5s ease-in-out infinite;
         }
         .dark .table-loading-logo {
-          animation: logoColorPulseDark 2.5s ease-in-out infinite;
-        }
-        .logo-trace {
-          stroke: #c9cdd4;
-          stroke-dasharray: 35 230;
-          stroke-dashoffset: 0;
-          animation: traceMove 1.5s linear infinite;
-        }
-        .dark .logo-trace {
-          stroke: #7f8694;
-        }
-        @keyframes traceMove {
-          0% {
-            stroke-dashoffset: 0;
-          }
-          100% {
-            stroke-dashoffset: -265;
-          }
+          animation: boxPulseDark 1.5s ease-in-out infinite;
         }
         @keyframes ellipsis {
           0% { content: ''; }

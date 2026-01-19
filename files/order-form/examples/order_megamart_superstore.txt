@@ -1,0 +1,55 @@
+MANUAL SALES ORDER REQUEST FORM
+
+A. Order Identification
+
+Order request date: 2026-01-18
+Requested by: James Williams (candy-aisle@megamart.com)
+Customer PO number: MM-ORD-88712
+Sales Document Type: ZOR – Rush Order
+Reason for order: Promotional Order
+
+B. Customer and Partner Data
+
+Sold-to party: SPM-001 – MegaMart Superstore
+Ship-to party: Denver, CO
+Bill-to party: Same as Sold-To
+Payer: Same as Sold-To
+Customer contact phone: +1-555-111-2222
+
+C. Commercial Terms
+
+Currency: USD – US Dollar
+Payment terms: NET 45
+Incoterms: FOB – Denver, CO
+Price agreement: Supermarket Volume Discount 2026
+Tax status: Taxable
+
+D. Delivery and Logistics
+
+Requested delivery date: 2026-01-25
+Partial deliveries allowed: Yes
+Substitutions allowed: Yes
+Carrier: LTL Freight
+Delivery instructions: Appointment required. Contact receiving 24hrs ahead.
+Receiving hours: 06:00–14:00 daily
+Special packaging: Store display-ready packaging required
+
+E. Order Line Items
+
+Item | SKU       | Description                          | Qty | UoM | Price
+10   | CHO-002   | Milk Chocolate Bar - 100g            | 500 | EA  | $4.99
+20   | GUM-001   | Gummy Bears - 500g Bag               | 300 | EA  | $8.99
+30   | GUM-002   | Sour Gummy Worms - 300g Bag          | 200 | EA  | $6.99
+40   | SFR-001   | Sugar-Free Gummy Bears - 250g        | 150 | EA  | $9.99
+50   | HRD-002   | Fruit Drops Assorted - 300g Bag      | 180 | EA  | $5.99
+60   | LIC-001   | Red Licorice Twists - 400g Bag       | 120 | EA  | $6.49
+
+F. Attachments
+
+[X] Customer PO / Order Form attached
+[ ] Tax Exemption Certificate attached
+
+G. Internal Use Only
+
+Order entered by: _______________
+Order entry date: _______________

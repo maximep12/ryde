@@ -6,7 +6,7 @@ export function useClientComments(clientId: number) {
     queryKey: ['client', clientId, 'comments'],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.clients[':id'].comments.$get({
+      const res = await api.example.clients[':id'].comments.$get({
         param: { id: clientId.toString() },
       })
       if (!res.ok) {

@@ -6,7 +6,7 @@ export function useMe() {
     queryKey: ['me'],
     queryFn: async () => {
       const api = getApi()
-      const res = await api.users.me.$post()
+      const res = await api.example.users.me.$post()
       if (!res.ok) {
         throw new Error('Failed to fetch user')
       }

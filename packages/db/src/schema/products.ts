@@ -4,7 +4,7 @@ import { timestamps } from '../helpers'
 import { app } from './app'
 
 // ============================================================================
-// PRODUCTS (from SAP Product Status data)
+// PRODUCTS (Candy Products)
 // ============================================================================
 
 export const products = app.table(
@@ -13,8 +13,8 @@ export const products = app.table(
     id: serial('id').primaryKey(),
     productCode: varchar('product_code', { length: 20 }).unique().notNull(),
     description: varchar('description', { length: 255 }).notNull(),
-    productType: varchar('product_type', { length: 20 }), // FERT, HALB, ZPAC, etc.
-    productGroup: varchar('product_group', { length: 20 }), // FP1000, L003, RG1000, etc.
+    productType: varchar('product_type', { length: 20 }), // chocolate, gummy, hard_candy, lollipop, licorice
+    productGroup: varchar('product_group', { length: 20 }), // premium, classic, sugar_free, seasonal
     gtin: varchar('gtin', { length: 50 }), // barcode/UPC
     productCategory: varchar('product_category', { length: 50 }), // Product, etc.
     status: varchar('status', { length: 10 }), // 03, 04, 05 (cross-plant status)

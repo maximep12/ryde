@@ -4,7 +4,6 @@ import config from '@/config'
 import { getSessionToken, setSessionToken } from '@/stores/session'
 import { getApi, updateApiClient } from '@/stores/api'
 import { LoginForm } from '@/components/LoginForm'
-import catImage from '@/static/images/cat.svg'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
@@ -27,7 +26,7 @@ function LoginPage() {
       try {
         const api = getApi()
         const res = await api.auth.callback.$post({
-          json: { email: 'johanne.belanger@intersand.com', password: 'admin123' },
+          json: { email: 'admin@example.com', password: 'admin123' },
         })
 
         if (res.ok) {
@@ -59,14 +58,12 @@ function LoginPage() {
 
   return (
     <div className="flex min-h-svh items-center justify-center p-6">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm space-y-6">
         <LoginForm />
+        <p className="text-muted-foreground bg-muted text-center text-sm rounded-md px-4 py-2">
+          Demo: admin@example.com / admin123
+        </p>
       </div>
-      <img
-        src={catImage}
-        alt=""
-        className="pointer-events-none fixed right-4 bottom-4 z-10 w-[15vw] opacity-10"
-      />
     </div>
   )
 }

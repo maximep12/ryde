@@ -52,9 +52,11 @@ function replaceProjectName(oldName: string, newName: string) {
   const replacements = [
     // Full project name strings for UI (must come first to avoid partial replacements)
     { search: /The Franklin Project/g, replace: newTitleCase },
+    { search: /Franklin/g, replace: newTitleCase },
     { search: /Franklin Project/g, replace: newTitleCase },
     // Package name replacement (franklin-project -> newName)
     { search: /franklin-project/g, replace: newName },
+    { search: /franklin/g, replace: newName },
     // Standard replacements
     { search: new RegExp(oldName, 'g'), replace: newName },
     { search: new RegExp(oldName.replace(/-/g, '_'), 'g'), replace: newName.replace(/-/g, '_') },
@@ -103,7 +105,7 @@ function exec(command: string, options?: { cwd?: string }) {
 async function main() {
   console.clear()
 
-  p.intro('Welcome to the Franklin Project Starter Kit')
+  p.intro('Welcome to the Franklin Starter Kit')
 
   let projectName = 'franklin'
 
@@ -112,7 +114,7 @@ async function main() {
   } else {
     const nameInput = await p.text({
       message: 'What is the name of your project?',
-      placeholder: 'the-franklin-project',
+      placeholder: 'franklin',
       validate: (value) => {
         if (!value) return 'Project name is required'
         if (!/^[a-z][a-z0-9-]*$/.test(value)) {

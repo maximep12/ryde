@@ -7,7 +7,7 @@ export function useApproveOrder() {
   return useMutation({
     mutationFn: async (orderId: number) => {
       const api = getApi()
-      const res = await api.orders[':orderId'].approve.$post({
+      const res = await api.example.orders[':orderId'].approve.$post({
         param: { orderId: orderId.toString() },
       })
 

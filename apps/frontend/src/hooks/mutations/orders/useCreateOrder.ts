@@ -32,7 +32,7 @@ export function useCreateOrder() {
   return useMutation({
     mutationFn: async (input: CreateOrderInput) => {
       const api = getApi()
-      const res = await api.orders.$post({
+      const res = await api.example.orders.$post({
         json: input,
       })
 

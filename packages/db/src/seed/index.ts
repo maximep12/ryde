@@ -2,8 +2,6 @@ import { config } from 'dotenv'
 import { drizzle } from 'drizzle-orm/node-postgres'
 import * as schema from '../schema'
 import {
-  bookReviews,
-  books,
   clientAssortments,
   clientComments,
   clientExchanges,
@@ -11,17 +9,9 @@ import {
   clientOrderItems,
   clientOrders,
   clients,
-  forecasts,
-  inventory,
-  oneLineSd,
-  openPurchaseOrders,
-  plants,
   products,
-  reportComments,
-  reportValidations,
   users,
 } from '../schema'
-import { seedBookReviews, seedBooks } from './books'
 import {
   seedClientAssortments,
   seedClientComments,
@@ -30,14 +20,7 @@ import {
   seedClientOrders,
   seedClients,
 } from './clients'
-import { seedForecasts } from './forecasts'
-import { seedInventory } from './inventory'
-import { seedOneLineSd } from './oneLineSd'
-import { seedOpenPurchaseOrders } from './openPurchaseOrders'
-import { seedPlants } from './plants'
 import { seedProducts } from './products'
-import { seedReportComments } from './reportComments'
-import { seedReportValidations } from './reportValidations'
 import { seedUsers } from './users'
 
 config({ path: '../../.env' })
@@ -59,22 +42,13 @@ async function clearAllData() {
   console.log('Clearing all existing data...')
 
   // Delete in order: child tables first, then parent tables
-  await db.delete(bookReviews)
   await db.delete(clientComments)
-  await db.delete(reportComments)
-  await db.delete(reportValidations)
   await db.delete(clientOrderIssues)
   await db.delete(clientOrderItems)
   await db.delete(clientExchanges)
   await db.delete(clientAssortments)
   await db.delete(clientOrders)
   await db.delete(clients)
-  await db.delete(books)
-  await db.delete(forecasts)
-  await db.delete(inventory)
-  await db.delete(oneLineSd)
-  await db.delete(openPurchaseOrders)
-  await db.delete(plants)
   await db.delete(products)
   await db.delete(users)
 
@@ -87,23 +61,17 @@ async function main() {
   // Clear all data first to ensure clean state
   await clearAllData()
 
+  // Seed base data
   await seedUsers(db)
-  await seedBooks(db)
-  await seedBookReviews(db)
-  await seedPlants(db)
   await seedProducts(db)
-  await seedForecasts(db)
-  await seedInventory(db)
-  await seedOneLineSd(db)
-  await seedOpenPurchaseOrders(db)
+
+  // Seed client/order data
   await seedClients(db)
   await seedClientOrders(db)
   await seedClientOrderIssues(db)
   await seedClientExchanges(db)
   await seedClientAssortments(db)
   await seedClientComments(db)
-  await seedReportComments(db)
-  await seedReportValidations(db)
 
   console.log('Database seed completed!')
   process.exit(0)

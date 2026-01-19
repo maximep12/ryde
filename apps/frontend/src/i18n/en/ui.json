@@ -13,14 +13,11 @@
   "pdf.errors.PDF_PARSE_FAILED": "Failed to parse the PDF document",
 
   "sidebar.navigation": "General",
+  "sidebar.admin": "Admin",
   "sidebar.orders": "Orders",
   "sidebar.clients": "Clients",
-  "sidebar.supplyDemand": "Supply & Demand",
   "sidebar.examples": "Examples",
   "sidebar.uiUx": "UI/UX",
-  "sidebar.external": "External",
-
-  "external.mistyNet": "Misty .NET",
 
   "dropdown.empty": "No results found",
   "dropdown.placeholder": "Select an option...",
