@@ -14,6 +14,9 @@ WORKDIR /app
 RUN npm pkg delete scripts.prepare
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod=false --filter=@repo/frontend... --config.dedupe-peer-dependents=false
 
+ARG VITE_FRONTEND_ENV
+ENV VITE_FRONTEND_ENV=$VITE_FRONTEND_ENV
+
 RUN pnpm build --filter=@repo/frontend
 
 FROM nginx:stable-alpine
