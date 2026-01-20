@@ -9,7 +9,7 @@
     "lint": "FORCE_COLOR=1 eslint src/",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
-    "start": "pnpm -w db:migrate:deploy && pnpm -w db:seed:roles && node dist"
+    "start": "pnpm -w db:migrate:deploy && node dist"
   },
   "exports": {
     "./app": "./src/index.ts",

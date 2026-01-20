@@ -6,7 +6,6 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { z } from 'zod'
 import { errorHandler } from './lib/errors'
-import { timeoutHandler } from './lib/utils/timeoutHandler'
 import { attachUser, verifySession } from './middlewares/auth'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition } from './routers/auth/handlers'
@@ -38,7 +37,6 @@ const appDefinition = app
     }),
   )
   .use(httpLogger)
-  .get('/', timeoutHandler(1000 * 60 * 60 * 24))
   .get('/healthz', async (c) => c.text('OK'))
   .route('/auth', authRouterDefinition)
   .use(verifySession)

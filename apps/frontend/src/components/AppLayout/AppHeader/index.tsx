@@ -12,14 +12,7 @@ import {
   DropdownMenuTrigger,
   SidebarTrigger,
 } from '@repo/ui/components'
-import {
-  GlobeIcon,
-  LogOutIcon,
-  MonitorIcon,
-  MoonIcon,
-  SunIcon,
-  UserIcon,
-} from 'lucide-react'
+import { GlobeIcon, LogOutIcon, MonitorIcon, MoonIcon, SunIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 const LANGUAGES = [
