@@ -1,3 +1,5 @@
+'use no memo'
+
 import { CheckIcon, ChevronDownIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
 

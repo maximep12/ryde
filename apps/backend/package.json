@@ -17,11 +17,14 @@
     "./users": "./src/routers/users/index.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.972.0",
+    "@aws-sdk/s3-request-presigner": "^3.972.0",
     "@hono/node-server": "^1.19.7",
     "@hono/zod-validator": "^0.7.5",
     "@repo/config-eslint-custom": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@repo/constants": "workspace:*",
+    "@repo/csv": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/feature-flags": "workspace:*",
     "@repo/logger": "workspace:*",

@@ -1,6 +1,6 @@
 import { FileUploadModal } from '@/components/FileUpload'
 import { UploadTypeTile, UploadTypeConfig } from '@/components/UploadTypeTile'
-import { ExampleModuleCsvUploadType } from '@repo/csv'
+import { CsvUploadType } from '@repo/csv'
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components'
 import { createFileRoute } from '@tanstack/react-router'
 import { PackageIcon, UsersIcon } from 'lucide-react'
@@ -28,9 +28,7 @@ const UPLOAD_TYPES: UploadTypeConfig[] = [
 ]
 
 function UploadDataPage() {
-  const [selectedUploadType, setSelectedUploadType] = useState<ExampleModuleCsvUploadType | null>(
-    null,
-  )
+  const [selectedUploadType, setSelectedUploadType] = useState<CsvUploadType | null>(null)
 
   return (
     <div className="space-y-8">
@@ -56,7 +54,7 @@ function UploadDataPage() {
           <CardTitle>Upload Guidelines</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="space-y-2 text-sm text-muted-foreground">
+          <ul className="text-muted-foreground space-y-2 text-sm">
             <li>
               <strong>File formats:</strong> CSV, Excel (.xlsx, .xls) files are supported
             </li>

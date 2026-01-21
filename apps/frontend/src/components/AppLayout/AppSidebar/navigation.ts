@@ -1,5 +1,6 @@
 import { FileRouteTypes } from '@/routeTree.gen'
 import {
+  FileIcon,
   HomeIcon,
   ListIcon,
   LucideIcon,
@@ -36,5 +37,6 @@ export const exampleNavigation: NavigationItem[] = [
   { title: 'route.ordersMonitor', path: '/example/orders', icon: ListIcon, matchChildRoutes: true },
   { title: 'route.ordersCreate', path: '/example/orders/new', icon: PlusCircleIcon },
   { title: 'route.uploadData', path: '/example/upload', icon: UploadIcon },
+  { title: 'route.myUploads', path: '/example/my-uploads', icon: FileIcon },
   { title: 'route.kitchenSink', path: '/example/kitchen-sink', icon: PaletteIcon },
 ]

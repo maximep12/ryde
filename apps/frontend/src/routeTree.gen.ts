@@ -18,6 +18,7 @@ import { Route as AuthErrorRouteImport } from './routes/_auth/error'
 import { Route as AuthExampleRouteRouteImport } from './routes/_auth/example/route'
 import { Route as AuthExampleUploadIndexRouteImport } from './routes/_auth/example/upload/index'
 import { Route as AuthExampleOrdersIndexRouteImport } from './routes/_auth/example/orders/index'
+import { Route as AuthExampleMyUploadsIndexRouteImport } from './routes/_auth/example/my-uploads/index'
 import { Route as AuthExampleKitchenSinkIndexRouteImport } from './routes/_auth/example/kitchen-sink/index'
 import { Route as AuthExampleClientsIndexRouteImport } from './routes/_auth/example/clients/index'
 import { Route as AuthAdminUsersIndexRouteImport } from './routes/_auth/admin/users/index'
@@ -70,6 +71,12 @@ const AuthExampleOrdersIndexRoute = AuthExampleOrdersIndexRouteImport.update({
   path: '/orders/',
   getParentRoute: () => AuthExampleRouteRoute,
 } as any)
+const AuthExampleMyUploadsIndexRoute =
+  AuthExampleMyUploadsIndexRouteImport.update({
+    id: '/my-uploads/',
+    path: '/my-uploads/',
+    getParentRoute: () => AuthExampleRouteRoute,
+  } as any)
 const AuthExampleKitchenSinkIndexRoute =
   AuthExampleKitchenSinkIndexRouteImport.update({
     id: '/kitchen-sink/',
@@ -123,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AuthAdminUsersIndexRoute
   '/example/clients': typeof AuthExampleClientsIndexRoute
   '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
+  '/example/my-uploads': typeof AuthExampleMyUploadsIndexRoute
   '/example/orders': typeof AuthExampleOrdersIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
 }
@@ -140,6 +148,7 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AuthAdminUsersIndexRoute
   '/example/clients': typeof AuthExampleClientsIndexRoute
   '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
+  '/example/my-uploads': typeof AuthExampleMyUploadsIndexRoute
   '/example/orders': typeof AuthExampleOrdersIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
 }
@@ -159,6 +168,7 @@ export interface FileRoutesById {
   '/_auth/admin/users/': typeof AuthAdminUsersIndexRoute
   '/_auth/example/clients/': typeof AuthExampleClientsIndexRoute
   '/_auth/example/kitchen-sink/': typeof AuthExampleKitchenSinkIndexRoute
+  '/_auth/example/my-uploads/': typeof AuthExampleMyUploadsIndexRoute
   '/_auth/example/orders/': typeof AuthExampleOrdersIndexRoute
   '/_auth/example/upload/': typeof AuthExampleUploadIndexRoute
 }
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/example/clients'
     | '/example/kitchen-sink'
+    | '/example/my-uploads'
     | '/example/orders'
     | '/example/upload'
   fileRoutesByTo: FileRoutesByTo
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/example/clients'
     | '/example/kitchen-sink'
+    | '/example/my-uploads'
     | '/example/orders'
     | '/example/upload'
   id:
@@ -213,6 +225,7 @@ export interface FileRouteTypes {
     | '/_auth/admin/users/'
     | '/_auth/example/clients/'
     | '/_auth/example/kitchen-sink/'
+    | '/_auth/example/my-uploads/'
     | '/_auth/example/orders/'
     | '/_auth/example/upload/'
   fileRoutesById: FileRoutesById
@@ -287,6 +300,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExampleOrdersIndexRouteImport
       parentRoute: typeof AuthExampleRouteRoute
     }
+    '/_auth/example/my-uploads/': {
+      id: '/_auth/example/my-uploads/'
+      path: '/my-uploads'
+      fullPath: '/example/my-uploads'
+      preLoaderRoute: typeof AuthExampleMyUploadsIndexRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
+    }
     '/_auth/example/kitchen-sink/': {
       id: '/_auth/example/kitchen-sink/'
       path: '/kitchen-sink'
@@ -346,6 +366,7 @@ interface AuthExampleRouteRouteChildren {
   AuthExampleOrdersNewRoute: typeof AuthExampleOrdersNewRoute
   AuthExampleClientsIndexRoute: typeof AuthExampleClientsIndexRoute
   AuthExampleKitchenSinkIndexRoute: typeof AuthExampleKitchenSinkIndexRoute
+  AuthExampleMyUploadsIndexRoute: typeof AuthExampleMyUploadsIndexRoute
   AuthExampleOrdersIndexRoute: typeof AuthExampleOrdersIndexRoute
   AuthExampleUploadIndexRoute: typeof AuthExampleUploadIndexRoute
 }
@@ -357,6 +378,7 @@ const AuthExampleRouteRouteChildren: AuthExampleRouteRouteChildren = {
   AuthExampleOrdersNewRoute: AuthExampleOrdersNewRoute,
   AuthExampleClientsIndexRoute: AuthExampleClientsIndexRoute,
   AuthExampleKitchenSinkIndexRoute: AuthExampleKitchenSinkIndexRoute,
+  AuthExampleMyUploadsIndexRoute: AuthExampleMyUploadsIndexRoute,
   AuthExampleOrdersIndexRoute: AuthExampleOrdersIndexRoute,
   AuthExampleUploadIndexRoute: AuthExampleUploadIndexRoute,
 }

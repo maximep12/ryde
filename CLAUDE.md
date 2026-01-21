@@ -22,7 +22,7 @@ The seeding approach is intentionally simple: **delete all data and regenerate f
 
 ## React Compiler Compatibility
 
-This project uses React Compiler. Some libraries are not compatible with React Compiler's automatic memoization:
+This project uses React Compiler. Some libraries are not compatible with React Compiler's automatic memoization, such as TanStack React Table (see below).
 
 ### TanStack React Table
 
@@ -34,6 +34,10 @@ This project uses React Compiler. Some libraries are not compatible with React C
 import { useReactTable } from '@tanstack/react-table'
 // ...
 ```
+
+## React Components General Guidelines
+
+Try to componentize things when we start reuse frontend code or if an element is rendered multiple times at different places or at the same place. Also, for complex and rich components, try to adopt the Compound Components pattern, which is a provider pattern with composition (see the File Upload component).
 
 ## MCP Servers
 

@@ -13,5 +13,6 @@
   "route.ordersMonitor": "Commandes",
   "route.ordersCreate": "Créer une commande",
   "route.orderDetails": "Détails de la commande",
-  "route.uploadData": "Téléverser"
+  "route.uploadData": "Téléverser",
+  "route.myUploads": "Mes téléversements"
 }

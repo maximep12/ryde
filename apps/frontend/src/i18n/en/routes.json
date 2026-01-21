@@ -13,5 +13,6 @@
   "route.ordersMonitor": "Orders",
   "route.ordersCreate": "Create Order",
   "route.orderDetails": "Order Details",
-  "route.uploadData": "Upload Data"
+  "route.uploadData": "Upload Data",
+  "route.myUploads": "My Uploads"
 }

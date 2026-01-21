@@ -1,9 +1,5 @@
-import {
-  EXAMPLE_MODULE_CSV_HEADERS,
-  EXAMPLE_MODULE_CSV_UPLOAD_TYPE_LABELS,
-  ExampleModuleCsvUploadType,
-} from '@repo/csv'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
+import { CSV_HEADERS, CSV_UPLOAD_TYPE_LABELS, CsvUploadType } from '@repo/csv'
+import { createContext, use, useEffect, useRef, useState } from 'react'
 
 // =============================================================================
 // TYPES
@@ -13,7 +9,7 @@ export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error'
 
 type FileUploadContextValue = {
   // State
-  uploadType: ExampleModuleCsvUploadType
+  uploadType: CsvUploadType
   file: File | null
   uploadStatus: UploadStatus
   uploadProgress: number
@@ -44,7 +40,7 @@ const FileUploadContext = createContext<FileUploadContextValue | null>(null)
 // =============================================================================
 
 export function useFileUpload() {
-  const context = useContext(FileUploadContext)
+  const context = use(FileUploadContext)
   if (!context) {
     throw new Error('useFileUpload must be used within a FileUpload.Root')
   }
@@ -56,7 +52,7 @@ export function useFileUpload() {
 // =============================================================================
 
 type FileUploadProviderProps = {
-  uploadType: ExampleModuleCsvUploadType
+  uploadType: CsvUploadType
   onClose: () => void
   children: React.ReactNode
 }
@@ -68,8 +64,8 @@ export function FileUploadProvider({ uploadType, onClose, children }: FileUpload
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
 
-  const label = EXAMPLE_MODULE_CSV_UPLOAD_TYPE_LABELS[uploadType]
-  const expectedColumns = EXAMPLE_MODULE_CSV_HEADERS[uploadType]
+  const label = CSV_UPLOAD_TYPE_LABELS[uploadType]
+  const expectedColumns = CSV_HEADERS[uploadType]
 
   // Simulate upload progress animation
   useEffect(() => {

@@ -10,6 +10,7 @@ import { attachUser, verifySession } from './middlewares/auth'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition } from './routers/auth/handlers'
 import { exampleRouterDefinition } from './routers/example/handlers'
+import { uploadDataDefinition } from './routers/upload'
 
 export type RequestUser = {
   id: string
@@ -42,6 +43,7 @@ const appDefinition = app
   .use(verifySession)
   .use(attachUser)
   .route('/example', exampleRouterDefinition)
+  .route('/upload', uploadDataDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition
