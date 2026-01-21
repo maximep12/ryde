@@ -17,7 +17,7 @@ import {
   UploadButton,
   UploadingContent,
 } from './components'
-import { FileUploadProvider, useFileUpload } from './context'
+import { FileUploadProvider } from './context'
 
 // =============================================================================
 // ROOT COMPONENT
