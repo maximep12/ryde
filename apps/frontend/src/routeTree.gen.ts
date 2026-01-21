@@ -17,7 +17,6 @@ import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
 import { Route as AuthExampleRouteRouteImport } from './routes/_auth/example/route'
 import { Route as AuthExampleUploadIndexRouteImport } from './routes/_auth/example/upload/index'
-import { Route as AuthExampleSettingsIndexRouteImport } from './routes/_auth/example/settings/index'
 import { Route as AuthExampleOrdersIndexRouteImport } from './routes/_auth/example/orders/index'
 import { Route as AuthExampleKitchenSinkIndexRouteImport } from './routes/_auth/example/kitchen-sink/index'
 import { Route as AuthExampleClientsIndexRouteImport } from './routes/_auth/example/clients/index'
@@ -66,12 +65,6 @@ const AuthExampleUploadIndexRoute = AuthExampleUploadIndexRouteImport.update({
   path: '/upload/',
   getParentRoute: () => AuthExampleRouteRoute,
 } as any)
-const AuthExampleSettingsIndexRoute =
-  AuthExampleSettingsIndexRouteImport.update({
-    id: '/settings/',
-    path: '/settings/',
-    getParentRoute: () => AuthExampleRouteRoute,
-  } as any)
 const AuthExampleOrdersIndexRoute = AuthExampleOrdersIndexRouteImport.update({
   id: '/orders/',
   path: '/orders/',
@@ -131,7 +124,6 @@ export interface FileRoutesByFullPath {
   '/example/clients': typeof AuthExampleClientsIndexRoute
   '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
   '/example/orders': typeof AuthExampleOrdersIndexRoute
-  '/example/settings': typeof AuthExampleSettingsIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRoutesByTo {
@@ -149,7 +141,6 @@ export interface FileRoutesByTo {
   '/example/clients': typeof AuthExampleClientsIndexRoute
   '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
   '/example/orders': typeof AuthExampleOrdersIndexRoute
-  '/example/settings': typeof AuthExampleSettingsIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRoutesById {
@@ -169,7 +160,6 @@ export interface FileRoutesById {
   '/_auth/example/clients/': typeof AuthExampleClientsIndexRoute
   '/_auth/example/kitchen-sink/': typeof AuthExampleKitchenSinkIndexRoute
   '/_auth/example/orders/': typeof AuthExampleOrdersIndexRoute
-  '/_auth/example/settings/': typeof AuthExampleSettingsIndexRoute
   '/_auth/example/upload/': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRouteTypes {
@@ -189,7 +179,6 @@ export interface FileRouteTypes {
     | '/example/clients'
     | '/example/kitchen-sink'
     | '/example/orders'
-    | '/example/settings'
     | '/example/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -207,7 +196,6 @@ export interface FileRouteTypes {
     | '/example/clients'
     | '/example/kitchen-sink'
     | '/example/orders'
-    | '/example/settings'
     | '/example/upload'
   id:
     | '__root__'
@@ -226,7 +214,6 @@ export interface FileRouteTypes {
     | '/_auth/example/clients/'
     | '/_auth/example/kitchen-sink/'
     | '/_auth/example/orders/'
-    | '/_auth/example/settings/'
     | '/_auth/example/upload/'
   fileRoutesById: FileRoutesById
 }
@@ -291,13 +278,6 @@ declare module '@tanstack/react-router' {
       path: '/upload'
       fullPath: '/example/upload'
       preLoaderRoute: typeof AuthExampleUploadIndexRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/settings/': {
-      id: '/_auth/example/settings/'
-      path: '/settings'
-      fullPath: '/example/settings'
-      preLoaderRoute: typeof AuthExampleSettingsIndexRouteImport
       parentRoute: typeof AuthExampleRouteRoute
     }
     '/_auth/example/orders/': {
@@ -367,7 +347,6 @@ interface AuthExampleRouteRouteChildren {
   AuthExampleClientsIndexRoute: typeof AuthExampleClientsIndexRoute
   AuthExampleKitchenSinkIndexRoute: typeof AuthExampleKitchenSinkIndexRoute
   AuthExampleOrdersIndexRoute: typeof AuthExampleOrdersIndexRoute
-  AuthExampleSettingsIndexRoute: typeof AuthExampleSettingsIndexRoute
   AuthExampleUploadIndexRoute: typeof AuthExampleUploadIndexRoute
 }
 
@@ -379,7 +358,6 @@ const AuthExampleRouteRouteChildren: AuthExampleRouteRouteChildren = {
   AuthExampleClientsIndexRoute: AuthExampleClientsIndexRoute,
   AuthExampleKitchenSinkIndexRoute: AuthExampleKitchenSinkIndexRoute,
   AuthExampleOrdersIndexRoute: AuthExampleOrdersIndexRoute,
-  AuthExampleSettingsIndexRoute: AuthExampleSettingsIndexRoute,
   AuthExampleUploadIndexRoute: AuthExampleUploadIndexRoute,
 }
 

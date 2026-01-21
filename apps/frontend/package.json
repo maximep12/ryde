@@ -16,6 +16,7 @@
     "@internationalized/date": "^3.10.0",
     "@repo/backend": "workspace:*",
     "@repo/constants": "workspace:*",
+    "@repo/csv": "workspace:*",
     "@repo/feature-flags": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",

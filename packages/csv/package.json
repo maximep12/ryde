@@ -1,0 +1,27 @@
+{
+  "name": "@repo/csv",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "lint": "FORCE_COLOR=1 eslint src/",
+    "build": "tsup",
+    "type-check": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "volume-seven": "./src/index.ts",
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@repo/constants": "workspace:*",
+    "@repo/utils": "workspace:*",
+    "@repo/zod-schemas": "workspace:*",
+    "zod": "^4.2.0"
+  },
+  "devDependencies": {
+    "@repo/config-typescript": "workspace:*",
+    "@repo/config-eslint-custom": "workspace:*"
+  }
+}
