@@ -6,7 +6,7 @@ import { TableLoading } from '@/components/TableLoading'
 import { useDownloadFile } from '@/hooks/queries/uploads/useDownloadFile'
 import { useMyUploads } from '@/hooks/queries/uploads/useMyUploads'
 import { useUrlFilters } from '@/hooks/useUrlFilters'
-import { CSV_UPLOAD_TYPE_LABELS, CSV_UPLOAD_TYPES, CsvUploadType } from '@repo/csv'
+import { CSV_UPLOAD_TYPE_LABELS, UPLOAD_TYPES, UploadType } from '@repo/csv'
 import {
   Button,
   Checkbox,
@@ -29,6 +29,7 @@ import {
   TableRow,
 } from '@repo/ui/components'
 import { serializeArray } from '@repo/zod-schemas'
+import { createFileRoute } from '@tanstack/react-router'
 import {
   ColumnDef,
   flexRender,
@@ -36,7 +37,6 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
-import { createFileRoute } from '@tanstack/react-router'
 import {
   ArrowDownIcon,
   ArrowUpDownIcon,
@@ -71,13 +71,13 @@ type Upload = {
   createdAt: string
 }
 
-const uploadTypeOptions = CSV_UPLOAD_TYPES.map((type) => ({
+const uploadTypeOptions = UPLOAD_TYPES.map((type) => ({
   value: type,
   label: CSV_UPLOAD_TYPE_LABELS[type],
 }))
 
 // Separate component for download button to isolate mutation state
-function DownloadButton({ fileName, uploadType }: { fileName: string; uploadType: CsvUploadType }) {
+function DownloadButton({ fileName, uploadType }: { fileName: string; uploadType: UploadType }) {
   const downloadFile = useDownloadFile()
   const isDownloading = downloadFile.isPending
 
@@ -125,7 +125,7 @@ const columns: ColumnDef<Upload>[] = [
     header: 'Upload Type',
     cell: ({ row }) => (
       <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-        {CSV_UPLOAD_TYPE_LABELS[row.original.type as CsvUploadType] || row.original.type}
+        {CSV_UPLOAD_TYPE_LABELS[row.original.type as UploadType] || row.original.type}
       </span>
     ),
   },
@@ -151,7 +151,7 @@ const columns: ColumnDef<Upload>[] = [
     cell: ({ row }) => (
       <DownloadButton
         fileName={row.original.fileName}
-        uploadType={row.original.type as CsvUploadType}
+        uploadType={row.original.type as UploadType}
       />
     ),
     enableSorting: false,
@@ -303,7 +303,8 @@ function MyUploadsPage() {
           <>
             <div className="text-muted-foreground ml-auto text-sm">
               Showing {(filters.page - 1) * (filters.pageSize ?? 20) + 1}-
-              {Math.min(filters.page * (filters.pageSize ?? 20), totalCount)} of {totalCount} uploads
+              {Math.min(filters.page * (filters.pageSize ?? 20), totalCount)} of {totalCount}{' '}
+              uploads
             </div>
             <Popover>
               <PopoverTrigger asChild>

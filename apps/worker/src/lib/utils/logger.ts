@@ -1,8 +1,8 @@
 import { createBaseLogger } from '@repo/logger'
-import { getQueue } from '@repo/queue'
+import { AllQueues, getQueue } from '@repo/queue'
 import { connection } from '../../redis'
 
-export const logQueueHealth = async (queueId: string) => {
+export const logQueueHealth = async (queueId: AllQueues) => {
   const queue = getQueue(queueId, connection)
 
   const [active, waiting, delayed] = await Promise.all([

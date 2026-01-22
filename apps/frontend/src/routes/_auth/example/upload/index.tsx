@@ -1,6 +1,6 @@
 import { FileUploadModal } from '@/components/FileUpload'
-import { UploadTypeTile, UploadTypeConfig } from '@/components/UploadTypeTile'
-import { CsvUploadType } from '@repo/csv'
+import { UploadTypeConfig, UploadTypeTile } from '@/components/UploadTypeTile'
+import { UploadType } from '@repo/csv'
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components'
 import { createFileRoute } from '@tanstack/react-router'
 import { PackageIcon, UsersIcon } from 'lucide-react'
@@ -28,7 +28,7 @@ const UPLOAD_TYPES: UploadTypeConfig[] = [
 ]
 
 function UploadDataPage() {
-  const [selectedUploadType, setSelectedUploadType] = useState<CsvUploadType | null>(null)
+  const [selectedUploadType, setSelectedUploadType] = useState<UploadType | null>(null)
 
   return (
     <div className="space-y-8">

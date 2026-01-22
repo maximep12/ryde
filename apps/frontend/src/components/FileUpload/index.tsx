@@ -1,4 +1,4 @@
-import { CsvUploadType } from '@repo/csv'
+import { UploadType } from '@repo/csv'
 import { Dialog, DialogContent } from '@repo/ui/components'
 import { CancelButton, RetryButton, UploadAnotherButton, UploadButton } from './Buttons'
 import { FileUploadProvider } from './context'
@@ -19,7 +19,7 @@ import { UploadingContent } from './UploadingContent'
 // =============================================================================
 
 type RootProps = {
-  uploadType: CsvUploadType
+  uploadType: UploadType
   onClose: () => void
   children: React.ReactNode
 }
@@ -37,7 +37,7 @@ function Root({ uploadType, onClose, children }: RootProps) {
 // =============================================================================
 
 type ModalProps = {
-  uploadType: CsvUploadType | null
+  uploadType: UploadType | null
   onClose: () => void
   children: React.ReactNode
   className?: string
@@ -121,7 +121,7 @@ export type { UploadStatus } from './context'
 // =============================================================================
 
 type FileUploadModalProps = {
-  uploadType: CsvUploadType | null
+  uploadType: UploadType | null
   onClose: () => void
 }
 

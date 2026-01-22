@@ -1,6 +1,6 @@
 import { getSchemaKeys } from '@repo/zod-schemas'
 import { clientsSchema, productsSchema } from './schema'
-import { ExampleModuleCsvUploadType } from './upload-types'
+import { ExampleModuleUploadType } from './upload-types'
 
 // =============================================================================
 // CSV HEADERS
@@ -10,10 +10,10 @@ import { ExampleModuleCsvUploadType } from './upload-types'
 const productsHeaders = getSchemaKeys(productsSchema)
 const clientsHeaders = getSchemaKeys(clientsSchema)
 
-export const EXAMPLE_MODULE_CSV_HEADERS = {
+export const EXAMPLE_MODULE_HEADERS = {
   products: productsHeaders,
   clients: clientsHeaders,
-} satisfies Record<ExampleModuleCsvUploadType, readonly string[]>
+} satisfies Record<ExampleModuleUploadType, readonly string[]>
 
-export type ProductsCsvHeader = (typeof EXAMPLE_MODULE_CSV_HEADERS)['products'][number]
-export type ClientsCsvHeader = (typeof EXAMPLE_MODULE_CSV_HEADERS)['clients'][number]
+export type ProductsCsvHeader = (typeof EXAMPLE_MODULE_HEADERS)['products'][number]
+export type ClientsCsvHeader = (typeof EXAMPLE_MODULE_HEADERS)['clients'][number]

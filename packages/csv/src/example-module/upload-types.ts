@@ -5,20 +5,20 @@ import { z } from 'zod'
 // Define all CSV upload types for this module
 // =============================================================================
 
-export const EXAMPLE_MODULE_CSV_UPLOAD_TYPES = ['products', 'clients'] as const
+export const EXAMPLE_MODULE_UPLOAD_TYPES = ['products', 'clients'] as const
 
-export type ExampleModuleCsvUploadType = (typeof EXAMPLE_MODULE_CSV_UPLOAD_TYPES)[number]
+export type ExampleModuleUploadType = (typeof EXAMPLE_MODULE_UPLOAD_TYPES)[number]
 
-export const EXAMPLE_MODULE_CSV_UPLOAD_TYPE_LABELS: Record<ExampleModuleCsvUploadType, string> = {
+export const EXAMPLE_MODULE_UPLOAD_TYPE_LABELS: Record<ExampleModuleUploadType, string> = {
   products: 'Products',
   clients: 'Clients',
 }
 
-export const exampleModuleCsvUploadTypesSchema = z.enum(EXAMPLE_MODULE_CSV_UPLOAD_TYPES)
+export const exampleModuleuploadTypesSchema = z.enum(EXAMPLE_MODULE_UPLOAD_TYPES)
 
 const S3_PATH_PREFIX = 'example-module/'
 
-export const EXAMPLE_MODULE_CSV_UPLOAD_TYPE_S3_PATHS: Record<ExampleModuleCsvUploadType, string> = {
+export const EXAMPLE_MODULE_UPLOAD_TYPE_S3_PATHS: Record<ExampleModuleUploadType, string> = {
   products: `${S3_PATH_PREFIX}products`,
   clients: `${S3_PATH_PREFIX}clients`,
 } as const

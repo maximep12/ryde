@@ -1,7 +1,7 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { PAGE_SIZE } from '@repo/constants'
-import { CSV_UPLOAD_TYPES, UPLOAD_REPORT_STATUS } from '@repo/csv'
+import { UPLOAD_REPORT_STATUS, UPLOAD_TYPES } from '@repo/csv'
 import { stringifiedArray } from '@repo/zod-schemas'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
@@ -53,7 +53,7 @@ export const uploadDataDefinition = uploadData
       'json',
       z.object({
         fileName: z.string(),
-        uploadType: z.enum(CSV_UPLOAD_TYPES),
+        uploadType: z.enum(UPLOAD_TYPES),
       }),
     ),
     async (c) => {
@@ -80,7 +80,7 @@ export const uploadDataDefinition = uploadData
     zValidatorThrow(
       'json',
       z.object({
-        uploadType: z.enum(CSV_UPLOAD_TYPES),
+        uploadType: z.enum(UPLOAD_TYPES),
         localFileName: z.string(),
         attributes: z.record(z.string(), z.string()).optional(),
       }),

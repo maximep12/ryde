@@ -1,5 +1,5 @@
 import { InferSelectModel, sql } from 'drizzle-orm'
-import { boolean, index, jsonb, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, index, integer, jsonb, uuid, varchar } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { app } from './app'
 import { users } from './users'
@@ -42,7 +42,7 @@ export type UploadsToS3 = InferSelectModel<typeof uploadsToS3>
 // Stores processing results for uploaded files
 // =============================================================================
 
-export const uploadsAppResults = app.table(
+export const uploadsResults = app.table(
   'uploads_app_results',
   {
     id: uuid('id')
@@ -51,6 +51,7 @@ export const uploadsAppResults = app.table(
     uploadId: uuid('upload_id')
       .references(() => uploadsToS3.uuid, { onDelete: 'cascade' })
       .notNull(),
+    rowIndex: integer('row_index').notNull(),
     data: jsonb('data'),
     validationDetails: jsonb('validation_details'),
     isValid: boolean('is_valid').default(false),
@@ -62,4 +63,4 @@ export const uploadsAppResults = app.table(
   },
 )
 
-export type UploadsAppResults = InferSelectModel<typeof uploadsAppResults>
+export type uploadsResults = InferSelectModel<typeof uploadsResults>

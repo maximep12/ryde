@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 // =============================================================================
 // PRODUCTS CSV SCHEMA
-// Minimal example: 3 columns for product catalog import
+// For importing new products into the catalog
 // =============================================================================
 
 export const productsSchema = z.object({
@@ -15,13 +15,14 @@ export type ProductsCsvRow = z.infer<typeof productsSchema>
 
 // =============================================================================
 // CLIENTS CSV SCHEMA
-// Minimal example: 4 columns for client/customer import
+// For importing new clients
 // =============================================================================
 
 export const clientsSchema = z.object({
   client_code: z.string(),
   store_name: z.string(),
-  email: z.string().email(),
+  store_type: z.string(),
+  email: z.string(),
   city: z.string(),
 })
 

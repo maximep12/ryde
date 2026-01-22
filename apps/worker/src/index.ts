@@ -1,14 +1,22 @@
 import { JOB_EVENT } from '@repo/constants'
 import { createBaseLogger } from '@repo/logger'
 import {
+  AllQueues,
+  QUEUE_AWS_SQS_FILE_UPLOADS,
   QUEUE_CLEANUP_STALE_DATA,
-  QUEUE_PLACEHOLDER /* , QUEUE_REFRESH_MATERIALIZED_VIEWS */,
+  QUEUE_PLACEHOLDER,
+  QUEUE_S3_FILE_PROCESS_CLIENTS,
+  QUEUE_S3_FILE_PROCESS_PRODUCTS,
+  /* , QUEUE_REFRESH_MATERIALIZED_VIEWS */
 } from '@repo/queue'
+import { Worker } from 'bullmq'
 import { createJobDbEntry } from './lib/utils/db'
 import { logQueueHealth } from './lib/utils/logger'
 import { startPollingServices } from './lib/utils/polling-services'
 import { cleanupWorker } from './workers/cleanup/worker'
 import { placeholderWorker } from './workers/placeholder/worker'
+import { addClientsProcessingWorker, addProductsProcessingWorker } from './workers/uploads/processingWorkers'
+import { routerWorker } from './workers/uploads/routerWorker'
 // import { materializedViewsWorker } from './workers/materialized-views/worker'
 
 const logger = createBaseLogger().child({
@@ -19,7 +27,7 @@ logger.info({ cwd: process.cwd(), url: import.meta.url })
 
 // Good CRON Time reference: https://crontab.guru/
 
-const workers = [
+const workers: { worker: Worker; setup: () => AllQueues }[] = [
   // Uncomment when materialized views worker is configured
   // {
   //   worker: materializedViewsWorker,
@@ -32,6 +40,19 @@ const workers = [
   {
     worker: placeholderWorker,
     setup: () => QUEUE_PLACEHOLDER,
+  },
+  // Upload processing workers
+  {
+    worker: routerWorker,
+    setup: () => QUEUE_AWS_SQS_FILE_UPLOADS,
+  },
+  {
+    worker: addProductsProcessingWorker,
+    setup: () => QUEUE_S3_FILE_PROCESS_PRODUCTS,
+  },
+  {
+    worker: addClientsProcessingWorker,
+    setup: () => QUEUE_S3_FILE_PROCESS_CLIENTS,
   },
 ]
 

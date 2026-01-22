@@ -1,9 +1,9 @@
-import { CSV_UPLOAD_TYPE_LABELS, CsvUploadType } from '@repo/csv'
+import { CSV_UPLOAD_TYPE_LABELS, UploadType } from '@repo/csv'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@repo/ui/components'
 import { UploadCloudIcon } from 'lucide-react'
 
 export type UploadTypeConfig = {
-  type: CsvUploadType
+  type: UploadType
   icon: React.ReactNode
   description: string
 }

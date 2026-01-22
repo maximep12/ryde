@@ -1,6 +1,6 @@
 import { PAGE_SIZE } from '@repo/constants'
-import { CSV_UPLOAD_TYPE_S3_PATHS, CsvUploadType } from '@repo/csv'
-import { UploadsAppResults, uploadsAppResults, uploadsToS3, users } from '@repo/db'
+import { CSV_UPLOAD_TYPE_S3_PATHS, UploadType } from '@repo/csv'
+import { uploadsResults, uploadsToS3, users } from '@repo/db'
 import { and, count, desc, eq, inArray, or } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '../../db'
@@ -11,13 +11,13 @@ import { myUploadsQueriesSchema } from './handlers'
 export type MyUploadsQueries = z.infer<typeof myUploadsQueriesSchema>
 
 export type AppUploadResult = Pick<
-  UploadsAppResults,
+  uploadsResults,
   'uploadId' | 'data' | 'isProcessed' | 'isValid'
 >
 
 export function generateS3FileName(
   prefix: string,
-  uploadType: CsvUploadType,
+  uploadType: UploadType,
   extension: string = '.csv',
 ) {
   const fileName = `${prefix}-${Date.now()}-${uploadType}${extension}`
@@ -33,7 +33,7 @@ export function logS3Upload({
   attributes,
 }: {
   userId: string
-  uploadType: CsvUploadType
+  uploadType: UploadType
   fileName: string
   fileKey: string
   localFileName: string
@@ -82,14 +82,14 @@ export function getS3UploadLog({ uuid, fileName }: { uuid?: string; fileName?: s
 export function getAppUploadResult(uploadId: string) {
   return db
     .select({
-      uploadId: uploadsAppResults.uploadId,
-      data: uploadsAppResults.data,
-      validationDetails: uploadsAppResults.validationDetails,
-      isValid: uploadsAppResults.isValid,
-      isProcessed: uploadsAppResults.isProcessed,
+      uploadId: uploadsResults.uploadId,
+      data: uploadsResults.data,
+      validationDetails: uploadsResults.validationDetails,
+      isValid: uploadsResults.isValid,
+      isProcessed: uploadsResults.isProcessed,
     })
-    .from(uploadsAppResults)
-    .where(eq(uploadsAppResults.uploadId, uploadId))
+    .from(uploadsResults)
+    .where(eq(uploadsResults.uploadId, uploadId))
 }
 
 export function getMyUploadsWhere(queries: MyUploadsQueries) {
@@ -144,6 +144,6 @@ export function getMyUploadsRowCount(userId: string, where: ReturnType<typeof ge
     .where(and(eq(uploadsToS3.userId, userId), where))
 }
 
-export function getUploadPath(uploadType: CsvUploadType) {
+export function getUploadPath(uploadType: UploadType) {
   return CSV_UPLOAD_TYPE_S3_PATHS[uploadType]
 }

@@ -12,6 +12,9 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-sqs": "^3.835.0",
+    "@aws-sdk/client-s3": "^3.758.0",
+    "csv-parse": "^5.6.0",
     "@repo/config-typescript": "workspace:*",
     "@repo/constants": "workspace:*",
     "@repo/db": "workspace:*",

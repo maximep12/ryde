@@ -1,10 +1,10 @@
 import { getApi } from '@/stores/api'
-import { CsvUploadType } from '@repo/csv'
+import { UploadType } from '@repo/csv'
 import { useMutation } from '@tanstack/react-query'
 
 interface DownloadFileParams {
   fileName: string
-  uploadType: CsvUploadType
+  uploadType: UploadType
 }
 
 export function useDownloadFile() {

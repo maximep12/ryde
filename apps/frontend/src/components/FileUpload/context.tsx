@@ -1,4 +1,4 @@
-import { CSV_HEADERS, CSV_UPLOAD_TYPE_LABELS, CsvUploadType } from '@repo/csv'
+import { CSV_HEADERS, CSV_UPLOAD_TYPE_LABELS, UploadType } from '@repo/csv'
 import { createContext, use, useEffect, useRef, useState } from 'react'
 
 // =============================================================================
@@ -9,7 +9,7 @@ export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error'
 
 type FileUploadContextValue = {
   // State
-  uploadType: CsvUploadType
+  uploadType: UploadType
   file: File | null
   uploadStatus: UploadStatus
   uploadProgress: number
@@ -52,7 +52,7 @@ export function useFileUpload() {
 // =============================================================================
 
 type FileUploadProviderProps = {
-  uploadType: CsvUploadType
+  uploadType: UploadType
   onClose: () => void
   children: React.ReactNode
 }
