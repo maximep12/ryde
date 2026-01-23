@@ -1,11 +1,6 @@
 import { useUploadFile } from '@/hooks/mutations/uploads/useUploadFile'
 import { useUploadStatus } from '@/hooks/queries/uploads/useUploadStatus'
-import {
-  CSV_HEADERS,
-  CSV_UPLOAD_TYPE_LABELS,
-  UPLOAD_REPORT_STATUS,
-  UploadType,
-} from '@repo/csv'
+import { CSV_HEADERS, CSV_UPLOAD_TYPE_LABELS, UPLOAD_REPORT_STATUS, UploadType } from '@repo/csv'
 import { useQueryClient } from '@tanstack/react-query'
 import { createContext, use, useEffect, useRef, useState } from 'react'
 
@@ -112,7 +107,13 @@ export function FileUploadProvider({ uploadType, onClose, children }: FileUpload
       setErrorMessage(uploadMutation.error?.message ?? 'Upload failed')
       setUploadProgress(0)
     }
-  }, [uploadMutation.isPending, uploadMutation.isSuccess, uploadMutation.isError, uploadMutation.data, uploadMutation.error])
+  }, [
+    uploadMutation.isPending,
+    uploadMutation.isSuccess,
+    uploadMutation.isError,
+    uploadMutation.data,
+    uploadMutation.error,
+  ])
 
   // Handle status polling results
   useEffect(() => {

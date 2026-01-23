@@ -182,7 +182,11 @@ export function getMyUploads(
 
 // Get validation summaries for multiple uploads
 export async function getUploadsSummaries(uploadIds: string[]) {
-  if (uploadIds.length === 0) return new Map<string, { total: number; valid: number; invalid: number; isProcessed: boolean }>()
+  if (uploadIds.length === 0)
+    return new Map<
+      string,
+      { total: number; valid: number; invalid: number; isProcessed: boolean }
+    >()
 
   const results = await db
     .select({
@@ -194,10 +198,18 @@ export async function getUploadsSummaries(uploadIds: string[]) {
     .where(inArray(uploadsResults.uploadId, uploadIds))
 
   // Group results by uploadId
-  const summaries = new Map<string, { total: number; valid: number; invalid: number; isProcessed: boolean }>()
+  const summaries = new Map<
+    string,
+    { total: number; valid: number; invalid: number; isProcessed: boolean }
+  >()
 
   for (const result of results) {
-    const existing = summaries.get(result.uploadId) ?? { total: 0, valid: 0, invalid: 0, isProcessed: true }
+    const existing = summaries.get(result.uploadId) ?? {
+      total: 0,
+      valid: 0,
+      invalid: 0,
+      isProcessed: true,
+    }
     existing.total++
     if (result.isValid) {
       existing.valid++

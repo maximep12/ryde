@@ -454,7 +454,9 @@ function DataWithValidation({
           ? 'inline-flex items-center rounded bg-red-100 px-1.5 py-0.5 text-xs dark:bg-red-900/40'
           : 'inline-flex items-center rounded bg-gray-100 px-1.5 py-0.5 text-xs dark:bg-gray-800'
         const keyClass = isError ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground'
-        const valueClass = isError ? 'ml-1 font-medium text-red-700 dark:text-red-300' : 'ml-1 font-medium'
+        const valueClass = isError
+          ? 'ml-1 font-medium text-red-700 dark:text-red-300'
+          : 'ml-1 font-medium'
 
         const badge = (
           <span className={badgeClass}>
@@ -477,4 +479,3 @@ function DataWithValidation({
     </div>
   )
 }
-

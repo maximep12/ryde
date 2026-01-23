@@ -535,7 +535,7 @@ function MyUploadsPage() {
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && 'selected'}
-                      className={`cursor-pointer transition-colors hover:bg-muted/50 ${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
+                      className={`hover:bg-muted/50 cursor-pointer transition-colors ${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
                       onClick={() =>
                         navigate({
                           to: '/example/my-uploads/$uploadId',
