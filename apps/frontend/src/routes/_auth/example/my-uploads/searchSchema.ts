@@ -10,6 +10,7 @@ export const myUploadsSearchSchema = z.object({
   search: z.string().optional(),
   types: z.string().optional(), // comma-separated upload types
   sort: z.string().optional(),
+  validationStatus: z.enum(['valid', 'invalid']).optional(),
 })
 
 export type MyUploadsSearch = z.infer<typeof myUploadsSearchSchema>
@@ -20,4 +21,5 @@ export const myUploadsSearchDefaults: MyUploadsSearch = {
   search: undefined,
   types: undefined,
   sort: 'createdAt.desc',
+  validationStatus: undefined,
 }

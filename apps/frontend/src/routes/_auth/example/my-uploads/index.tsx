@@ -3,11 +3,11 @@
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
-import { useDownloadFile } from '@/hooks/queries/uploads/useDownloadFile'
 import { useMyUploads } from '@/hooks/queries/uploads/useMyUploads'
 import { useUrlFilters } from '@/hooks/useUrlFilters'
 import { CSV_UPLOAD_TYPE_LABELS, UPLOAD_TYPES, UploadType } from '@repo/csv'
 import {
+  Badge,
   Button,
   Checkbox,
   Label,
@@ -29,7 +29,7 @@ import {
   TableRow,
 } from '@repo/ui/components'
 import { serializeArray } from '@repo/zod-schemas'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import {
   ColumnDef,
   flexRender,
@@ -38,17 +38,19 @@ import {
   VisibilityState,
 } from '@tanstack/react-table'
 import {
+  AlertTriangleIcon,
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
+  CheckCircleIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ClockIcon,
   Columns3Icon,
-  DownloadIcon,
   FileIcon,
-  Loader2Icon,
   RotateCcwIcon,
   SlidersHorizontalIcon,
+  XCircleIcon,
   XIcon,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -63,12 +65,22 @@ export const Route = createFileRoute('/_auth/example/my-uploads/')({
   },
 })
 
+type UploadSummary = {
+  total: number
+  valid: number
+  invalid: number
+  isProcessed: boolean
+}
+
 type Upload = {
   uuid: string
   type: string
   fileName: string
+  fileKey: string
   localFileName: string | null
   createdAt: string
+  error: string | null
+  summary: UploadSummary | null
 }
 
 const uploadTypeOptions = UPLOAD_TYPES.map((type) => ({
@@ -76,58 +88,97 @@ const uploadTypeOptions = UPLOAD_TYPES.map((type) => ({
   label: CSV_UPLOAD_TYPE_LABELS[type],
 }))
 
-// Separate component for download button to isolate mutation state
-function DownloadButton({ fileName, uploadType }: { fileName: string; uploadType: UploadType }) {
-  const downloadFile = useDownloadFile()
-  const isDownloading = downloadFile.isPending
-
-  return (
-    <Button
-      variant="outline"
-      size="sm"
-      onClick={() => downloadFile.mutate({ fileName, uploadType })}
-      disabled={isDownloading}
-    >
-      {isDownloading ? (
-        <Loader2Icon className="size-4 animate-spin" />
-      ) : (
-        <DownloadIcon className="size-4" />
-      )}
-      Download
-    </Button>
-  )
-}
-
 // Define columns outside component - no state dependencies
 const columns: ColumnDef<Upload>[] = [
-  {
-    id: 'icon',
-    header: '',
-    cell: () => (
-      <div className="bg-primary/10 text-primary flex size-8 items-center justify-center rounded">
-        <FileIcon className="size-4" />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
   {
     id: 'localFileName',
     accessorKey: 'localFileName',
     header: 'File Name',
     cell: ({ row }) => (
-      <span className="font-medium">{row.original.localFileName || row.original.fileName}</span>
+      <div className="flex items-center gap-3">
+        <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded">
+          <FileIcon className="size-4" />
+        </div>
+        <span className="font-medium">{row.original.localFileName || row.original.fileName}</span>
+      </div>
     ),
+    enableHiding: false,
   },
   {
     id: 'type',
     accessorKey: 'type',
     header: 'Upload Type',
     cell: ({ row }) => (
-      <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+      <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
         {CSV_UPLOAD_TYPE_LABELS[row.original.type as UploadType] || row.original.type}
       </span>
     ),
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: ({ row }) => {
+      const { summary, error } = row.original
+
+      // Error state
+      if (error) {
+        return (
+          <Badge className="border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
+            <XCircleIcon className="mr-1 size-3" />
+            Error
+          </Badge>
+        )
+      }
+
+      // No results yet (not processed)
+      if (!summary) {
+        return (
+          <Badge className="border-gray-200 bg-gray-50 text-gray-600 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400">
+            <ClockIcon className="mr-1 size-3" />
+            Pending
+          </Badge>
+        )
+      }
+
+      // Processing
+      if (!summary.isProcessed) {
+        return (
+          <Badge className="border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-400">
+            <ClockIcon className="mr-1 size-3 animate-spin" />
+            Processing
+          </Badge>
+        )
+      }
+
+      // All valid
+      if (summary.invalid === 0) {
+        return (
+          <Badge className="border-green-200 bg-green-50 text-green-700 dark:border-green-900/50 dark:bg-green-950/30 dark:text-green-400">
+            <CheckCircleIcon className="mr-1 size-3" />
+            {summary.valid} valid
+          </Badge>
+        )
+      }
+
+      // All invalid
+      if (summary.valid === 0) {
+        return (
+          <Badge className="border-red-200 bg-red-50 text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400">
+            <XCircleIcon className="mr-1 size-3" />
+            {summary.invalid} invalid
+          </Badge>
+        )
+      }
+
+      // Mixed
+      return (
+        <Badge className="border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-400">
+          <AlertTriangleIcon className="mr-1 size-3" />
+          {summary.valid}/{summary.total}
+        </Badge>
+      )
+    },
+    enableSorting: false,
   },
   {
     id: 'createdAt',
@@ -146,13 +197,12 @@ const columns: ColumnDef<Upload>[] = [
     },
   },
   {
-    id: 'actions',
+    id: 'chevron',
     header: '',
-    cell: ({ row }) => (
-      <DownloadButton
-        fileName={row.original.fileName}
-        uploadType={row.original.type as UploadType}
-      />
+    cell: () => (
+      <div className="flex items-center justify-end text-gray-300 dark:text-gray-600">
+        <ChevronRightIcon className="size-5" />
+      </div>
     ),
     enableSorting: false,
     enableHiding: false,
@@ -161,6 +211,7 @@ const columns: ColumnDef<Upload>[] = [
 
 function MyUploadsPage() {
   const search = Route.useSearch()
+  const navigate = useNavigate()
 
   const {
     filters,
@@ -188,12 +239,14 @@ function MyUploadsPage() {
   const [sheetOpen, setSheetOpen] = useState(false)
   const [sheetFilters, setSheetFilters] = useState({
     types: [] as string[],
+    validationStatus: undefined as 'valid' | 'invalid' | undefined,
   })
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
       setSheetFilters({
         types: typeFilters,
+        validationStatus: filters.validationStatus,
       })
     }
     setSheetOpen(open)
@@ -202,8 +255,16 @@ function MyUploadsPage() {
   const applyFilters = () => {
     setFilters({
       types: serializeArray(sheetFilters.types),
+      validationStatus: sheetFilters.validationStatus,
     })
     setSheetOpen(false)
+  }
+
+  const handleValidationStatusChange = (status: 'valid' | 'invalid') => {
+    setSheetFilters((prev) => ({
+      ...prev,
+      validationStatus: prev.validationStatus === status ? undefined : status,
+    }))
   }
 
   const handleSearch = (value: string) => {
@@ -216,6 +277,7 @@ function MyUploadsPage() {
     sort: filters.sort,
     page: filters.page,
     pageSize: filters.pageSize,
+    validationStatus: filters.validationStatus,
   })
 
   const uploads = (data?.myUploads as Upload[]) ?? []
@@ -238,7 +300,7 @@ function MyUploadsPage() {
     },
   })
 
-  const hasActiveFilters = typeFilters.length > 0
+  const hasActiveFilters = typeFilters.length > 0 || !!filters.validationStatus
 
   return (
     <div className="space-y-8">
@@ -277,6 +339,40 @@ function MyUploadsPage() {
                 />
               </div>
               <FilterDivider />
+              <div className="space-y-3">
+                <Label className="text-xs font-bold uppercase">Validation Status</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="filter-valid"
+                      checked={sheetFilters.validationStatus === 'valid'}
+                      onCheckedChange={() => handleValidationStatusChange('valid')}
+                    />
+                    <label
+                      htmlFor="filter-valid"
+                      className="flex cursor-pointer items-center gap-2 text-sm"
+                    >
+                      <CheckCircleIcon className="size-4 text-green-600" />
+                      Only show valid uploads
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="filter-invalid"
+                      checked={sheetFilters.validationStatus === 'invalid'}
+                      onCheckedChange={() => handleValidationStatusChange('invalid')}
+                    />
+                    <label
+                      htmlFor="filter-invalid"
+                      className="flex cursor-pointer items-center gap-2 text-sm"
+                    >
+                      <XCircleIcon className="size-4 text-red-600" />
+                      Only show invalid uploads
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <FilterDivider />
             </div>
             <SheetFooter className="border-t p-4">
               <Button className="w-full" onClick={applyFilters}>
@@ -286,7 +382,7 @@ function MyUploadsPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setFilters({ types: undefined })
+                  setFilters({ types: undefined, validationStatus: undefined })
                   setSheetOpen(false)
                 }}
               >
@@ -374,6 +470,27 @@ function MyUploadsPage() {
                   </span>
                 )
               })}
+              {filters.validationStatus && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
+                  {filters.validationStatus === 'valid' ? (
+                    <>
+                      <CheckCircleIcon className="size-3" />
+                      Only valid
+                    </>
+                  ) : (
+                    <>
+                      <XCircleIcon className="size-3" />
+                      Only invalid
+                    </>
+                  )}
+                  <button
+                    onClick={() => setFilters({ validationStatus: undefined })}
+                    className="ml-0.5 hover:text-gray-300"
+                  >
+                    <XIcon className="size-3" />
+                  </button>
+                </span>
+              )}
             </div>
           )}
 
@@ -418,7 +535,13 @@ function MyUploadsPage() {
                     <TableRow
                       key={row.id}
                       data-state={row.getIsSelected() && 'selected'}
-                      className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}
+                      className={`cursor-pointer transition-colors hover:bg-muted/50 ${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
+                      onClick={() =>
+                        navigate({
+                          to: '/example/my-uploads/$uploadId',
+                          params: { uploadId: row.original.uuid },
+                        })
+                      }
                     >
                       {row.getVisibleCells().map((cell) => (
                         <TableCell key={cell.id} className="py-2">

@@ -7,17 +7,18 @@ interface UseMyUploadsParams {
   sort?: string
   page?: number
   pageSize?: number
+  validationStatus?: 'valid' | 'invalid'
 }
 
 export function useMyUploads(params: UseMyUploadsParams = {}) {
-  const { types, search, sort, page = 1, pageSize = 20 } = params
+  const { types, search, sort, page = 1, pageSize = 20, validationStatus } = params
 
   const typesKey = types?.length ? types.join(',') : ''
   const searchKey = search || ''
   const sortKey = sort || 'createdAt.desc'
 
   return useQuery({
-    queryKey: ['my-uploads', typesKey, searchKey, sortKey, page, pageSize],
+    queryKey: ['my-uploads', typesKey, searchKey, sortKey, page, pageSize, validationStatus],
     queryFn: async () => {
       const api = getApi()
       const res = await api.upload['my-uploads'].$get({
@@ -26,6 +27,8 @@ export function useMyUploads(params: UseMyUploadsParams = {}) {
           sort: sortKey,
           page: page.toString(),
           pageSize: pageSize.toString(),
+          validationStatus,
+          search: search || undefined,
         },
       })
       if (!res.ok) {
@@ -34,6 +37,7 @@ export function useMyUploads(params: UseMyUploadsParams = {}) {
       return res.json()
     },
     retry: false,
-    staleTime: 30000,
+    staleTime: 5000, // 5 seconds - uploads list changes frequently
+    refetchOnWindowFocus: true,
   })
 }

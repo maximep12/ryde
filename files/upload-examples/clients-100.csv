@@ -1,0 +1,101 @@
+client_code,store_name,store_type,email,city
+BULK-001,Sunrise Grocery,grocery,orders@sunrisegrocery.com,New York
+BULK-002,Downtown Convenience,convenience_store,info@downtownconv.com,Los Angeles
+BULK-003,Green Valley Market,grocery,contact@greenvalley.com,Chicago
+BULK-004,City Pharmacy Plus,pharmacy,orders@citypharmplus.com,Houston
+bulk-005,Corner Mart Express,corner_store,sales@cornermartexp.com,Phoenix
+BULK-006,Super Save Foods,supermarket,purchasing@supersavefoods.com,Philadelphia
+BULK-007,Quick Stop Central,convenience_store,orders@quickstopcentral.com,San Antonio
+BULK-008,Fresh Daily Grocers,grocery,info@freshdailygrocers.com,San Diego
+BULK-009,Wellness Rx Pharmacy,pharmacy,contact@wellnessrx.com,Dallas
+BULK-010,Neighborhood Corner,corner_store,orders@neighborhoodcorner.com,San Jose
+BULK-011,MegaMart Plaza,supermarket,sales@megamartplaza.com,Austin
+BULK-012,24/7 Convenience,convenience_store,info247convenience.com,Jacksonville
+BULK-013,Organic Life Market,grocery,orders@organiclifemarket.com,Fort Worth
+BULK-014,HealthFirst Pharmacy,pharmacy,contact@healthfirstpharm.com,Columbus
+BULK-015,Little Corner Shop,corner_store,sales@littlecornershop.com,Charlotte
+BULK-016,Value Superstore,supermarket,purchasing@valuesuperstore.com,Indianapolis
+BULK-017,Express Mart,convenience_store,orders@expressmart.com,Seattle
+BULK-018,Farm Fresh Foods,grocery,info@farmfreshfoods.com,Denver
+BULK-019,Care Plus Pharmacy,pharmacy,contact@carepluspharm.com,Washington
+BULK-020,Sunny Corner Market,kiosk,sales@sunnycorner.com,Boston
+BULK-021,Grand Supermarket,supermarket,purchasing@grandsupermarket.com,El Paso
+BULK-022,Night Owl Convenience,convenience_store,orders@nightowlconv.com,Nashville
+BULK-023,Nature's Basket,grocery,info@naturesbasket.com,Detroit
+BULK-024,MediCare Pharmacy,pharmacy,contactmedicarepharm.com,Oklahoma City
+BULK-025,Friendly Corner Store,corner_store,sales@friendlycorner.com,Portland
+BULK-026,Family Supermart,supermarket,purchasing@familysupermart.com,Las Vegas
+BULK-027,Go Quick Convenience,convenience_store,orders@goquickconv.com,Memphis
+BULK-028,Harvest Moon Grocery,grocery,info@harvestmoongrocery.com,Louisville
+BULK-029,Wellness Hub Pharmacy,pharmacy,contact@wellnesshubpharm.com,Baltimore
+BULK-030,Main Street Corner,corner_store,sales@mainstreetcorner.com,Milwaukee
+BULK-031,SaveMore Supermarket,supermarket,purchasing@savemoresuper.com,Albuquerque
+bulk-032,Rapid Stop Convenience,convenience_store,orders@rapidstopconv.com,Tucson
+BULK-033,Golden Harvest Market,grocery,info@goldenharvestmarket.com,Fresno
+BULK-034,PharmaChoice,pharmacy,contact@pharmachoice.com,Sacramento
+BULK-035,Village Corner Shop,corner_store,sales@villagecornershop.com,Kansas City
+BULK-036,BigBasket Superstore,megastore,purchasing@bigbasketsuperstore.com,Mesa
+BULK-037,EZ Shop Convenience,convenience_store,orders@ezshopconv.com,Atlanta
+BULK-038,Daily Needs Grocery,grocery,info@dailyneedsgrocery.com,Omaha
+BULK-039,RxCare Pharmacy,pharmacy,contact@rxcarepharm.com,Colorado Springs
+BULK-040,Happy Corner Market,corner_store,sales@happycornermarket.com,Raleigh
+BULK-041,PriceRight Supermarket,supermarket,purchasing@pricerightsupermarket.com,Long Beach
+BULK-042,Dash In Convenience,convenience_store,orders@dashinconv.com,Virginia Beach
+BULK-043,Green Earth Grocery,grocery,info@greenearthgrocery.com,Miami
+BULK-044,Community Pharmacy,pharmacy,community pharmacy@gmail.com,Oakland
+BULK-045,Oak Street Corner,corner_store,sales@oakstreetcorner.com,Minneapolis
+BULK-046,Metro Supermart,supermarket,purchasing@metrosupermart.com,Tulsa
+BULK-047,Handy Mart,convenience_store,orders@handymart.com,Bakersfield
+BULK-048,Sunrise Foods,grocery,info@sunrisefoods.com,Wichita
+BULK-049,TrueCare Pharmacy,pharmacy,truecarepharm,Arlington
+BULK-050,Cedar Corner Store,corner_store,sales@cedarcornerstore.com,Aurora
+BULK-051,ShopSmart Supermarket,supermarket,purchasing@shopsmartsupermarket.com,Tampa
+BULK-052,QuickPick Convenience,convenience_store,orders@quickpickconv.com,New Orleans
+BULK-053,Valley Fresh Market,grocery,info@valleyfreshmarket.com,Cleveland
+BULK-054,LifeLine Pharmacy,pharmacy,contact@lifelinepharm.com,Anaheim
+BULK-055,Pine Street Corner,bodega,sales@pinestreetcorner.com,Honolulu
+BULK-056,UltraMart Superstore,hypermarket,purchasing@ultramartsuperstore.com,Santa Ana
+BULK-057,Speedy Convenience,convenience_store,orders@speedyconv.com,Riverside
+BULK-058,Hometown Grocery,grocery,info@hometowngrocery.com,Corpus Christi
+BULK-059,MedPlus Pharmacy,pharmacy,contact@medpluspharm.com,Lexington
+BULK-060,Elm Corner Market,corner_store,sales@elmcornermarket.com,Stockton
+BULK-061,BulkBuy Supermarket,supermarket,purchasing@bulkbuysupermarket.com,St. Louis
+BULK-062,Stop N Save Convenience,mini_mart,orders@stopnsaveconv.com,Pittsburgh
+BULK-063,Pure Organic Grocery,grocery,info@pureorganicgrocery.com,Anchorage
+BULK-064,Express Rx Pharmacy,pharmacy,contact@expressrxpharm.com,Cincinnati
+BULK-065,Birch Corner Shop,corner_store,sales@birchcornershop.com,Henderson
+BULK-066,Everyday Supermart,supermarket,purchasing@everydaysupermart.com,Greensboro
+BULK-067,All Hours Convenience,convenience_store,orders@allhoursconv.com,Plano
+bulk-068,Country Fresh Foods,grocery,info@countryfreshfoods.com,Newark
+BULK-069,Family Pharmacy,pharmacy,contact@familypharm.com,Lincoln
+bulk_070,Maple Corner Store,corner_store,sales@maplecornerstore.com,Orlando
+BULK-071,CostLess Supermarket,supermarket,purchasing@costlesssupermarket.com,Irvine
+BULK-072,Mini Mart Express,convenience_store,orders@minimartexpress.com,Jersey City
+BULK-073,Garden Grove Grocery,grocery,info.gardengrovegrocery.com,Durham
+BULK-074,PharmaPlus Store,pharmacy,contact@pharmaplusstore.com,Chula Vista
+BULK-075,Walnut Corner Market,corner_store,sales@walnutcornermarket.com,Toledo
+BULK-076,SuperValue Store,supermarket,purchasing@supervaluestore.com,Fort Wayne
+BULK-077,Ready Mart Convenience,convenience_store,orders@readymartconv.com,St. Petersburg
+BULK-078,Local Harvest Grocery,grocery,info@localharvestgrocery.com,Laredo
+BULK-079,QuickMeds Pharmacy,pharmacy,contact@quickmedspharm.com,Madison
+BULK-080,Aspen Corner Shop,corner_store,sales@aspencornershop.com,Lubbock
+BULK-081,MaxiMart Superstore,warehouse,purchasing@maximartsuperstore.com,Chandler
+BULK-082,FastLane Convenience,convenience_store,orders@fastlaneconv.com,Scottsdale
+BULK-083,Wholesome Foods Market,grocery,info@wholesomefoodsmarket.com,Reno
+BULK-084,Discount Pharmacy,pharmacy,@discountpharm.com,Buffalo
+BULK-085,Cherry Corner Store,corner_store,sales@cherrycornerstore.com,Gilbert
+BULK-086,FoodWorld Supermarket,retail,purchasing@foodworldsupermarket.com,Glendale
+BULK-087,Grab N Go Convenience,convenience_store,orders@grabngoconv.com,North Las Vegas
+BULK-088,Premium Grocery Co,grocery,info@premiumgroceryco.com,Winston-Salem
+BULK-089,Neighborly Pharmacy,pharmacy,contact neighborly@pharm.com,Chesapeake
+BULK-090,Olive Corner Market,corner_store,sales@olivecornermarket.com,Norfolk
+BULK-091,PrimeChoice Supermart,supermarket,purchasing@primechoicesupermart.com,Fremont
+BULK-092,24 Seven Convenience,convenience_store,orders@24sevenconv.com,Garland
+BULK-093,Abundance Grocery,grocery,info@abundancegrocery.com,Irving
+BULK-094,TotalHealth Pharmacy,drug_store,contact@totalhealthpharm.com,Hialeah
+BULK-095,Spruce Corner Shop,corner_store,sales@sprucecornershop.com,Richmond
+BULK-096,GiantMart Superstore,supermarket,purchasing@giantmartsuperstore.com,Boise
+bulk-097,InstaStop Convenience,convenience_store,orders@instastopconv.com,Spokane
+BULK-098,Thrive Organic Grocery,grocery,thrive organic@gmail.com,Des Moines
+BULK-099,CareWell Pharmacy,pharmacy,contact@carewellpharm.com,San Bernardino
+BULK-100,Redwood Corner Market,corner_store,sales@redwoodcornermarket.com,Modesto

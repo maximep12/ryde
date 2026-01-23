@@ -43,7 +43,7 @@ export type UploadsToS3 = InferSelectModel<typeof uploadsToS3>
 // =============================================================================
 
 export const uploadsResults = app.table(
-  'uploads_app_results',
+  'uploads_results',
   {
     id: uuid('id')
       .primaryKey()
@@ -59,7 +59,7 @@ export const uploadsResults = app.table(
     ...timestamps,
   },
   (table) => {
-    return [index('uploads_app_results_upload_id_idx').on(table.uploadId)]
+    return [index('uploads_results_upload_id_idx').on(table.uploadId)]
   },
 )
 

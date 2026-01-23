@@ -7,7 +7,7 @@ type ErrorContentProps = {
 }
 
 export function ErrorContent({ children }: ErrorContentProps) {
-  const { file, uploadStatus } = useFileUpload()
+  const { file, uploadStatus, errorMessage } = useFileUpload()
 
   if (uploadStatus !== 'error') return null
 
@@ -24,7 +24,7 @@ export function ErrorContent({ children }: ErrorContentProps) {
         <span className="text-sm">{file?.name}</span>
       </div>
       <p className="text-muted-foreground mt-3 text-center text-sm">
-        There was an error processing your file. Please try again.
+        {errorMessage ?? 'There was an error processing your file. Please try again.'}
       </p>
       <ResetButton className="mt-6">Try again</ResetButton>
     </div>

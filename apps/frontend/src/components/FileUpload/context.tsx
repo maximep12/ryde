@@ -1,11 +1,25 @@
-import { CSV_HEADERS, CSV_UPLOAD_TYPE_LABELS, UploadType } from '@repo/csv'
+import { useUploadFile } from '@/hooks/mutations/uploads/useUploadFile'
+import { useUploadStatus } from '@/hooks/queries/uploads/useUploadStatus'
+import {
+  CSV_HEADERS,
+  CSV_UPLOAD_TYPE_LABELS,
+  UPLOAD_REPORT_STATUS,
+  UploadType,
+} from '@repo/csv'
+import { useQueryClient } from '@tanstack/react-query'
 import { createContext, use, useEffect, useRef, useState } from 'react'
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
-export type UploadStatus = 'idle' | 'uploading' | 'success' | 'error'
+export type UploadStatus = 'idle' | 'uploading' | 'processing' | 'success' | 'error'
+
+export type ResultsSummary = {
+  total: number
+  valid: number
+  invalid: number
+}
 
 type FileUploadContextValue = {
   // State
@@ -16,6 +30,9 @@ type FileUploadContextValue = {
   isDragging: boolean
   label: string
   expectedColumns: readonly string[]
+  errorMessage: string | null
+  resultsSummary: ResultsSummary | null
+  uploadId: string | null
 
   // Refs
   fileInputRef: React.RefObject<HTMLInputElement | null>
@@ -58,42 +75,92 @@ type FileUploadProviderProps = {
 }
 
 export function FileUploadProvider({ uploadType, onClose, children }: FileUploadProviderProps) {
+  const queryClient = useQueryClient()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle')
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [resultsSummary, setResultsSummary] = useState<ResultsSummary | null>(null)
+  const [uploadId, setUploadId] = useState<string | null>(null)
 
   const label = CSV_UPLOAD_TYPE_LABELS[uploadType]
   const expectedColumns = CSV_HEADERS[uploadType]
 
-  // Simulate upload progress animation
+  // Upload mutation
+  const uploadMutation = useUploadFile()
+
+  // Status polling query - only enabled after upload completes
+  const statusQuery = useUploadStatus(uploadedFileName, {
+    enabled: uploadStatus === 'processing',
+  })
+
+  // Handle upload mutation state changes
   useEffect(() => {
-    if (uploadStatus !== 'uploading') return
+    if (uploadMutation.isPending) {
+      setUploadProgress(50) // Show progress while uploading to S3
+    }
+    if (uploadMutation.isSuccess) {
+      setUploadedFileName(uploadMutation.data.fileName)
+      setUploadStatus('processing')
+      setUploadProgress(75) // Show progress while processing
+    }
+    if (uploadMutation.isError) {
+      setUploadStatus('error')
+      setErrorMessage(uploadMutation.error?.message ?? 'Upload failed')
+      setUploadProgress(0)
+    }
+  }, [uploadMutation.isPending, uploadMutation.isSuccess, uploadMutation.isError, uploadMutation.data, uploadMutation.error])
 
-    setUploadProgress(0)
-    const duration = 1200 // Total upload time in ms
-    const interval = 50 // Update every 50ms
-    const increment = 100 / (duration / interval)
+  // Handle status polling results
+  useEffect(() => {
+    if (!statusQuery.data) return
 
-    // Determine outcome at start (for debugging: 0 = always error, 0.5 = 50/50, 1 = always success)
-    const successChance = 0.75
-    const willSucceed = Math.random() < successChance
+    const { status, metadata } = statusQuery.data
 
-    const timer = setInterval(() => {
-      setUploadProgress((prev) => {
-        const next = prev + increment
-        if (next >= 100) {
-          clearInterval(timer)
-          setTimeout(() => setUploadStatus(willSucceed ? 'success' : 'error'), 200)
-          return 100
-        }
-        return next
-      })
-    }, interval)
+    // Check for processing error
+    if (metadata?.error) {
+      setUploadStatus('error')
+      setErrorMessage(metadata.error)
+      setUploadProgress(0)
+      return
+    }
 
-    return () => clearInterval(timer)
-  }, [uploadStatus])
+    // Store the upload ID for linking to details page
+    if (metadata?.uuid) {
+      setUploadId(metadata.uuid)
+    }
+
+    // Update progress based on status
+    if (status === UPLOAD_REPORT_STATUS.NOT_STARTED) {
+      setUploadProgress(75)
+    } else if (status === UPLOAD_REPORT_STATUS.PROCESSING) {
+      setUploadProgress(85)
+    } else if (status === UPLOAD_REPORT_STATUS.COMPLETED) {
+      setUploadProgress(100)
+
+      // Use summary from backend (already calculated)
+      const { summary } = statusQuery.data
+      if (summary) {
+        setResultsSummary({ total: summary.total, valid: summary.valid, invalid: summary.invalid })
+      }
+
+      setUploadStatus('success')
+
+      // Invalidate my-uploads query so the list refreshes
+      queryClient.invalidateQueries({ queryKey: ['my-uploads'] })
+    }
+  }, [statusQuery.data])
+
+  // Handle status query error
+  useEffect(() => {
+    if (statusQuery.isError) {
+      setUploadStatus('error')
+      setErrorMessage(statusQuery.error?.message ?? 'Failed to check upload status')
+    }
+  }, [statusQuery.isError, statusQuery.error])
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
@@ -131,17 +198,31 @@ export function FileUploadProvider({ uploadType, onClose, children }: FileUpload
     setFile(null)
     setUploadStatus('idle')
     setUploadProgress(0)
+    setUploadedFileName(null)
+    setErrorMessage(null)
   }
 
   const startUpload = () => {
     if (!file) return
     setUploadStatus('uploading')
+    setUploadProgress(25)
+    setErrorMessage(null)
+
+    uploadMutation.mutate({
+      file,
+      uploadType,
+    })
   }
 
   const reset = () => {
     setFile(null)
     setUploadStatus('idle')
     setUploadProgress(0)
+    setUploadedFileName(null)
+    setErrorMessage(null)
+    setResultsSummary(null)
+    setUploadId(null)
+    uploadMutation.reset()
   }
 
   const close = () => {
@@ -157,6 +238,9 @@ export function FileUploadProvider({ uploadType, onClose, children }: FileUpload
     isDragging,
     label,
     expectedColumns,
+    errorMessage,
+    resultsSummary,
+    uploadId,
     fileInputRef,
     setFile,
     setIsDragging,

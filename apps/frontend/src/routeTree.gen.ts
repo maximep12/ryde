@@ -24,6 +24,7 @@ import { Route as AuthExampleClientsIndexRouteImport } from './routes/_auth/exam
 import { Route as AuthAdminUsersIndexRouteImport } from './routes/_auth/admin/users/index'
 import { Route as AuthExampleOrdersNewRouteImport } from './routes/_auth/example/orders/new'
 import { Route as AuthExampleOrdersOrderIdRouteImport } from './routes/_auth/example/orders/$orderId'
+import { Route as AuthExampleMyUploadsUploadIdRouteImport } from './routes/_auth/example/my-uploads/$uploadId'
 import { Route as AuthExampleClientsNewRouteImport } from './routes/_auth/example/clients/new'
 import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/example/clients/$clientId'
 
@@ -104,6 +105,12 @@ const AuthExampleOrdersOrderIdRoute =
     path: '/orders/$orderId',
     getParentRoute: () => AuthExampleRouteRoute,
   } as any)
+const AuthExampleMyUploadsUploadIdRoute =
+  AuthExampleMyUploadsUploadIdRouteImport.update({
+    id: '/my-uploads/$uploadId',
+    path: '/my-uploads/$uploadId',
+    getParentRoute: () => AuthExampleRouteRoute,
+  } as any)
 const AuthExampleClientsNewRoute = AuthExampleClientsNewRouteImport.update({
   id: '/clients/new',
   path: '/clients/new',
@@ -125,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthIndexRoute
   '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
   '/example/clients/new': typeof AuthExampleClientsNewRoute
+  '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
   '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
   '/example/orders/new': typeof AuthExampleOrdersNewRoute
   '/admin/users': typeof AuthAdminUsersIndexRoute
@@ -143,6 +151,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthIndexRoute
   '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
   '/example/clients/new': typeof AuthExampleClientsNewRoute
+  '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
   '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
   '/example/orders/new': typeof AuthExampleOrdersNewRoute
   '/admin/users': typeof AuthAdminUsersIndexRoute
@@ -163,6 +172,7 @@ export interface FileRoutesById {
   '/_auth/': typeof AuthIndexRoute
   '/_auth/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
   '/_auth/example/clients/new': typeof AuthExampleClientsNewRoute
+  '/_auth/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
   '/_auth/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
   '/_auth/example/orders/new': typeof AuthExampleOrdersNewRoute
   '/_auth/admin/users/': typeof AuthAdminUsersIndexRoute
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/'
     | '/example/clients/$clientId'
     | '/example/clients/new'
+    | '/example/my-uploads/$uploadId'
     | '/example/orders/$orderId'
     | '/example/orders/new'
     | '/admin/users'
@@ -201,6 +212,7 @@ export interface FileRouteTypes {
     | '/'
     | '/example/clients/$clientId'
     | '/example/clients/new'
+    | '/example/my-uploads/$uploadId'
     | '/example/orders/$orderId'
     | '/example/orders/new'
     | '/admin/users'
@@ -220,6 +232,7 @@ export interface FileRouteTypes {
     | '/_auth/'
     | '/_auth/example/clients/$clientId'
     | '/_auth/example/clients/new'
+    | '/_auth/example/my-uploads/$uploadId'
     | '/_auth/example/orders/$orderId'
     | '/_auth/example/orders/new'
     | '/_auth/admin/users/'
@@ -342,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExampleOrdersOrderIdRouteImport
       parentRoute: typeof AuthExampleRouteRoute
     }
+    '/_auth/example/my-uploads/$uploadId': {
+      id: '/_auth/example/my-uploads/$uploadId'
+      path: '/my-uploads/$uploadId'
+      fullPath: '/example/my-uploads/$uploadId'
+      preLoaderRoute: typeof AuthExampleMyUploadsUploadIdRouteImport
+      parentRoute: typeof AuthExampleRouteRoute
+    }
     '/_auth/example/clients/new': {
       id: '/_auth/example/clients/new'
       path: '/clients/new'
@@ -362,6 +382,7 @@ declare module '@tanstack/react-router' {
 interface AuthExampleRouteRouteChildren {
   AuthExampleClientsClientIdRoute: typeof AuthExampleClientsClientIdRoute
   AuthExampleClientsNewRoute: typeof AuthExampleClientsNewRoute
+  AuthExampleMyUploadsUploadIdRoute: typeof AuthExampleMyUploadsUploadIdRoute
   AuthExampleOrdersOrderIdRoute: typeof AuthExampleOrdersOrderIdRoute
   AuthExampleOrdersNewRoute: typeof AuthExampleOrdersNewRoute
   AuthExampleClientsIndexRoute: typeof AuthExampleClientsIndexRoute
@@ -374,6 +395,7 @@ interface AuthExampleRouteRouteChildren {
 const AuthExampleRouteRouteChildren: AuthExampleRouteRouteChildren = {
   AuthExampleClientsClientIdRoute: AuthExampleClientsClientIdRoute,
   AuthExampleClientsNewRoute: AuthExampleClientsNewRoute,
+  AuthExampleMyUploadsUploadIdRoute: AuthExampleMyUploadsUploadIdRoute,
   AuthExampleOrdersOrderIdRoute: AuthExampleOrdersOrderIdRoute,
   AuthExampleOrdersNewRoute: AuthExampleOrdersNewRoute,
   AuthExampleClientsIndexRoute: AuthExampleClientsIndexRoute,

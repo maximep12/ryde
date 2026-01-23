@@ -10,6 +10,8 @@ import {
   clientOrders,
   clients,
   products,
+  uploadsResults,
+  uploadsToS3,
   users,
 } from '../schema'
 import {
@@ -50,6 +52,8 @@ async function clearAllData() {
   await db.delete(clientOrders)
   await db.delete(clients)
   await db.delete(products)
+  await db.delete(uploadsResults)
+  await db.delete(uploadsToS3)
   await db.delete(users)
 
   console.log('All data cleared.')

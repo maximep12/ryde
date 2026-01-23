@@ -1,14 +1,15 @@
 import { productsSchema } from '@repo/csv'
 import { products } from '@repo/db'
-import { eq } from 'drizzle-orm'
+import { eq, inArray, sql } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '../../../db'
+import { BatchValidationResult, NodePgTransaction } from '../types'
 
 type AddProductsRecord = z.infer<typeof productsSchema>
 
 export type AddProductsValidationDetails = {
   productCode: string
-  isExisting: boolean
+  isUpdate: boolean
 }
 
 export async function validateAddProductsRecord(
@@ -25,14 +26,12 @@ export async function validateAddProductsRecord(
 
   const details: AddProductsValidationDetails = {
     productCode,
-    isExisting: !!existingProduct,
+    isUpdate: !!existingProduct,
   }
 
-  // Product is valid if it doesn't already exist
-  const isValid = !details.isExisting
-
+  // All products are valid (upsert will handle insert or update)
   return {
-    isValid,
+    isValid: true,
     details,
   }
 }
@@ -40,11 +39,94 @@ export async function validateAddProductsRecord(
 export async function processAddProductsRecord(
   record: AddProductsRecord,
 ): Promise<AddProductsRecord> {
-  await db.insert(products).values({
+  await db
+    .insert(products)
+    .values({
+      productCode: String(record.product_code),
+      description: String(record.description),
+      productType: String(record.product_type),
+    })
+    .onConflictDoUpdate({
+      target: products.productCode,
+      set: {
+        description: String(record.description),
+        productType: String(record.product_type),
+      },
+    })
+
+  return record
+}
+
+// Batch validation - single IN query for all records
+export async function batchValidateProducts(
+  records: Array<{ record: AddProductsRecord; rowIndex: number }>,
+): Promise<Array<BatchValidationResult<AddProductsValidationDetails>>> {
+  if (records.length === 0) return []
+
+  // Extract all product codes
+  const codes = records.map((r) => String(r.record.product_code))
+
+  // Single query to find all existing products by code
+  const existingProducts = await db
+    .select({ productCode: products.productCode })
+    .from(products)
+    .where(inArray(products.productCode, codes))
+
+  // Build Set for O(1) lookup
+  const existingCodes = new Set(existingProducts.map((p) => p.productCode))
+
+  // Track seen codes to detect updates (last occurrence wins for duplicates in batch)
+  const seenCodes = new Set<string>()
+
+  const results: Array<BatchValidationResult<AddProductsValidationDetails>> = []
+
+  for (const { record, rowIndex } of records) {
+    const productCode = String(record.product_code)
+
+    const isExistingInDb = existingCodes.has(productCode)
+    const isDuplicateInBatch = seenCodes.has(productCode)
+
+    const details: AddProductsValidationDetails = {
+      productCode,
+      isUpdate: isExistingInDb || isDuplicateInBatch,
+    }
+
+    // All products are valid (upsert will handle insert or update)
+    results.push({
+      rowIndex,
+      record,
+      isValid: true,
+      details,
+    })
+
+    // Track this record's code
+    seenCodes.add(productCode)
+  }
+
+  return results
+}
+
+// Batch upsert - transaction-aware
+export async function batchInsertProducts(
+  tx: NodePgTransaction,
+  records: AddProductsRecord[],
+): Promise<void> {
+  if (records.length === 0) return
+
+  const values = records.map((record) => ({
     productCode: String(record.product_code),
     description: String(record.description),
     productType: String(record.product_type),
-  })
+  }))
 
-  return record
+  await tx
+    .insert(products)
+    .values(values)
+    .onConflictDoUpdate({
+      target: products.productCode,
+      set: {
+        description: sql`excluded.description`,
+        productType: sql`excluded.product_type`,
+      },
+    })
 }

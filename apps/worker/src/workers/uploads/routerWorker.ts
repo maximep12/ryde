@@ -13,8 +13,8 @@ import { connection } from '../../redis'
 import { getUploadToS3Log } from './helpers/uploads'
 
 const PROCESSING_QUEUES_MAP: Record<UploadType, ProcessingQueue> = {
-  'products': QUEUE_S3_FILE_PROCESS_PRODUCTS,
-  'clients': QUEUE_S3_FILE_PROCESS_CLIENTS,
+  products: QUEUE_S3_FILE_PROCESS_PRODUCTS,
+  clients: QUEUE_S3_FILE_PROCESS_CLIENTS,
 } as const
 
 const logger = createBaseLogger().child({

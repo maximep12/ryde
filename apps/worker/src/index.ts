@@ -15,8 +15,12 @@ import { logQueueHealth } from './lib/utils/logger'
 import { startPollingServices } from './lib/utils/polling-services'
 import { cleanupWorker } from './workers/cleanup/worker'
 import { placeholderWorker } from './workers/placeholder/worker'
-import { addClientsProcessingWorker, addProductsProcessingWorker } from './workers/uploads/processingWorkers'
+import {
+  addClientsProcessingWorker,
+  addProductsProcessingWorker,
+} from './workers/uploads/processingWorkers'
 import { routerWorker } from './workers/uploads/routerWorker'
+import { startSQSPoller } from './aws-sqs-poller'
 // import { materializedViewsWorker } from './workers/materialized-views/worker'
 
 const logger = createBaseLogger().child({
@@ -151,3 +155,6 @@ process.on('SIGINT', async () => {
 export { typedRedis } from './redis'
 
 startPollingServices()
+
+// Start AWS SQS poller for S3 upload events
+startSQSPoller()

@@ -86,6 +86,19 @@ async function pollMessages() {
         for (const msg of Messages) {
           try {
             const body = JSON.parse(msg.Body!)
+
+            // Skip S3 test events (they don't have Records array)
+            if (body.Event === 's3:TestEvent') {
+              logger.info('Skipping S3 test event')
+              await sqs.send(
+                new DeleteMessageCommand({
+                  QueueUrl: QUEUE_URL,
+                  ReceiptHandle: msg.ReceiptHandle!,
+                }),
+              )
+              continue
+            }
+
             const parsedBody = SQSMessageBodySchema.parse(body)
             logger.info(parsedBody, 'Processing')
 

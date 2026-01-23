@@ -3,7 +3,7 @@ import {
   EXAMPLE_MODULE_HEADERS,
   EXAMPLE_MODULE_UPLOAD_TYPE_LABELS,
   EXAMPLE_MODULE_UPLOAD_TYPE_S3_PATHS,
-  EXAMPLE_MODULE_UPLOAD_TYPES
+  EXAMPLE_MODULE_UPLOAD_TYPES,
 } from './example-module'
 
 // =============================================================================
@@ -39,4 +39,3 @@ export const UPLOAD_REPORT_STATUS = {
 } as const
 
 export type UploadReportStatus = (typeof UPLOAD_REPORT_STATUS)[keyof typeof UPLOAD_REPORT_STATUS]
-

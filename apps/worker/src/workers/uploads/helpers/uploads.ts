@@ -2,6 +2,7 @@ import { UPLOADS_ERROR_CODES } from '@repo/constants'
 import { uploadsResults, uploadsToS3 } from '@repo/db'
 import { eq } from 'drizzle-orm'
 import { db } from '../../../db'
+import { NodePgTransaction } from '../types'
 
 export function getUploadToS3Log(key: string) {
   return db.select().from(uploadsToS3).where(eq(uploadsToS3.fileKey, key)).limit(1)
@@ -41,7 +42,32 @@ export async function setS3UploadError(uuid: string, error: unknown) {
   await db
     .update(uploadsToS3)
     .set({
-      error: errorMessage
+      error: errorMessage,
     })
     .where(eq(uploadsToS3.uuid, uuid))
+}
+
+export async function batchInsertUploadResults(
+  uploadId: string,
+  results: Array<{
+    data: Record<string, unknown>
+    rowIndex: number
+    isValid: boolean
+    validationDetails: unknown
+  }>,
+  tx?: NodePgTransaction,
+) {
+  if (results.length === 0) return
+
+  const values = results.map((result) => ({
+    uploadId,
+    data: result.data,
+    rowIndex: result.rowIndex,
+    isValid: result.isValid,
+    validationDetails: result.validationDetails,
+  }))
+
+  // Use transaction context if provided, otherwise use db directly
+  const executor = tx ?? db
+  await executor.insert(uploadsResults).values(values)
 }

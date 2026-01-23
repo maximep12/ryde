@@ -2,9 +2,9 @@ import { S3Client } from '@aws-sdk/client-s3'
 import { clientsSchema, productsSchema } from '@repo/csv'
 import { QUEUE_S3_FILE_PROCESS_CLIENTS, QUEUE_S3_FILE_PROCESS_PRODUCTS } from '@repo/queue'
 import { env } from '../../env'
-import { processAddClientsRecord, validateAddClientsRecord } from './helpers/addClients'
-import { processAddProductsRecord, validateAddProductsRecord } from './helpers/addProducts'
-import { getProcessingWorker } from './helpers/workers'
+import { batchInsertClients, batchValidateClients } from './helpers/addClients'
+import { batchInsertProducts, batchValidateProducts } from './helpers/addProducts'
+import { getBatchProcessingWorker } from './helpers/workers'
 
 const s3 = new S3Client({
   region: env.AWS_FILE_UPLOAD_S3_BUCKET_REGION,
@@ -14,30 +14,18 @@ const s3 = new S3Client({
   },
 })
 
-export const addProductsProcessingWorker = getProcessingWorker(
+export const addProductsProcessingWorker = getBatchProcessingWorker(
   s3,
   QUEUE_S3_FILE_PROCESS_PRODUCTS,
   productsSchema,
-  async (record) => {
-    const validation = await validateAddProductsRecord(record)
-    return validation
-  },
-  async (record) => {
-    const processed = await processAddProductsRecord(record)
-    return processed
-  },
+  batchValidateProducts,
+  batchInsertProducts,
 )
 
-export const addClientsProcessingWorker = getProcessingWorker(
+export const addClientsProcessingWorker = getBatchProcessingWorker(
   s3,
   QUEUE_S3_FILE_PROCESS_CLIENTS,
   clientsSchema,
-  async (record) => {
-    const validation = await validateAddClientsRecord(record)
-    return validation
-  },
-  async (record) => {
-    const processed = await processAddClientsRecord(record)
-    return processed
-  },
+  batchValidateClients,
+  batchInsertClients,
 )
