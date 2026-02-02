@@ -80,7 +80,7 @@ async function pollMessages() {
       })
 
       const { Messages } = await sqs.send(receiveCommand)
-      logger.info({ messages: Messages }, 'Received messages')
+      logger.info({ messages: Messages }, Messages?.length ? 'Received messages' : 'No message')
 
       if (Messages?.length) {
         for (const msg of Messages) {

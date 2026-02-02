@@ -1,5 +1,6 @@
 'use no memo'
 
+import config from '@/config'
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
@@ -29,7 +30,7 @@ import {
   TableRow,
 } from '@repo/ui/components'
 import { serializeArray } from '@repo/zod-schemas'
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
 import {
   ColumnDef,
   flexRender,
@@ -57,6 +58,11 @@ import { useState } from 'react'
 import { myUploadsSearchDefaults, myUploadsSearchSchema } from './searchSchema'
 
 export const Route = createFileRoute('/_auth/example/my-uploads/')({
+  beforeLoad: () => {
+    if (!config.featureFlags['upload-files']) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: MyUploadsPage,
   validateSearch: myUploadsSearchSchema,
   staticData: {

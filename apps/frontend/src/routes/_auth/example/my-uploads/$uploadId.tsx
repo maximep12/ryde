@@ -1,5 +1,6 @@
 'use no memo'
 
+import config from '@/config'
 import { useCurrentItem } from '@/contexts/CurrentItemContext'
 import { useDownloadFile } from '@/hooks/queries/uploads/useDownloadFile'
 import { useDownloadInvalidResults } from '@/hooks/queries/uploads/useDownloadInvalidResults'
@@ -23,7 +24,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@repo/ui/components'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, redirect, useNavigate } from '@tanstack/react-router'
 import {
   ArrowLeftIcon,
   CheckCircleIcon,
@@ -45,6 +46,11 @@ const searchSchema = z.object({
 })
 
 export const Route = createFileRoute('/_auth/example/my-uploads/$uploadId')({
+  beforeLoad: () => {
+    if (!config.featureFlags['upload-files']) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: UploadDetailsPage,
   validateSearch: searchSchema,
   staticData: {

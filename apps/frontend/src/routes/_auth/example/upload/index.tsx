@@ -1,12 +1,18 @@
+import config from '@/config'
 import { FileUploadModal } from '@/components/FileUpload'
 import { UploadTypeConfig, UploadTypeTile } from '@/components/UploadTypeTile'
 import { UploadType } from '@repo/csv'
 import { Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 import { PackageIcon, UsersIcon } from 'lucide-react'
 import { useState } from 'react'
 
 export const Route = createFileRoute('/_auth/example/upload/')({
+  beforeLoad: () => {
+    if (!config.featureFlags['upload-files']) {
+      throw redirect({ to: '/' })
+    }
+  },
   component: UploadDataPage,
   staticData: {
     title: 'route.uploadData',
