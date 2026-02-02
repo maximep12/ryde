@@ -1,4 +1,5 @@
-import { JOB_EVENT } from '@repo/constants'
+import { ENV, Environment, JOB_EVENT } from '@repo/constants'
+import { FEATURE_FLAGS_ENV } from '@repo/feature-flags'
 import { createBaseLogger } from '@repo/logger'
 import {
   AllQueues,
@@ -7,9 +8,9 @@ import {
   QUEUE_PLACEHOLDER,
   QUEUE_S3_FILE_PROCESS_CLIENTS,
   QUEUE_S3_FILE_PROCESS_PRODUCTS,
-  /* , QUEUE_REFRESH_MATERIALIZED_VIEWS */
 } from '@repo/queue'
 import { Worker } from 'bullmq'
+import { startSQSPoller } from './aws-sqs-poller'
 import { createJobDbEntry } from './lib/utils/db'
 import { logQueueHealth } from './lib/utils/logger'
 import { startPollingServices } from './lib/utils/polling-services'
@@ -20,7 +21,6 @@ import {
   addProductsProcessingWorker,
 } from './workers/uploads/processingWorkers'
 import { routerWorker } from './workers/uploads/routerWorker'
-import { startSQSPoller } from './aws-sqs-poller'
 // import { materializedViewsWorker } from './workers/materialized-views/worker'
 
 const logger = createBaseLogger().child({
@@ -157,4 +157,8 @@ export { typedRedis } from './redis'
 startPollingServices()
 
 // Start AWS SQS poller for S3 upload events
-startSQSPoller()
+const currentEnv = (process.env.ENV as Environment) || ENV.LOCAL
+const isUploadEnabled = FEATURE_FLAGS_ENV[currentEnv]?.['upload-files'] ?? false
+if (isUploadEnabled) {
+  startSQSPoller()
+}
