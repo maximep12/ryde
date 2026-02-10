@@ -1,7 +1,6 @@
 'use no memo'
 
 import config from '@/config'
-import { useCurrentItem } from '@/contexts/CurrentItemContext'
 import { useDownloadFile } from '@/hooks/queries/uploads/useDownloadFile'
 import { useDownloadInvalidResults } from '@/hooks/queries/uploads/useDownloadInvalidResults'
 import { useUploadDetails } from '@/hooks/queries/uploads/useUploadDetails'
@@ -37,7 +36,7 @@ import {
   UserIcon,
   XCircleIcon,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { z } from 'zod'
 
 const searchSchema = z.object({
@@ -65,13 +64,13 @@ function formatDateTime(date: string | Date) {
 }
 
 // Truncate file name for sidebar display
-function truncateFileName(name: string, maxLength: number = 20): string {
-  if (name.length <= maxLength) return name
-  const extension = name.lastIndexOf('.') > 0 ? name.slice(name.lastIndexOf('.')) : ''
-  const baseName = name.slice(0, name.length - extension.length)
-  const truncatedBase = baseName.slice(0, maxLength - extension.length - 3)
-  return `${truncatedBase}...${extension}`
-}
+// function truncateFileName(name: string, maxLength: number = 20): string {
+//   if (name.length <= maxLength) return name
+//   const extension = name.lastIndexOf('.') > 0 ? name.slice(name.lastIndexOf('.')) : ''
+//   const baseName = name.slice(0, name.length - extension.length)
+//   const truncatedBase = baseName.slice(0, maxLength - extension.length - 3)
+//   return `${truncatedBase}...${extension}`
+// }
 
 function UploadDetailsPage() {
   const { uploadId } = Route.useParams()
@@ -79,7 +78,6 @@ function UploadDetailsPage() {
   const navigate = useNavigate()
   const downloadFile = useDownloadFile()
   const downloadInvalidResults = useDownloadInvalidResults()
-  const { setCurrentItem } = useCurrentItem()
 
   const [filter, setFilter] = useState<'all' | 'valid' | 'invalid' | undefined>(search.filter)
 
@@ -89,14 +87,6 @@ function UploadDetailsPage() {
     pageSize: 20,
     filter,
   })
-
-  // Register file name in sidebar when data loads
-  useEffect(() => {
-    if (data?.upload) {
-      const fileName = data.upload.localFileName || data.upload.fileName
-      setCurrentItem('/example/my-uploads', truncateFileName(fileName))
-    }
-  }, [data?.upload, setCurrentItem])
 
   const handlePageChange = (newPage: number) => {
     navigate({

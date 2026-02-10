@@ -17,8 +17,7 @@ export type NavigationItem = {
   path: FileRouteTypes['to']
   icon: LucideIcon
   shouldHide?: boolean
-  /** If true, this item will be active when the current path starts with this path (but not for other nav items that also start with it) */
-  matchChildRoutes?: boolean
+  matchChildRoutes?: boolean // active when current path starts with this path (but not for other nav items that also start with it)
 }
 
 export const navigation: NavigationItem[] = [{ title: 'route.welcome', path: '/', icon: HomeIcon }]

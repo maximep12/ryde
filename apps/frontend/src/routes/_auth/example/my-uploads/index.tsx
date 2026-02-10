@@ -1,9 +1,9 @@
 'use no memo'
 
-import config from '@/config'
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
+import config from '@/config'
 import { useMyUploads } from '@/hooks/queries/uploads/useMyUploads'
 import { useUrlFilters } from '@/hooks/useUrlFilters'
 import { CSV_UPLOAD_TYPE_LABELS, UPLOAD_TYPES, UploadType } from '@repo/csv'
