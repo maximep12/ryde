@@ -39,5 +39,6 @@ export function useVerifySession() {
     queryKey: ['verifiedSession'],
     queryFn: async () => await verifySession(),
     staleTime: MILLIS.SECOND * 25,
+    refetchInterval: MILLIS.SECOND * 25,
   })
 }

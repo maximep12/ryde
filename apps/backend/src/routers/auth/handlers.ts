@@ -1,4 +1,4 @@
-import { MESSAGE } from '@repo/constants'
+import { MESSAGE, MILLIS } from '@repo/constants'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { zValidatorThrow } from '../../lib/errors/zValidatorThrow'
@@ -7,12 +7,16 @@ import { verifySession } from '../../middlewares/auth'
 import {
   createSession,
   deleteSession,
+  extendSession,
   findSession,
   getSessionSchema,
   getUserByEmail,
   isSessionExpired,
   loginSchema,
 } from './helpers'
+
+const GRACE_PERIOD = MILLIS.MINUTE * 2
+const SLIDING_WINDOW_THRESHOLD = MILLIS.MINUTE * 30
 
 const authRouter = new Hono()
 
@@ -60,7 +64,20 @@ export const authRouterDefinition = authRouter
     if (!sessionFound) throw new HTTPException(401, { message: MESSAGE.SESSION_NOT_FOUND })
 
     if (isSessionExpired(sessionFound)) {
+      const now = Date.now()
+      const expiredAgo = now - sessionFound.expiresAt.getTime()
+
+      if (expiredAgo <= GRACE_PERIOD) {
+        await extendSession(sessionFound.sessionToken)
+        return new Response(null, { status: 204 })
+      }
+
       throw new HTTPException(401, { message: MESSAGE.SESSION_EXPIRED })
+    }
+
+    const timeRemaining = sessionFound.expiresAt.getTime() - Date.now()
+    if (timeRemaining < SLIDING_WINDOW_THRESHOLD) {
+      extendSession(sessionFound.sessionToken)
     }
 
     return new Response(null, { status: 204 })

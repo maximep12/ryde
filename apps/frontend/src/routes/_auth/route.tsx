@@ -2,7 +2,12 @@ import { AppHeader } from '@/components/AppLayout/AppHeader'
 import { AppSidebar } from '@/components/AppLayout/AppSidebar'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { useMe } from '@/hooks/queries/auth/useMe'
-import { handleInvalidSession, verifySession } from '@/hooks/queries/auth/useVerifySession'
+import { useSessionRevalidateOnFocus } from '@/hooks/queries/auth/useSessionRevalidateOnFocus'
+import {
+  handleInvalidSession,
+  useVerifySession,
+  verifySession,
+} from '@/hooks/queries/auth/useVerifySession'
 import { getSessionToken } from '@/stores/session'
 import { MILLIS } from '@repo/constants'
 import { SidebarProvider } from '@repo/ui/components'
@@ -81,6 +86,9 @@ function ErrorComponent(props: { error: Error }) {
 }
 
 function AuthLayoutComponent() {
+  useVerifySession()
+  useSessionRevalidateOnFocus()
+
   const { data: me, error } = useMe()
 
   const viewportRef = useRef<HTMLDivElement>(null)

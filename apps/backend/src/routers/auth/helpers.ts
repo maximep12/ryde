@@ -59,11 +59,7 @@ export function deleteSession(sessionToken: string) {
   return db.delete(usersSessions).where(eq(usersSessions.sessionToken, sessionToken))
 }
 
-export async function extendSession(
-  sessionToken: string,
-  accessToken: string,
-  refreshToken: string,
-) {
+export async function extendSession(sessionToken: string) {
   const interval = featureFlags['infinite-user-sessions']
     ? sql`now() + INTERVAL '100 years'`
     : sql`now() + INTERVAL '60 minutes'`
@@ -71,8 +67,6 @@ export async function extendSession(
   return db
     .update(usersSessions)
     .set({
-      accessToken,
-      refreshToken,
       expiresAt: interval,
       updatedAt: sql`now()`,
     })

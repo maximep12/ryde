@@ -17,6 +17,7 @@
     "csv-parse": "^5.6.0",
     "@repo/config-typescript": "workspace:*",
     "@repo/constants": "workspace:*",
+    "@repo/csv": "workspace:*",
     "@repo/db": "workspace:*",
     "@repo/feature-flags": "workspace:*",
     "@repo/logger": "workspace:*",
