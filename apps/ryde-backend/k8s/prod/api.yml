@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ryde
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ryde
+  template:
+    metadata:
+      labels:
+        app: ryde
+    spec:
+      imagePullSecrets:
+        - name: docker-hub
+      containers:
+        - name: api
+          image: volume7/ryde-backend:__IMAGE_TAG__
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - secretRef:
+                name: ryde
+            - configMapRef:
+                name: ryde
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ryde
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  selector:
+    app: ryde

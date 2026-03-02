@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ryde
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 300m
+    nginx.ingress.kubernetes.io/enable-cors: 'true'
+    nginx.ingress.kubernetes.io/cors-allow-methods: 'GET, PUT, PATCH, POST, DELETE, OPTIONS'
+    nginx.ingress.kubernetes.io/cors-allow-headers: 'X-Forwarded-For, Authorization, Content-Type, Content-Length, Accept, pragma, cache-control, expires, Content-Disposition'
+    nginx.ingress.kubernetes.io/cors-allow-origin: 'https://*.v7apps.com,https://*.v7static.com,https://*.netlify.app,https://account-d.docusign.com,http://localhost:3000'
+spec:
+  rules:
+    - host: ryde.v7apps.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ryde
+                port:
+                  number: 80

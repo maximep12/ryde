@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ryde-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ryde-worker
+  template:
+    metadata:
+      labels:
+        app: ryde-worker
+    spec:
+      containers:
+        - name: worker
+          command: ['npm', 'run', 'worker']
+          image: volume7/ryde-backend:__IMAGE_TAG__
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: ryde
+            - configMapRef:
+                name: ryde
+      imagePullSecrets:
+        - name: docker-hub

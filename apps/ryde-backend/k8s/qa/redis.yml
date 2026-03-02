@@ -1,0 +1,32 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ryde-qa-redis
+spec:
+  selector:
+    matchLabels:
+      app: ryde-qa-redis
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ryde-qa-redis
+    spec:
+      containers:
+        - name: redis
+          image: redis:7.2.1
+          ports:
+            - containerPort: 6379
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ryde-qa-redis
+spec:
+  ports:
+    - port: 6379
+  selector:
+    app: ryde-qa-redis

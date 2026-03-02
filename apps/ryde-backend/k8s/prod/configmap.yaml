@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ryde
+data:
+  NODE_ENV: 'production'
+  REDIS_URL: 'redis://ryde-redis'
+  S3_CIRCLEK_BUCKET_NAME: 'ryde-circlek'
+  S3_RABBA_BUCKET_NAME: 'ryde-rabba'
+  S3_CIRCLEK_REGION: 'us-east-1'
+  S3_REGION: 'ca-central-1'
+  RABBA_SFTP_CONTAINER: 'rabba'

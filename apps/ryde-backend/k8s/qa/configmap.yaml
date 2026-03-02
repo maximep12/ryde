@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ryde-qa
+data:
+  NODE_ENV: 'qa'
+  REDIS_URL: 'redis://ryde-qa-redis'
+  S3_CIRCLEK_BUCKET_NAME: 'ryde-circlek-qa'
+  S3_RABBA_BUCKET_NAME: 'ryde-rabba-qa'
+  S3_CIRCLEK_REGION: 'us-east-1'
+  S3_REGION: 'ca-central-1'
+  RABBA_SFTP_CONTAINER: 'rabba-qa'
