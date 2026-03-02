@@ -108,7 +108,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2">
           <BoxIcon className="text-primary size-7" />
-          <span className="text-lg font-bold tracking-tight">Franklin</span>
+          <span className="text-lg font-bold tracking-tight">Ryde</span>
         </div>
       </SidebarHeader>
 

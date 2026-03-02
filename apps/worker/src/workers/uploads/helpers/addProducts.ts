@@ -1,6 +1,6 @@
 import { productsSchema } from '@repo/csv'
 import { products } from '@repo/db'
-import { eq, inArray, sql } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { z } from 'zod'
 import { db } from '../../../db'
 import { BatchValidationResult, NodePgTransaction } from '../types'
@@ -21,7 +21,7 @@ export async function validateAddProductsRecord(
   const [existingProduct] = await db
     .select()
     .from(products)
-    .where(eq(products.productCode, productCode))
+    .where(eq(products.name, productCode))
     .limit(1)
 
   const details: AddProductsValidationDetails = {
@@ -39,20 +39,10 @@ export async function validateAddProductsRecord(
 export async function processAddProductsRecord(
   record: AddProductsRecord,
 ): Promise<AddProductsRecord> {
-  await db
-    .insert(products)
-    .values({
-      productCode: String(record.product_code),
-      description: String(record.description),
-      productType: String(record.product_type),
-    })
-    .onConflictDoUpdate({
-      target: products.productCode,
-      set: {
-        description: String(record.description),
-        productType: String(record.product_type),
-      },
-    })
+  await db.insert(products).values({
+    name: String(record.product_code),
+    description: String(record.description),
+  })
 
   return record
 }
@@ -66,14 +56,14 @@ export async function batchValidateProducts(
   // Extract all product codes
   const codes = records.map((r) => String(r.record.product_code))
 
-  // Single query to find all existing products by code
+  // Single query to find all existing products by name
   const existingProducts = await db
-    .select({ productCode: products.productCode })
+    .select({ name: products.name })
     .from(products)
-    .where(inArray(products.productCode, codes))
+    .where(inArray(products.name, codes))
 
   // Build Set for O(1) lookup
-  const existingCodes = new Set(existingProducts.map((p) => p.productCode))
+  const existingNames = new Set(existingProducts.map((p) => p.name))
 
   // Track seen codes to detect updates (last occurrence wins for duplicates in batch)
   const seenCodes = new Set<string>()
@@ -83,7 +73,7 @@ export async function batchValidateProducts(
   for (const { record, rowIndex } of records) {
     const productCode = String(record.product_code)
 
-    const isExistingInDb = existingCodes.has(productCode)
+    const isExistingInDb = existingNames.has(productCode)
     const isDuplicateInBatch = seenCodes.has(productCode)
 
     const details: AddProductsValidationDetails = {
@@ -106,7 +96,7 @@ export async function batchValidateProducts(
   return results
 }
 
-// Batch upsert - transaction-aware
+// Batch insert - transaction-aware
 export async function batchInsertProducts(
   tx: NodePgTransaction,
   records: AddProductsRecord[],
@@ -114,19 +104,9 @@ export async function batchInsertProducts(
   if (records.length === 0) return
 
   const values = records.map((record) => ({
-    productCode: String(record.product_code),
+    name: String(record.product_code),
     description: String(record.description),
-    productType: String(record.product_type),
   }))
 
-  await tx
-    .insert(products)
-    .values(values)
-    .onConflictDoUpdate({
-      target: products.productCode,
-      set: {
-        description: sql`excluded.description`,
-        productType: sql`excluded.product_type`,
-      },
-    })
+  await tx.insert(products).values(values)
 }

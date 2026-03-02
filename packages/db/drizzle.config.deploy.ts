@@ -7,7 +7,7 @@ config({
 
 export default defineConfig({
   out: './drizzle-deploy',
-  schema: './src/schema',
+  schema: './src/schema/index.ts',
   dialect: 'postgresql',
   casing: 'camelCase',
   dbCredentials: {

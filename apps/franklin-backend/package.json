@@ -1,5 +1,5 @@
 {
-  "name": "@repo/backend",
+  "name": "@repo/franklin-backend",
   "type": "module",
   "version": "1.0.0",
   "description": "Backend - Hono API server with TypeScript, PostgreSQL/Drizzle ORM, Redis",

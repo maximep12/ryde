@@ -1,34 +1,104 @@
-import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
-import { date, index, serial, varchar } from 'drizzle-orm/pg-core'
-import { timestamps } from '../helpers'
-import { app } from './app'
+import {
+  boolean,
+  foreignKey,
+  index,
+  integer,
+  pgTable,
+  real,
+  serial,
+  timestamp,
+  unique,
+  varchar,
+} from 'drizzle-orm/pg-core'
 
-// ============================================================================
-// PRODUCTS (Candy Products)
-// ============================================================================
+export const products = pgTable('products', {
+  id: serial().primaryKey().notNull(),
+  name: varchar({ length: 255 }),
+  description: varchar({ length: 255 }),
+  isWsc: boolean('is_wsc').default(true),
+  createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' }).defaultNow().notNull(),
+})
 
-export const products = app.table(
-  'products',
+export const productFormats = pgTable(
+  'product_formats',
   {
-    id: serial('id').primaryKey(),
-    productCode: varchar('product_code', { length: 20 }).unique().notNull(),
-    description: varchar('description', { length: 255 }).notNull(),
-    productType: varchar('product_type', { length: 20 }), // chocolate, gummy, hard_candy, lollipop, licorice
-    productGroup: varchar('product_group', { length: 20 }), // premium, classic, sugar_free, seasonal
-    gtin: varchar('gtin', { length: 50 }), // barcode/UPC
-    productCategory: varchar('product_category', { length: 50 }), // Product, etc.
-    status: varchar('status', { length: 10 }), // 03, 04, 05 (cross-plant status)
-    statusValidFrom: date('status_valid_from'),
-    oldProductNumber: varchar('old_product_number', { length: 20 }),
-    ...timestamps,
+    id: serial().primaryKey().notNull(),
+    numerator: integer(),
+    denominator: integer(),
+    unit: varchar({ length: 255 }),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    upc: varchar({ length: 255 }),
+    productId: integer('product_id'),
   },
   (table) => [
-    index('products_product_code_idx').on(table.productCode),
-    index('products_product_type_idx').on(table.productType),
-    index('products_product_group_idx').on(table.productGroup),
-    index('products_status_idx').on(table.status),
+    foreignKey({
+      columns: [table.productId],
+      foreignColumns: [products.id],
+      name: 'product_formats_product_id_foreign',
+    }),
   ],
 )
 
-export type Product = InferSelectModel<typeof products>
-export type NewProduct = InferInsertModel<typeof products>
+export const productSkus = pgTable(
+  'product_skus',
+  {
+    productId: integer('product_id').notNull(),
+    sku: varchar(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    isActive: boolean('is_active').default(true),
+    asin: varchar({ length: 255 }),
+    formatId: integer('format_id'),
+    amazonCountry: varchar('amazon_country', { length: 255 }),
+  },
+  (table) => [
+    index().using('btree', table.productId.asc().nullsLast().op('int4_ops')),
+    foreignKey({
+      columns: [table.formatId],
+      foreignColumns: [productFormats.id],
+      name: 'product_skus_format_id_foreign',
+    }),
+    foreignKey({
+      columns: [table.productId],
+      foreignColumns: [products.id],
+      name: 'product_skus_product_id_foreign',
+    }).onDelete('cascade'),
+    unique('product_skus_product_id_sku_unique').on(table.sku, table.productId),
+    unique('unique_sku_check').on(table.sku),
+  ],
+)
+
+export const forecasts = pgTable(
+  'forecasts',
+  {
+    id: serial().primaryKey().notNull(),
+    year: integer().notNull(),
+    month: integer().notNull(),
+    sku: varchar({ length: 255 }).notNull(),
+    quantity: real().notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'string' })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      columns: [table.sku],
+      foreignColumns: [productSkus.sku],
+      name: 'forecasts_sku_foreign',
+    }),
+    unique('forecasts_year_month_sku_unique').on(table.year, table.sku, table.month),
+  ],
+)

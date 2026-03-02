@@ -1,7 +1,7 @@
 import config from '@/config'
 import { fetchWithThrow } from '@/lib/queries'
-import { AppType } from '@repo/backend/app'
 import { AUTHORIZATION_HEADER_PREFIX } from '@repo/constants'
+import { AppType } from '@repo/franklin-backend/app'
 import { hc } from 'hono/client'
 import { atom } from 'jotai'
 import { store } from '.'
