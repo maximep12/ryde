@@ -25,6 +25,7 @@ export const users = app.table(
     familyName: varchar('family_name'),
     department: varchar('department', { length: 50 }).$type<Department>(),
     isActive: boolean('is_active').default(true),
+    role: varchar('role'),
     ...timestamps,
   },
   (table) => {

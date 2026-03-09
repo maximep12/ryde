@@ -5,6 +5,7 @@ import { cors } from 'hono/cors'
 import { z } from 'zod'
 import { errorHandler } from './lib/errors'
 import { httpLogger } from './middlewares/httpLogger'
+import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
 
 export type RequestUser = {
   id: string
@@ -31,6 +32,8 @@ const appDefinition = app
   )
   .use(httpLogger)
   .get('/healthz', async (c) => c.text('OK'))
+  .route('/auth', authRouterDefinition)
+  .route('/token', tokenRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

@@ -45,7 +45,7 @@ feat/ryde-backend-misc
 ## Completion Status
 
 - [x] **Phase 1** — Project Setup (`feat/ryde-backend-hono-setup`)
-- [ ] **Phase 2** — Auth & Token Routers (`feat/ryde-backend-auth`)
+- [x] **Phase 2** — Auth & Token Routers (`feat/ryde-backend-auth`)
 - [ ] **Phase 3** — Users Router (`feat/ryde-backend-users`)
 - [ ] **Phase 4** — Customers Router (`feat/ryde-backend-customers`)
 - [ ] **Phase 5** — Products Router (`feat/ryde-backend-products`)

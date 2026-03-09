@@ -10,6 +10,11 @@ const envSchema = z.object({
   REDIS_URL: z.string().url(),
   JWT_SECRET: z.string(),
   JWT_EXPIRES_IN: z.string().default('8h'),
+  // Static tokens for /token endpoint
+  ADMIN_TOKEN: z.string().default(''),
+  TRADE_TOKEN: z.string().default(''),
+  RABBA_TOKEN: z.string().default(''),
+  CIRCLE_K_TOKEN: z.string().default(''),
   // S3
   S3_ACCESS_KEY_ID: z.string().default(''),
   S3_SECRET_ACCESS_KEY: z.string().default(''),
