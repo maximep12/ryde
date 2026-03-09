@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { errorHandler } from './lib/errors'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
+import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
   id: string
@@ -34,6 +35,7 @@ const appDefinition = app
   .get('/healthz', async (c) => c.text('OK'))
   .route('/auth', authRouterDefinition)
   .route('/token', tokenRouterDefinition)
+  .route('/users', usersRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

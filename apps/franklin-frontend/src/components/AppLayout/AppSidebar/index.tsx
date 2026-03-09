@@ -1,5 +1,6 @@
 import { useCurrentItem } from '@/contexts/CurrentItemContext'
 import useLogout from '@/hooks/queries/auth/useLogout'
+import { useMe } from '@/hooks/queries/auth/useMe'
 import {
   Sidebar,
   SidebarContent,
@@ -12,9 +13,10 @@ import {
   SidebarMenuItem,
 } from '@repo/ui/components'
 import { Link, useLocation } from '@tanstack/react-router'
-import { LogOutIcon, BoxIcon } from 'lucide-react'
+import { LogOutIcon } from 'lucide-react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
+import { RydeLogo } from '@/components/RydeLogo'
 import { adminNavigation, exampleNavigation, navigation, NavigationItem } from './navigation'
 
 function NavSection({
@@ -88,6 +90,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { logout } = useLogout()
   const { t } = useTranslation(['ui', 'routes'])
   const { getLabel } = useCurrentItem()
+  const { data: me } = useMe()
 
   // Lookup function to get friendly labels for child routes
   const getChildLabel = React.useCallback(
@@ -106,9 +109,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" className="border-r" {...props}>
       <SidebarHeader>
-        <div className="flex items-center gap-2 px-2">
-          <BoxIcon className="text-primary size-7" />
-          <span className="text-lg font-bold tracking-tight">Ryde</span>
+        <div className="flex items-center px-2 py-1">
+          <RydeLogo className="h-8 w-auto" />
         </div>
       </SidebarHeader>
 
@@ -118,11 +120,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           label={t('sidebar.navigation')}
           pathname={location.pathname}
         />
-        <NavSection
-          items={adminNavigation}
-          label={t('sidebar.admin')}
-          pathname={location.pathname}
-        />
+        {me?.role === 'admin' && (
+          <NavSection
+            items={adminNavigation}
+            label={t('sidebar.admin')}
+            pathname={location.pathname}
+          />
+        )}
         <NavSection
           items={exampleNavigation}
           label={t('sidebar.examples')}

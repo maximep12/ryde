@@ -1,15 +1,22 @@
-import { type Department, users, usersSessions } from '@repo/db'
+import { users, usersSessions } from '@repo/db'
 import { and, count, eq, ilike, or, sql } from 'drizzle-orm'
+import * as crypto from 'crypto'
 import { db } from '../../db'
-import { UpsertUser, UsersQueries } from './schemas'
+import { hashPassword } from '../../lib/utils/crypto'
+import { CreateUser, UpsertUser, UsersQueries } from './schemas'
 
 export async function getUser(userId: string) {
   const [user] = await db.select().from(users).where(eq(users.id, userId)).limit(1)
   return user
 }
 
+export async function getUserByEmail(email: string) {
+  const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1)
+  return user
+}
+
 export async function getUsers(query: UsersQueries) {
-  const { search, departments, showActive, showInactive, page, pageSize } = query
+  const { search, showActive, showInactive, showPending, page, pageSize } = query
   const offset = (page - 1) * pageSize
 
   const conditions = []
@@ -25,26 +32,20 @@ export async function getUsers(query: UsersQueries) {
     )
   }
 
-  // Filter by departments
-  if (departments) {
-    const departmentList = departments.split(',').filter(Boolean) as Department[]
-    if (departmentList.length === 1) {
-      conditions.push(eq(users.department, departmentList[0]!))
-    } else if (departmentList.length > 1) {
-      conditions.push(or(...departmentList.map((d) => eq(users.department, d))))
-    }
-  }
+  // Filter by status
+  const allowedStatuses: string[] = []
+  if (showActive) allowedStatuses.push('active')
+  if (showInactive) allowedStatuses.push('inactive')
+  if (showPending) allowedStatuses.push('pending')
 
-  // Filter by active status
-  if (showActive && !showInactive) {
-    conditions.push(eq(users.isActive, true))
-  } else if (!showActive && showInactive) {
-    conditions.push(eq(users.isActive, false))
-  } else if (!showActive && !showInactive) {
-    // If both are false, show nothing (impossible condition)
+  if (allowedStatuses.length === 0) {
     conditions.push(sql`1 = 0`)
+  } else if (allowedStatuses.length < 3) {
+    conditions.push(
+      sql`${users.status} = ANY(ARRAY[${sql.raw(allowedStatuses.map((s) => `'${s}'`).join(','))}]::text[])`,
+    )
   }
-  // If both are true, no filter needed (show all)
+  // If all three are included, no filter needed (show all)
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
@@ -66,18 +67,32 @@ export async function getUsers(query: UsersQueries) {
   }
 }
 
-export async function createUser(newUser: UpsertUser) {
+export async function createUser(newUser: CreateUser) {
+  const passwordHash = newUser.password ? await hashPassword(newUser.password) : null
+
   const [user] = await db
     .insert(users)
     .values({
-      id: newUser.id,
+      id: crypto.randomUUID(),
       email: newUser.email,
+      passwordHash,
       givenName: newUser.givenName,
       familyName: newUser.familyName,
+      role: newUser.role,
+      status: newUser.status,
     })
-    .onConflictDoNothing()
     .returning()
 
+  return user
+}
+
+export async function setPasswordAndActivate(userId: string, password: string) {
+  const passwordHash = await hashPassword(password)
+  const [user] = await db
+    .update(users)
+    .set({ passwordHash, status: 'active' })
+    .where(eq(users.id, userId))
+    .returning()
   return user
 }
 
@@ -85,9 +100,11 @@ export async function updateUser(updatedUser: UpsertUser) {
   const [user] = await db
     .update(users)
     .set({
-      email: updatedUser.email,
+      ...(updatedUser.email !== undefined && { email: updatedUser.email }),
       givenName: updatedUser.givenName,
       familyName: updatedUser.familyName,
+      role: updatedUser.role,
+      status: updatedUser.status,
     })
     .where(eq(users.id, updatedUser.id))
     .returning()
@@ -96,11 +113,11 @@ export async function updateUser(updatedUser: UpsertUser) {
 }
 
 export function disableUser(userId: string) {
-  return db.update(users).set({ isActive: false }).where(eq(users.id, userId))
+  return db.update(users).set({ status: 'inactive' }).where(eq(users.id, userId))
 }
 
 export function activateUser(userId: string) {
-  return db.update(users).set({ isActive: true }).where(eq(users.id, userId))
+  return db.update(users).set({ status: 'active' }).where(eq(users.id, userId))
 }
 
 export async function getUserFromSessionToken(sessionToken: string) {
@@ -110,6 +127,7 @@ export async function getUserFromSessionToken(sessionToken: string) {
       email: users.email,
       givenName: users.givenName,
       familyName: users.familyName,
+      role: users.role,
     })
     .from(users)
     .innerJoin(usersSessions, eq(users.id, usersSessions.userId))

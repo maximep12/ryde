@@ -1,5 +1,5 @@
 import { serve } from '@hono/node-server'
-import { usersSessions } from '@repo/db'
+import { usersSessions, Role } from '@repo/db'
 import { createBaseLogger } from '@repo/logger'
 import { InferSelectModel } from 'drizzle-orm'
 import { Hono } from 'hono'
@@ -17,6 +17,7 @@ export type RequestUser = {
   email: string
   givenName: string | null
   familyName: string | null
+  role: Role | null
 }
 
 export type ContextVariables = {

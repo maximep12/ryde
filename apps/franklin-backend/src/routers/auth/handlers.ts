@@ -1,9 +1,15 @@
 import { MESSAGE, MILLIS } from '@repo/constants'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
+import { z } from 'zod'
 import { zValidatorThrow } from '../../lib/errors/zValidatorThrow'
 import { verifyPassword } from '../../lib/utils/crypto'
 import { verifySession } from '../../middlewares/auth'
+import {
+  createUser,
+  getUserByEmail as getUserFromUsersRouter,
+  setPasswordAndActivate,
+} from '../users/helpers'
 import {
   createSession,
   deleteSession,
@@ -30,11 +36,19 @@ export const authRouterDefinition = authRouter
     const { email, password } = c.req.valid('json')
 
     const user = await getUserByEmail(email)
-    if (!user || !user.passwordHash) {
+    if (!user) {
       throw new HTTPException(401, { message: MESSAGE.INVALID_CREDENTIALS })
     }
 
-    if (!user.isActive) {
+    if (user.status === 'pending' && !user.passwordHash) {
+      throw new HTTPException(403, { message: MESSAGE.USER_PENDING })
+    }
+
+    if (!user.passwordHash) {
+      throw new HTTPException(401, { message: MESSAGE.INVALID_CREDENTIALS })
+    }
+
+    if (user.status !== 'active') {
       throw new HTTPException(401, { message: MESSAGE.USER_DISABLED })
     }
 
@@ -56,6 +70,67 @@ export const authRouterDefinition = authRouter
       },
     })
   })
+
+  /**
+   * First-time join: pending user sets their password, account becomes active.
+   */
+  .post(
+    '/join',
+    zValidatorThrow('json', z.object({ email: z.string().email(), password: z.string().min(8) })),
+    async (c) => {
+      const { email, password } = c.req.valid('json')
+
+      const user = await getUserFromUsersRouter(email)
+      if (!user) throw new HTTPException(404, { message: MESSAGE.USER_NOT_FOUND })
+
+      if (user.status !== 'pending') {
+        throw new HTTPException(400, { message: MESSAGE.USER_NOT_PENDING })
+      }
+
+      const activatedUser = await setPasswordAndActivate(user.id, password)
+      if (!activatedUser) throw new HTTPException(500, { message: MESSAGE.INTERNAL_ERROR })
+
+      const { sessionToken } = await createSession(activatedUser.id, '', '')
+
+      return c.json({
+        message: MESSAGE.USER_JOINED,
+        sessionToken,
+        user: {
+          id: activatedUser.id,
+          email: activatedUser.email,
+          givenName: activatedUser.givenName,
+          familyName: activatedUser.familyName,
+        },
+      })
+    },
+  )
+
+  /**
+   * Public request access: creates a pending user with no password.
+   */
+  .post(
+    '/request-access',
+    zValidatorThrow(
+      'json',
+      z.object({
+        email: z.string().email(),
+        givenName: z.string().optional(),
+        familyName: z.string().optional(),
+      }),
+    ),
+    async (c) => {
+      const { email, givenName, familyName } = c.req.valid('json')
+
+      const existing = await getUserFromUsersRouter(email)
+      if (existing) {
+        throw new HTTPException(409, { message: MESSAGE.USER_ALREADY_EXISTS })
+      }
+
+      await createUser({ email, givenName, familyName, status: 'pending', role: 'trade_rep' })
+
+      return c.json({ message: MESSAGE.ACCESS_REQUESTED }, 201)
+    },
+  )
 
   .post('/session/verify', zValidatorThrow('json', getSessionSchema), async (c) => {
     const { sessionToken } = c.req.valid('json')

@@ -1,5 +1,6 @@
 import { RouterContext } from '@/main'
 import { getLocale } from '@/stores/i18n'
+import { NotFoundPage } from './_auth/not-found'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
@@ -21,6 +22,7 @@ i18n.use(initReactI18next).init({
 })
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  notFoundComponent: NotFoundPage,
   component: () => {
     return (
       <>

@@ -1,19 +1,13 @@
 import { InferSelectModel, sql } from 'drizzle-orm'
-import { boolean, index, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { index, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { app } from './app'
 
-export const DEPARTMENTS = [
-  'finance',
-  'procurement',
-  'production_planning',
-  'manufacturing',
-  'customer_service',
-  'it',
-  'external',
-] as const
+export const ROLES = ['admin', 'data_manager', 'trade_rep'] as const
+export type Role = (typeof ROLES)[number]
 
-export type Department = (typeof DEPARTMENTS)[number]
+export const STATUSES = ['active', 'inactive', 'pending'] as const
+export type Status = (typeof STATUSES)[number]
 
 export const users = app.table(
   'users',
@@ -23,9 +17,8 @@ export const users = app.table(
     passwordHash: varchar('password_hash'),
     givenName: varchar('given_name'),
     familyName: varchar('family_name'),
-    department: varchar('department', { length: 50 }).$type<Department>(),
-    isActive: boolean('is_active').default(true),
-    role: varchar('role'),
+    status: varchar('status').$type<Status>().default('active'),
+    role: varchar('role').$type<Role>(),
     ...timestamps,
   },
   (table) => {

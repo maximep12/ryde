@@ -2,7 +2,7 @@ import * as crypto from 'crypto'
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres'
 import { promisify } from 'util'
 import type * as schema from '../schema'
-import { type Department, users } from '../schema'
+import { type Role, type Status, users } from '../schema'
 
 const scryptAsync = promisify(crypto.scrypt)
 const SALT_LENGTH = 16
@@ -30,22 +30,21 @@ export async function seedUsers(db: NodePgDatabase<typeof schema>) {
       passwordHash: defaultPassword,
       givenName: 'Admin',
       familyName: 'User',
-      department: 'it' satisfies Department,
-      isActive: true,
+      role: 'admin' satisfies Role,
+      status: 'active' satisfies Status,
     },
     {
       id: generateId(),
       email: 'demo@example.com',
-      passwordHash: defaultPassword,
       givenName: 'Demo',
       familyName: 'User',
-      department: 'external' satisfies Department,
-      isActive: true,
+      role: 'trade_rep' satisfies Role,
+      status: 'pending' satisfies Status,
     },
   ])
 
   console.log('Created seed users:')
-  console.log('  - admin@example.com (Admin User - IT)')
-  console.log('  - demo@example.com (Demo User - External)')
+  console.log('  - admin@example.com (Admin User)')
+  console.log('  - demo@example.com (Demo User)')
   console.log('All users have password: admin123')
 }
