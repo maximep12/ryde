@@ -15,8 +15,8 @@
     "build:backend": "turbo build --filter=@repo/franklin-backend",
     "build:frontend": "turbo build --filter={@repo/franklin-frontend,@repo/ui}",
     "build:worker": "turbo build --filter=@repo/worker",
-    "lint": "turbo lint --filter=!ryde --filter=!ryde-frontend -- --no-warn-ignored",
-    "type-check": "turbo type-check --filter=!ryde --filter=!ryde-frontend",
+    "lint": "turbo lint --filter=!@repo/ryde-backend --filter=!ryde-frontend -- --no-warn-ignored",
+    "type-check": "turbo type-check --filter=!@repo/ryde-backend --filter=!ryde-frontend",
     "test": "turbo test",
     "clean": "turbo clean",
     "nuke": "rm -rf node_modules **/node_modules",
@@ -58,6 +58,12 @@
     "dotenv-cli": "^11.0.0",
     "drizzle-orm": "^0.45.1",
     "typescript": "5.9.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "@smithy/types": "4.13.0",
+      "@smithy/smithy-client": "4.12.0"
+    }
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
