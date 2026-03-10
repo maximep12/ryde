@@ -1,0 +1,125 @@
+import { getApi, updateApiClient } from '@/stores/api'
+import { setSessionToken } from '@/stores/session'
+import { Button, Input, Label } from '@repo/ui/components'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+
+const joinSearchSchema = z.object({
+  email: z.string().email().catch(''),
+})
+
+export const Route = createFileRoute('/join')({
+  validateSearch: joinSearchSchema,
+  beforeLoad: ({ search }) => {
+    if (!search.email) throw redirect({ to: '/login' })
+  },
+  component: JoinPage,
+})
+
+type FormValues = {
+  password: string
+  confirmPassword: string
+}
+
+function JoinPage() {
+  const { email } = Route.useSearch()
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<FormValues>()
+
+  const onSubmit = async (data: FormValues) => {
+    if (data.password !== data.confirmPassword) {
+      setError('confirmPassword', { message: 'Passwords do not match' })
+      return
+    }
+
+    try {
+      const api = getApi()
+      const res = await api.auth.join.$post({ json: { email, password: data.password } })
+
+      if (!res.ok) {
+        const body = await res.json()
+        setError('root', {
+          message: 'message' in body ? String(body.message) : 'Something went wrong',
+        })
+        return
+      }
+
+      const body = await res.json()
+      setSessionToken(body.sessionToken)
+      updateApiClient(body.sessionToken)
+      window.location.href = '/'
+    } catch {
+      setError('root', { message: 'An error occurred. Please try again.' })
+    }
+  }
+
+  return (
+    <div className="flex min-h-svh items-center justify-center p-6">
+      <div className="w-full max-w-sm space-y-6">
+        <div className="flex flex-col items-center gap-2 text-center">
+          <h1 className="text-2xl font-bold">Set your password</h1>
+          <p className="text-muted-foreground text-sm">
+            Welcome! Create a password to activate your account.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+          {errors.root && (
+            <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
+              {errors.root.message}
+            </div>
+          )}
+
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" value={email} disabled />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              autoComplete="new-password"
+              {...register('password', {
+                required: 'Password is required',
+                minLength: { value: 8, message: 'Password must be at least 8 characters' },
+              })}
+            />
+            {errors.password && (
+              <p className="text-destructive text-sm">{errors.password.message}</p>
+            )}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="confirmPassword">Confirm password</Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              autoComplete="new-password"
+              {...register('confirmPassword', { required: 'Please confirm your password' })}
+            />
+            {errors.confirmPassword && (
+              <p className="text-destructive text-sm">{errors.confirmPassword.message}</p>
+            )}
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isSubmitting || !watch('password') || !watch('confirmPassword')}
+          >
+            {isSubmitting ? 'Activating...' : 'Activate account'}
+          </Button>
+        </form>
+      </div>
+    </div>
+  )
+}

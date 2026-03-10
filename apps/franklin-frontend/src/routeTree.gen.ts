@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
 import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
 import { Route as AuthExampleRouteRouteImport } from './routes/_auth/example/route'
+import { Route as AuthAdminRouteRouteImport } from './routes/_auth/admin/route'
 import { Route as AuthExampleUploadIndexRouteImport } from './routes/_auth/example/upload/index'
 import { Route as AuthExampleOrdersIndexRouteImport } from './routes/_auth/example/orders/index'
 import { Route as AuthExampleMyUploadsIndexRouteImport } from './routes/_auth/example/my-uploads/index'
@@ -27,10 +29,17 @@ import { Route as AuthExampleOrdersOrderIdRouteImport } from './routes/_auth/exa
 import { Route as AuthExampleMyUploadsUploadIdRouteImport } from './routes/_auth/example/my-uploads/$uploadId'
 import { Route as AuthExampleClientsNewRouteImport } from './routes/_auth/example/clients/new'
 import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/example/clients/$clientId'
+import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
+import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -62,6 +71,11 @@ const AuthExampleRouteRoute = AuthExampleRouteRouteImport.update({
   path: '/example',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthAdminRouteRoute = AuthAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthExampleUploadIndexRoute = AuthExampleUploadIndexRouteImport.update({
   id: '/upload/',
   path: '/upload/',
@@ -90,9 +104,9 @@ const AuthExampleClientsIndexRoute = AuthExampleClientsIndexRouteImport.update({
   getParentRoute: () => AuthExampleRouteRoute,
 } as any)
 const AuthAdminUsersIndexRoute = AuthAdminUsersIndexRouteImport.update({
-  id: '/admin/users/',
-  path: '/admin/users/',
-  getParentRoute: () => AuthRouteRoute,
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => AuthAdminRouteRoute,
 } as any)
 const AuthExampleOrdersNewRoute = AuthExampleOrdersNewRouteImport.update({
   id: '/orders/new',
@@ -122,14 +136,28 @@ const AuthExampleClientsClientIdRoute =
     path: '/clients/$clientId',
     getParentRoute: () => AuthExampleRouteRoute,
   } as any)
+const AuthAdminUsersCreateRoute = AuthAdminUsersCreateRouteImport.update({
+  id: '/users/create',
+  path: '/users/create',
+  getParentRoute: () => AuthAdminRouteRoute,
+} as any)
+const AuthAdminUsersUserIdRoute = AuthAdminUsersUserIdRouteImport.update({
+  id: '/users/$userId',
+  path: '/users/$userId',
+  getParentRoute: () => AuthAdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/admin': typeof AuthAdminRouteRouteWithChildren
   '/example': typeof AuthExampleRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
+  '/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
+  '/admin/users/create': typeof AuthAdminUsersCreateRoute
   '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
   '/example/clients/new': typeof AuthExampleClientsNewRoute
   '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
@@ -143,12 +171,16 @@ export interface FileRoutesByFullPath {
   '/example/upload': typeof AuthExampleUploadIndexRoute
 }
 export interface FileRoutesByTo {
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/admin': typeof AuthAdminRouteRouteWithChildren
   '/example': typeof AuthExampleRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
+  '/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
+  '/admin/users/create': typeof AuthAdminUsersCreateRoute
   '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
   '/example/clients/new': typeof AuthExampleClientsNewRoute
   '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
@@ -164,12 +196,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteRouteWithChildren
+  '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/_auth/admin': typeof AuthAdminRouteRouteWithChildren
   '/_auth/example': typeof AuthExampleRouteRouteWithChildren
   '/_auth/error': typeof AuthErrorRoute
   '/_auth/not-found': typeof AuthNotFoundRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
+  '/_auth/admin/users/create': typeof AuthAdminUsersCreateRoute
   '/_auth/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
   '/_auth/example/clients/new': typeof AuthExampleClientsNewRoute
   '/_auth/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
@@ -185,12 +221,16 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/join'
     | '/login'
+    | '/admin'
     | '/example'
     | '/error'
     | '/not-found'
     | '/unauthorized'
     | '/'
+    | '/admin/users/$userId'
+    | '/admin/users/create'
     | '/example/clients/$clientId'
     | '/example/clients/new'
     | '/example/my-uploads/$uploadId'
@@ -204,12 +244,16 @@ export interface FileRouteTypes {
     | '/example/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/join'
     | '/login'
+    | '/admin'
     | '/example'
     | '/error'
     | '/not-found'
     | '/unauthorized'
     | '/'
+    | '/admin/users/$userId'
+    | '/admin/users/create'
     | '/example/clients/$clientId'
     | '/example/clients/new'
     | '/example/my-uploads/$uploadId'
@@ -224,12 +268,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_auth'
+    | '/join'
     | '/login'
+    | '/_auth/admin'
     | '/_auth/example'
     | '/_auth/error'
     | '/_auth/not-found'
     | '/_auth/unauthorized'
     | '/_auth/'
+    | '/_auth/admin/users/$userId'
+    | '/_auth/admin/users/create'
     | '/_auth/example/clients/$clientId'
     | '/_auth/example/clients/new'
     | '/_auth/example/my-uploads/$uploadId'
@@ -245,6 +293,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
+  JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
 }
 
@@ -255,6 +304,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_auth': {
@@ -299,6 +355,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExampleRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/admin': {
+      id: '/_auth/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthAdminRouteRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/example/upload/': {
       id: '/_auth/example/upload/'
       path: '/upload'
@@ -336,10 +399,10 @@ declare module '@tanstack/react-router' {
     }
     '/_auth/admin/users/': {
       id: '/_auth/admin/users/'
-      path: '/admin/users'
+      path: '/users'
       fullPath: '/admin/users'
       preLoaderRoute: typeof AuthAdminUsersIndexRouteImport
-      parentRoute: typeof AuthRouteRoute
+      parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/example/orders/new': {
       id: '/_auth/example/orders/new'
@@ -376,8 +439,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthExampleClientsClientIdRouteImport
       parentRoute: typeof AuthExampleRouteRoute
     }
+    '/_auth/admin/users/create': {
+      id: '/_auth/admin/users/create'
+      path: '/users/create'
+      fullPath: '/admin/users/create'
+      preLoaderRoute: typeof AuthAdminUsersCreateRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/users/$userId': {
+      id: '/_auth/admin/users/$userId'
+      path: '/users/$userId'
+      fullPath: '/admin/users/$userId'
+      preLoaderRoute: typeof AuthAdminUsersUserIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
   }
 }
+
+interface AuthAdminRouteRouteChildren {
+  AuthAdminUsersUserIdRoute: typeof AuthAdminUsersUserIdRoute
+  AuthAdminUsersCreateRoute: typeof AuthAdminUsersCreateRoute
+  AuthAdminUsersIndexRoute: typeof AuthAdminUsersIndexRoute
+}
+
+const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
+  AuthAdminUsersUserIdRoute: AuthAdminUsersUserIdRoute,
+  AuthAdminUsersCreateRoute: AuthAdminUsersCreateRoute,
+  AuthAdminUsersIndexRoute: AuthAdminUsersIndexRoute,
+}
+
+const AuthAdminRouteRouteWithChildren = AuthAdminRouteRoute._addFileChildren(
+  AuthAdminRouteRouteChildren,
+)
 
 interface AuthExampleRouteRouteChildren {
   AuthExampleClientsClientIdRoute: typeof AuthExampleClientsClientIdRoute
@@ -409,21 +502,21 @@ const AuthExampleRouteRouteWithChildren =
   AuthExampleRouteRoute._addFileChildren(AuthExampleRouteRouteChildren)
 
 interface AuthRouteRouteChildren {
+  AuthAdminRouteRoute: typeof AuthAdminRouteRouteWithChildren
   AuthExampleRouteRoute: typeof AuthExampleRouteRouteWithChildren
   AuthErrorRoute: typeof AuthErrorRoute
   AuthNotFoundRoute: typeof AuthNotFoundRoute
   AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
   AuthIndexRoute: typeof AuthIndexRoute
-  AuthAdminUsersIndexRoute: typeof AuthAdminUsersIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthAdminRouteRoute: AuthAdminRouteRouteWithChildren,
   AuthExampleRouteRoute: AuthExampleRouteRouteWithChildren,
   AuthErrorRoute: AuthErrorRoute,
   AuthNotFoundRoute: AuthNotFoundRoute,
   AuthUnauthorizedRoute: AuthUnauthorizedRoute,
   AuthIndexRoute: AuthIndexRoute,
-  AuthAdminUsersIndexRoute: AuthAdminUsersIndexRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
@@ -432,6 +525,7 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
+  JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport

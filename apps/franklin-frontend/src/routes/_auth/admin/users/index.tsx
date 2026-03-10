@@ -1,7 +1,6 @@
 'use no memo'
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
-import { FilterDivider } from '@/components/FilterDivider'
 import { TableLoading } from '@/components/TableLoading'
 import { useUsers } from '@/hooks/queries/users/useUsers'
 import {
@@ -10,7 +9,6 @@ import {
   Button,
   Checkbox,
   Label,
-  MultiSelect,
   Sheet,
   SheetContent,
   SheetFooter,
@@ -32,18 +30,18 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import {
   ArrowDownIcon,
   ArrowUpDownIcon,
   ArrowUpIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  PlusIcon,
   SlidersHorizontalIcon,
   XIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/_auth/admin/users/')({
   component: UsersPage,
@@ -53,80 +51,82 @@ export const Route = createFileRoute('/_auth/admin/users/')({
   },
 })
 
-function getDepartmentColor(department: string) {
-  const colors: Record<string, string> = {
-    finance: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-    procurement: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-    production_planning: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-    manufacturing: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-    customer_service: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-400',
-    it: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400',
-  }
-  return colors[department] || 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
-}
-
 type User = {
   id: string
   email: string
   givenName: string | null
   familyName: string | null
-  department: string | null
-  isActive: boolean | null
+  role: string | null
+  status: string | null
   createdAt: string
 }
 
 const PAGE_SIZE = 20
 
-const departmentOptions = [
-  { value: 'finance', label: 'Finance' },
-  { value: 'procurement', label: 'Procurement' },
-  { value: 'production_planning', label: 'Production Planning' },
-  { value: 'manufacturing', label: 'Manufacturing' },
-  { value: 'customer_service', label: 'Customer Service' },
-  { value: 'it', label: 'IT' },
-  { value: 'external', label: 'External' },
-]
+const ROLE_CONFIG: Record<string, { label: string; className: string }> = {
+  admin: {
+    label: 'Admin',
+    className: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+  },
+  data_manager: {
+    label: 'Data Manager',
+    className: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+  },
+  trade_rep: {
+    label: 'Trade Rep',
+    className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
+  },
+}
+
+const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
+  active: { label: 'Active', className: 'bg-black text-white dark:bg-white dark:text-black' },
+  inactive: {
+    label: 'Inactive',
+    className: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+  },
+  pending: {
+    label: 'Pending',
+    className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
+  },
+}
 
 function UsersPage() {
-  const { t } = useTranslation('common')
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [sorting, setSorting] = useState<SortingState>([])
 
-  // Filter state
-  const [departmentFilters, setDepartmentFilters] = useState<string[]>([])
   const [showActive, setShowActive] = useState(true)
   const [showInactive, setShowInactive] = useState(true)
+  const [showPending, setShowPending] = useState(true)
 
-  // Sheet state
   const [sheetOpen, setSheetOpen] = useState(false)
-  const [sheetDepartmentFilters, setSheetDepartmentFilters] = useState<string[]>([])
   const [sheetShowActive, setSheetShowActive] = useState(true)
   const [sheetShowInactive, setSheetShowInactive] = useState(true)
+  const [sheetShowPending, setSheetShowPending] = useState(true)
 
   const handleSheetOpenChange = (open: boolean) => {
     if (open) {
-      // Sync sheet state with current filters when opening
-      setSheetDepartmentFilters(departmentFilters)
       setSheetShowActive(showActive)
       setSheetShowInactive(showInactive)
+      setSheetShowPending(showPending)
     }
     setSheetOpen(open)
   }
 
   const applyFilters = () => {
-    setDepartmentFilters(sheetDepartmentFilters)
     setShowActive(sheetShowActive)
     setShowInactive(sheetShowInactive)
+    setShowPending(sheetShowPending)
     setPage(1)
     setSheetOpen(false)
   }
 
   const { data, isLoading, error } = useUsers({
     search,
-    departments: departmentFilters.length > 0 ? departmentFilters : undefined,
     showActive,
     showInactive,
+    showPending,
     page,
     pageSize: PAGE_SIZE,
   })
@@ -162,33 +162,36 @@ function UsersPage() {
         cell: ({ row }) => <span className="text-muted-foreground">{row.original.email}</span>,
       },
       {
-        accessorKey: 'department',
-        header: t('department'),
-        cell: ({ row }) =>
-          row.original.department ? (
+        accessorKey: 'role',
+        header: 'Role',
+        cell: ({ row }) => {
+          const config = row.original.role ? ROLE_CONFIG[row.original.role] : null
+          return config ? (
             <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${getDepartmentColor(row.original.department)}`}
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${config.className}`}
             >
-              {t(`department.${row.original.department}`)}
+              {config.label}
             </span>
           ) : (
             '-'
-          ),
+          )
+        },
       },
       {
-        accessorKey: 'isActive',
+        accessorKey: 'status',
         header: 'Status',
-        cell: ({ row }) => (
-          <span
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-              row.original.isActive
-                ? 'bg-black text-white dark:bg-white dark:text-black'
-                : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-            }`}
-          >
-            {row.original.isActive ? 'Active' : 'Inactive'}
-          </span>
-        ),
+        cell: ({ row }) => {
+          const config = row.original.status ? STATUS_CONFIG[row.original.status] : null
+          return config ? (
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${config.className}`}
+            >
+              {config.label}
+            </span>
+          ) : (
+            '-'
+          )
+        },
       },
       {
         accessorKey: 'createdAt',
@@ -206,7 +209,7 @@ function UsersPage() {
         },
       },
     ],
-    [t],
+    [],
   )
 
   const users = (data?.users as User[]) ?? []
@@ -218,21 +221,27 @@ function UsersPage() {
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
+    state: { sorting },
   })
 
   const handleSearch = (value: string) => {
     setSearch(value)
-    setPage(1) // Reset to first page when searching
+    setPage(1)
   }
 
   return (
     <div className="space-y-8">
-      <header>
-        <h1 className="text-2xl font-bold">Users</h1>
-        <p className="text-muted-foreground mt-1">Manage users in the system</p>
+      <header className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">Users</h1>
+          <p className="text-muted-foreground mt-1">Manage users in the system</p>
+        </div>
+        <Button asChild>
+          <Link to="/admin/users/create">
+            <PlusIcon className="size-4" />
+            Create User
+          </Link>
+        </Button>
       </header>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -255,16 +264,6 @@ function UsersPage() {
               <SheetTitle>Filters</SheetTitle>
             </SheetHeader>
             <div className="flex-1 space-y-6 p-4">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase">Department</Label>
-                <MultiSelect
-                  options={departmentOptions}
-                  value={sheetDepartmentFilters}
-                  onChange={setSheetDepartmentFilters}
-                  placeholder="All departments"
-                />
-              </div>
-              <FilterDivider />
               <div className="space-y-3">
                 <Label className="text-xs font-bold uppercase">Status</Label>
                 <div className="space-y-3">
@@ -288,6 +287,16 @@ function UsersPage() {
                       Show inactive users
                     </label>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="show-pending"
+                      checked={sheetShowPending}
+                      onCheckedChange={(checked) => setSheetShowPending(checked === true)}
+                    />
+                    <label htmlFor="show-pending" className="cursor-pointer text-sm">
+                      Show pending users
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -299,9 +308,9 @@ function UsersPage() {
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                  setDepartmentFilters([])
                   setShowActive(true)
                   setShowInactive(true)
+                  setShowPending(true)
                   setPage(1)
                   setSheetOpen(false)
                 }}
@@ -320,30 +329,9 @@ function UsersPage() {
         )}
       </div>
 
-      {/* Active filter badges */}
-      {(departmentFilters.length > 0 || !showActive || !showInactive) && (
+      {(!showActive || !showInactive || !showPending) && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-muted-foreground text-sm">Active filters:</span>
-          {departmentFilters.map((dept) => {
-            const label = departmentOptions.find((d) => d.value === dept)?.label || dept
-            return (
-              <span
-                key={`dept-${dept}`}
-                className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white"
-              >
-                {label}
-                <button
-                  onClick={() => {
-                    setDepartmentFilters((prev) => prev.filter((d) => d !== dept))
-                    setPage(1)
-                  }}
-                  className="ml-0.5 hover:text-gray-300"
-                >
-                  <XIcon className="size-3" />
-                </button>
-              </span>
-            )
-          })}
           {!showActive && (
             <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
               Hiding active users
@@ -364,6 +352,20 @@ function UsersPage() {
               <button
                 onClick={() => {
                   setShowInactive(true)
+                  setPage(1)
+                }}
+                className="ml-0.5 hover:text-gray-300"
+              >
+                <XIcon className="size-3" />
+              </button>
+            </span>
+          )}
+          {!showPending && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-black px-2.5 py-0.5 text-xs font-medium text-white">
+              Hiding pending users
+              <button
+                onClick={() => {
+                  setShowPending(true)
                   setPage(1)
                 }}
                 className="ml-0.5 hover:text-gray-300"
@@ -421,7 +423,10 @@ function UsersPage() {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}
+                    className={`hover:bg-muted/60 cursor-pointer ${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
+                    onClick={() =>
+                      navigate({ to: '/admin/users/$userId', params: { userId: row.original.id } })
+                    }
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="py-2">

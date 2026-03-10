@@ -4,6 +4,8 @@ import config from '@/config'
 import { getSessionToken, setSessionToken } from '@/stores/session'
 import { getApi, updateApiClient } from '@/stores/api'
 import { LoginForm } from '@/components/LoginForm'
+import { RequestAccessForm } from '@/components/RequestAccessForm'
+import { RydeLogo } from '@/components/RydeLogo'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: async () => {
@@ -15,6 +17,7 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginPage() {
+  const [view, setView] = useState<'login' | 'request-access'>('login')
   const [isAutoLoggingIn, setIsAutoLoggingIn] = useState(
     config.featureFlags['infinite-user-sessions'],
   )
@@ -58,11 +61,29 @@ function LoginPage() {
 
   return (
     <div className="flex min-h-svh items-center justify-center p-6">
-      <div className="w-full max-w-sm space-y-6">
-        <LoginForm />
-        <p className="text-muted-foreground bg-muted rounded-md px-4 py-2 text-center text-sm">
-          Demo: admin@example.com / admin123
-        </p>
+      <div className="w-full max-w-sm space-y-8">
+        <div className="flex justify-center">
+          <RydeLogo className="h-10 w-auto" />
+        </div>
+        {view === 'login' ? (
+          <>
+            <LoginForm />
+            <div className="text-center">
+              <span className="text-muted-foreground text-sm">Don't have an account? </span>
+              <button
+                onClick={() => setView('request-access')}
+                className="text-sm font-medium underline"
+              >
+                Request access
+              </button>
+            </div>
+            <p className="text-muted-foreground bg-muted rounded-md px-4 py-2 text-center text-sm">
+              Demo: admin@example.com / admin123
+            </p>
+          </>
+        ) : (
+          <RequestAccessForm onBack={() => setView('login')} />
+        )}
       </div>
     </div>
   )

@@ -21,7 +21,20 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
 
       if (!res.ok) {
         const data = await res.json()
-        setError('message' in data ? data.message : 'Invalid credentials')
+        const message = 'message' in data ? (data.message as string) : null
+        if (message === 'USER_PENDING') {
+          window.location.href = `/join?email=${encodeURIComponent(email)}`
+          return
+        }
+        if (message === 'USER_DISABLED') {
+          setError('Your account was deactivated. Reach out to your admin if it was a mistake.')
+          return
+        }
+        if (message === 'INVALID_CREDENTIALS') {
+          setError('Invalid email or password. Please try again.')
+          return
+        }
+        setError(message ?? 'Invalid credentials')
         return
       }
 
@@ -48,10 +61,6 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       </div>
 
       <form onSubmit={handleSubmit} className="grid gap-4">
-        {error && (
-          <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
-        )}
-
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
@@ -75,9 +84,12 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button type="submit" className="w-full" disabled={isLoading || !email || !password}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
+        {error && (
+          <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
+        )}
       </form>
     </div>
   )
