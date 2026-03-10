@@ -111,7 +111,7 @@ function AuthLayoutComponent() {
             <AppHeader />
 
             <div
-              className="bg-background-level-2 relative h-full w-full flex-1 overflow-y-auto"
+              className="bg-background-level-2 relative h-full w-full flex-1 overflow-y-scroll"
               ref={viewportRef}
             >
               <div className="mx-auto w-full max-w-6xl px-6 py-6">

@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { errorHandler } from './lib/errors'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
+import { customersRouterDefinition } from './routers/customers/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
@@ -27,7 +28,7 @@ const appDefinition = app
   .use(
     cors({
       origin: ['http://localhost:3000', 'http://localhost:5173'],
-      allowHeaders: ['Content-Type', 'Authorization'],
+      allowHeaders: ['Content-Type', 'Authorization', 'Content-Disposition'],
       credentials: true,
     }),
   )
@@ -36,6 +37,7 @@ const appDefinition = app
   .route('/auth', authRouterDefinition)
   .route('/token', tokenRouterDefinition)
   .route('/users', usersRouterDefinition)
+  .route('/customers', customersRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

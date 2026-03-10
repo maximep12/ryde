@@ -1,5 +1,7 @@
 import Excel from 'exceljs'
-import { camelCase, zipObject, tail } from 'lodash'
+import camelCase from 'lodash/camelCase.js'
+import tail from 'lodash/tail.js'
+import zipObject from 'lodash/zipObject.js'
 
 export class FileLevelError extends Error {
   code = 406

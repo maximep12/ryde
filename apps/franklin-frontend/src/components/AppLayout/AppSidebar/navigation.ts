@@ -8,6 +8,8 @@ import {
   PaletteIcon,
   PlusCircleIcon,
   SearchIcon,
+  StoreIcon,
+  TargetIcon,
   UploadIcon,
   UsersIcon,
 } from 'lucide-react'
@@ -24,6 +26,16 @@ export const navigation: NavigationItem[] = [{ title: 'route.welcome', path: '/'
 
 export const adminNavigation: NavigationItem[] = [
   { title: 'route.users', path: '/admin/users', icon: UsersIcon },
+  { title: 'route.imports', path: '/admin/imports', icon: PlusCircleIcon },
+]
+
+export const dataManagerNavigation: NavigationItem[] = [
+  { title: 'route.imports', path: '/admin/imports', icon: PlusCircleIcon },
+]
+
+export const importsNavigation: NavigationItem[] = [
+  { title: 'route.importCustomers', path: '/admin/imports/customers', icon: StoreIcon },
+  { title: 'route.importSellInTargets', path: '/admin/imports/sell-in-targets', icon: TargetIcon },
 ]
 
 export const exampleNavigation: NavigationItem[] = [

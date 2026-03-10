@@ -1,4 +1,6 @@
+import config from '@/config'
 import { getApi, updateApiClient } from '@/stores/api'
+import { setRydeToken } from '@/stores/ryde-session'
 import { setSessionToken } from '@/stores/session'
 import { Button, Input, Label } from '@repo/ui/components'
 import { cn } from '@repo/ui/lib'
@@ -41,6 +43,23 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
       const data = await res.json()
       setSessionToken(data.sessionToken)
       updateApiClient(data.sessionToken)
+
+      // Also authenticate with ryde-backend (same credentials, separate JWT)
+      try {
+        const rydeRes = await fetch(`${config.rydeBackendURL}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        })
+        if (rydeRes.ok) {
+          const rydeData = await rydeRes.json()
+          setRydeToken(rydeData.token)
+        } else {
+          console.error('Ryde auth failed:', rydeRes.status, await rydeRes.text())
+        }
+      } catch {
+        // Ryde auth is non-critical; the user can still use the app without it
+      }
 
       const params = new URLSearchParams(window.location.search)
       const redirect = params.get('redirect') || '/'

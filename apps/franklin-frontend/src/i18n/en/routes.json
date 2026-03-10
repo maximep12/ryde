@@ -14,5 +14,9 @@
   "route.ordersCreate": "Create Order",
   "route.orderDetails": "Order Details",
   "route.uploadData": "Upload Data",
-  "route.myUploads": "My Uploads"
+  "route.myUploads": "My Uploads",
+  "route.imports": "Imports",
+  "route.importCustomers": "Customers Schema",
+  "route.importSellInTargets": "Sell-in Targets",
+  "route.importReportDetail": "Import Report"
 }

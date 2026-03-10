@@ -1,7 +1,7 @@
 import { getApi } from '@/stores/api'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/_auth/admin')({
+export const Route = createFileRoute('/_auth/admin/users')({
   beforeLoad: async ({ context }) => {
     const { queryClient } = context
 
@@ -16,7 +16,7 @@ export const Route = createFileRoute('/_auth/admin')({
       staleTime: 1000 * 10,
     })
 
-    if (me?.role !== 'admin' && me?.role !== 'data_manager') {
+    if (me?.role !== 'admin') {
       throw redirect({ to: '/unauthorized' })
     }
   },

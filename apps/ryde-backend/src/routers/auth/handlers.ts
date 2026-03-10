@@ -59,9 +59,9 @@ export const authRouterDefinition = authRouter
         id: crypto.randomUUID(),
         email,
         passwordHash,
-        role: 'Admin',
+        role: 'admin',
       })
-      token = generateJWT({ id: user.id, email: user.email, role: user.role ?? 'Admin' })
+      token = generateJWT({ id: user.id, email: user.email, role: user.role ?? 'admin' })
     } else {
       if (!user) {
         throw new HTTPException(401, { message: 'invalidCredentials' })

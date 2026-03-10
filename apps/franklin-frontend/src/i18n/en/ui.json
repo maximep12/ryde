@@ -14,6 +14,7 @@
 
   "sidebar.navigation": "General",
   "sidebar.admin": "Admin",
+  "sidebar.imports": "Imports",
   "sidebar.orders": "Orders",
   "sidebar.clients": "Clients",
   "sidebar.examples": "Examples",

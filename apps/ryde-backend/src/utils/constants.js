@@ -1,4 +1,4 @@
-import moment from 'moment'
+import { differenceInWeeks, parseISO, startOfISOWeek, endOfISOWeek, subWeeks } from 'date-fns'
 
 export const INIT_FILES = {
   basicData: 'MARA - Basic Data-Table 1.csv',
@@ -59,11 +59,13 @@ export const ERRORS = {
   missingValue: (row, columnName) => `Row ${row}: Missing value. Please provide a value to ${columnName}.`,
 }
 
+const RYDE_WEEK_0 = parseISO('2023-11-06')
+
 export const DATES = {
-  ryde_week_0: moment('2023-11-06'),
-  currentRydeWeek: () => moment().diff(moment('2023-11-06'), 'week'),
-  mondayOfPreviousWeek: () => moment.utc().subtract(1, 'week').startOf('isoWeek'),
-  sundayOfPreviousWeek: () => moment.utc().subtract(1, 'week').endOf('isoWeek'),
+  ryde_week_0: RYDE_WEEK_0,
+  currentRydeWeek: () => differenceInWeeks(new Date(), RYDE_WEEK_0),
+  mondayOfPreviousWeek: () => startOfISOWeek(subWeeks(new Date(), 1)),
+  sundayOfPreviousWeek: () => endOfISOWeek(subWeeks(new Date(), 1)),
 }
 
 export const REPORTS = {
