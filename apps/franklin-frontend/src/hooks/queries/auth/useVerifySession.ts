@@ -1,4 +1,5 @@
 import { getApi } from '@/stores/api'
+import { destroyRydeToken } from '@/stores/ryde-session'
 import { destroySessionToken, getSessionToken } from '@/stores/session'
 import { MILLIS } from '@repo/constants'
 import { useQuery } from '@tanstack/react-query'
@@ -7,6 +8,7 @@ const redirectToLogin = () => window.location.replace(`/login?redirect=${window.
 
 export async function handleInvalidSession() {
   destroySessionToken()
+  destroyRydeToken()
   redirectToLogin()
 }
 

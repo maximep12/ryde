@@ -6,9 +6,9 @@
     "node": ">=23"
   },
   "scripts": {
-    "dev": "turbo dev",
-    "dev:app": "turbo dev --filter={@repo/franklin-backend,@repo/franklin-frontend,@repo/worker}",
-    "dev:backend": "turbo dev --filter=@repo/franklin-backend",
+    "dev": "turbo dev --filter=!ryde-frontend",
+    "dev:app": "turbo dev --filter={@repo/franklin-backend,@repo/ryde-backend,@repo/franklin-frontend,@repo/worker}",
+    "dev:backend": "turbo dev --filter={@repo/franklin-backend,@repo/ryde-backend}",
     "dev:frontend": "turbo dev --filter={@repo/franklin-frontend,@repo/ui}",
     "dev:worker": "turbo dev --filter=@repo/worker",
     "build": "turbo build",

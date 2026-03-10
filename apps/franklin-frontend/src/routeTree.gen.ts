@@ -18,12 +18,14 @@ import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
 import { Route as AuthExampleRouteRouteImport } from './routes/_auth/example/route'
 import { Route as AuthAdminRouteRouteImport } from './routes/_auth/admin/route'
+import { Route as AuthAdminUsersRouteRouteImport } from './routes/_auth/admin/users/route'
 import { Route as AuthExampleUploadIndexRouteImport } from './routes/_auth/example/upload/index'
 import { Route as AuthExampleOrdersIndexRouteImport } from './routes/_auth/example/orders/index'
 import { Route as AuthExampleMyUploadsIndexRouteImport } from './routes/_auth/example/my-uploads/index'
 import { Route as AuthExampleKitchenSinkIndexRouteImport } from './routes/_auth/example/kitchen-sink/index'
 import { Route as AuthExampleClientsIndexRouteImport } from './routes/_auth/example/clients/index'
 import { Route as AuthAdminUsersIndexRouteImport } from './routes/_auth/admin/users/index'
+import { Route as AuthAdminImportsIndexRouteImport } from './routes/_auth/admin/imports/index'
 import { Route as AuthExampleOrdersNewRouteImport } from './routes/_auth/example/orders/new'
 import { Route as AuthExampleOrdersOrderIdRouteImport } from './routes/_auth/example/orders/$orderId'
 import { Route as AuthExampleMyUploadsUploadIdRouteImport } from './routes/_auth/example/my-uploads/$uploadId'
@@ -31,6 +33,10 @@ import { Route as AuthExampleClientsNewRouteImport } from './routes/_auth/exampl
 import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/example/clients/$clientId'
 import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
 import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
+import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
+import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_auth/admin/imports/customers/index'
+import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
+import { Route as AuthAdminImportsCustomersReportIdRouteImport } from './routes/_auth/admin/imports/customers/$reportId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -76,6 +82,11 @@ const AuthAdminRouteRoute = AuthAdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthAdminUsersRouteRoute = AuthAdminUsersRouteRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthAdminRouteRoute,
+} as any)
 const AuthExampleUploadIndexRoute = AuthExampleUploadIndexRouteImport.update({
   id: '/upload/',
   path: '/upload/',
@@ -104,8 +115,13 @@ const AuthExampleClientsIndexRoute = AuthExampleClientsIndexRouteImport.update({
   getParentRoute: () => AuthExampleRouteRoute,
 } as any)
 const AuthAdminUsersIndexRoute = AuthAdminUsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthAdminUsersRouteRoute,
+} as any)
+const AuthAdminImportsIndexRoute = AuthAdminImportsIndexRouteImport.update({
+  id: '/imports/',
+  path: '/imports/',
   getParentRoute: () => AuthAdminRouteRoute,
 } as any)
 const AuthExampleOrdersNewRoute = AuthExampleOrdersNewRouteImport.update({
@@ -137,15 +153,39 @@ const AuthExampleClientsClientIdRoute =
     getParentRoute: () => AuthExampleRouteRoute,
   } as any)
 const AuthAdminUsersCreateRoute = AuthAdminUsersCreateRouteImport.update({
-  id: '/users/create',
-  path: '/users/create',
-  getParentRoute: () => AuthAdminRouteRoute,
+  id: '/create',
+  path: '/create',
+  getParentRoute: () => AuthAdminUsersRouteRoute,
 } as any)
 const AuthAdminUsersUserIdRoute = AuthAdminUsersUserIdRouteImport.update({
-  id: '/users/$userId',
-  path: '/users/$userId',
-  getParentRoute: () => AuthAdminRouteRoute,
+  id: '/$userId',
+  path: '/$userId',
+  getParentRoute: () => AuthAdminUsersRouteRoute,
 } as any)
+const AuthAdminImportsSellInTargetsIndexRoute =
+  AuthAdminImportsSellInTargetsIndexRouteImport.update({
+    id: '/imports/sell-in-targets/',
+    path: '/imports/sell-in-targets/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsCustomersIndexRoute =
+  AuthAdminImportsCustomersIndexRouteImport.update({
+    id: '/imports/customers/',
+    path: '/imports/customers/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellInTargetsReportIdRoute =
+  AuthAdminImportsSellInTargetsReportIdRouteImport.update({
+    id: '/imports/sell-in-targets/$reportId',
+    path: '/imports/sell-in-targets/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsCustomersReportIdRoute =
+  AuthAdminImportsCustomersReportIdRouteImport.update({
+    id: '/imports/customers/$reportId',
+    path: '/imports/customers/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
@@ -156,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/not-found': typeof AuthNotFoundRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
+  '/admin/users': typeof AuthAdminUsersRouteRouteWithChildren
   '/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
   '/admin/users/create': typeof AuthAdminUsersCreateRoute
   '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
@@ -163,12 +204,17 @@ export interface FileRoutesByFullPath {
   '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
   '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
   '/example/orders/new': typeof AuthExampleOrdersNewRoute
-  '/admin/users': typeof AuthAdminUsersIndexRoute
+  '/admin/imports': typeof AuthAdminImportsIndexRoute
+  '/admin/users/': typeof AuthAdminUsersIndexRoute
   '/example/clients': typeof AuthExampleClientsIndexRoute
   '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
   '/example/my-uploads': typeof AuthExampleMyUploadsIndexRoute
   '/example/orders': typeof AuthExampleOrdersIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
+  '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
+  '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRoutesByTo {
   '/join': typeof JoinRoute
@@ -186,12 +232,17 @@ export interface FileRoutesByTo {
   '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
   '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
   '/example/orders/new': typeof AuthExampleOrdersNewRoute
+  '/admin/imports': typeof AuthAdminImportsIndexRoute
   '/admin/users': typeof AuthAdminUsersIndexRoute
   '/example/clients': typeof AuthExampleClientsIndexRoute
   '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
   '/example/my-uploads': typeof AuthExampleMyUploadsIndexRoute
   '/example/orders': typeof AuthExampleOrdersIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
+  '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
+  '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -204,6 +255,7 @@ export interface FileRoutesById {
   '/_auth/not-found': typeof AuthNotFoundRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
+  '/_auth/admin/users': typeof AuthAdminUsersRouteRouteWithChildren
   '/_auth/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
   '/_auth/admin/users/create': typeof AuthAdminUsersCreateRoute
   '/_auth/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
@@ -211,12 +263,17 @@ export interface FileRoutesById {
   '/_auth/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
   '/_auth/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
   '/_auth/example/orders/new': typeof AuthExampleOrdersNewRoute
+  '/_auth/admin/imports/': typeof AuthAdminImportsIndexRoute
   '/_auth/admin/users/': typeof AuthAdminUsersIndexRoute
   '/_auth/example/clients/': typeof AuthExampleClientsIndexRoute
   '/_auth/example/kitchen-sink/': typeof AuthExampleKitchenSinkIndexRoute
   '/_auth/example/my-uploads/': typeof AuthExampleMyUploadsIndexRoute
   '/_auth/example/orders/': typeof AuthExampleOrdersIndexRoute
   '/_auth/example/upload/': typeof AuthExampleUploadIndexRoute
+  '/_auth/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/_auth/admin/imports/customers/': typeof AuthAdminImportsCustomersIndexRoute
+  '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -229,6 +286,7 @@ export interface FileRouteTypes {
     | '/not-found'
     | '/unauthorized'
     | '/'
+    | '/admin/users'
     | '/admin/users/$userId'
     | '/admin/users/create'
     | '/example/clients/$clientId'
@@ -236,12 +294,17 @@ export interface FileRouteTypes {
     | '/example/my-uploads/$uploadId'
     | '/example/orders/$orderId'
     | '/example/orders/new'
-    | '/admin/users'
+    | '/admin/imports'
+    | '/admin/users/'
     | '/example/clients'
     | '/example/kitchen-sink'
     | '/example/my-uploads'
     | '/example/orders'
     | '/example/upload'
+    | '/admin/imports/customers/$reportId'
+    | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/customers'
+    | '/admin/imports/sell-in-targets'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/join'
@@ -259,12 +322,17 @@ export interface FileRouteTypes {
     | '/example/my-uploads/$uploadId'
     | '/example/orders/$orderId'
     | '/example/orders/new'
+    | '/admin/imports'
     | '/admin/users'
     | '/example/clients'
     | '/example/kitchen-sink'
     | '/example/my-uploads'
     | '/example/orders'
     | '/example/upload'
+    | '/admin/imports/customers/$reportId'
+    | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/customers'
+    | '/admin/imports/sell-in-targets'
   id:
     | '__root__'
     | '/_auth'
@@ -276,6 +344,7 @@ export interface FileRouteTypes {
     | '/_auth/not-found'
     | '/_auth/unauthorized'
     | '/_auth/'
+    | '/_auth/admin/users'
     | '/_auth/admin/users/$userId'
     | '/_auth/admin/users/create'
     | '/_auth/example/clients/$clientId'
@@ -283,12 +352,17 @@ export interface FileRouteTypes {
     | '/_auth/example/my-uploads/$uploadId'
     | '/_auth/example/orders/$orderId'
     | '/_auth/example/orders/new'
+    | '/_auth/admin/imports/'
     | '/_auth/admin/users/'
     | '/_auth/example/clients/'
     | '/_auth/example/kitchen-sink/'
     | '/_auth/example/my-uploads/'
     | '/_auth/example/orders/'
     | '/_auth/example/upload/'
+    | '/_auth/admin/imports/customers/$reportId'
+    | '/_auth/admin/imports/sell-in-targets/$reportId'
+    | '/_auth/admin/imports/customers/'
+    | '/_auth/admin/imports/sell-in-targets/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -362,6 +436,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminRouteRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/admin/users': {
+      id: '/_auth/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthAdminUsersRouteRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/example/upload/': {
       id: '/_auth/example/upload/'
       path: '/upload'
@@ -399,9 +480,16 @@ declare module '@tanstack/react-router' {
     }
     '/_auth/admin/users/': {
       id: '/_auth/admin/users/'
-      path: '/users'
-      fullPath: '/admin/users'
+      path: '/'
+      fullPath: '/admin/users/'
       preLoaderRoute: typeof AuthAdminUsersIndexRouteImport
+      parentRoute: typeof AuthAdminUsersRouteRoute
+    }
+    '/_auth/admin/imports/': {
+      id: '/_auth/admin/imports/'
+      path: '/imports'
+      fullPath: '/admin/imports'
+      preLoaderRoute: typeof AuthAdminImportsIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/example/orders/new': {
@@ -441,31 +529,83 @@ declare module '@tanstack/react-router' {
     }
     '/_auth/admin/users/create': {
       id: '/_auth/admin/users/create'
-      path: '/users/create'
+      path: '/create'
       fullPath: '/admin/users/create'
       preLoaderRoute: typeof AuthAdminUsersCreateRouteImport
-      parentRoute: typeof AuthAdminRouteRoute
+      parentRoute: typeof AuthAdminUsersRouteRoute
     }
     '/_auth/admin/users/$userId': {
       id: '/_auth/admin/users/$userId'
-      path: '/users/$userId'
+      path: '/$userId'
       fullPath: '/admin/users/$userId'
       preLoaderRoute: typeof AuthAdminUsersUserIdRouteImport
+      parentRoute: typeof AuthAdminUsersRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-targets/': {
+      id: '/_auth/admin/imports/sell-in-targets/'
+      path: '/imports/sell-in-targets'
+      fullPath: '/admin/imports/sell-in-targets'
+      preLoaderRoute: typeof AuthAdminImportsSellInTargetsIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/customers/': {
+      id: '/_auth/admin/imports/customers/'
+      path: '/imports/customers'
+      fullPath: '/admin/imports/customers'
+      preLoaderRoute: typeof AuthAdminImportsCustomersIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-targets/$reportId': {
+      id: '/_auth/admin/imports/sell-in-targets/$reportId'
+      path: '/imports/sell-in-targets/$reportId'
+      fullPath: '/admin/imports/sell-in-targets/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellInTargetsReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/customers/$reportId': {
+      id: '/_auth/admin/imports/customers/$reportId'
+      path: '/imports/customers/$reportId'
+      fullPath: '/admin/imports/customers/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsCustomersReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
   }
 }
 
-interface AuthAdminRouteRouteChildren {
+interface AuthAdminUsersRouteRouteChildren {
   AuthAdminUsersUserIdRoute: typeof AuthAdminUsersUserIdRoute
   AuthAdminUsersCreateRoute: typeof AuthAdminUsersCreateRoute
   AuthAdminUsersIndexRoute: typeof AuthAdminUsersIndexRoute
 }
 
-const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
+const AuthAdminUsersRouteRouteChildren: AuthAdminUsersRouteRouteChildren = {
   AuthAdminUsersUserIdRoute: AuthAdminUsersUserIdRoute,
   AuthAdminUsersCreateRoute: AuthAdminUsersCreateRoute,
   AuthAdminUsersIndexRoute: AuthAdminUsersIndexRoute,
+}
+
+const AuthAdminUsersRouteRouteWithChildren =
+  AuthAdminUsersRouteRoute._addFileChildren(AuthAdminUsersRouteRouteChildren)
+
+interface AuthAdminRouteRouteChildren {
+  AuthAdminUsersRouteRoute: typeof AuthAdminUsersRouteRouteWithChildren
+  AuthAdminImportsIndexRoute: typeof AuthAdminImportsIndexRoute
+  AuthAdminImportsCustomersReportIdRoute: typeof AuthAdminImportsCustomersReportIdRoute
+  AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
+  AuthAdminImportsCustomersIndexRoute: typeof AuthAdminImportsCustomersIndexRoute
+  AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
+}
+
+const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
+  AuthAdminUsersRouteRoute: AuthAdminUsersRouteRouteWithChildren,
+  AuthAdminImportsIndexRoute: AuthAdminImportsIndexRoute,
+  AuthAdminImportsCustomersReportIdRoute:
+    AuthAdminImportsCustomersReportIdRoute,
+  AuthAdminImportsSellInTargetsReportIdRoute:
+    AuthAdminImportsSellInTargetsReportIdRoute,
+  AuthAdminImportsCustomersIndexRoute: AuthAdminImportsCustomersIndexRoute,
+  AuthAdminImportsSellInTargetsIndexRoute:
+    AuthAdminImportsSellInTargetsIndexRoute,
 }
 
 const AuthAdminRouteRouteWithChildren = AuthAdminRouteRoute._addFileChildren(

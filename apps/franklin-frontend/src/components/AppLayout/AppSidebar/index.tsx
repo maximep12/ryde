@@ -17,7 +17,7 @@ import { LogOutIcon } from 'lucide-react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RydeLogo } from '@/components/RydeLogo'
-import { adminNavigation, exampleNavigation, navigation, NavigationItem } from './navigation'
+import { adminNavigation, dataManagerNavigation, exampleNavigation, navigation, NavigationItem } from './navigation'
 
 function NavSection({
   items,
@@ -127,6 +127,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             pathname={location.pathname}
           />
         )}
+        {me?.role === 'data_manager' && (
+          <NavSection
+            items={dataManagerNavigation}
+            label={t('sidebar.admin')}
+            pathname={location.pathname}
+          />
+        )}
+
         <NavSection
           items={exampleNavigation}
           label={t('sidebar.examples')}

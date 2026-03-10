@@ -14,5 +14,9 @@
   "route.ordersCreate": "Créer une commande",
   "route.orderDetails": "Détails de la commande",
   "route.uploadData": "Téléverser",
-  "route.myUploads": "Mes téléversements"
+  "route.myUploads": "Mes téléversements",
+  "route.imports": "Imports",
+  "route.importCustomers": "Schéma clients",
+  "route.importSellInTargets": "Objectifs sell-in",
+  "route.importReportDetail": "Rapport d'import"
 }

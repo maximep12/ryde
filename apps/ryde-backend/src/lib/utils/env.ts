@@ -34,6 +34,8 @@ const envSchema = z.object({
   METABASE_SECRET_KEY: z.string().default(''),
   // Frontend
   FRONTEND_URL: z.string().default('http://localhost:3000'),
+  // Advance DB (external)
+  ADVANCE_DATABASE_URL: z.string().default(''),
   // App
   NODE_ENV: z.enum(['development', 'qa', 'production']).default('development'),
   PORT: z.coerce.number().default(5001),
