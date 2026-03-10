@@ -18,5 +18,7 @@
   "route.imports": "Imports",
   "route.importCustomers": "Schéma clients",
   "route.importSellInTargets": "Objectifs sell-in",
+  "route.importProducts": "Schéma produits",
+  "route.importProductFormats": "Schéma formats de produits",
   "route.importReportDetail": "Rapport d'import"
 }

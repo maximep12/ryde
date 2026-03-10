@@ -42,6 +42,22 @@ const IMPORTS: ImportConfig[] = [
     path: '/admin/imports/sell-in-targets',
     category: 'Sell-In',
   },
+  /*
+  {
+    title: 'route.importProducts',
+    description: 'Upload the products master data file',
+    icon: <PackageIcon className="size-6" />,
+    path: '/admin/imports/products',
+    category: 'Schema',
+  },
+  {
+    title: 'route.importProductFormats',
+    description: 'Upload the product formats file',
+    icon: <PackageIcon className="size-6" />,
+    path: '/admin/imports/product-formats',
+    category: 'Schema',
+  },
+  */
 ]
 
 function ImportsPage() {

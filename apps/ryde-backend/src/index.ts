@@ -7,6 +7,7 @@ import { errorHandler } from './lib/errors'
 import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
 import { customersRouterDefinition } from './routers/customers/handlers'
+import { productsRouterDefinition } from './routers/products/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
@@ -38,6 +39,7 @@ const appDefinition = app
   .route('/token', tokenRouterDefinition)
   .route('/users', usersRouterDefinition)
   .route('/customers', customersRouterDefinition)
+  .route('/products', productsRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

@@ -121,6 +121,18 @@ const imports = [
     action: uploadFile("customers"),
     category: "Schema",
   },
+  {
+    title: "UPDATE PRODUCTS SCHEMA",
+    type: ["CSV"],
+    action: uploadFile("products", "text/csv"),
+    category: "Schema",
+  },
+  {
+    title: "UPDATE PRODUCT FORMATS SCHEMA",
+    type: ["CSV"],
+    action: uploadFile("products/formats", "text/csv"),
+    category: "Schema",
+  },
 ]
 
 export default function FileUploadPage() {

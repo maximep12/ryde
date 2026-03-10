@@ -34,6 +34,8 @@ import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/e
 import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
 import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
 import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
+import { Route as AuthAdminImportsProductsIndexRouteImport } from './routes/_auth/admin/imports/products/index'
+import { Route as AuthAdminImportsProductFormatsIndexRouteImport } from './routes/_auth/admin/imports/product-formats/index'
 import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_auth/admin/imports/customers/index'
 import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
 import { Route as AuthAdminImportsCustomersReportIdRouteImport } from './routes/_auth/admin/imports/customers/$reportId'
@@ -168,6 +170,18 @@ const AuthAdminImportsSellInTargetsIndexRoute =
     path: '/imports/sell-in-targets/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsProductsIndexRoute =
+  AuthAdminImportsProductsIndexRouteImport.update({
+    id: '/imports/products/',
+    path: '/imports/products/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsProductFormatsIndexRoute =
+  AuthAdminImportsProductFormatsIndexRouteImport.update({
+    id: '/imports/product-formats/',
+    path: '/imports/product-formats/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsCustomersIndexRoute =
   AuthAdminImportsCustomersIndexRouteImport.update({
     id: '/imports/customers/',
@@ -214,6 +228,8 @@ export interface FileRoutesByFullPath {
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
+  '/admin/imports/product-formats': typeof AuthAdminImportsProductFormatsIndexRoute
+  '/admin/imports/products': typeof AuthAdminImportsProductsIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -242,6 +258,8 @@ export interface FileRoutesByTo {
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
+  '/admin/imports/product-formats': typeof AuthAdminImportsProductFormatsIndexRoute
+  '/admin/imports/products': typeof AuthAdminImportsProductsIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRoutesById {
@@ -273,6 +291,8 @@ export interface FileRoutesById {
   '/_auth/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
   '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/_auth/admin/imports/customers/': typeof AuthAdminImportsCustomersIndexRoute
+  '/_auth/admin/imports/product-formats/': typeof AuthAdminImportsProductFormatsIndexRoute
+  '/_auth/admin/imports/products/': typeof AuthAdminImportsProductsIndexRoute
   '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRouteTypes {
@@ -304,6 +324,8 @@ export interface FileRouteTypes {
     | '/admin/imports/customers/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
     | '/admin/imports/customers'
+    | '/admin/imports/product-formats'
+    | '/admin/imports/products'
     | '/admin/imports/sell-in-targets'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -332,6 +354,8 @@ export interface FileRouteTypes {
     | '/admin/imports/customers/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
     | '/admin/imports/customers'
+    | '/admin/imports/product-formats'
+    | '/admin/imports/products'
     | '/admin/imports/sell-in-targets'
   id:
     | '__root__'
@@ -362,6 +386,8 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/customers/$reportId'
     | '/_auth/admin/imports/sell-in-targets/$reportId'
     | '/_auth/admin/imports/customers/'
+    | '/_auth/admin/imports/product-formats/'
+    | '/_auth/admin/imports/products/'
     | '/_auth/admin/imports/sell-in-targets/'
   fileRoutesById: FileRoutesById
 }
@@ -548,6 +574,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellInTargetsIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/products/': {
+      id: '/_auth/admin/imports/products/'
+      path: '/imports/products'
+      fullPath: '/admin/imports/products'
+      preLoaderRoute: typeof AuthAdminImportsProductsIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/product-formats/': {
+      id: '/_auth/admin/imports/product-formats/'
+      path: '/imports/product-formats'
+      fullPath: '/admin/imports/product-formats'
+      preLoaderRoute: typeof AuthAdminImportsProductFormatsIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/customers/': {
       id: '/_auth/admin/imports/customers/'
       path: '/imports/customers'
@@ -593,6 +633,8 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsCustomersReportIdRoute: typeof AuthAdminImportsCustomersReportIdRoute
   AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
   AuthAdminImportsCustomersIndexRoute: typeof AuthAdminImportsCustomersIndexRoute
+  AuthAdminImportsProductFormatsIndexRoute: typeof AuthAdminImportsProductFormatsIndexRoute
+  AuthAdminImportsProductsIndexRoute: typeof AuthAdminImportsProductsIndexRoute
   AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 
@@ -604,6 +646,9 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
   AuthAdminImportsSellInTargetsReportIdRoute:
     AuthAdminImportsSellInTargetsReportIdRoute,
   AuthAdminImportsCustomersIndexRoute: AuthAdminImportsCustomersIndexRoute,
+  AuthAdminImportsProductFormatsIndexRoute:
+    AuthAdminImportsProductFormatsIndexRoute,
+  AuthAdminImportsProductsIndexRoute: AuthAdminImportsProductsIndexRoute,
   AuthAdminImportsSellInTargetsIndexRoute:
     AuthAdminImportsSellInTargetsIndexRoute,
 }
