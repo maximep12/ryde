@@ -17,7 +17,13 @@ import { LogOutIcon } from 'lucide-react'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RydeLogo } from '@/components/RydeLogo'
-import { adminNavigation, dataManagerNavigation, exampleNavigation, navigation, NavigationItem } from './navigation'
+import {
+  adminNavigation,
+  dataManagerNavigation,
+  exampleNavigation,
+  navigation,
+  NavigationItem,
+} from './navigation'
 
 function NavSection({
   items,

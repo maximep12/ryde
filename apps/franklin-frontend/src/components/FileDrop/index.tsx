@@ -1,13 +1,7 @@
 'use no memo'
 
 import { Button } from '@repo/ui/components'
-import {
-  AlertCircleIcon,
-  CheckCircle2Icon,
-  FileIcon,
-  UploadCloudIcon,
-  XIcon,
-} from 'lucide-react'
+import { AlertCircleIcon, CheckCircle2Icon, FileIcon, UploadCloudIcon, XIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 
 // =============================================================================
@@ -29,11 +23,7 @@ type FileDropProps = {
 // COMPONENT
 // =============================================================================
 
-export function FileDrop({
-  accept = ['.xlsx', '.xls', '.csv'],
-  onUpload,
-  onReset,
-}: FileDropProps) {
+export function FileDrop({ accept = ['.xlsx', '.xls', '.csv'], onUpload, onReset }: FileDropProps) {
   const acceptAttr = accept.join(',')
   const acceptHint = accept.join(', ')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -118,9 +108,7 @@ export function FileDrop({
             <UploadCloudIcon
               className={`mb-3 size-10 ${isDragging ? 'text-primary' : 'text-muted-foreground'}`}
             />
-            <p className="font-medium">
-              {isDragging ? 'Drop file here' : 'Drag & drop file here'}
-            </p>
+            <p className="font-medium">{isDragging ? 'Drop file here' : 'Drag & drop file here'}</p>
             <p className="text-muted-foreground mt-1 text-sm">or click to browse</p>
             <p className="text-muted-foreground mt-2 text-xs">Accepts: {acceptHint}</p>
           </>
@@ -130,9 +118,7 @@ export function FileDrop({
           <>
             <FileIcon className="text-primary mb-3 size-10" />
             <p className="font-medium">{file.name}</p>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {(file.size / 1024).toFixed(1)} KB
-            </p>
+            <p className="text-muted-foreground mt-1 text-sm">{(file.size / 1024).toFixed(1)} KB</p>
           </>
         )}
 
