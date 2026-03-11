@@ -33,7 +33,7 @@ const BANNER_SEVEN_ELEVEN = '7-Eleven'
 
 const logger = createBaseLogger().child({ module: 'sellin-orders-confirmed' })
 
-const tokenIsValid = requireRoles('admin')
+const tokenIsValid = requireRoles('admin', 'data_manager')
 
 const SEVEN_ELEVEN_SKUS_TO_USE = ['100054', '100051', '100101']
 
@@ -45,9 +45,6 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
    * POST /sellin-orders-confirmed/file — Import confirmed sell-in orders from Excel
    */
   .post('/file', tokenIsValid, async (c) => {
-    console.warn(
-      '[DEPRECATED] POST /sellin-orders-confirmed/file is deprecated and will be removed in a future version.',
-    )
     logger.info('Confirmed sell-in import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
     const report = await createReport(REPORT_TYPE_CONFIRMED, fileName)
@@ -411,7 +408,10 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
 
         await Promise.all(
           toUpdate.map(({ id, confirmedQuantity, netValue }) =>
-            tx.update(replenOrdersConfirmed).set({ confirmedQuantity, netValue }).where(eq(replenOrdersConfirmed.id, id)),
+            tx
+              .update(replenOrdersConfirmed)
+              .set({ confirmedQuantity, netValue })
+              .where(eq(replenOrdersConfirmed.id, id)),
           ),
         )
       })
