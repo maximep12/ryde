@@ -23,5 +23,7 @@
   "route.importSellInOrdersConfirmed7Eleven": "Confirmations 7-Eleven",
   "route.importProducts": "Schéma produits",
   "route.importProductFormats": "Schéma formats de produits",
+  "route.importAmazonOrders": "Commandes Amazon",
+  "route.importAmazonBundles": "Bundles Amazon",
   "route.importReportDetail": "Rapport d'import"
 }

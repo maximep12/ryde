@@ -7,6 +7,7 @@ import {
   HomeIcon,
   ListIcon,
   LucideIcon,
+  PackageIcon,
   PaletteIcon,
   PlusCircleIcon,
   SearchIcon,
@@ -53,6 +54,16 @@ export const importsNavigation: NavigationItem[] = [
     title: 'route.importSellInOrdersConfirmed7Eleven',
     path: '/admin/imports/sell-in-orders-confirmed-7-eleven',
     icon: Building2Icon,
+  },
+  {
+    title: 'route.importAmazonOrders',
+    path: '/admin/imports/amazon-orders',
+    icon: PackageIcon,
+  },
+  {
+    title: 'route.importAmazonBundles',
+    path: '/admin/imports/amazon-bundles',
+    icon: ShoppingCartIcon,
   },
 ]
 

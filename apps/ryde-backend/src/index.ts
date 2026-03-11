@@ -8,6 +8,8 @@ import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
 import { customersRouterDefinition } from './routers/customers/handlers'
 import { productsRouterDefinition } from './routers/products/handlers'
+import { amazonOrdersRouterDefinition } from './routers/amazonOrders/handlers'
+import { forecastRouterDefinition } from './routers/forecast/handlers'
 import { sellinOrdersRouterDefinition } from './routers/sellinOrders/handlers'
 import { sellinOrdersConfirmedRouterDefinition } from './routers/sellinOrdersConfirmed/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
@@ -44,6 +46,8 @@ const appDefinition = app
   .route('/products', productsRouterDefinition)
   .route('/sellin-orders', sellinOrdersRouterDefinition)
   .route('/sellin-orders-confirmed', sellinOrdersConfirmedRouterDefinition)
+  .route('/amazon-orders', amazonOrdersRouterDefinition)
+  .route('/forecast', forecastRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

@@ -10,6 +10,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   Building2Icon,
   ClipboardCheckIcon,
+  PackageIcon,
   ShoppingCartIcon,
   StoreIcon,
   TargetIcon,
@@ -69,6 +70,20 @@ const IMPORTS: ImportConfig[] = [
     icon: <Building2Icon className="size-6" />,
     path: '/admin/imports/sell-in-orders-confirmed-7-eleven',
     category: 'Sell-In',
+  },
+  {
+    title: 'route.importAmazonOrders',
+    description: 'Upload the Amazon orders TSV file',
+    icon: <PackageIcon className="size-6" />,
+    path: '/admin/imports/amazon-orders',
+    category: 'Amazon',
+  },
+  {
+    title: 'route.importAmazonBundles',
+    description: 'Upload the Amazon bundle orders CSV file',
+    icon: <ShoppingCartIcon className="size-6" />,
+    path: '/admin/imports/amazon-bundles',
+    category: 'Amazon',
   },
   /*
   {

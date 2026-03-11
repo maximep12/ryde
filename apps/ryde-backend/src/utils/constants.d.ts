@@ -8,6 +8,15 @@ export declare const ERRORS: {
   custom: (row: unknown, errorMessage: string) => string
   missingValue: (row: unknown, columnName: string) => string
   emptyFile: () => string
+  missingColumn: (missingColumns: string) => string
+  invalidAmazonDate: (rowNumbers: unknown, purchaseDate: unknown) => string
+  invalidAmazonBundleDate: (row: unknown, purchaseDate: unknown) => string
+  invalidAmazonBundleAsin: (row: unknown, bundleAsin: unknown) => string
+  amazonBundleTitleChanged: (row: unknown, receivedTitle: unknown, expectedTitle: unknown) => string
+  invalidAmazonOrigin: (rowNumbers: unknown, expected: unknown[], received: unknown) => string
+  invalidDates: (expected: unknown, received: { row: unknown; date: unknown }) => string
+  invalidHeader: (expected: unknown[], received: unknown[]) => string
+  invalidUnit: (row: unknown, unit: unknown) => string
 }
 
 export declare const UPLOAD_RESULT_STATES: {
@@ -15,3 +24,5 @@ export declare const UPLOAD_RESULT_STATES: {
   withError: string
   failure: string
 }
+
+export declare const US_SHIPSTATES: Record<string, string>
