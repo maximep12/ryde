@@ -38,6 +38,7 @@
     "lodash": "^4.17.21",
     "pg": "^8.16.3",
     "ssh2-sftp-client": "^11.0.0",
+    "zip-state": "^1.0.3",
     "zod": "^4.2.0"
   },
   "devDependencies": {

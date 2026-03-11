@@ -426,6 +426,9 @@ importers:
       ssh2-sftp-client:
         specifier: ^11.0.0
         version: 11.0.0
+      zip-state:
+        specifier: ^1.0.3
+        version: 1.0.3
       zod:
         specifier: ^4.2.0
         version: 4.2.0
@@ -8202,6 +8205,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zip-state@1.0.3:
+    resolution: {integrity: sha512-QaLJRRsugj3nH9DgA/xkmKzVrEPt0TkdzBRG8FeXrMBCXD0IAUWlLo1rJX0MR2BAZ7JxPgFWi2OuVELK4I3H2g==}
 
   zip-stream@4.1.1:
     resolution: {integrity: sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ==}
@@ -16664,6 +16670,8 @@ snapshots:
   yaml@2.8.2: {}
 
   yocto-queue@0.1.0: {}
+
+  zip-state@1.0.3: {}
 
   zip-stream@4.1.1:
     dependencies:
