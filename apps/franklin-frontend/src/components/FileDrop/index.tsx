@@ -1,7 +1,14 @@
 'use no memo'
 
 import { Button } from '@repo/ui/components'
-import { AlertCircleIcon, CheckCircle2Icon, FileIcon, UploadCloudIcon, XIcon } from 'lucide-react'
+import {
+  AlertCircleIcon,
+  CheckCircle2Icon,
+  FileIcon,
+  RefreshCwIcon,
+  UploadCloudIcon,
+  XIcon,
+} from 'lucide-react'
 import { useRef, useState } from 'react'
 
 // =============================================================================
@@ -161,9 +168,14 @@ export function FileDrop({ accept = ['.xlsx', '.xls', '.csv'], onUpload, onReset
           </>
         )}
         {(dropStatus === 'success' || dropStatus === 'error') && (
-          <Button variant="outline" onClick={handleReset}>
-            Upload another file
-          </Button>
+          <>
+            <Button variant="outline" onClick={handleReset}>
+              Upload another file
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleUpload} title="Re-run same file">
+              <RefreshCwIcon className="size-4" />
+            </Button>
+          </>
         )}
       </div>
     </div>

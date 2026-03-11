@@ -2,9 +2,9 @@
  * @deprecated These handlers are deprecated and will be removed in a future version.
  * Do not add new routes or logic here.
  */
+import { createBaseLogger } from '@repo/logger'
 import { Hono } from 'hono'
 import { HTTPException } from 'hono/http-exception'
-import { createBaseLogger } from '@repo/logger'
 import { ContextVariables } from '../../index'
 import { parseCsvStream } from '../../lib/FileParser/csv'
 import { requireRoles } from '../../middlewares/auth'
@@ -21,7 +21,7 @@ import {
 const productsLogger = createBaseLogger().child({ module: 'products' })
 const formatsLogger = createBaseLogger().child({ module: 'product-formats' })
 
-const tokenIsValid = requireRoles('Admin')
+const tokenIsValid = requireRoles('admin')
 
 const productsRouter = new Hono<{ Variables: ContextVariables }>()
 
@@ -87,7 +87,7 @@ export const productsRouterDefinition = productsRouter
       const { created, updated, identical } = await bulkUpsertProducts(validRows)
 
       productsLogger.info({ created, updated, identical }, 'Products import success')
-      await updateReportSuccess(report.id, { created, updated, rejected: rejectedRows })
+      await updateReportSuccess(report.id, { created, updated, rejected: rejectedRows, identical })
 
       return c.json({
         result: {
@@ -172,7 +172,7 @@ export const productsRouterDefinition = productsRouter
       const identical = validRows.length - created
 
       formatsLogger.info({ created, identical }, 'Product formats import success')
-      await updateReportSuccess(report.id, { created, updated: 0, rejected: rejectedRows })
+      await updateReportSuccess(report.id, { created, updated: 0, rejected: rejectedRows, identical })
 
       return c.json({
         result: {

@@ -1,49 +1,7 @@
-import { productFormats, products, productSkus, reports } from '@repo/db'
-import { count, desc, eq, inArray } from 'drizzle-orm'
+import { productFormats, products, productSkus } from '@repo/db'
+import { inArray } from 'drizzle-orm'
 import { db } from '../../db'
-
-// ─── Report helpers ──────────────────────────────────────────────────────────
-
-export async function createReport(type: string, fileName: string) {
-  const [report] = await db
-    .insert(reports)
-    .values({ type, reportStart: new Date().toISOString(), fileName, notifSent: true })
-    .returning()
-  if (!report) throw new Error('Failed to create report')
-  return report
-}
-
-export async function updateReportSuccess(
-  id: number,
-  data: { created: number; updated: number; rejected: string[] },
-) {
-  const { rejected, ...rest } = data
-  await db
-    .update(reports)
-    .set({ reportEnd: new Date().toISOString(), ...rest, notifSent: true, extra: { rejected } })
-    .where(eq(reports.id, id))
-}
-
-export async function updateReportFailure(id: number, failure: string) {
-  await db
-    .update(reports)
-    .set({ failure, reportEnd: new Date().toISOString(), notifSent: true })
-    .where(eq(reports.id, id))
-}
-
-export async function getReportsByType(type: string, page: number, pageSize: number) {
-  const [rows, [countRow]] = await Promise.all([
-    db
-      .select()
-      .from(reports)
-      .where(eq(reports.type, type))
-      .orderBy(desc(reports.createdAt))
-      .limit(pageSize)
-      .offset((page - 1) * pageSize),
-    db.select({ total: count() }).from(reports).where(eq(reports.type, type)),
-  ])
-  return { rows, total: Number(countRow?.total ?? 0) }
-}
+export { createReport, getReportsByType, updateReportFailure, updateReportSuccess } from '../../lib/reports'
 
 // ─── Products ────────────────────────────────────────────────────────────────
 
@@ -78,10 +36,7 @@ export async function bulkUpsertProducts(
 
   // Fetch all products that match the inserted ones to get their IDs
   const names = productValues.map((p) => p.name)
-  const existingProducts = await db
-    .select()
-    .from(products)
-    .where(inArray(products.name, names))
+  const existingProducts = await db.select().from(products).where(inArray(products.name, names))
 
   // Build product lookup: key → product.id
   const productIdByKey = new Map<string, number>()
@@ -131,10 +86,7 @@ export async function bulkUpsertProductFormats(rows: FormatRow[]) {
 
   // Look up product_skus to get productIds
   const skus = [...new Set(rows.map((r) => r.sku))]
-  const existingSkus = await db
-    .select()
-    .from(productSkus)
-    .where(inArray(productSkus.sku, skus))
+  const existingSkus = await db.select().from(productSkus).where(inArray(productSkus.sku, skus))
 
   const productIdBySku = new Map<string, number>()
   for (const s of existingSkus) {

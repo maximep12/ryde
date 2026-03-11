@@ -8,6 +8,8 @@ import { httpLogger } from './middlewares/httpLogger'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
 import { customersRouterDefinition } from './routers/customers/handlers'
 import { productsRouterDefinition } from './routers/products/handlers'
+import { sellinOrdersRouterDefinition } from './routers/sellinOrders/handlers'
+import { sellinOrdersConfirmedRouterDefinition } from './routers/sellinOrdersConfirmed/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
 
 export type RequestUser = {
@@ -40,6 +42,8 @@ const appDefinition = app
   .route('/users', usersRouterDefinition)
   .route('/customers', customersRouterDefinition)
   .route('/products', productsRouterDefinition)
+  .route('/sellin-orders', sellinOrdersRouterDefinition)
+  .route('/sellin-orders-confirmed', sellinOrdersConfirmedRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

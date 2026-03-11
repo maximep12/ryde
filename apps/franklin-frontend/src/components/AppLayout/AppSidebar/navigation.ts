@@ -1,6 +1,8 @@
 import config from '@/config'
 import { FileRouteTypes } from '@/routeTree.gen'
 import {
+  Building2Icon,
+  ClipboardCheckIcon,
   FileIcon,
   HomeIcon,
   ListIcon,
@@ -8,6 +10,7 @@ import {
   PaletteIcon,
   PlusCircleIcon,
   SearchIcon,
+  ShoppingCartIcon,
   StoreIcon,
   TargetIcon,
   UploadIcon,
@@ -36,6 +39,21 @@ export const dataManagerNavigation: NavigationItem[] = [
 export const importsNavigation: NavigationItem[] = [
   { title: 'route.importCustomers', path: '/admin/imports/customers', icon: StoreIcon },
   { title: 'route.importSellInTargets', path: '/admin/imports/sell-in-targets', icon: TargetIcon },
+  {
+    title: 'route.importSellInOrders',
+    path: '/admin/imports/sell-in-orders',
+    icon: ShoppingCartIcon,
+  },
+  {
+    title: 'route.importSellInOrdersConfirmed',
+    path: '/admin/imports/sell-in-orders-confirmed',
+    icon: ClipboardCheckIcon,
+  },
+  {
+    title: 'route.importSellInOrdersConfirmed7Eleven',
+    path: '/admin/imports/sell-in-orders-confirmed-7-eleven',
+    icon: Building2Icon,
+  },
 ]
 
 export const exampleNavigation: NavigationItem[] = [
