@@ -34,10 +34,16 @@ import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/e
 import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
 import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
 import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
+import { Route as AuthAdminImportsSellInOrdersIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders/index'
+import { Route as AuthAdminImportsSellInOrdersConfirmedIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/index'
+import { Route as AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/index'
 import { Route as AuthAdminImportsProductsIndexRouteImport } from './routes/_auth/admin/imports/products/index'
 import { Route as AuthAdminImportsProductFormatsIndexRouteImport } from './routes/_auth/admin/imports/product-formats/index'
 import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_auth/admin/imports/customers/index'
 import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
+import { Route as AuthAdminImportsSellInOrdersReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders/$reportId'
+import { Route as AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
+import { Route as AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
 import { Route as AuthAdminImportsCustomersReportIdRouteImport } from './routes/_auth/admin/imports/customers/$reportId'
 
 const LoginRoute = LoginRouteImport.update({
@@ -170,6 +176,24 @@ const AuthAdminImportsSellInTargetsIndexRoute =
     path: '/imports/sell-in-targets/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellInOrdersIndexRoute =
+  AuthAdminImportsSellInOrdersIndexRouteImport.update({
+    id: '/imports/sell-in-orders/',
+    path: '/imports/sell-in-orders/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellInOrdersConfirmedIndexRoute =
+  AuthAdminImportsSellInOrdersConfirmedIndexRouteImport.update({
+    id: '/imports/sell-in-orders-confirmed/',
+    path: '/imports/sell-in-orders-confirmed/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute =
+  AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRouteImport.update({
+    id: '/imports/sell-in-orders-confirmed-7-eleven/',
+    path: '/imports/sell-in-orders-confirmed-7-eleven/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsProductsIndexRoute =
   AuthAdminImportsProductsIndexRouteImport.update({
     id: '/imports/products/',
@@ -192,6 +216,24 @@ const AuthAdminImportsSellInTargetsReportIdRoute =
   AuthAdminImportsSellInTargetsReportIdRouteImport.update({
     id: '/imports/sell-in-targets/$reportId',
     path: '/imports/sell-in-targets/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellInOrdersReportIdRoute =
+  AuthAdminImportsSellInOrdersReportIdRouteImport.update({
+    id: '/imports/sell-in-orders/$reportId',
+    path: '/imports/sell-in-orders/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellInOrdersConfirmedReportIdRoute =
+  AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport.update({
+    id: '/imports/sell-in-orders-confirmed/$reportId',
+    path: '/imports/sell-in-orders-confirmed/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute =
+  AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRouteImport.update({
+    id: '/imports/sell-in-orders-confirmed-7-eleven/$reportId',
+    path: '/imports/sell-in-orders-confirmed-7-eleven/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsCustomersReportIdRoute =
@@ -226,10 +268,16 @@ export interface FileRoutesByFullPath {
   '/example/orders': typeof AuthExampleOrdersIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
+  '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
   '/admin/imports/product-formats': typeof AuthAdminImportsProductFormatsIndexRoute
   '/admin/imports/products': typeof AuthAdminImportsProductsIndexRoute
+  '/admin/imports/sell-in-orders-confirmed-7-eleven': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
+  '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRoutesByTo {
@@ -256,10 +304,16 @@ export interface FileRoutesByTo {
   '/example/orders': typeof AuthExampleOrdersIndexRoute
   '/example/upload': typeof AuthExampleUploadIndexRoute
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
+  '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
   '/admin/imports/product-formats': typeof AuthAdminImportsProductFormatsIndexRoute
   '/admin/imports/products': typeof AuthAdminImportsProductsIndexRoute
+  '/admin/imports/sell-in-orders-confirmed-7-eleven': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
+  '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRoutesById {
@@ -289,10 +343,16 @@ export interface FileRoutesById {
   '/_auth/example/orders/': typeof AuthExampleOrdersIndexRoute
   '/_auth/example/upload/': typeof AuthExampleUploadIndexRoute
   '/_auth/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  '/_auth/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
+  '/_auth/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/_auth/admin/imports/customers/': typeof AuthAdminImportsCustomersIndexRoute
   '/_auth/admin/imports/product-formats/': typeof AuthAdminImportsProductFormatsIndexRoute
   '/_auth/admin/imports/products/': typeof AuthAdminImportsProductsIndexRoute
+  '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  '/_auth/admin/imports/sell-in-orders-confirmed/': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
+  '/_auth/admin/imports/sell-in-orders/': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 export interface FileRouteTypes {
@@ -322,10 +382,16 @@ export interface FileRouteTypes {
     | '/example/orders'
     | '/example/upload'
     | '/admin/imports/customers/$reportId'
+    | '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+    | '/admin/imports/sell-in-orders-confirmed/$reportId'
+    | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
     | '/admin/imports/customers'
     | '/admin/imports/product-formats'
     | '/admin/imports/products'
+    | '/admin/imports/sell-in-orders-confirmed-7-eleven'
+    | '/admin/imports/sell-in-orders-confirmed'
+    | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -352,10 +418,16 @@ export interface FileRouteTypes {
     | '/example/orders'
     | '/example/upload'
     | '/admin/imports/customers/$reportId'
+    | '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+    | '/admin/imports/sell-in-orders-confirmed/$reportId'
+    | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
     | '/admin/imports/customers'
     | '/admin/imports/product-formats'
     | '/admin/imports/products'
+    | '/admin/imports/sell-in-orders-confirmed-7-eleven'
+    | '/admin/imports/sell-in-orders-confirmed'
+    | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
   id:
     | '__root__'
@@ -384,10 +456,16 @@ export interface FileRouteTypes {
     | '/_auth/example/orders/'
     | '/_auth/example/upload/'
     | '/_auth/admin/imports/customers/$reportId'
+    | '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+    | '/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
+    | '/_auth/admin/imports/sell-in-orders/$reportId'
     | '/_auth/admin/imports/sell-in-targets/$reportId'
     | '/_auth/admin/imports/customers/'
     | '/_auth/admin/imports/product-formats/'
     | '/_auth/admin/imports/products/'
+    | '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/'
+    | '/_auth/admin/imports/sell-in-orders-confirmed/'
+    | '/_auth/admin/imports/sell-in-orders/'
     | '/_auth/admin/imports/sell-in-targets/'
   fileRoutesById: FileRoutesById
 }
@@ -574,6 +652,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellInTargetsIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-in-orders/': {
+      id: '/_auth/admin/imports/sell-in-orders/'
+      path: '/imports/sell-in-orders'
+      fullPath: '/admin/imports/sell-in-orders'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-orders-confirmed/': {
+      id: '/_auth/admin/imports/sell-in-orders-confirmed/'
+      path: '/imports/sell-in-orders-confirmed'
+      fullPath: '/admin/imports/sell-in-orders-confirmed'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/': {
+      id: '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/'
+      path: '/imports/sell-in-orders-confirmed-7-eleven'
+      fullPath: '/admin/imports/sell-in-orders-confirmed-7-eleven'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/products/': {
       id: '/_auth/admin/imports/products/'
       path: '/imports/products'
@@ -600,6 +699,27 @@ declare module '@tanstack/react-router' {
       path: '/imports/sell-in-targets/$reportId'
       fullPath: '/admin/imports/sell-in-targets/$reportId'
       preLoaderRoute: typeof AuthAdminImportsSellInTargetsReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-orders/$reportId': {
+      id: '/_auth/admin/imports/sell-in-orders/$reportId'
+      path: '/imports/sell-in-orders/$reportId'
+      fullPath: '/admin/imports/sell-in-orders/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-orders-confirmed/$reportId': {
+      id: '/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
+      path: '/imports/sell-in-orders-confirmed/$reportId'
+      fullPath: '/admin/imports/sell-in-orders-confirmed/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': {
+      id: '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+      path: '/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+      fullPath: '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/customers/$reportId': {
@@ -631,10 +751,16 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminUsersRouteRoute: typeof AuthAdminUsersRouteRouteWithChildren
   AuthAdminImportsIndexRoute: typeof AuthAdminImportsIndexRoute
   AuthAdminImportsCustomersReportIdRoute: typeof AuthAdminImportsCustomersReportIdRoute
+  AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  AuthAdminImportsSellInOrdersConfirmedReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
+  AuthAdminImportsSellInOrdersReportIdRoute: typeof AuthAdminImportsSellInOrdersReportIdRoute
   AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
   AuthAdminImportsCustomersIndexRoute: typeof AuthAdminImportsCustomersIndexRoute
   AuthAdminImportsProductFormatsIndexRoute: typeof AuthAdminImportsProductFormatsIndexRoute
   AuthAdminImportsProductsIndexRoute: typeof AuthAdminImportsProductsIndexRoute
+  AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  AuthAdminImportsSellInOrdersConfirmedIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
+  AuthAdminImportsSellInOrdersIndexRoute: typeof AuthAdminImportsSellInOrdersIndexRoute
   AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
 }
 
@@ -643,12 +769,24 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
   AuthAdminImportsIndexRoute: AuthAdminImportsIndexRoute,
   AuthAdminImportsCustomersReportIdRoute:
     AuthAdminImportsCustomersReportIdRoute,
+  AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute:
+    AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute,
+  AuthAdminImportsSellInOrdersConfirmedReportIdRoute:
+    AuthAdminImportsSellInOrdersConfirmedReportIdRoute,
+  AuthAdminImportsSellInOrdersReportIdRoute:
+    AuthAdminImportsSellInOrdersReportIdRoute,
   AuthAdminImportsSellInTargetsReportIdRoute:
     AuthAdminImportsSellInTargetsReportIdRoute,
   AuthAdminImportsCustomersIndexRoute: AuthAdminImportsCustomersIndexRoute,
   AuthAdminImportsProductFormatsIndexRoute:
     AuthAdminImportsProductFormatsIndexRoute,
   AuthAdminImportsProductsIndexRoute: AuthAdminImportsProductsIndexRoute,
+  AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute:
+    AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute,
+  AuthAdminImportsSellInOrdersConfirmedIndexRoute:
+    AuthAdminImportsSellInOrdersConfirmedIndexRoute,
+  AuthAdminImportsSellInOrdersIndexRoute:
+    AuthAdminImportsSellInOrdersIndexRoute,
   AuthAdminImportsSellInTargetsIndexRoute:
     AuthAdminImportsSellInTargetsIndexRoute,
 }

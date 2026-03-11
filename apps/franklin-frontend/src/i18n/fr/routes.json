@@ -18,6 +18,9 @@
   "route.imports": "Imports",
   "route.importCustomers": "Schéma clients",
   "route.importSellInTargets": "Objectifs sell-in",
+  "route.importSellInOrders": "Commandes sell-in",
+  "route.importSellInOrdersConfirmed": "Confirmations sell-in",
+  "route.importSellInOrdersConfirmed7Eleven": "Confirmations 7-Eleven",
   "route.importProducts": "Schéma produits",
   "route.importProductFormats": "Schéma formats de produits",
   "route.importReportDetail": "Rapport d'import"

@@ -6,13 +6,13 @@ export type ImportReport = {
   id: number
   type: string
   failure: string | null
-  warnings: unknown
+  warnings: { rejected?: string[] }
   reportStart: string | null
   reportEnd: string | null
   created: number | null
   updated: number | null
   deleted: number | null
-  extra: { rejected?: string[]; identical?: number } | null
+  extra: { identical?: number } | null
   fileName: string | null
   createdAt: string
 }

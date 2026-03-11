@@ -40,7 +40,7 @@ export function ImportReportDetail({ report }: { report: ImportReport | undefine
 
   const failed = !!report.failure
   const duration = formatDuration(report.reportStart, report.reportEnd)
-  const rejected = report.extra?.rejected ?? []
+  const rejected = report.warnings?.rejected ?? []
   const identical = report.extra?.identical
 
   return (

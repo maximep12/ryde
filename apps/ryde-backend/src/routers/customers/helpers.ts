@@ -1,40 +1,12 @@
-import { customerTargets, customers, periods, reports } from '@repo/db'
+import { customerTargets, customers, periods } from '@repo/db'
 import { createBaseLogger } from '@repo/logger'
-import { and, count, desc, eq, isNotNull, sql } from 'drizzle-orm'
+import { and, eq, isNotNull, sql } from 'drizzle-orm'
 import pg from 'pg'
 import { db } from '../../db'
 import { env } from '../../lib/utils/env'
+export { createReport, getReportsByType, updateReportFailure, updateReportSuccess } from '../../lib/reports'
 
 const logger = createBaseLogger().child({ module: 'customers' })
-
-// ─── Report helpers ─────────────────────────────────────────────────────────
-
-export async function createReport(type: string, fileName: string) {
-  const [report] = await db
-    .insert(reports)
-    .values({ type, reportStart: new Date().toISOString(), fileName, notifSent: true })
-    .returning()
-  if (!report) throw new Error('Failed to create report')
-  return report
-}
-
-export async function updateReportSuccess(
-  id: number,
-  data: { created: number; updated: number; rejected: string[]; identical: number },
-) {
-  const { rejected, identical, ...rest } = data
-  await db
-    .update(reports)
-    .set({ reportEnd: new Date().toISOString(), ...rest, notifSent: true, extra: { rejected, identical } })
-    .where(eq(reports.id, id))
-}
-
-export async function updateReportFailure(id: number, failure: string) {
-  await db
-    .update(reports)
-    .set({ failure, reportEnd: new Date().toISOString(), notifSent: true })
-    .where(eq(reports.id, id))
-}
 
 // ─── Customer upsert ─────────────────────────────────────────────────────────
 
@@ -241,9 +213,7 @@ export async function updateCustomerTarget(customerId: number, periodId: number,
     .where(and(eq(customerTargets.customerId, customerId), eq(customerTargets.periodId, periodId)))
 }
 
-export async function bulkUpsertCustomerTargets(
-  rows: { customerId: number; periodId: number; target: number }[],
-) {
+export async function bulkUpsertCustomerTargets(rows: { customerId: number; periodId: number; target: number }[]) {
   for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
     await db
       .insert(customerTargets)
@@ -255,18 +225,3 @@ export async function bulkUpsertCustomerTargets(
   }
 }
 
-// ─── Reports ─────────────────────────────────────────────────────────────────
-
-export async function getReportsByType(type: string, page: number, pageSize: number) {
-  const [rows, [countRow]] = await Promise.all([
-    db
-      .select()
-      .from(reports)
-      .where(eq(reports.type, type))
-      .orderBy(desc(reports.createdAt))
-      .limit(pageSize)
-      .offset((page - 1) * pageSize),
-    db.select({ total: count() }).from(reports).where(eq(reports.type, type)),
-  ])
-  return { rows, total: Number(countRow?.total ?? 0) }
-}

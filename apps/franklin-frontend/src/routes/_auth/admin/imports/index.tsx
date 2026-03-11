@@ -7,7 +7,14 @@ import {
   Input,
 } from '@repo/ui/components'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { StoreIcon, TargetIcon, UploadCloudIcon } from 'lucide-react'
+import {
+  Building2Icon,
+  ClipboardCheckIcon,
+  ShoppingCartIcon,
+  StoreIcon,
+  TargetIcon,
+  UploadCloudIcon,
+} from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -40,6 +47,27 @@ const IMPORTS: ImportConfig[] = [
     description: 'Upload the sell-in targets file',
     icon: <TargetIcon className="size-6" />,
     path: '/admin/imports/sell-in-targets',
+    category: 'Sell-In',
+  },
+  {
+    title: 'route.importSellInOrders',
+    description: 'Upload the sell-in orders file',
+    icon: <ShoppingCartIcon className="size-6" />,
+    path: '/admin/imports/sell-in-orders',
+    category: 'Sell-In',
+  },
+  {
+    title: 'route.importSellInOrdersConfirmed',
+    description: 'Upload the confirmed sell-in orders file',
+    icon: <ClipboardCheckIcon className="size-6" />,
+    path: '/admin/imports/sell-in-orders-confirmed',
+    category: 'Sell-In',
+  },
+  {
+    title: 'route.importSellInOrdersConfirmed7Eleven',
+    description: 'Upload the 7-Eleven confirmed orders file',
+    icon: <Building2Icon className="size-6" />,
+    path: '/admin/imports/sell-in-orders-confirmed-7-eleven',
     category: 'Sell-In',
   },
   /*
