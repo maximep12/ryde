@@ -1,7 +1,7 @@
 import { customers, customersUpc, productFormats, productSkus, replenOrdersConfirmed } from '@repo/db'
 import { and, eq, inArray } from 'drizzle-orm'
 import { db } from '../../db'
-export { createReport, getReportsByType, updateReportFailure, updateReportSuccess } from '../../lib/reports'
+export { createReport, getReportsByType, linkReportToUploadedFile, updateReportFailure, updateReportSuccess } from '../../lib/reports'
 
 // ─── Customers ────────────────────────────────────────────────────────────────
 
@@ -40,8 +40,8 @@ export async function getProductSkusWithFormats(): Promise<ProductSkuWithFormat[
 
 // ─── Existing confirmed orders ────────────────────────────────────────────────
 
-export async function getExistingConfirmedOrders(customerIdList: number[]) {
-  if (customerIdList.length === 0) return []
+export async function getExistingConfirmedOrders(salesDocuments: string[]) {
+  if (salesDocuments.length === 0) return []
   return db
     .select({
       id: replenOrdersConfirmed.id,
@@ -52,7 +52,7 @@ export async function getExistingConfirmedOrders(customerIdList: number[]) {
       netValue: replenOrdersConfirmed.netValue,
     })
     .from(replenOrdersConfirmed)
-    .where(inArray(replenOrdersConfirmed.customerId, customerIdList))
+    .where(inArray(replenOrdersConfirmed.salesDocument, salesDocuments))
 }
 
 export async function getExistingConfirmedOrdersByCustomersAndDate(customerIdList: number[], documentDate: string) {

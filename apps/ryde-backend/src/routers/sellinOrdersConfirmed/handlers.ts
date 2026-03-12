@@ -11,11 +11,11 @@ import { db } from '../../db'
 import { ContextVariables } from '../../index'
 import { readExcelFile } from '../../lib/FileParser/excel'
 import { parseSevenElevenWHToStore } from '../../lib/FileParser/sevenElevenExcel'
+import { bufferToStream, receiveFileUpload } from '../../lib/fileUpload'
 import { sendSlackNotification, SLACK_CONTEXT } from '../../lib/slack'
 import { requireRoles } from '../../middlewares/auth'
 import { ERRORS, UPLOAD_RESULT_STATES } from '../../utils/constants.js'
 import {
-  createReport,
   getAllCustomerIds,
   getCustomersByBanner,
   getExistingConfirmedOrders,
@@ -47,14 +47,12 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
   .post('/file', tokenIsValid, async (c) => {
     logger.info('Confirmed sell-in import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const report = await createReport(REPORT_TYPE_CONFIRMED, fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_CONFIRMED, type: 'confirmed', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
 
       const contentBySheet = await readExcelFile({
-        stream: stream as unknown as NodeJS.ReadableStream,
+        stream: bufferToStream(buffer),
         expected: [
           {
             sheetName: 'Data',
@@ -80,9 +78,14 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
 
       const { values } = sheetData
 
-      const [customerIds, availableSkus] = await Promise.all([getAllCustomerIds(), getProductSkusWithFormats()])
+      const salesDocumentsInFile = [
+        ...new Set((values as Record<string, unknown>[]).map((v) => String(v.salesDocument)).filter(Boolean)),
+      ]
 
-      const existingConfirmed = await getExistingConfirmedOrders(customerIds)
+      const [[customerIds, availableSkus], existingConfirmed] = await Promise.all([
+        Promise.all([getAllCustomerIds(), getProductSkusWithFormats()]),
+        getExistingConfirmedOrders(salesDocumentsInFile),
+      ])
 
       let ordersCreated = 0
       let ordersUpdated = 0
@@ -304,14 +307,12 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
   .post('/file/7-eleven', tokenIsValid, async (c) => {
     logger.info('7-Eleven confirmed import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const report = await createReport(REPORT_TYPE_SEVEN_ELEVEN_CONFIRMED, fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_SEVEN_ELEVEN_CONFIRMED, type: '7-eleven-confirmed', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
 
       const { dateRange, salesByCustomer, totalRowsReceived } = await parseSevenElevenWHToStore({
-        stream: stream as unknown as NodeJS.ReadableStream,
+        stream: bufferToStream(buffer),
       })
 
       const [sevenElevenCustomers, upcProducts] = await Promise.all([

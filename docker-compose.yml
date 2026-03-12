@@ -73,6 +73,44 @@ services:
       timeout: 10s
       retries: 3
 
+  localstack:
+    image: localstack/localstack:latest
+    container_name: ryde-localstack
+    restart: unless-stopped
+    ports:
+      - '4566:4566'
+    environment:
+      SERVICES: s3
+      DEFAULT_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - ./docker/localstack-init.sh:/etc/localstack/init/ready.d/localstack-init.sh
+    networks:
+      - ryde-network
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  s3-browser:
+    image: cloudlena/s3manager
+    ports:
+      - '8080:8080'
+    environment:
+      ENDPOINT: localstack:4566
+      USE_SSL: 'false'
+      FORCE_PATH_STYLE: 'true'
+      ACCESS_KEY_ID: test
+      SECRET_ACCESS_KEY: test
+      REGION: us-east-1
+    depends_on:
+      - localstack
+    networks:
+      - ryde-network
+
 networks:
   ryde-network:
     driver: bridge
@@ -82,6 +120,8 @@ volumes:
   mongodb_data:
     driver: local
   mongodb_config:
+    driver: local
+  localstack_data:
     driver: local
   postgres_data:
     driver: local

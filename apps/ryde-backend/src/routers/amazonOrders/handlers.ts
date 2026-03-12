@@ -6,12 +6,12 @@ import { HTTPException } from 'hono/http-exception'
 import { db } from '../../db'
 import { ContextVariables } from '../../index'
 import { parseCsvStream } from '../../lib/FileParser/csv'
+import { bufferToStream, receiveFileUpload } from '../../lib/fileUpload'
 import { sendSlackNotification, SLACK_CONTEXT } from '../../lib/slack'
 import { requireRoles } from '../../middlewares/auth'
 import { UPLOAD_RESULT_STATES } from '../../utils/constants'
 import {
   buildOrdersFromGroup,
-  createReport,
   getAmazonBundles,
   getAmazonProductSkus,
   getExistingAmazonOrdersByIds,
@@ -41,13 +41,11 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
   .post('/file', tokenIsValid, async (c) => {
     logger.info('Amazon import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const report = await createReport(REPORT_TYPE_AMAZON, fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_AMAZON, type: 'amazon', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
 
-      const rawData = await parseCsvStream(stream, { delimiter: '\t', columns: ['amazon-order-id', 'purchase-date', 'order-status', 'sku', 'quantity', 'item-price', 'ship-state', 'ship-postal-code', 'currency', 'ship-country', 'sales-channel'] })
+      const rawData = await parseCsvStream(bufferToStream(buffer), { delimiter: '\t', columns: ['amazon-order-id', 'purchase-date', 'order-status', 'sku', 'quantity', 'item-price', 'ship-state', 'ship-postal-code', 'currency', 'ship-country', 'sales-channel'] })
       const { validRows, rejectedRows: rawRejectedRows } = validateRawRows(rawData)
 
       const products = await getAmazonProductSkus()
@@ -213,13 +211,11 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
   .post('/bundles', tokenIsValid, async (c) => {
     logger.info('Amazon bundles import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const report = await createReport(REPORT_TYPE_AMAZON_BUNDLES, fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_AMAZON_BUNDLES, type: 'amazon-bundles', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
 
-      const rawData = await parseCsvStream(stream, { columns: ['DATE', 'BUNDLE_ASIN', 'TITLE', 'BUNDLES_SOLD', 'TOTAL_SALES'] })
+      const rawData = await parseCsvStream(bufferToStream(buffer), { columns: ['DATE', 'BUNDLE_ASIN', 'TITLE', 'BUNDLES_SOLD', 'TOTAL_SALES'] })
       const data = rawData
 
       const availableBundles = await getAmazonBundles()

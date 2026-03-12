@@ -9,10 +9,13 @@ import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/hand
 import { customersRouterDefinition } from './routers/customers/handlers'
 import { productsRouterDefinition } from './routers/products/handlers'
 import { amazonOrdersRouterDefinition } from './routers/amazonOrders/handlers'
+import { customerProductStatusRouterDefinition } from './routers/customerProductStatus/handlers'
+import { filesRouterDefinition } from './routers/files/handlers'
 import { forecastRouterDefinition } from './routers/forecast/handlers'
 import { sellinOrdersRouterDefinition } from './routers/sellinOrders/handlers'
 import { sellinOrdersConfirmedRouterDefinition } from './routers/sellinOrdersConfirmed/handlers'
 import { usersRouterDefinition } from './routers/users/handlers'
+import { workersRouterDefinition } from './routers/workers/handlers'
 
 export type RequestUser = {
   id: string
@@ -48,6 +51,9 @@ const appDefinition = app
   .route('/sellin-orders-confirmed', sellinOrdersConfirmedRouterDefinition)
   .route('/amazon-orders', amazonOrdersRouterDefinition)
   .route('/forecast', forecastRouterDefinition)
+  .route('/customerProductStatus', customerProductStatusRouterDefinition)
+  .route('/download', filesRouterDefinition)
+  .route('/workers', workersRouterDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition

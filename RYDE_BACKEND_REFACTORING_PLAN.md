@@ -53,7 +53,7 @@ feat/ryde-backend-misc
 - [x] **Phase 7** — Competitor Sales Router (`feat/ryde-backend-competitor-sales`)
 - [x] **Phase 8** — Orders Routers (`feat/ryde-backend-orders`)
 - [x] **Phase 9** — Amazon & Forecast Routers (`feat/ryde-backend-amazon`)
-- [ ] **Phase 10** — Misc Routers (`feat/ryde-backend-misc`)
+- [x] **Phase 10** — Misc Routers (`feat/ryde-backend-misc`)
 
 ---
 

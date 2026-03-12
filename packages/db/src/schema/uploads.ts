@@ -1,5 +1,5 @@
 import { InferSelectModel, sql } from 'drizzle-orm'
-import { boolean, index, integer, jsonb, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, index, integer, jsonb, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
 import { timestamps } from '../helpers'
 import { app } from './app'
 import { users } from './users'
@@ -64,3 +64,32 @@ export const uploadsResults = app.table(
 )
 
 export type uploadsResults = InferSelectModel<typeof uploadsResults>
+
+// =============================================================================
+// UPLOADED FILES
+// Tracks all files stored in S3, imported from external storage
+// =============================================================================
+
+export const uploadedFiles = app.table(
+  'uploaded_files',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    type: varchar('type', { length: 100 }).notNull(), // 'sell-in', 'customer', 'confirmed', 'amazon', etc.
+    banner: varchar('banner', { length: 100 }), // 'circle_k', 'rabba' — null for non-banner-specific files
+    name: varchar('name', { length: 500 }).notNull(), // Full S3 key (e.g. qa/banners/rabba/file.txt, prod/sell-in/file.xlsx)
+    downloadPath: varchar('download_path', { length: 1000 }).notNull(), // API path: /download/:banner/:fileName or /download/:type/:fileName
+    by: varchar('by', { length: 20 }).notNull(), // 'admin', 'sftp'
+    uploadedBy: varchar('uploaded_by').references(() => users.id, { onDelete: 'set null' }), // null for sftp uploads
+    storedAt: timestamp('stored_at').notNull(), // original storage date — preserved from S3 metadata
+    ...timestamps,
+  },
+  (table) => [
+    index('uploaded_files_type_idx').on(table.type),
+    index('uploaded_files_banner_idx').on(table.banner),
+    index('uploaded_files_stored_at_idx').on(table.storedAt),
+  ],
+)
+
+export type UploadedFile = InferSelectModel<typeof uploadedFiles>

@@ -1,4 +1,4 @@
-import { reports } from '@repo/db'
+import { reports, uploadedFiles, users } from '@repo/db'
 import { count, desc, eq } from 'drizzle-orm'
 import { db } from '../db'
 
@@ -22,6 +22,10 @@ export async function updateReportSuccess(
     .where(eq(reports.id, id))
 }
 
+export async function linkReportToUploadedFile(id: number, uploadedFileId: string) {
+  await db.update(reports).set({ uploadedFileId }).where(eq(reports.id, id))
+}
+
 export async function updateReportFailure(id: number, failure: string) {
   await db
     .update(reports)
@@ -32,8 +36,27 @@ export async function updateReportFailure(id: number, failure: string) {
 export async function getReportsByType(type: string, page: number, pageSize: number) {
   const [rows, [countRow]] = await Promise.all([
     db
-      .select()
+      .select({
+        id: reports.id,
+        type: reports.type,
+        failure: reports.failure,
+        warnings: reports.warnings,
+        reportStart: reports.reportStart,
+        reportEnd: reports.reportEnd,
+        created: reports.created,
+        updated: reports.updated,
+        deleted: reports.deleted,
+        extra: reports.extra,
+        fileName: reports.fileName,
+        createdAt: reports.createdAt,
+        downloadPath: uploadedFiles.downloadPath,
+        uploadedBy: uploadedFiles.by,
+        uploaderGivenName: users.givenName,
+        uploaderFamilyName: users.familyName,
+      })
       .from(reports)
+      .leftJoin(uploadedFiles, eq(reports.uploadedFileId, uploadedFiles.id))
+      .leftJoin(users, eq(uploadedFiles.uploadedBy, users.id))
       .where(eq(reports.type, type))
       .orderBy(desc(reports.createdAt))
       .limit(pageSize)
