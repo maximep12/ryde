@@ -1,4 +1,4 @@
-import { dataImports, replenOrders, replenOrdersConfirmed, reports, users } from '@repo/db'
+import { dataImports, type Role, replenOrders, replenOrdersConfirmed, reports, users } from '@repo/db'
 import { desc, eq, InferSelectModel } from 'drizzle-orm'
 import { HTTPException } from 'hono/http-exception'
 import jwt from 'jsonwebtoken'
@@ -39,7 +39,7 @@ export async function createUser(data: {
   id: string
   email: string
   passwordHash?: string
-  role?: string
+  role?: Role
 }) {
   const [user] = await db.insert(users).values(data).returning()
   if (!user) throw new HTTPException(500, { message: 'Failed to create user.' })

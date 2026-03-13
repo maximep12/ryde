@@ -1,7 +1,7 @@
 import { customers, productFormats, productSkus, replenOrders, replenOrdersContent } from '@repo/db'
-import { eq } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { db } from '../../db'
-export { createReport, getReportsByType, updateReportFailure, updateReportSuccess } from '../../lib/reports'
+export { createReport, getReportsByType, linkReportToUploadedFile, updateReportFailure, updateReportSuccess } from '../../lib/reports'
 
 // ─── Customers ───────────────────────────────────────────────────────────────
 
@@ -42,10 +42,11 @@ export type ReplenOrderWithContent = typeof replenOrders.$inferSelect & {
 
 // ─── Replen orders with content ───────────────────────────────────────────────
 
-export async function getReplenOrdersWithContent(): Promise<ReplenOrderWithContent[]> {
+export async function getReplenOrdersWithContent(billingDocumentIds: number[]): Promise<ReplenOrderWithContent[]> {
+  if (billingDocumentIds.length === 0) return []
   const [allOrders, allContent] = await Promise.all([
-    db.select().from(replenOrders),
-    db.select().from(replenOrdersContent),
+    db.select().from(replenOrders).where(inArray(replenOrders.billingDocumentId, billingDocumentIds)),
+    db.select().from(replenOrdersContent).where(inArray(replenOrdersContent.billingDocumentId, billingDocumentIds)),
   ])
 
   const contentByBillingDoc = new Map<number, (typeof replenOrdersContent.$inferSelect)[]>()

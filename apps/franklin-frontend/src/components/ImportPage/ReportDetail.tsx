@@ -1,7 +1,16 @@
+import config from '@/config'
 import { type ImportReport } from '@/hooks/queries/imports/useImportReports'
+import { getRydeToken } from '@/stores/ryde-session'
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components'
 import { useRouter } from '@tanstack/react-router'
-import { AlertCircleIcon, ArrowLeftIcon, CheckCircle2Icon, ClockIcon, FileIcon } from 'lucide-react'
+import {
+  AlertCircleIcon,
+  ArrowLeftIcon,
+  CheckCircle2Icon,
+  ClockIcon,
+  DownloadIcon,
+  FileIcon,
+} from 'lucide-react'
 
 declare module '@tanstack/react-router' {
   interface HistoryState {
@@ -23,6 +32,22 @@ function formatDuration(start: string | null, end: string | null) {
 
 export function ImportReportDetail({ report }: { report: ImportReport | undefined }) {
   const router = useRouter()
+
+  async function handleDownload() {
+    if (!report?.downloadPath) return
+    const token = getRydeToken()
+    const res = await fetch(`${config.rydeBackendURL}${report.downloadPath}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) return
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = report.fileName ?? 'download'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   if (!report) {
     return (
@@ -58,9 +83,25 @@ export function ImportReportDetail({ report }: { report: ImportReport | undefine
         <div>
           <h1 className="text-xl font-bold">{report.fileName ?? 'Unknown file'}</h1>
           <p className="text-muted-foreground text-sm">{formatDateTime(report.createdAt)}</p>
+          {report.uploadedBy && (
+            <p className="text-muted-foreground text-sm">
+              Uploaded by{' '}
+              <span className="font-medium">
+                {report.uploadedBy === 'sftp'
+                  ? 'SFTP'
+                  : [report.uploaderGivenName, report.uploaderFamilyName].filter(Boolean).join(' ')}
+              </span>
+            </p>
+          )}
         </div>
+        {report.downloadPath && (
+          <Button variant="outline" size="sm" onClick={handleDownload} className="ml-auto">
+            <DownloadIcon className="mr-2 size-4" />
+            Download
+          </Button>
+        )}
         <span
-          className={`ml-auto inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
+          className={`${report.downloadPath ? '' : 'ml-auto'}inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium ${
             failed
               ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
               : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'

@@ -15,6 +15,10 @@ export type ImportReport = {
   extra: { identical?: number } | null
   fileName: string | null
   createdAt: string
+  downloadPath: string | null
+  uploadedBy: string | null
+  uploaderGivenName: string | null
+  uploaderFamilyName: string | null
 }
 
 type ReportsResponse = {

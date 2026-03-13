@@ -6,11 +6,11 @@ import { HTTPException } from 'hono/http-exception'
 import { db } from '../../db'
 import { ContextVariables } from '../../index'
 import { readExcelFile } from '../../lib/FileParser/excel'
+import { bufferToStream, receiveFileUpload } from '../../lib/fileUpload'
 import { sendSlackNotification, SLACK_CONTEXT } from '../../lib/slack'
 import { requireRoles } from '../../middlewares/auth'
 import { ERRORS, UPLOAD_RESULT_STATES } from '../../utils/constants.js'
 import {
-  createReport,
   getCustomerIds,
   getProductSkusWithFormats,
   getReplenOrdersWithContent,
@@ -31,14 +31,13 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
   .post('/file', tokenIsValid, async (c) => {
     logger.info('Sell-in import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const report = await createReport(REPORT_TYPE_SELLIN, fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_SELLIN, type: 'sell-in', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
+
 
       const contentBySheet = await readExcelFile({
-        stream: stream as unknown as NodeJS.ReadableStream,
+        stream: bufferToStream(buffer),
         expected: [
           {
             sheetName: 'Data',
@@ -62,10 +61,16 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
       const { values } = sheetData
       const valuesWithoutGrandTotal = values.filter((v) => !isNaN(Number(v.product)))
 
+      const billingDocIdsInFile = [
+        ...new Set(
+          valuesWithoutGrandTotal.map((v) => Number((v as Record<string, unknown>).billingDocument)).filter((id) => !isNaN(id)),
+        ),
+      ]
+
       const [customerIds, availableSkus, existingOrders] = await Promise.all([
         getCustomerIds(),
         getProductSkusWithFormats(),
-        getReplenOrdersWithContent(),
+        getReplenOrdersWithContent(billingDocIdsInFile),
       ])
 
       const excluded: string[] = []

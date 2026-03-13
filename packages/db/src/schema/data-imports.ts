@@ -8,8 +8,10 @@ import {
   serial,
   text,
   timestamp,
+  uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
+import { uploadedFiles } from './uploads'
 
 export const dataImports = pgTable('data_imports', {
   id: serial().primaryKey().notNull(),
@@ -43,6 +45,9 @@ export const reports = pgTable(
       .notNull(),
     fileName: varchar('file_name', { length: 255 }),
     dataImportId: integer('data_import_id'),
+    uploadedFileId: uuid('uploaded_file_id').references(() => uploadedFiles.id, {
+      onDelete: 'set null',
+    }),
     notifSent: boolean('notif_sent'),
   },
   (table) => [

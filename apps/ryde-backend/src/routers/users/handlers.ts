@@ -1,3 +1,4 @@
+import { type Role } from '@repo/db'
 import { Hono } from 'hono'
 import { zValidatorThrow } from '../../lib/errors/zValidatorThrow'
 import { requireRoles, verifyJWT } from '../../middlewares/auth'
@@ -27,7 +28,7 @@ export const usersRouterDefinition = usersRouter
     await Promise.all(
       Object.entries(updates).map(([roleName, userIds]) => {
         if (roleName === 'Deleted') return deleteUsers(userIds)
-        return setUsersRole(userIds, roleName)
+        return setUsersRole(userIds, roleName as Role)
       }),
     )
 

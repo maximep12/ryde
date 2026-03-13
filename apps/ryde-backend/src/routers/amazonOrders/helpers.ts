@@ -9,7 +9,7 @@ import zipState from 'zip-state'
 import { db } from '../../db'
 import { FileLevelError } from '../../lib/FileParser/excel'
 import { ERRORS, US_SHIPSTATES } from '../../utils/constants'
-export { createReport, getReportsByType, updateReportFailure, updateReportSuccess } from '../../lib/reports'
+export { createReport, getReportsByType, linkReportToUploadedFile, updateReportFailure, updateReportSuccess } from '../../lib/reports'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

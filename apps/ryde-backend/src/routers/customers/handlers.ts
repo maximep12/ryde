@@ -9,10 +9,10 @@ import { ERRORS, UPLOAD_RESULT_STATES } from '../../utils/constants.js'
 
 const customersLogger = createBaseLogger().child({ module: 'customers' })
 const targetsLogger = createBaseLogger().child({ module: 'customers-targets' })
+import { bufferToStream, receiveFileUpload } from '../../lib/fileUpload'
 import {
   bulkUpsertCustomerTargets,
   bulkUpsertCustomers,
-  createReport,
   findOrCreatePeriod,
   getAllCustomers,
   getReportsByType,
@@ -34,14 +34,11 @@ export const customersRouterDefinition = customersRouter
   .post('/', canUploadCustomers, async (c) => {
     customersLogger.info('Customers report start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '')
-    const report = await createReport('CUSTOMERS', fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: 'CUSTOMERS', type: 'customers', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
-
       const contentBySheet = await readExcelFile({
-        stream: stream as unknown as NodeJS.ReadableStream,
+        stream: bufferToStream(buffer),
         expected: [
           {
             sheetName: 'Data',
@@ -211,14 +208,11 @@ export const customersRouterDefinition = customersRouter
   .post('/targets', canUploadCustomers, async (c) => {
     targetsLogger.info('Customers targets report start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '')
-    const report = await createReport('CUSTOMERS_TARGETS', fileName)
+    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: 'CUSTOMERS_TARGETS', type: 'customers', uploadedBy: c.get('user').id })
 
     try {
-      const stream = c.req.raw.body
-      if (!stream) throw new HTTPException(400, { message: 'Missing file body' })
-
       const contentBySheet = await readExcelFile({
-        stream: stream as unknown as NodeJS.ReadableStream,
+        stream: bufferToStream(buffer),
         expected: [
           {
             sheetName: 'Data',

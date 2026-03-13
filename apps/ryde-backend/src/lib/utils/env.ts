@@ -15,21 +15,18 @@ const envSchema = z.object({
   TRADE_TOKEN: z.string().default(''),
   RABBA_TOKEN: z.string().default(''),
   CIRCLE_K_TOKEN: z.string().default(''),
-  // S3
+  // S3 — single bucket, env-prefixed paths: {S3_ENV}/banners/{banner}/ or {S3_ENV}/{type}/
   S3_ACCESS_KEY_ID: z.string().default(''),
   S3_SECRET_ACCESS_KEY: z.string().default(''),
-  S3_CIRCLEK_BUCKET_NAME: z.string().default(''),
-  S3_CIRCLEK_REGION: z.string().default(''),
-  S3_RABBA_BUCKET_NAME: z.string().default(''),
-  S3_GLOBAL_NAME: z.string().default(''),
+  S3_BUCKET_NAME: z.string().default(''),
   S3_REGION: z.string().default(''),
-  // Slack
-  SLACK_TOKEN: z.string().default(''),
-  // SFTP
+  S3_ENV: z.enum(['qa', 'prod']).default('qa'),
+  S3_ENDPOINT: z.string().url().optional(),
+  // Azure Blob — SFTP ingestion point for Rabba (files are synced to S3 from here)
   SFTP_CONNECTION_STRING: z.string().default(''),
   RABBA_SFTP_CONTAINER: z.string().default(''),
-  // Azure
-  AZURE_STORAGE_CONNECTION_STRING: z.string().default(''),
+  // Slack
+  SLACK_TOKEN: z.string().default(''),
   // Metabase
   METABASE_SECRET_KEY: z.string().default(''),
   // Frontend
