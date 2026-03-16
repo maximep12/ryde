@@ -25,5 +25,6 @@
   "route.importProductFormats": "Product Formats Schema",
   "route.importAmazonOrders": "Amazon Orders",
   "route.importAmazonBundles": "Amazon Bundles",
-  "route.importReportDetail": "Import Report"
+  "route.importReportDetail": "Import Report",
+  "route.importSellOutRabba": "Rabba Sell-Out"
 }

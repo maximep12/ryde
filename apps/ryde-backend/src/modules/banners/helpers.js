@@ -1,6 +1,6 @@
-import moment from 'moment'
-import { min, max } from 'moment/moment'
 import Promise from 'bluebird'
+import moment from 'moment'
+import { max, min } from 'moment/moment'
 
 import first from 'lodash/first'
 import groupBy from 'lodash/groupBy'
@@ -25,13 +25,13 @@ import Report from 'models/report'
 import { refreshCustomerVelocity } from 'models/customerVelocity'
 
 import { tsvStringToJson } from 'helpers'
-import { BANNERS, ERRORS, REPORTS } from 'utils/constants'
-import FileLevelError from 'utils/FileLevelError'
+import { parseCircleKSellOut } from 'lib/FileParser/circleKExcel'
 import { readExcelFile } from 'lib/FileParser/excel'
 import { parseParklandSellOut } from 'lib/FileParser/parklandExcel'
 import { parsePetroCanadaSellOut } from 'lib/FileParser/petroCanadaExcel'
-import { parseCircleKSellOut } from 'lib/FileParser/circleKExcel'
 import { parseSevenElevenSellOut } from 'lib/FileParser/sevenElevenExcel'
+import { BANNERS, ERRORS, REPORTS } from 'utils/constants'
+import FileLevelError from 'utils/FileLevelError'
 
 function buildInvalidCustomerErrors(invalidCustomers) {
   const customerRows = groupBy(invalidCustomers, 'id')
@@ -3021,8 +3021,6 @@ export async function createSobeysData({ fileContent }) {
     ...uploadResult.rows.rejected,
     ...buildInvalidCustomerErrors(uploadResult.rows.invalidCustomers),
   ]
-
-  console.log(uploadResult.rows.rejected)
 
   return uploadResult
 }

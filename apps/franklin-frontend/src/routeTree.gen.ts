@@ -33,6 +33,7 @@ import { Route as AuthExampleClientsNewRouteImport } from './routes/_auth/exampl
 import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/example/clients/$clientId'
 import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
 import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
+import { Route as AuthAdminImportsSellOutRabbaIndexRouteImport } from './routes/_auth/admin/imports/sell-out-rabba/index'
 import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
 import { Route as AuthAdminImportsSellInOrdersIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders/index'
 import { Route as AuthAdminImportsSellInOrdersConfirmedIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/index'
@@ -42,6 +43,7 @@ import { Route as AuthAdminImportsProductFormatsIndexRouteImport } from './route
 import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_auth/admin/imports/customers/index'
 import { Route as AuthAdminImportsAmazonOrdersIndexRouteImport } from './routes/_auth/admin/imports/amazon-orders/index'
 import { Route as AuthAdminImportsAmazonBundlesIndexRouteImport } from './routes/_auth/admin/imports/amazon-bundles/index'
+import { Route as AuthAdminImportsSellOutRabbaReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-rabba/$reportId'
 import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
 import { Route as AuthAdminImportsSellInOrdersReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders/$reportId'
 import { Route as AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
@@ -174,6 +176,12 @@ const AuthAdminUsersUserIdRoute = AuthAdminUsersUserIdRouteImport.update({
   path: '/$userId',
   getParentRoute: () => AuthAdminUsersRouteRoute,
 } as any)
+const AuthAdminImportsSellOutRabbaIndexRoute =
+  AuthAdminImportsSellOutRabbaIndexRouteImport.update({
+    id: '/imports/sell-out-rabba/',
+    path: '/imports/sell-out-rabba/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellInTargetsIndexRoute =
   AuthAdminImportsSellInTargetsIndexRouteImport.update({
     id: '/imports/sell-in-targets/',
@@ -226,6 +234,12 @@ const AuthAdminImportsAmazonBundlesIndexRoute =
   AuthAdminImportsAmazonBundlesIndexRouteImport.update({
     id: '/imports/amazon-bundles/',
     path: '/imports/amazon-bundles/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutRabbaReportIdRoute =
+  AuthAdminImportsSellOutRabbaReportIdRouteImport.update({
+    id: '/imports/sell-out-rabba/$reportId',
+    path: '/imports/sell-out-rabba/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsSellInTargetsReportIdRoute =
@@ -302,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
@@ -311,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/admin/imports/sell-out-rabba': typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 export interface FileRoutesByTo {
   '/join': typeof JoinRoute
@@ -342,6 +358,7 @@ export interface FileRoutesByTo {
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
@@ -351,6 +368,7 @@ export interface FileRoutesByTo {
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/admin/imports/sell-out-rabba': typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -385,6 +403,7 @@ export interface FileRoutesById {
   '/_auth/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/_auth/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/_auth/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
   '/_auth/admin/imports/amazon-bundles/': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/_auth/admin/imports/amazon-orders/': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/_auth/admin/imports/customers/': typeof AuthAdminImportsCustomersIndexRoute
@@ -394,6 +413,7 @@ export interface FileRoutesById {
   '/_auth/admin/imports/sell-in-orders-confirmed/': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/_auth/admin/imports/sell-in-orders/': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/_auth/admin/imports/sell-out-rabba/': typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -428,6 +448,7 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/sell-out-rabba/$reportId'
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
     | '/admin/imports/customers'
@@ -437,6 +458,7 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
+    | '/admin/imports/sell-out-rabba'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/join'
@@ -468,6 +490,7 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/sell-out-rabba/$reportId'
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
     | '/admin/imports/customers'
@@ -477,6 +500,7 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
+    | '/admin/imports/sell-out-rabba'
   id:
     | '__root__'
     | '/_auth'
@@ -510,6 +534,7 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/_auth/admin/imports/sell-in-orders/$reportId'
     | '/_auth/admin/imports/sell-in-targets/$reportId'
+    | '/_auth/admin/imports/sell-out-rabba/$reportId'
     | '/_auth/admin/imports/amazon-bundles/'
     | '/_auth/admin/imports/amazon-orders/'
     | '/_auth/admin/imports/customers/'
@@ -519,6 +544,7 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/sell-in-orders-confirmed/'
     | '/_auth/admin/imports/sell-in-orders/'
     | '/_auth/admin/imports/sell-in-targets/'
+    | '/_auth/admin/imports/sell-out-rabba/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -697,6 +723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminUsersUserIdRouteImport
       parentRoute: typeof AuthAdminUsersRouteRoute
     }
+    '/_auth/admin/imports/sell-out-rabba/': {
+      id: '/_auth/admin/imports/sell-out-rabba/'
+      path: '/imports/sell-out-rabba'
+      fullPath: '/admin/imports/sell-out-rabba'
+      preLoaderRoute: typeof AuthAdminImportsSellOutRabbaIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-in-targets/': {
       id: '/_auth/admin/imports/sell-in-targets/'
       path: '/imports/sell-in-targets'
@@ -758,6 +791,13 @@ declare module '@tanstack/react-router' {
       path: '/imports/amazon-bundles'
       fullPath: '/admin/imports/amazon-bundles'
       preLoaderRoute: typeof AuthAdminImportsAmazonBundlesIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-rabba/$reportId': {
+      id: '/_auth/admin/imports/sell-out-rabba/$reportId'
+      path: '/imports/sell-out-rabba/$reportId'
+      fullPath: '/admin/imports/sell-out-rabba/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutRabbaReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-in-targets/$reportId': {
@@ -837,6 +877,7 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsSellInOrdersConfirmedReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   AuthAdminImportsSellInOrdersReportIdRoute: typeof AuthAdminImportsSellInOrdersReportIdRoute
   AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
+  AuthAdminImportsSellOutRabbaReportIdRoute: typeof AuthAdminImportsSellOutRabbaReportIdRoute
   AuthAdminImportsAmazonBundlesIndexRoute: typeof AuthAdminImportsAmazonBundlesIndexRoute
   AuthAdminImportsAmazonOrdersIndexRoute: typeof AuthAdminImportsAmazonOrdersIndexRoute
   AuthAdminImportsCustomersIndexRoute: typeof AuthAdminImportsCustomersIndexRoute
@@ -846,6 +887,7 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsSellInOrdersConfirmedIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   AuthAdminImportsSellInOrdersIndexRoute: typeof AuthAdminImportsSellInOrdersIndexRoute
   AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
+  AuthAdminImportsSellOutRabbaIndexRoute: typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 
 const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
@@ -865,6 +907,8 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInOrdersReportIdRoute,
   AuthAdminImportsSellInTargetsReportIdRoute:
     AuthAdminImportsSellInTargetsReportIdRoute,
+  AuthAdminImportsSellOutRabbaReportIdRoute:
+    AuthAdminImportsSellOutRabbaReportIdRoute,
   AuthAdminImportsAmazonBundlesIndexRoute:
     AuthAdminImportsAmazonBundlesIndexRoute,
   AuthAdminImportsAmazonOrdersIndexRoute:
@@ -881,6 +925,8 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInOrdersIndexRoute,
   AuthAdminImportsSellInTargetsIndexRoute:
     AuthAdminImportsSellInTargetsIndexRoute,
+  AuthAdminImportsSellOutRabbaIndexRoute:
+    AuthAdminImportsSellOutRabbaIndexRoute,
 }
 
 const AuthAdminRouteRouteWithChildren = AuthAdminRouteRoute._addFileChildren(

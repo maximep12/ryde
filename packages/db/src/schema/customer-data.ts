@@ -10,7 +10,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core'
 import { customers } from './customers'
-import { productFormats } from './products'
+import { productFormats, productSkus } from './products'
 import { territories } from './geography'
 
 export const periods = pgTable(
@@ -125,6 +125,7 @@ export const customersUpc = pgTable(
   {
     id: serial().primaryKey().notNull(),
     formatId: integer('format_id').notNull(),
+    sku: varchar(),
     customerUpc: varchar('customer_upc', { length: 255 }).notNull(),
     banner: varchar({ length: 255 }).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
@@ -139,6 +140,11 @@ export const customersUpc = pgTable(
       columns: [table.formatId],
       foreignColumns: [productFormats.id],
       name: 'customers_upc_format_id_foreign',
+    }),
+    foreignKey({
+      columns: [table.sku],
+      foreignColumns: [productSkus.sku],
+      name: 'customers_upc_sku_foreign',
     }),
   ],
 )

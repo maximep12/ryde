@@ -58,7 +58,7 @@ export const productSkus = pgTable(
       .notNull(),
     isActive: boolean('is_active').default(true),
     asin: varchar({ length: 255 }),
-    formatId: integer('format_id'),
+    formatId: integer('format_id').notNull(),
     amazonCountry: varchar('amazon_country', { length: 255 }),
   },
   (table) => [

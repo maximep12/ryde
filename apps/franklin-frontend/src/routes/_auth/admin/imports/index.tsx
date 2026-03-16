@@ -13,6 +13,7 @@ import {
   PackageIcon,
   ShoppingCartIcon,
   StoreIcon,
+  TagIcon,
   TargetIcon,
   UploadCloudIcon,
 } from 'lucide-react'
@@ -84,6 +85,13 @@ const IMPORTS: ImportConfig[] = [
     icon: <ShoppingCartIcon className="size-6" />,
     path: '/admin/imports/amazon-bundles',
     category: 'Amazon',
+  },
+  {
+    title: 'route.importSellOutRabba',
+    description: 'Upload the weekly Rabba sell-out CSV file',
+    icon: <TagIcon className="size-6" />,
+    path: '/admin/imports/sell-out-rabba',
+    category: 'Sell-Out',
   },
   /*
   {

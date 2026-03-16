@@ -46,3 +46,5 @@ dist/
 # terraform
 terraform/.terraform
 terraform/.terraform/*
+
+temp/

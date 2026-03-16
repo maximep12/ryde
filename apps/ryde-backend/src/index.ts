@@ -5,6 +5,7 @@ import { cors } from 'hono/cors'
 import { z } from 'zod'
 import { errorHandler } from './lib/errors'
 import { httpLogger } from './middlewares/httpLogger'
+import { bannersRouterDefinition } from './routers/banners/handlers'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
 import { customersRouterDefinition } from './routers/customers/handlers'
 import { productsRouterDefinition } from './routers/products/handlers'
@@ -53,6 +54,7 @@ const appDefinition = app
   .route('/forecast', forecastRouterDefinition)
   .route('/customerProductStatus', customerProductStatusRouterDefinition)
   .route('/download', filesRouterDefinition)
+  .route('/banners', bannersRouterDefinition)
   .route('/workers', workersRouterDefinition)
   .onError(errorHandler)
 
