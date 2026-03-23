@@ -26,5 +26,7 @@
   "route.importAmazonOrders": "Amazon Orders",
   "route.importAmazonBundles": "Amazon Bundles",
   "route.importReportDetail": "Import Report",
-  "route.importSellOutRabba": "Rabba Sell-Out"
+  "route.importSellOutRabba": "Rabba Sell-Out",
+  "route.importSellOutCircleK": "Circle K Sell-Out",
+  "route.importSellOutCircleKQcAtl": "Circle K QC+ATL Sell-Out"
 }

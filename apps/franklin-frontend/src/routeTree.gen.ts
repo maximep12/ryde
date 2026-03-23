@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
@@ -34,6 +35,8 @@ import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/e
 import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
 import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
 import { Route as AuthAdminImportsSellOutRabbaIndexRouteImport } from './routes/_auth/admin/imports/sell-out-rabba/index'
+import { Route as AuthAdminImportsSellOutCircleKIndexRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k/index'
+import { Route as AuthAdminImportsSellOutCircleKQcatlIndexRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k-qcatl/index'
 import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
 import { Route as AuthAdminImportsSellInOrdersIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders/index'
 import { Route as AuthAdminImportsSellInOrdersConfirmedIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/index'
@@ -44,6 +47,8 @@ import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_au
 import { Route as AuthAdminImportsAmazonOrdersIndexRouteImport } from './routes/_auth/admin/imports/amazon-orders/index'
 import { Route as AuthAdminImportsAmazonBundlesIndexRouteImport } from './routes/_auth/admin/imports/amazon-bundles/index'
 import { Route as AuthAdminImportsSellOutRabbaReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-rabba/$reportId'
+import { Route as AuthAdminImportsSellOutCircleKReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k/$reportId'
+import { Route as AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
 import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
 import { Route as AuthAdminImportsSellInOrdersReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders/$reportId'
 import { Route as AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
@@ -52,6 +57,11 @@ import { Route as AuthAdminImportsCustomersReportIdRouteImport } from './routes/
 import { Route as AuthAdminImportsAmazonOrdersReportIdRouteImport } from './routes/_auth/admin/imports/amazon-orders/$reportId'
 import { Route as AuthAdminImportsAmazonBundlesReportIdRouteImport } from './routes/_auth/admin/imports/amazon-bundles/$reportId'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -182,6 +192,18 @@ const AuthAdminImportsSellOutRabbaIndexRoute =
     path: '/imports/sell-out-rabba/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellOutCircleKIndexRoute =
+  AuthAdminImportsSellOutCircleKIndexRouteImport.update({
+    id: '/imports/sell-out-circle-k/',
+    path: '/imports/sell-out-circle-k/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutCircleKQcatlIndexRoute =
+  AuthAdminImportsSellOutCircleKQcatlIndexRouteImport.update({
+    id: '/imports/sell-out-circle-k-qcatl/',
+    path: '/imports/sell-out-circle-k-qcatl/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellInTargetsIndexRoute =
   AuthAdminImportsSellInTargetsIndexRouteImport.update({
     id: '/imports/sell-in-targets/',
@@ -242,6 +264,18 @@ const AuthAdminImportsSellOutRabbaReportIdRoute =
     path: '/imports/sell-out-rabba/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellOutCircleKReportIdRoute =
+  AuthAdminImportsSellOutCircleKReportIdRouteImport.update({
+    id: '/imports/sell-out-circle-k/$reportId',
+    path: '/imports/sell-out-circle-k/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutCircleKQcatlReportIdRoute =
+  AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport.update({
+    id: '/imports/sell-out-circle-k-qcatl/$reportId',
+    path: '/imports/sell-out-circle-k-qcatl/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellInTargetsReportIdRoute =
   AuthAdminImportsSellInTargetsReportIdRouteImport.update({
     id: '/imports/sell-in-targets/$reportId',
@@ -288,6 +322,7 @@ const AuthAdminImportsAmazonBundlesReportIdRoute =
 export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthAdminRouteRouteWithChildren
   '/example': typeof AuthExampleRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
@@ -316,6 +351,8 @@ export interface FileRoutesByFullPath {
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
+  '/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
   '/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
@@ -326,11 +363,14 @@ export interface FileRoutesByFullPath {
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/admin/imports/sell-out-circle-k-qcatl': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
+  '/admin/imports/sell-out-circle-k': typeof AuthAdminImportsSellOutCircleKIndexRoute
   '/admin/imports/sell-out-rabba': typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthAdminRouteRouteWithChildren
   '/example': typeof AuthExampleRouteRouteWithChildren
   '/error': typeof AuthErrorRoute
@@ -358,6 +398,8 @@ export interface FileRoutesByTo {
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
+  '/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
   '/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
@@ -368,6 +410,8 @@ export interface FileRoutesByTo {
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/admin/imports/sell-out-circle-k-qcatl': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
+  '/admin/imports/sell-out-circle-k': typeof AuthAdminImportsSellOutCircleKIndexRoute
   '/admin/imports/sell-out-rabba': typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 export interface FileRoutesById {
@@ -375,6 +419,7 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteRouteWithChildren
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_auth/admin': typeof AuthAdminRouteRouteWithChildren
   '/_auth/example': typeof AuthExampleRouteRouteWithChildren
   '/_auth/error': typeof AuthErrorRoute
@@ -403,6 +448,8 @@ export interface FileRoutesById {
   '/_auth/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/_auth/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
+  '/_auth/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
   '/_auth/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
   '/_auth/admin/imports/amazon-bundles/': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/_auth/admin/imports/amazon-orders/': typeof AuthAdminImportsAmazonOrdersIndexRoute
@@ -413,6 +460,8 @@ export interface FileRoutesById {
   '/_auth/admin/imports/sell-in-orders-confirmed/': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/_auth/admin/imports/sell-in-orders/': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/_auth/admin/imports/sell-out-circle-k-qcatl/': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
+  '/_auth/admin/imports/sell-out-circle-k/': typeof AuthAdminImportsSellOutCircleKIndexRoute
   '/_auth/admin/imports/sell-out-rabba/': typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 export interface FileRouteTypes {
@@ -420,6 +469,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/join'
     | '/login'
+    | '/reset-password'
     | '/admin'
     | '/example'
     | '/error'
@@ -448,6 +498,8 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/sell-out-circle-k-qcatl/$reportId'
+    | '/admin/imports/sell-out-circle-k/$reportId'
     | '/admin/imports/sell-out-rabba/$reportId'
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
@@ -458,11 +510,14 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
+    | '/admin/imports/sell-out-circle-k-qcatl'
+    | '/admin/imports/sell-out-circle-k'
     | '/admin/imports/sell-out-rabba'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/join'
     | '/login'
+    | '/reset-password'
     | '/admin'
     | '/example'
     | '/error'
@@ -490,6 +545,8 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/sell-out-circle-k-qcatl/$reportId'
+    | '/admin/imports/sell-out-circle-k/$reportId'
     | '/admin/imports/sell-out-rabba/$reportId'
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
@@ -500,12 +557,15 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
+    | '/admin/imports/sell-out-circle-k-qcatl'
+    | '/admin/imports/sell-out-circle-k'
     | '/admin/imports/sell-out-rabba'
   id:
     | '__root__'
     | '/_auth'
     | '/join'
     | '/login'
+    | '/reset-password'
     | '/_auth/admin'
     | '/_auth/example'
     | '/_auth/error'
@@ -534,6 +594,8 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/_auth/admin/imports/sell-in-orders/$reportId'
     | '/_auth/admin/imports/sell-in-targets/$reportId'
+    | '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
+    | '/_auth/admin/imports/sell-out-circle-k/$reportId'
     | '/_auth/admin/imports/sell-out-rabba/$reportId'
     | '/_auth/admin/imports/amazon-bundles/'
     | '/_auth/admin/imports/amazon-orders/'
@@ -544,6 +606,8 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/sell-in-orders-confirmed/'
     | '/_auth/admin/imports/sell-in-orders/'
     | '/_auth/admin/imports/sell-in-targets/'
+    | '/_auth/admin/imports/sell-out-circle-k-qcatl/'
+    | '/_auth/admin/imports/sell-out-circle-k/'
     | '/_auth/admin/imports/sell-out-rabba/'
   fileRoutesById: FileRoutesById
 }
@@ -551,10 +615,18 @@ export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -730,6 +802,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellOutRabbaIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-out-circle-k/': {
+      id: '/_auth/admin/imports/sell-out-circle-k/'
+      path: '/imports/sell-out-circle-k'
+      fullPath: '/admin/imports/sell-out-circle-k'
+      preLoaderRoute: typeof AuthAdminImportsSellOutCircleKIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-circle-k-qcatl/': {
+      id: '/_auth/admin/imports/sell-out-circle-k-qcatl/'
+      path: '/imports/sell-out-circle-k-qcatl'
+      fullPath: '/admin/imports/sell-out-circle-k-qcatl'
+      preLoaderRoute: typeof AuthAdminImportsSellOutCircleKQcatlIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-in-targets/': {
       id: '/_auth/admin/imports/sell-in-targets/'
       path: '/imports/sell-in-targets'
@@ -798,6 +884,20 @@ declare module '@tanstack/react-router' {
       path: '/imports/sell-out-rabba/$reportId'
       fullPath: '/admin/imports/sell-out-rabba/$reportId'
       preLoaderRoute: typeof AuthAdminImportsSellOutRabbaReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-circle-k/$reportId': {
+      id: '/_auth/admin/imports/sell-out-circle-k/$reportId'
+      path: '/imports/sell-out-circle-k/$reportId'
+      fullPath: '/admin/imports/sell-out-circle-k/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutCircleKReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId': {
+      id: '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
+      path: '/imports/sell-out-circle-k-qcatl/$reportId'
+      fullPath: '/admin/imports/sell-out-circle-k-qcatl/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-in-targets/$reportId': {
@@ -877,6 +977,8 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsSellInOrdersConfirmedReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   AuthAdminImportsSellInOrdersReportIdRoute: typeof AuthAdminImportsSellInOrdersReportIdRoute
   AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
+  AuthAdminImportsSellOutCircleKQcatlReportIdRoute: typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
+  AuthAdminImportsSellOutCircleKReportIdRoute: typeof AuthAdminImportsSellOutCircleKReportIdRoute
   AuthAdminImportsSellOutRabbaReportIdRoute: typeof AuthAdminImportsSellOutRabbaReportIdRoute
   AuthAdminImportsAmazonBundlesIndexRoute: typeof AuthAdminImportsAmazonBundlesIndexRoute
   AuthAdminImportsAmazonOrdersIndexRoute: typeof AuthAdminImportsAmazonOrdersIndexRoute
@@ -887,6 +989,8 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsSellInOrdersConfirmedIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   AuthAdminImportsSellInOrdersIndexRoute: typeof AuthAdminImportsSellInOrdersIndexRoute
   AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
+  AuthAdminImportsSellOutCircleKQcatlIndexRoute: typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
+  AuthAdminImportsSellOutCircleKIndexRoute: typeof AuthAdminImportsSellOutCircleKIndexRoute
   AuthAdminImportsSellOutRabbaIndexRoute: typeof AuthAdminImportsSellOutRabbaIndexRoute
 }
 
@@ -907,6 +1011,10 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInOrdersReportIdRoute,
   AuthAdminImportsSellInTargetsReportIdRoute:
     AuthAdminImportsSellInTargetsReportIdRoute,
+  AuthAdminImportsSellOutCircleKQcatlReportIdRoute:
+    AuthAdminImportsSellOutCircleKQcatlReportIdRoute,
+  AuthAdminImportsSellOutCircleKReportIdRoute:
+    AuthAdminImportsSellOutCircleKReportIdRoute,
   AuthAdminImportsSellOutRabbaReportIdRoute:
     AuthAdminImportsSellOutRabbaReportIdRoute,
   AuthAdminImportsAmazonBundlesIndexRoute:
@@ -925,6 +1033,10 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInOrdersIndexRoute,
   AuthAdminImportsSellInTargetsIndexRoute:
     AuthAdminImportsSellInTargetsIndexRoute,
+  AuthAdminImportsSellOutCircleKQcatlIndexRoute:
+    AuthAdminImportsSellOutCircleKQcatlIndexRoute,
+  AuthAdminImportsSellOutCircleKIndexRoute:
+    AuthAdminImportsSellOutCircleKIndexRoute,
   AuthAdminImportsSellOutRabbaIndexRoute:
     AuthAdminImportsSellOutRabbaIndexRoute,
 }
@@ -988,6 +1100,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

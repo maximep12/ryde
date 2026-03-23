@@ -93,6 +93,20 @@ const IMPORTS: ImportConfig[] = [
     path: '/admin/imports/sell-out-rabba',
     category: 'Sell-Out',
   },
+  {
+    title: 'route.importSellOutCircleK',
+    description: 'Upload the weekly Circle K sell-out Excel file',
+    icon: <TagIcon className="size-6" />,
+    path: '/admin/imports/sell-out-circle-k',
+    category: 'Sell-Out',
+  },
+  {
+    title: 'route.importSellOutCircleKQcAtl',
+    description: 'Upload the weekly Circle K QC+ATL sell-out Excel file',
+    icon: <TagIcon className="size-6" />,
+    path: '/admin/imports/sell-out-circle-k-qcatl',
+    category: 'Sell-Out',
+  },
   /*
   {
     title: 'route.importProducts',

@@ -14,3 +14,13 @@ export const tokenSchema = z.object({
     token: z.string(),
   }),
 })
+
+export const requestPasswordResetSchema = z.object({
+  email: z.string().email(),
+})
+
+export const setPasswordSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  token: z.string(),
+})

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import config from '@/config'
 import { getSessionToken, setSessionToken } from '@/stores/session'
 import { getApi, updateApiClient } from '@/stores/api'
+import { ForgotPasswordForm } from '@/components/ForgotPasswordForm'
 import { LoginForm } from '@/components/LoginForm'
 import { RequestAccessForm } from '@/components/RequestAccessForm'
 import { RydeLogo } from '@/components/RydeLogo'
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/login')({
 })
 
 function LoginPage() {
-  const [view, setView] = useState<'login' | 'request-access'>('login')
+  const [view, setView] = useState<'login' | 'request-access' | 'forgot-password'>('login')
   const [isAutoLoggingIn, setIsAutoLoggingIn] = useState(
     config.featureFlags['infinite-user-sessions'],
   )
@@ -69,6 +70,14 @@ function LoginPage() {
           <>
             <LoginForm />
             <div className="text-center">
+              <button
+                onClick={() => setView('forgot-password')}
+                className="text-muted-foreground text-sm underline"
+              >
+                Forgot your password?
+              </button>
+            </div>
+            <div className="text-center">
               <span className="text-muted-foreground text-sm">Don't have an account? </span>
               <button
                 onClick={() => setView('request-access')}
@@ -81,8 +90,10 @@ function LoginPage() {
               Demo: admin@example.com / admin123
             </p>
           </>
-        ) : (
+        ) : view === 'request-access' ? (
           <RequestAccessForm onBack={() => setView('login')} />
+        ) : (
+          <ForgotPasswordForm onBack={() => setView('login')} />
         )}
       </div>
     </div>

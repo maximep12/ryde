@@ -31,6 +31,9 @@ const envSchema = z.object({
   METABASE_SECRET_KEY: z.string().default(''),
   // Frontend
   FRONTEND_URL: z.string().default('http://localhost:3000'),
+  // Resend (email)
+  RESEND_API_KEY: z.string().default(''),
+  RESEND_FROM: z.string().default('noreply@ryde.com'),
   // Advance DB (external)
   ADVANCE_DATABASE_URL: z.string().default(''),
   // App
