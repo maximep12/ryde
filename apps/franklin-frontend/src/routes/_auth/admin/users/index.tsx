@@ -2,13 +2,29 @@
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { TableLoading } from '@/components/TableLoading'
+import { useCreateUser, type UserRole, type UserStatus } from '@/hooks/mutations/users/useCreateUser'
+import { useUpdateUser } from '@/hooks/mutations/users/useUpdateUser'
+import { useUser } from '@/hooks/queries/users/useUser'
 import { useUsers } from '@/hooks/queries/users/useUsers'
 import {
   Avatar,
   AvatarFallback,
   Button,
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Input,
   Label,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Sheet,
   SheetContent,
   SheetFooter,
@@ -30,7 +46,7 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import {
   ArrowDownIcon,
   ArrowUpDownIcon,
@@ -38,10 +54,13 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   PlusIcon,
+  SaveIcon,
   SlidersHorizontalIcon,
   XIcon,
 } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_auth/admin/users/')({
   component: UsersPage,
@@ -62,6 +81,311 @@ type User = {
 }
 
 const PAGE_SIZE = 20
+
+const ROLE_OPTIONS: { value: UserRole; label: string; description: string }[] = [
+  { value: 'admin', label: 'Admin', description: 'Full control' },
+  {
+    value: 'trade_rep',
+    label: 'Trade Rep',
+    description: 'View access on Commercial, Sell-Out, Inventory, Reports and Amazon',
+  },
+  {
+    value: 'data_manager',
+    label: 'Data Manager',
+    description: 'A trade rep that can also upload files',
+  },
+]
+
+type CreateUserFormValues = {
+  email: string
+  givenName: string
+  familyName: string
+  role: UserRole
+}
+
+function CreateUserDialog() {
+  const [open, setOpen] = useState(false)
+  const { mutateAsync, isPending } = useCreateUser()
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<CreateUserFormValues>({
+    defaultValues: { email: '', givenName: '', familyName: '', role: undefined },
+  })
+
+  const onSubmit = async (data: CreateUserFormValues) => {
+    try {
+      await mutateAsync({
+        email: data.email,
+        givenName: data.givenName || undefined,
+        familyName: data.familyName || undefined,
+        role: data.role,
+      })
+      toast.success('User created successfully')
+      reset()
+      setOpen(false)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to create user')
+    }
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(value) => {
+        setOpen(value)
+        if (!value) reset()
+      }}
+    >
+      <DialogTrigger asChild>
+        <Button>
+          <PlusIcon className="size-4" />
+          Create User
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Create User</DialogTitle>
+          <DialogDescription>Add a new user to the system</DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="givenName">First Name</Label>
+              <Input id="givenName" placeholder="John" {...register('givenName')} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="familyName">Last Name</Label>
+              <Input id="familyName" placeholder="Doe" {...register('familyName')} />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="email">
+              Email <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="john@example.com"
+              {...register('email', { required: 'Email is required' })}
+            />
+            {errors.email && <p className="text-destructive text-sm">{errors.email.message}</p>}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="role">
+              Role <span className="text-destructive">*</span>
+            </Label>
+            <Controller
+              name="role"
+              control={control}
+              rules={{ required: 'Role is required' }}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger id="role" className="w-full">
+                    <SelectValue placeholder="Select a role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ROLE_OPTIONS.map((r) => (
+                      <SelectItem key={r.value} value={r.value}>
+                        <div>
+                          <span className="font-medium">{r.label}</span>
+                          <span className="text-muted-foreground ml-2 text-xs">
+                            {r.description}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.role && <p className="text-destructive text-sm">{errors.role.message}</p>}
+          </div>
+
+          <DialogFooter>
+            <Button type="submit" disabled={isPending || !watch('email') || !watch('role')}>
+              <SaveIcon className="size-4" />
+              {isPending ? 'Creating...' : 'Create User'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+const STATUS_OPTIONS: { value: UserStatus; label: string }[] = [
+  { value: 'active', label: 'Active' },
+  { value: 'inactive', label: 'Inactive' },
+  { value: 'pending', label: 'Pending' },
+]
+
+type EditUserFormValues = {
+  email: string
+  givenName: string
+  familyName: string
+  role: UserRole
+  status: UserStatus
+}
+
+function EditUserDialog({
+  userId,
+  open,
+  onOpenChange,
+}: {
+  userId: string
+  open: boolean
+  onOpenChange: (open: boolean) => void
+}) {
+  const { data: user, isLoading, error } = useUser(userId)
+  const { mutateAsync, isPending } = useUpdateUser()
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<EditUserFormValues>({
+    defaultValues: { email: '', givenName: '', familyName: '', role: undefined, status: undefined },
+  })
+
+  useEffect(() => {
+    if (user) {
+      reset({
+        email: user.email ?? '',
+        givenName: user.givenName ?? '',
+        familyName: user.familyName ?? '',
+        role: (user.role as UserRole) ?? undefined,
+        status: (user.status as UserStatus) ?? undefined,
+      })
+    }
+  }, [user, reset])
+
+  const onSubmit = async (data: EditUserFormValues) => {
+    try {
+      await mutateAsync({
+        userId,
+        givenName: data.givenName || undefined,
+        familyName: data.familyName || undefined,
+        role: data.role,
+        status: data.status,
+      })
+      toast.success('User updated successfully')
+      onOpenChange(false)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to update user')
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Edit User</DialogTitle>
+          <DialogDescription>Update user information</DialogDescription>
+        </DialogHeader>
+        {error && <div className="text-destructive">Failed to load user: {error.message}</div>}
+        {isLoading && <div className="text-muted-foreground">Loading...</div>}
+        {user && (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-givenName">First Name</Label>
+                <Input id="edit-givenName" placeholder="John" {...register('givenName')} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="edit-familyName">Last Name</Label>
+                <Input id="edit-familyName" placeholder="Doe" {...register('familyName')} />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-email">Email</Label>
+              <Input id="edit-email" type="email" disabled {...register('email')} />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-role">
+                Role <span className="text-destructive">*</span>
+              </Label>
+              <Controller
+                name="role"
+                control={control}
+                rules={{ required: 'Role is required' }}
+                render={({ field }) => (
+                  <>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger id="edit-role" className="w-full">
+                        <SelectValue placeholder="Select a role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ROLE_OPTIONS.map((r) => (
+                          <SelectItem key={r.value} value={r.value}>
+                            {r.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {field.value && (
+                      <p className="text-muted-foreground text-xs">
+                        {ROLE_OPTIONS.find((r) => r.value === field.value)?.description}
+                      </p>
+                    )}
+                  </>
+                )}
+              />
+              {errors.role && <p className="text-destructive text-sm">{errors.role.message}</p>}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="edit-status">
+                Status <span className="text-destructive">*</span>
+              </Label>
+              <Controller
+                name="status"
+                control={control}
+                rules={{ required: 'Status is required' }}
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger id="edit-status" className="w-full">
+                      <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {STATUS_OPTIONS.map((s) => (
+                        <SelectItem key={s.value} value={s.value}>
+                          {s.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              {errors.status && (
+                <p className="text-destructive text-sm">{errors.status.message}</p>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button type="submit" disabled={isPending || !watch('role') || !watch('status')}>
+                <SaveIcon className="size-4" />
+                {isPending ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 const ROLE_CONFIG: Record<string, { label: string; className: string }> = {
   admin: {
@@ -91,7 +415,7 @@ const STATUS_CONFIG: Record<string, { label: string; className: string }> = {
 }
 
 function UsersPage() {
-  const navigate = useNavigate()
+  const [editingUserId, setEditingUserId] = useState<string | null>(null)
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const [sorting, setSorting] = useState<SortingState>([])
@@ -236,12 +560,7 @@ function UsersPage() {
           <h1 className="text-2xl font-bold">Users</h1>
           <p className="text-muted-foreground mt-1">Manage users in the system</p>
         </div>
-        <Button asChild>
-          <Link to="/admin/users/create">
-            <PlusIcon className="size-4" />
-            Create User
-          </Link>
-        </Button>
+        <CreateUserDialog />
       </header>
 
       <div className="flex flex-wrap items-center gap-4">
@@ -424,9 +743,7 @@ function UsersPage() {
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
                     className={`hover:bg-muted/60 cursor-pointer ${index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}`}
-                    onClick={() =>
-                      navigate({ to: '/admin/users/$userId', params: { userId: row.original.id } })
-                    }
+                    onClick={() => setEditingUserId(row.original.id)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id} className="py-2">
@@ -474,6 +791,16 @@ function UsersPage() {
             <ChevronRightIcon className="size-4" />
           </Button>
         </div>
+      )}
+
+      {editingUserId && (
+        <EditUserDialog
+          userId={editingUserId}
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) setEditingUserId(null)
+          }}
+        />
       )}
     </div>
   )

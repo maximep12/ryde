@@ -17,8 +17,13 @@
   "sidebar.imports": "Importations",
   "sidebar.orders": "Commandes",
   "sidebar.clients": "Clients",
-  "sidebar.examples": "Exemples",
-  "sidebar.uiUx": "UI/UX",
+  "welcome.commercialDesc": "Aperçu de la performance commerciale",
+  "welcome.selloutDesc": "Analyse des données sell-out",
+  "welcome.inventoryDesc": "Niveaux de stock actuels",
+  "welcome.reportsDesc": "Rapports généraux",
+  "welcome.amazonDesc": "Données des commandes Amazon",
+
+  "sidebar.dashboards": "Tableaux de bord",
 
   "dropdown.empty": "Aucun résultat trouvé",
   "dropdown.placeholder": "Sélectionner une option...",

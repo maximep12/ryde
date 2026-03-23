@@ -2,6 +2,7 @@ import { AppHeader } from '@/components/AppLayout/AppHeader'
 import { AppSidebar } from '@/components/AppLayout/AppSidebar'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { useMe } from '@/hooks/queries/auth/useMe'
+import { useMetabaseUrls } from '@/hooks/queries/auth/useMetabaseUrls'
 import { useSessionRevalidateOnFocus } from '@/hooks/queries/auth/useSessionRevalidateOnFocus'
 import {
   handleInvalidSession,
@@ -88,11 +89,15 @@ function ErrorComponent(props: { error: Error }) {
 function AuthLayoutComponent() {
   useVerifySession()
   useSessionRevalidateOnFocus()
+  useMetabaseUrls()
 
   const { data: me, error } = useMe()
 
   const viewportRef = useRef<HTMLDivElement>(null)
   const { pathname } = useLocation()
+
+  const fullWidthRoutes = ['/commercial', '/sellout', '/inventory', '/reports', '/amazon']
+  const isFullWidth = fullWidthRoutes.includes(pathname)
 
   useEffect(() => {
     viewportRef.current?.scrollTo(0, 0)
@@ -114,7 +119,7 @@ function AuthLayoutComponent() {
               className="bg-background-level-2 relative h-full w-full flex-1 overflow-y-scroll"
               ref={viewportRef}
             >
-              <div className="mx-auto w-full max-w-6xl px-6 py-6">
+              <div className={isFullWidth ? 'h-full w-full' : 'mx-auto w-full max-w-6xl px-6 py-6'}>
                 <CatchBoundary getResetKey={() => 'reset'} errorComponent={ErrorComponent}>
                   <Outlet />
                 </CatchBoundary>

@@ -15,28 +15,27 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AuthIndexRouteImport } from './routes/_auth/index'
 import { Route as AuthUnauthorizedRouteImport } from './routes/_auth/unauthorized'
+import { Route as AuthSelloutRouteImport } from './routes/_auth/sellout'
+import { Route as AuthReportsRouteImport } from './routes/_auth/reports'
 import { Route as AuthNotFoundRouteImport } from './routes/_auth/not-found'
+import { Route as AuthInventoryRouteImport } from './routes/_auth/inventory'
 import { Route as AuthErrorRouteImport } from './routes/_auth/error'
-import { Route as AuthExampleRouteRouteImport } from './routes/_auth/example/route'
+import { Route as AuthCommercialRouteImport } from './routes/_auth/commercial'
+import { Route as AuthAmazonRouteImport } from './routes/_auth/amazon'
 import { Route as AuthAdminRouteRouteImport } from './routes/_auth/admin/route'
 import { Route as AuthAdminUsersRouteRouteImport } from './routes/_auth/admin/users/route'
-import { Route as AuthExampleUploadIndexRouteImport } from './routes/_auth/example/upload/index'
-import { Route as AuthExampleOrdersIndexRouteImport } from './routes/_auth/example/orders/index'
-import { Route as AuthExampleMyUploadsIndexRouteImport } from './routes/_auth/example/my-uploads/index'
-import { Route as AuthExampleKitchenSinkIndexRouteImport } from './routes/_auth/example/kitchen-sink/index'
-import { Route as AuthExampleClientsIndexRouteImport } from './routes/_auth/example/clients/index'
 import { Route as AuthAdminUsersIndexRouteImport } from './routes/_auth/admin/users/index'
 import { Route as AuthAdminImportsIndexRouteImport } from './routes/_auth/admin/imports/index'
-import { Route as AuthExampleOrdersNewRouteImport } from './routes/_auth/example/orders/new'
-import { Route as AuthExampleOrdersOrderIdRouteImport } from './routes/_auth/example/orders/$orderId'
-import { Route as AuthExampleMyUploadsUploadIdRouteImport } from './routes/_auth/example/my-uploads/$uploadId'
-import { Route as AuthExampleClientsNewRouteImport } from './routes/_auth/example/clients/new'
-import { Route as AuthExampleClientsClientIdRouteImport } from './routes/_auth/example/clients/$clientId'
-import { Route as AuthAdminUsersCreateRouteImport } from './routes/_auth/admin/users/create'
-import { Route as AuthAdminUsersUserIdRouteImport } from './routes/_auth/admin/users/$userId'
+import { Route as AuthAdminImportsSellOutSobeysIndexRouteImport } from './routes/_auth/admin/imports/sell-out-sobeys/index'
 import { Route as AuthAdminImportsSellOutRabbaIndexRouteImport } from './routes/_auth/admin/imports/sell-out-rabba/index'
+import { Route as AuthAdminImportsSellOutPetroCanadaIndexRouteImport } from './routes/_auth/admin/imports/sell-out-petro-canada/index'
+import { Route as AuthAdminImportsSellOutParklandIndexRouteImport } from './routes/_auth/admin/imports/sell-out-parkland/index'
+import { Route as AuthAdminImportsSellOutNapOrangeIndexRouteImport } from './routes/_auth/admin/imports/sell-out-nap-orange/index'
+import { Route as AuthAdminImportsSellOutLoblawsIndexRouteImport } from './routes/_auth/admin/imports/sell-out-loblaws/index'
 import { Route as AuthAdminImportsSellOutCircleKIndexRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k/index'
 import { Route as AuthAdminImportsSellOutCircleKQcatlIndexRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k-qcatl/index'
+import { Route as AuthAdminImportsSellOutCentralMarketIndexRouteImport } from './routes/_auth/admin/imports/sell-out-central-market/index'
+import { Route as AuthAdminImportsSellOut7ElevenIndexRouteImport } from './routes/_auth/admin/imports/sell-out-7-eleven/index'
 import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
 import { Route as AuthAdminImportsSellInOrdersIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders/index'
 import { Route as AuthAdminImportsSellInOrdersConfirmedIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/index'
@@ -46,9 +45,16 @@ import { Route as AuthAdminImportsProductFormatsIndexRouteImport } from './route
 import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_auth/admin/imports/customers/index'
 import { Route as AuthAdminImportsAmazonOrdersIndexRouteImport } from './routes/_auth/admin/imports/amazon-orders/index'
 import { Route as AuthAdminImportsAmazonBundlesIndexRouteImport } from './routes/_auth/admin/imports/amazon-bundles/index'
+import { Route as AuthAdminImportsSellOutSobeysReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-sobeys/$reportId'
 import { Route as AuthAdminImportsSellOutRabbaReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-rabba/$reportId'
+import { Route as AuthAdminImportsSellOutPetroCanadaReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-petro-canada/$reportId'
+import { Route as AuthAdminImportsSellOutParklandReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-parkland/$reportId'
+import { Route as AuthAdminImportsSellOutNapOrangeReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-nap-orange/$reportId'
+import { Route as AuthAdminImportsSellOutLoblawsReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-loblaws/$reportId'
 import { Route as AuthAdminImportsSellOutCircleKReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k/$reportId'
 import { Route as AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
+import { Route as AuthAdminImportsSellOutCentralMarketReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-central-market/$reportId'
+import { Route as AuthAdminImportsSellOut7ElevenReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-7-eleven/$reportId'
 import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
 import { Route as AuthAdminImportsSellInOrdersReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders/$reportId'
 import { Route as AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
@@ -86,9 +92,24 @@ const AuthUnauthorizedRoute = AuthUnauthorizedRouteImport.update({
   path: '/unauthorized',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AuthSelloutRoute = AuthSelloutRouteImport.update({
+  id: '/sellout',
+  path: '/sellout',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthReportsRoute = AuthReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
 const AuthNotFoundRoute = AuthNotFoundRouteImport.update({
   id: '/not-found',
   path: '/not-found',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthInventoryRoute = AuthInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthErrorRoute = AuthErrorRouteImport.update({
@@ -96,9 +117,14 @@ const AuthErrorRoute = AuthErrorRouteImport.update({
   path: '/error',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const AuthExampleRouteRoute = AuthExampleRouteRouteImport.update({
-  id: '/example',
-  path: '/example',
+const AuthCommercialRoute = AuthCommercialRouteImport.update({
+  id: '/commercial',
+  path: '/commercial',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthAmazonRoute = AuthAmazonRouteImport.update({
+  id: '/amazon',
+  path: '/amazon',
   getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthAdminRouteRoute = AuthAdminRouteRouteImport.update({
@@ -111,33 +137,6 @@ const AuthAdminUsersRouteRoute = AuthAdminUsersRouteRouteImport.update({
   path: '/users',
   getParentRoute: () => AuthAdminRouteRoute,
 } as any)
-const AuthExampleUploadIndexRoute = AuthExampleUploadIndexRouteImport.update({
-  id: '/upload/',
-  path: '/upload/',
-  getParentRoute: () => AuthExampleRouteRoute,
-} as any)
-const AuthExampleOrdersIndexRoute = AuthExampleOrdersIndexRouteImport.update({
-  id: '/orders/',
-  path: '/orders/',
-  getParentRoute: () => AuthExampleRouteRoute,
-} as any)
-const AuthExampleMyUploadsIndexRoute =
-  AuthExampleMyUploadsIndexRouteImport.update({
-    id: '/my-uploads/',
-    path: '/my-uploads/',
-    getParentRoute: () => AuthExampleRouteRoute,
-  } as any)
-const AuthExampleKitchenSinkIndexRoute =
-  AuthExampleKitchenSinkIndexRouteImport.update({
-    id: '/kitchen-sink/',
-    path: '/kitchen-sink/',
-    getParentRoute: () => AuthExampleRouteRoute,
-  } as any)
-const AuthExampleClientsIndexRoute = AuthExampleClientsIndexRouteImport.update({
-  id: '/clients/',
-  path: '/clients/',
-  getParentRoute: () => AuthExampleRouteRoute,
-} as any)
 const AuthAdminUsersIndexRoute = AuthAdminUsersIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -148,48 +147,40 @@ const AuthAdminImportsIndexRoute = AuthAdminImportsIndexRouteImport.update({
   path: '/imports/',
   getParentRoute: () => AuthAdminRouteRoute,
 } as any)
-const AuthExampleOrdersNewRoute = AuthExampleOrdersNewRouteImport.update({
-  id: '/orders/new',
-  path: '/orders/new',
-  getParentRoute: () => AuthExampleRouteRoute,
-} as any)
-const AuthExampleOrdersOrderIdRoute =
-  AuthExampleOrdersOrderIdRouteImport.update({
-    id: '/orders/$orderId',
-    path: '/orders/$orderId',
-    getParentRoute: () => AuthExampleRouteRoute,
+const AuthAdminImportsSellOutSobeysIndexRoute =
+  AuthAdminImportsSellOutSobeysIndexRouteImport.update({
+    id: '/imports/sell-out-sobeys/',
+    path: '/imports/sell-out-sobeys/',
+    getParentRoute: () => AuthAdminRouteRoute,
   } as any)
-const AuthExampleMyUploadsUploadIdRoute =
-  AuthExampleMyUploadsUploadIdRouteImport.update({
-    id: '/my-uploads/$uploadId',
-    path: '/my-uploads/$uploadId',
-    getParentRoute: () => AuthExampleRouteRoute,
-  } as any)
-const AuthExampleClientsNewRoute = AuthExampleClientsNewRouteImport.update({
-  id: '/clients/new',
-  path: '/clients/new',
-  getParentRoute: () => AuthExampleRouteRoute,
-} as any)
-const AuthExampleClientsClientIdRoute =
-  AuthExampleClientsClientIdRouteImport.update({
-    id: '/clients/$clientId',
-    path: '/clients/$clientId',
-    getParentRoute: () => AuthExampleRouteRoute,
-  } as any)
-const AuthAdminUsersCreateRoute = AuthAdminUsersCreateRouteImport.update({
-  id: '/create',
-  path: '/create',
-  getParentRoute: () => AuthAdminUsersRouteRoute,
-} as any)
-const AuthAdminUsersUserIdRoute = AuthAdminUsersUserIdRouteImport.update({
-  id: '/$userId',
-  path: '/$userId',
-  getParentRoute: () => AuthAdminUsersRouteRoute,
-} as any)
 const AuthAdminImportsSellOutRabbaIndexRoute =
   AuthAdminImportsSellOutRabbaIndexRouteImport.update({
     id: '/imports/sell-out-rabba/',
     path: '/imports/sell-out-rabba/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutPetroCanadaIndexRoute =
+  AuthAdminImportsSellOutPetroCanadaIndexRouteImport.update({
+    id: '/imports/sell-out-petro-canada/',
+    path: '/imports/sell-out-petro-canada/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutParklandIndexRoute =
+  AuthAdminImportsSellOutParklandIndexRouteImport.update({
+    id: '/imports/sell-out-parkland/',
+    path: '/imports/sell-out-parkland/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutNapOrangeIndexRoute =
+  AuthAdminImportsSellOutNapOrangeIndexRouteImport.update({
+    id: '/imports/sell-out-nap-orange/',
+    path: '/imports/sell-out-nap-orange/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutLoblawsIndexRoute =
+  AuthAdminImportsSellOutLoblawsIndexRouteImport.update({
+    id: '/imports/sell-out-loblaws/',
+    path: '/imports/sell-out-loblaws/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsSellOutCircleKIndexRoute =
@@ -202,6 +193,18 @@ const AuthAdminImportsSellOutCircleKQcatlIndexRoute =
   AuthAdminImportsSellOutCircleKQcatlIndexRouteImport.update({
     id: '/imports/sell-out-circle-k-qcatl/',
     path: '/imports/sell-out-circle-k-qcatl/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutCentralMarketIndexRoute =
+  AuthAdminImportsSellOutCentralMarketIndexRouteImport.update({
+    id: '/imports/sell-out-central-market/',
+    path: '/imports/sell-out-central-market/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOut7ElevenIndexRoute =
+  AuthAdminImportsSellOut7ElevenIndexRouteImport.update({
+    id: '/imports/sell-out-7-eleven/',
+    path: '/imports/sell-out-7-eleven/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsSellInTargetsIndexRoute =
@@ -258,10 +261,40 @@ const AuthAdminImportsAmazonBundlesIndexRoute =
     path: '/imports/amazon-bundles/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellOutSobeysReportIdRoute =
+  AuthAdminImportsSellOutSobeysReportIdRouteImport.update({
+    id: '/imports/sell-out-sobeys/$reportId',
+    path: '/imports/sell-out-sobeys/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellOutRabbaReportIdRoute =
   AuthAdminImportsSellOutRabbaReportIdRouteImport.update({
     id: '/imports/sell-out-rabba/$reportId',
     path: '/imports/sell-out-rabba/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutPetroCanadaReportIdRoute =
+  AuthAdminImportsSellOutPetroCanadaReportIdRouteImport.update({
+    id: '/imports/sell-out-petro-canada/$reportId',
+    path: '/imports/sell-out-petro-canada/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutParklandReportIdRoute =
+  AuthAdminImportsSellOutParklandReportIdRouteImport.update({
+    id: '/imports/sell-out-parkland/$reportId',
+    path: '/imports/sell-out-parkland/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutNapOrangeReportIdRoute =
+  AuthAdminImportsSellOutNapOrangeReportIdRouteImport.update({
+    id: '/imports/sell-out-nap-orange/$reportId',
+    path: '/imports/sell-out-nap-orange/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutLoblawsReportIdRoute =
+  AuthAdminImportsSellOutLoblawsReportIdRouteImport.update({
+    id: '/imports/sell-out-loblaws/$reportId',
+    path: '/imports/sell-out-loblaws/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsSellOutCircleKReportIdRoute =
@@ -274,6 +307,18 @@ const AuthAdminImportsSellOutCircleKQcatlReportIdRoute =
   AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport.update({
     id: '/imports/sell-out-circle-k-qcatl/$reportId',
     path: '/imports/sell-out-circle-k-qcatl/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOutCentralMarketReportIdRoute =
+  AuthAdminImportsSellOutCentralMarketReportIdRouteImport.update({
+    id: '/imports/sell-out-central-market/$reportId',
+    path: '/imports/sell-out-central-market/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsSellOut7ElevenReportIdRoute =
+  AuthAdminImportsSellOut7ElevenReportIdRouteImport.update({
+    id: '/imports/sell-out-7-eleven/$reportId',
+    path: '/imports/sell-out-7-eleven/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsSellInTargetsReportIdRoute =
@@ -324,26 +369,18 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthAdminRouteRouteWithChildren
-  '/example': typeof AuthExampleRouteRouteWithChildren
+  '/amazon': typeof AuthAmazonRoute
+  '/commercial': typeof AuthCommercialRoute
   '/error': typeof AuthErrorRoute
+  '/inventory': typeof AuthInventoryRoute
   '/not-found': typeof AuthNotFoundRoute
+  '/reports': typeof AuthReportsRoute
+  '/sellout': typeof AuthSelloutRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
   '/admin/users': typeof AuthAdminUsersRouteRouteWithChildren
-  '/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
-  '/admin/users/create': typeof AuthAdminUsersCreateRoute
-  '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
-  '/example/clients/new': typeof AuthExampleClientsNewRoute
-  '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
-  '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
-  '/example/orders/new': typeof AuthExampleOrdersNewRoute
   '/admin/imports': typeof AuthAdminImportsIndexRoute
   '/admin/users/': typeof AuthAdminUsersIndexRoute
-  '/example/clients': typeof AuthExampleClientsIndexRoute
-  '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
-  '/example/my-uploads': typeof AuthExampleMyUploadsIndexRoute
-  '/example/orders': typeof AuthExampleOrdersIndexRoute
-  '/example/upload': typeof AuthExampleUploadIndexRoute
   '/admin/imports/amazon-bundles/$reportId': typeof AuthAdminImportsAmazonBundlesReportIdRoute
   '/admin/imports/amazon-orders/$reportId': typeof AuthAdminImportsAmazonOrdersReportIdRoute
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
@@ -351,9 +388,16 @@ export interface FileRoutesByFullPath {
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/sell-out-7-eleven/$reportId': typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  '/admin/imports/sell-out-central-market/$reportId': typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   '/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   '/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
+  '/admin/imports/sell-out-loblaws/$reportId': typeof AuthAdminImportsSellOutLoblawsReportIdRoute
+  '/admin/imports/sell-out-nap-orange/$reportId': typeof AuthAdminImportsSellOutNapOrangeReportIdRoute
+  '/admin/imports/sell-out-parkland/$reportId': typeof AuthAdminImportsSellOutParklandReportIdRoute
+  '/admin/imports/sell-out-petro-canada/$reportId': typeof AuthAdminImportsSellOutPetroCanadaReportIdRoute
   '/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
+  '/admin/imports/sell-out-sobeys/$reportId': typeof AuthAdminImportsSellOutSobeysReportIdRoute
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
@@ -363,34 +407,33 @@ export interface FileRoutesByFullPath {
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/admin/imports/sell-out-7-eleven': typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  '/admin/imports/sell-out-central-market': typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   '/admin/imports/sell-out-circle-k-qcatl': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   '/admin/imports/sell-out-circle-k': typeof AuthAdminImportsSellOutCircleKIndexRoute
+  '/admin/imports/sell-out-loblaws': typeof AuthAdminImportsSellOutLoblawsIndexRoute
+  '/admin/imports/sell-out-nap-orange': typeof AuthAdminImportsSellOutNapOrangeIndexRoute
+  '/admin/imports/sell-out-parkland': typeof AuthAdminImportsSellOutParklandIndexRoute
+  '/admin/imports/sell-out-petro-canada': typeof AuthAdminImportsSellOutPetroCanadaIndexRoute
   '/admin/imports/sell-out-rabba': typeof AuthAdminImportsSellOutRabbaIndexRoute
+  '/admin/imports/sell-out-sobeys': typeof AuthAdminImportsSellOutSobeysIndexRoute
 }
 export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthAdminRouteRouteWithChildren
-  '/example': typeof AuthExampleRouteRouteWithChildren
+  '/amazon': typeof AuthAmazonRoute
+  '/commercial': typeof AuthCommercialRoute
   '/error': typeof AuthErrorRoute
+  '/inventory': typeof AuthInventoryRoute
   '/not-found': typeof AuthNotFoundRoute
+  '/reports': typeof AuthReportsRoute
+  '/sellout': typeof AuthSelloutRoute
   '/unauthorized': typeof AuthUnauthorizedRoute
   '/': typeof AuthIndexRoute
-  '/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
-  '/admin/users/create': typeof AuthAdminUsersCreateRoute
-  '/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
-  '/example/clients/new': typeof AuthExampleClientsNewRoute
-  '/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
-  '/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
-  '/example/orders/new': typeof AuthExampleOrdersNewRoute
   '/admin/imports': typeof AuthAdminImportsIndexRoute
   '/admin/users': typeof AuthAdminUsersIndexRoute
-  '/example/clients': typeof AuthExampleClientsIndexRoute
-  '/example/kitchen-sink': typeof AuthExampleKitchenSinkIndexRoute
-  '/example/my-uploads': typeof AuthExampleMyUploadsIndexRoute
-  '/example/orders': typeof AuthExampleOrdersIndexRoute
-  '/example/upload': typeof AuthExampleUploadIndexRoute
   '/admin/imports/amazon-bundles/$reportId': typeof AuthAdminImportsAmazonBundlesReportIdRoute
   '/admin/imports/amazon-orders/$reportId': typeof AuthAdminImportsAmazonOrdersReportIdRoute
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
@@ -398,9 +441,16 @@ export interface FileRoutesByTo {
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/admin/imports/sell-out-7-eleven/$reportId': typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  '/admin/imports/sell-out-central-market/$reportId': typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   '/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   '/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
+  '/admin/imports/sell-out-loblaws/$reportId': typeof AuthAdminImportsSellOutLoblawsReportIdRoute
+  '/admin/imports/sell-out-nap-orange/$reportId': typeof AuthAdminImportsSellOutNapOrangeReportIdRoute
+  '/admin/imports/sell-out-parkland/$reportId': typeof AuthAdminImportsSellOutParklandReportIdRoute
+  '/admin/imports/sell-out-petro-canada/$reportId': typeof AuthAdminImportsSellOutPetroCanadaReportIdRoute
   '/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
+  '/admin/imports/sell-out-sobeys/$reportId': typeof AuthAdminImportsSellOutSobeysReportIdRoute
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
@@ -410,9 +460,16 @@ export interface FileRoutesByTo {
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/admin/imports/sell-out-7-eleven': typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  '/admin/imports/sell-out-central-market': typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   '/admin/imports/sell-out-circle-k-qcatl': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   '/admin/imports/sell-out-circle-k': typeof AuthAdminImportsSellOutCircleKIndexRoute
+  '/admin/imports/sell-out-loblaws': typeof AuthAdminImportsSellOutLoblawsIndexRoute
+  '/admin/imports/sell-out-nap-orange': typeof AuthAdminImportsSellOutNapOrangeIndexRoute
+  '/admin/imports/sell-out-parkland': typeof AuthAdminImportsSellOutParklandIndexRoute
+  '/admin/imports/sell-out-petro-canada': typeof AuthAdminImportsSellOutPetroCanadaIndexRoute
   '/admin/imports/sell-out-rabba': typeof AuthAdminImportsSellOutRabbaIndexRoute
+  '/admin/imports/sell-out-sobeys': typeof AuthAdminImportsSellOutSobeysIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -421,26 +478,18 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_auth/admin': typeof AuthAdminRouteRouteWithChildren
-  '/_auth/example': typeof AuthExampleRouteRouteWithChildren
+  '/_auth/amazon': typeof AuthAmazonRoute
+  '/_auth/commercial': typeof AuthCommercialRoute
   '/_auth/error': typeof AuthErrorRoute
+  '/_auth/inventory': typeof AuthInventoryRoute
   '/_auth/not-found': typeof AuthNotFoundRoute
+  '/_auth/reports': typeof AuthReportsRoute
+  '/_auth/sellout': typeof AuthSelloutRoute
   '/_auth/unauthorized': typeof AuthUnauthorizedRoute
   '/_auth/': typeof AuthIndexRoute
   '/_auth/admin/users': typeof AuthAdminUsersRouteRouteWithChildren
-  '/_auth/admin/users/$userId': typeof AuthAdminUsersUserIdRoute
-  '/_auth/admin/users/create': typeof AuthAdminUsersCreateRoute
-  '/_auth/example/clients/$clientId': typeof AuthExampleClientsClientIdRoute
-  '/_auth/example/clients/new': typeof AuthExampleClientsNewRoute
-  '/_auth/example/my-uploads/$uploadId': typeof AuthExampleMyUploadsUploadIdRoute
-  '/_auth/example/orders/$orderId': typeof AuthExampleOrdersOrderIdRoute
-  '/_auth/example/orders/new': typeof AuthExampleOrdersNewRoute
   '/_auth/admin/imports/': typeof AuthAdminImportsIndexRoute
   '/_auth/admin/users/': typeof AuthAdminUsersIndexRoute
-  '/_auth/example/clients/': typeof AuthExampleClientsIndexRoute
-  '/_auth/example/kitchen-sink/': typeof AuthExampleKitchenSinkIndexRoute
-  '/_auth/example/my-uploads/': typeof AuthExampleMyUploadsIndexRoute
-  '/_auth/example/orders/': typeof AuthExampleOrdersIndexRoute
-  '/_auth/example/upload/': typeof AuthExampleUploadIndexRoute
   '/_auth/admin/imports/amazon-bundles/$reportId': typeof AuthAdminImportsAmazonBundlesReportIdRoute
   '/_auth/admin/imports/amazon-orders/$reportId': typeof AuthAdminImportsAmazonOrdersReportIdRoute
   '/_auth/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
@@ -448,9 +497,16 @@ export interface FileRoutesById {
   '/_auth/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/_auth/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
+  '/_auth/admin/imports/sell-out-7-eleven/$reportId': typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  '/_auth/admin/imports/sell-out-central-market/$reportId': typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   '/_auth/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
+  '/_auth/admin/imports/sell-out-loblaws/$reportId': typeof AuthAdminImportsSellOutLoblawsReportIdRoute
+  '/_auth/admin/imports/sell-out-nap-orange/$reportId': typeof AuthAdminImportsSellOutNapOrangeReportIdRoute
+  '/_auth/admin/imports/sell-out-parkland/$reportId': typeof AuthAdminImportsSellOutParklandReportIdRoute
+  '/_auth/admin/imports/sell-out-petro-canada/$reportId': typeof AuthAdminImportsSellOutPetroCanadaReportIdRoute
   '/_auth/admin/imports/sell-out-rabba/$reportId': typeof AuthAdminImportsSellOutRabbaReportIdRoute
+  '/_auth/admin/imports/sell-out-sobeys/$reportId': typeof AuthAdminImportsSellOutSobeysReportIdRoute
   '/_auth/admin/imports/amazon-bundles/': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/_auth/admin/imports/amazon-orders/': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/_auth/admin/imports/customers/': typeof AuthAdminImportsCustomersIndexRoute
@@ -460,9 +516,16 @@ export interface FileRoutesById {
   '/_auth/admin/imports/sell-in-orders-confirmed/': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/_auth/admin/imports/sell-in-orders/': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
+  '/_auth/admin/imports/sell-out-7-eleven/': typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  '/_auth/admin/imports/sell-out-central-market/': typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   '/_auth/admin/imports/sell-out-circle-k-qcatl/': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   '/_auth/admin/imports/sell-out-circle-k/': typeof AuthAdminImportsSellOutCircleKIndexRoute
+  '/_auth/admin/imports/sell-out-loblaws/': typeof AuthAdminImportsSellOutLoblawsIndexRoute
+  '/_auth/admin/imports/sell-out-nap-orange/': typeof AuthAdminImportsSellOutNapOrangeIndexRoute
+  '/_auth/admin/imports/sell-out-parkland/': typeof AuthAdminImportsSellOutParklandIndexRoute
+  '/_auth/admin/imports/sell-out-petro-canada/': typeof AuthAdminImportsSellOutPetroCanadaIndexRoute
   '/_auth/admin/imports/sell-out-rabba/': typeof AuthAdminImportsSellOutRabbaIndexRoute
+  '/_auth/admin/imports/sell-out-sobeys/': typeof AuthAdminImportsSellOutSobeysIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -471,26 +534,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/admin'
-    | '/example'
+    | '/amazon'
+    | '/commercial'
     | '/error'
+    | '/inventory'
     | '/not-found'
+    | '/reports'
+    | '/sellout'
     | '/unauthorized'
     | '/'
     | '/admin/users'
-    | '/admin/users/$userId'
-    | '/admin/users/create'
-    | '/example/clients/$clientId'
-    | '/example/clients/new'
-    | '/example/my-uploads/$uploadId'
-    | '/example/orders/$orderId'
-    | '/example/orders/new'
     | '/admin/imports'
     | '/admin/users/'
-    | '/example/clients'
-    | '/example/kitchen-sink'
-    | '/example/my-uploads'
-    | '/example/orders'
-    | '/example/upload'
     | '/admin/imports/amazon-bundles/$reportId'
     | '/admin/imports/amazon-orders/$reportId'
     | '/admin/imports/customers/$reportId'
@@ -498,9 +553,16 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/sell-out-7-eleven/$reportId'
+    | '/admin/imports/sell-out-central-market/$reportId'
     | '/admin/imports/sell-out-circle-k-qcatl/$reportId'
     | '/admin/imports/sell-out-circle-k/$reportId'
+    | '/admin/imports/sell-out-loblaws/$reportId'
+    | '/admin/imports/sell-out-nap-orange/$reportId'
+    | '/admin/imports/sell-out-parkland/$reportId'
+    | '/admin/imports/sell-out-petro-canada/$reportId'
     | '/admin/imports/sell-out-rabba/$reportId'
+    | '/admin/imports/sell-out-sobeys/$reportId'
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
     | '/admin/imports/customers'
@@ -510,34 +572,33 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
+    | '/admin/imports/sell-out-7-eleven'
+    | '/admin/imports/sell-out-central-market'
     | '/admin/imports/sell-out-circle-k-qcatl'
     | '/admin/imports/sell-out-circle-k'
+    | '/admin/imports/sell-out-loblaws'
+    | '/admin/imports/sell-out-nap-orange'
+    | '/admin/imports/sell-out-parkland'
+    | '/admin/imports/sell-out-petro-canada'
     | '/admin/imports/sell-out-rabba'
+    | '/admin/imports/sell-out-sobeys'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/join'
     | '/login'
     | '/reset-password'
     | '/admin'
-    | '/example'
+    | '/amazon'
+    | '/commercial'
     | '/error'
+    | '/inventory'
     | '/not-found'
+    | '/reports'
+    | '/sellout'
     | '/unauthorized'
     | '/'
-    | '/admin/users/$userId'
-    | '/admin/users/create'
-    | '/example/clients/$clientId'
-    | '/example/clients/new'
-    | '/example/my-uploads/$uploadId'
-    | '/example/orders/$orderId'
-    | '/example/orders/new'
     | '/admin/imports'
     | '/admin/users'
-    | '/example/clients'
-    | '/example/kitchen-sink'
-    | '/example/my-uploads'
-    | '/example/orders'
-    | '/example/upload'
     | '/admin/imports/amazon-bundles/$reportId'
     | '/admin/imports/amazon-orders/$reportId'
     | '/admin/imports/customers/$reportId'
@@ -545,9 +606,16 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
+    | '/admin/imports/sell-out-7-eleven/$reportId'
+    | '/admin/imports/sell-out-central-market/$reportId'
     | '/admin/imports/sell-out-circle-k-qcatl/$reportId'
     | '/admin/imports/sell-out-circle-k/$reportId'
+    | '/admin/imports/sell-out-loblaws/$reportId'
+    | '/admin/imports/sell-out-nap-orange/$reportId'
+    | '/admin/imports/sell-out-parkland/$reportId'
+    | '/admin/imports/sell-out-petro-canada/$reportId'
     | '/admin/imports/sell-out-rabba/$reportId'
+    | '/admin/imports/sell-out-sobeys/$reportId'
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
     | '/admin/imports/customers'
@@ -557,9 +625,16 @@ export interface FileRouteTypes {
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
+    | '/admin/imports/sell-out-7-eleven'
+    | '/admin/imports/sell-out-central-market'
     | '/admin/imports/sell-out-circle-k-qcatl'
     | '/admin/imports/sell-out-circle-k'
+    | '/admin/imports/sell-out-loblaws'
+    | '/admin/imports/sell-out-nap-orange'
+    | '/admin/imports/sell-out-parkland'
+    | '/admin/imports/sell-out-petro-canada'
     | '/admin/imports/sell-out-rabba'
+    | '/admin/imports/sell-out-sobeys'
   id:
     | '__root__'
     | '/_auth'
@@ -567,26 +642,18 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/_auth/admin'
-    | '/_auth/example'
+    | '/_auth/amazon'
+    | '/_auth/commercial'
     | '/_auth/error'
+    | '/_auth/inventory'
     | '/_auth/not-found'
+    | '/_auth/reports'
+    | '/_auth/sellout'
     | '/_auth/unauthorized'
     | '/_auth/'
     | '/_auth/admin/users'
-    | '/_auth/admin/users/$userId'
-    | '/_auth/admin/users/create'
-    | '/_auth/example/clients/$clientId'
-    | '/_auth/example/clients/new'
-    | '/_auth/example/my-uploads/$uploadId'
-    | '/_auth/example/orders/$orderId'
-    | '/_auth/example/orders/new'
     | '/_auth/admin/imports/'
     | '/_auth/admin/users/'
-    | '/_auth/example/clients/'
-    | '/_auth/example/kitchen-sink/'
-    | '/_auth/example/my-uploads/'
-    | '/_auth/example/orders/'
-    | '/_auth/example/upload/'
     | '/_auth/admin/imports/amazon-bundles/$reportId'
     | '/_auth/admin/imports/amazon-orders/$reportId'
     | '/_auth/admin/imports/customers/$reportId'
@@ -594,9 +661,16 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/_auth/admin/imports/sell-in-orders/$reportId'
     | '/_auth/admin/imports/sell-in-targets/$reportId'
+    | '/_auth/admin/imports/sell-out-7-eleven/$reportId'
+    | '/_auth/admin/imports/sell-out-central-market/$reportId'
     | '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
     | '/_auth/admin/imports/sell-out-circle-k/$reportId'
+    | '/_auth/admin/imports/sell-out-loblaws/$reportId'
+    | '/_auth/admin/imports/sell-out-nap-orange/$reportId'
+    | '/_auth/admin/imports/sell-out-parkland/$reportId'
+    | '/_auth/admin/imports/sell-out-petro-canada/$reportId'
     | '/_auth/admin/imports/sell-out-rabba/$reportId'
+    | '/_auth/admin/imports/sell-out-sobeys/$reportId'
     | '/_auth/admin/imports/amazon-bundles/'
     | '/_auth/admin/imports/amazon-orders/'
     | '/_auth/admin/imports/customers/'
@@ -606,9 +680,16 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/sell-in-orders-confirmed/'
     | '/_auth/admin/imports/sell-in-orders/'
     | '/_auth/admin/imports/sell-in-targets/'
+    | '/_auth/admin/imports/sell-out-7-eleven/'
+    | '/_auth/admin/imports/sell-out-central-market/'
     | '/_auth/admin/imports/sell-out-circle-k-qcatl/'
     | '/_auth/admin/imports/sell-out-circle-k/'
+    | '/_auth/admin/imports/sell-out-loblaws/'
+    | '/_auth/admin/imports/sell-out-nap-orange/'
+    | '/_auth/admin/imports/sell-out-parkland/'
+    | '/_auth/admin/imports/sell-out-petro-canada/'
     | '/_auth/admin/imports/sell-out-rabba/'
+    | '/_auth/admin/imports/sell-out-sobeys/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -662,11 +743,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthUnauthorizedRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/_auth/sellout': {
+      id: '/_auth/sellout'
+      path: '/sellout'
+      fullPath: '/sellout'
+      preLoaderRoute: typeof AuthSelloutRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/reports': {
+      id: '/_auth/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthReportsRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
     '/_auth/not-found': {
       id: '/_auth/not-found'
       path: '/not-found'
       fullPath: '/not-found'
       preLoaderRoute: typeof AuthNotFoundRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/inventory': {
+      id: '/_auth/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AuthInventoryRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/error': {
@@ -676,11 +778,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthErrorRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_auth/example': {
-      id: '/_auth/example'
-      path: '/example'
-      fullPath: '/example'
-      preLoaderRoute: typeof AuthExampleRouteRouteImport
+    '/_auth/commercial': {
+      id: '/_auth/commercial'
+      path: '/commercial'
+      fullPath: '/commercial'
+      preLoaderRoute: typeof AuthCommercialRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/amazon': {
+      id: '/_auth/amazon'
+      path: '/amazon'
+      fullPath: '/amazon'
+      preLoaderRoute: typeof AuthAmazonRouteImport
       parentRoute: typeof AuthRouteRoute
     }
     '/_auth/admin': {
@@ -697,41 +806,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminUsersRouteRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
-    '/_auth/example/upload/': {
-      id: '/_auth/example/upload/'
-      path: '/upload'
-      fullPath: '/example/upload'
-      preLoaderRoute: typeof AuthExampleUploadIndexRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/orders/': {
-      id: '/_auth/example/orders/'
-      path: '/orders'
-      fullPath: '/example/orders'
-      preLoaderRoute: typeof AuthExampleOrdersIndexRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/my-uploads/': {
-      id: '/_auth/example/my-uploads/'
-      path: '/my-uploads'
-      fullPath: '/example/my-uploads'
-      preLoaderRoute: typeof AuthExampleMyUploadsIndexRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/kitchen-sink/': {
-      id: '/_auth/example/kitchen-sink/'
-      path: '/kitchen-sink'
-      fullPath: '/example/kitchen-sink'
-      preLoaderRoute: typeof AuthExampleKitchenSinkIndexRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/clients/': {
-      id: '/_auth/example/clients/'
-      path: '/clients'
-      fullPath: '/example/clients'
-      preLoaderRoute: typeof AuthExampleClientsIndexRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
     '/_auth/admin/users/': {
       id: '/_auth/admin/users/'
       path: '/'
@@ -746,60 +820,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
-    '/_auth/example/orders/new': {
-      id: '/_auth/example/orders/new'
-      path: '/orders/new'
-      fullPath: '/example/orders/new'
-      preLoaderRoute: typeof AuthExampleOrdersNewRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/orders/$orderId': {
-      id: '/_auth/example/orders/$orderId'
-      path: '/orders/$orderId'
-      fullPath: '/example/orders/$orderId'
-      preLoaderRoute: typeof AuthExampleOrdersOrderIdRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/my-uploads/$uploadId': {
-      id: '/_auth/example/my-uploads/$uploadId'
-      path: '/my-uploads/$uploadId'
-      fullPath: '/example/my-uploads/$uploadId'
-      preLoaderRoute: typeof AuthExampleMyUploadsUploadIdRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/clients/new': {
-      id: '/_auth/example/clients/new'
-      path: '/clients/new'
-      fullPath: '/example/clients/new'
-      preLoaderRoute: typeof AuthExampleClientsNewRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/example/clients/$clientId': {
-      id: '/_auth/example/clients/$clientId'
-      path: '/clients/$clientId'
-      fullPath: '/example/clients/$clientId'
-      preLoaderRoute: typeof AuthExampleClientsClientIdRouteImport
-      parentRoute: typeof AuthExampleRouteRoute
-    }
-    '/_auth/admin/users/create': {
-      id: '/_auth/admin/users/create'
-      path: '/create'
-      fullPath: '/admin/users/create'
-      preLoaderRoute: typeof AuthAdminUsersCreateRouteImport
-      parentRoute: typeof AuthAdminUsersRouteRoute
-    }
-    '/_auth/admin/users/$userId': {
-      id: '/_auth/admin/users/$userId'
-      path: '/$userId'
-      fullPath: '/admin/users/$userId'
-      preLoaderRoute: typeof AuthAdminUsersUserIdRouteImport
-      parentRoute: typeof AuthAdminUsersRouteRoute
+    '/_auth/admin/imports/sell-out-sobeys/': {
+      id: '/_auth/admin/imports/sell-out-sobeys/'
+      path: '/imports/sell-out-sobeys'
+      fullPath: '/admin/imports/sell-out-sobeys'
+      preLoaderRoute: typeof AuthAdminImportsSellOutSobeysIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-out-rabba/': {
       id: '/_auth/admin/imports/sell-out-rabba/'
       path: '/imports/sell-out-rabba'
       fullPath: '/admin/imports/sell-out-rabba'
       preLoaderRoute: typeof AuthAdminImportsSellOutRabbaIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-petro-canada/': {
+      id: '/_auth/admin/imports/sell-out-petro-canada/'
+      path: '/imports/sell-out-petro-canada'
+      fullPath: '/admin/imports/sell-out-petro-canada'
+      preLoaderRoute: typeof AuthAdminImportsSellOutPetroCanadaIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-parkland/': {
+      id: '/_auth/admin/imports/sell-out-parkland/'
+      path: '/imports/sell-out-parkland'
+      fullPath: '/admin/imports/sell-out-parkland'
+      preLoaderRoute: typeof AuthAdminImportsSellOutParklandIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-nap-orange/': {
+      id: '/_auth/admin/imports/sell-out-nap-orange/'
+      path: '/imports/sell-out-nap-orange'
+      fullPath: '/admin/imports/sell-out-nap-orange'
+      preLoaderRoute: typeof AuthAdminImportsSellOutNapOrangeIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-loblaws/': {
+      id: '/_auth/admin/imports/sell-out-loblaws/'
+      path: '/imports/sell-out-loblaws'
+      fullPath: '/admin/imports/sell-out-loblaws'
+      preLoaderRoute: typeof AuthAdminImportsSellOutLoblawsIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-out-circle-k/': {
@@ -814,6 +874,20 @@ declare module '@tanstack/react-router' {
       path: '/imports/sell-out-circle-k-qcatl'
       fullPath: '/admin/imports/sell-out-circle-k-qcatl'
       preLoaderRoute: typeof AuthAdminImportsSellOutCircleKQcatlIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-central-market/': {
+      id: '/_auth/admin/imports/sell-out-central-market/'
+      path: '/imports/sell-out-central-market'
+      fullPath: '/admin/imports/sell-out-central-market'
+      preLoaderRoute: typeof AuthAdminImportsSellOutCentralMarketIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-7-eleven/': {
+      id: '/_auth/admin/imports/sell-out-7-eleven/'
+      path: '/imports/sell-out-7-eleven'
+      fullPath: '/admin/imports/sell-out-7-eleven'
+      preLoaderRoute: typeof AuthAdminImportsSellOut7ElevenIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-in-targets/': {
@@ -879,11 +953,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsAmazonBundlesIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-out-sobeys/$reportId': {
+      id: '/_auth/admin/imports/sell-out-sobeys/$reportId'
+      path: '/imports/sell-out-sobeys/$reportId'
+      fullPath: '/admin/imports/sell-out-sobeys/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutSobeysReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-out-rabba/$reportId': {
       id: '/_auth/admin/imports/sell-out-rabba/$reportId'
       path: '/imports/sell-out-rabba/$reportId'
       fullPath: '/admin/imports/sell-out-rabba/$reportId'
       preLoaderRoute: typeof AuthAdminImportsSellOutRabbaReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-petro-canada/$reportId': {
+      id: '/_auth/admin/imports/sell-out-petro-canada/$reportId'
+      path: '/imports/sell-out-petro-canada/$reportId'
+      fullPath: '/admin/imports/sell-out-petro-canada/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutPetroCanadaReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-parkland/$reportId': {
+      id: '/_auth/admin/imports/sell-out-parkland/$reportId'
+      path: '/imports/sell-out-parkland/$reportId'
+      fullPath: '/admin/imports/sell-out-parkland/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutParklandReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-nap-orange/$reportId': {
+      id: '/_auth/admin/imports/sell-out-nap-orange/$reportId'
+      path: '/imports/sell-out-nap-orange/$reportId'
+      fullPath: '/admin/imports/sell-out-nap-orange/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutNapOrangeReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-loblaws/$reportId': {
+      id: '/_auth/admin/imports/sell-out-loblaws/$reportId'
+      path: '/imports/sell-out-loblaws/$reportId'
+      fullPath: '/admin/imports/sell-out-loblaws/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutLoblawsReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-out-circle-k/$reportId': {
@@ -898,6 +1007,20 @@ declare module '@tanstack/react-router' {
       path: '/imports/sell-out-circle-k-qcatl/$reportId'
       fullPath: '/admin/imports/sell-out-circle-k-qcatl/$reportId'
       preLoaderRoute: typeof AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-central-market/$reportId': {
+      id: '/_auth/admin/imports/sell-out-central-market/$reportId'
+      path: '/imports/sell-out-central-market/$reportId'
+      fullPath: '/admin/imports/sell-out-central-market/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutCentralMarketReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/sell-out-7-eleven/$reportId': {
+      id: '/_auth/admin/imports/sell-out-7-eleven/$reportId'
+      path: '/imports/sell-out-7-eleven/$reportId'
+      fullPath: '/admin/imports/sell-out-7-eleven/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOut7ElevenReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/sell-in-targets/$reportId': {
@@ -953,14 +1076,10 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthAdminUsersRouteRouteChildren {
-  AuthAdminUsersUserIdRoute: typeof AuthAdminUsersUserIdRoute
-  AuthAdminUsersCreateRoute: typeof AuthAdminUsersCreateRoute
   AuthAdminUsersIndexRoute: typeof AuthAdminUsersIndexRoute
 }
 
 const AuthAdminUsersRouteRouteChildren: AuthAdminUsersRouteRouteChildren = {
-  AuthAdminUsersUserIdRoute: AuthAdminUsersUserIdRoute,
-  AuthAdminUsersCreateRoute: AuthAdminUsersCreateRoute,
   AuthAdminUsersIndexRoute: AuthAdminUsersIndexRoute,
 }
 
@@ -977,9 +1096,16 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsSellInOrdersConfirmedReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   AuthAdminImportsSellInOrdersReportIdRoute: typeof AuthAdminImportsSellInOrdersReportIdRoute
   AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
+  AuthAdminImportsSellOut7ElevenReportIdRoute: typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  AuthAdminImportsSellOutCentralMarketReportIdRoute: typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   AuthAdminImportsSellOutCircleKQcatlReportIdRoute: typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   AuthAdminImportsSellOutCircleKReportIdRoute: typeof AuthAdminImportsSellOutCircleKReportIdRoute
+  AuthAdminImportsSellOutLoblawsReportIdRoute: typeof AuthAdminImportsSellOutLoblawsReportIdRoute
+  AuthAdminImportsSellOutNapOrangeReportIdRoute: typeof AuthAdminImportsSellOutNapOrangeReportIdRoute
+  AuthAdminImportsSellOutParklandReportIdRoute: typeof AuthAdminImportsSellOutParklandReportIdRoute
+  AuthAdminImportsSellOutPetroCanadaReportIdRoute: typeof AuthAdminImportsSellOutPetroCanadaReportIdRoute
   AuthAdminImportsSellOutRabbaReportIdRoute: typeof AuthAdminImportsSellOutRabbaReportIdRoute
+  AuthAdminImportsSellOutSobeysReportIdRoute: typeof AuthAdminImportsSellOutSobeysReportIdRoute
   AuthAdminImportsAmazonBundlesIndexRoute: typeof AuthAdminImportsAmazonBundlesIndexRoute
   AuthAdminImportsAmazonOrdersIndexRoute: typeof AuthAdminImportsAmazonOrdersIndexRoute
   AuthAdminImportsCustomersIndexRoute: typeof AuthAdminImportsCustomersIndexRoute
@@ -989,9 +1115,16 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsSellInOrdersConfirmedIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   AuthAdminImportsSellInOrdersIndexRoute: typeof AuthAdminImportsSellInOrdersIndexRoute
   AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
+  AuthAdminImportsSellOut7ElevenIndexRoute: typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  AuthAdminImportsSellOutCentralMarketIndexRoute: typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   AuthAdminImportsSellOutCircleKQcatlIndexRoute: typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   AuthAdminImportsSellOutCircleKIndexRoute: typeof AuthAdminImportsSellOutCircleKIndexRoute
+  AuthAdminImportsSellOutLoblawsIndexRoute: typeof AuthAdminImportsSellOutLoblawsIndexRoute
+  AuthAdminImportsSellOutNapOrangeIndexRoute: typeof AuthAdminImportsSellOutNapOrangeIndexRoute
+  AuthAdminImportsSellOutParklandIndexRoute: typeof AuthAdminImportsSellOutParklandIndexRoute
+  AuthAdminImportsSellOutPetroCanadaIndexRoute: typeof AuthAdminImportsSellOutPetroCanadaIndexRoute
   AuthAdminImportsSellOutRabbaIndexRoute: typeof AuthAdminImportsSellOutRabbaIndexRoute
+  AuthAdminImportsSellOutSobeysIndexRoute: typeof AuthAdminImportsSellOutSobeysIndexRoute
 }
 
 const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
@@ -1011,12 +1144,26 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInOrdersReportIdRoute,
   AuthAdminImportsSellInTargetsReportIdRoute:
     AuthAdminImportsSellInTargetsReportIdRoute,
+  AuthAdminImportsSellOut7ElevenReportIdRoute:
+    AuthAdminImportsSellOut7ElevenReportIdRoute,
+  AuthAdminImportsSellOutCentralMarketReportIdRoute:
+    AuthAdminImportsSellOutCentralMarketReportIdRoute,
   AuthAdminImportsSellOutCircleKQcatlReportIdRoute:
     AuthAdminImportsSellOutCircleKQcatlReportIdRoute,
   AuthAdminImportsSellOutCircleKReportIdRoute:
     AuthAdminImportsSellOutCircleKReportIdRoute,
+  AuthAdminImportsSellOutLoblawsReportIdRoute:
+    AuthAdminImportsSellOutLoblawsReportIdRoute,
+  AuthAdminImportsSellOutNapOrangeReportIdRoute:
+    AuthAdminImportsSellOutNapOrangeReportIdRoute,
+  AuthAdminImportsSellOutParklandReportIdRoute:
+    AuthAdminImportsSellOutParklandReportIdRoute,
+  AuthAdminImportsSellOutPetroCanadaReportIdRoute:
+    AuthAdminImportsSellOutPetroCanadaReportIdRoute,
   AuthAdminImportsSellOutRabbaReportIdRoute:
     AuthAdminImportsSellOutRabbaReportIdRoute,
+  AuthAdminImportsSellOutSobeysReportIdRoute:
+    AuthAdminImportsSellOutSobeysReportIdRoute,
   AuthAdminImportsAmazonBundlesIndexRoute:
     AuthAdminImportsAmazonBundlesIndexRoute,
   AuthAdminImportsAmazonOrdersIndexRoute:
@@ -1033,61 +1180,54 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInOrdersIndexRoute,
   AuthAdminImportsSellInTargetsIndexRoute:
     AuthAdminImportsSellInTargetsIndexRoute,
+  AuthAdminImportsSellOut7ElevenIndexRoute:
+    AuthAdminImportsSellOut7ElevenIndexRoute,
+  AuthAdminImportsSellOutCentralMarketIndexRoute:
+    AuthAdminImportsSellOutCentralMarketIndexRoute,
   AuthAdminImportsSellOutCircleKQcatlIndexRoute:
     AuthAdminImportsSellOutCircleKQcatlIndexRoute,
   AuthAdminImportsSellOutCircleKIndexRoute:
     AuthAdminImportsSellOutCircleKIndexRoute,
+  AuthAdminImportsSellOutLoblawsIndexRoute:
+    AuthAdminImportsSellOutLoblawsIndexRoute,
+  AuthAdminImportsSellOutNapOrangeIndexRoute:
+    AuthAdminImportsSellOutNapOrangeIndexRoute,
+  AuthAdminImportsSellOutParklandIndexRoute:
+    AuthAdminImportsSellOutParklandIndexRoute,
+  AuthAdminImportsSellOutPetroCanadaIndexRoute:
+    AuthAdminImportsSellOutPetroCanadaIndexRoute,
   AuthAdminImportsSellOutRabbaIndexRoute:
     AuthAdminImportsSellOutRabbaIndexRoute,
+  AuthAdminImportsSellOutSobeysIndexRoute:
+    AuthAdminImportsSellOutSobeysIndexRoute,
 }
 
 const AuthAdminRouteRouteWithChildren = AuthAdminRouteRoute._addFileChildren(
   AuthAdminRouteRouteChildren,
 )
 
-interface AuthExampleRouteRouteChildren {
-  AuthExampleClientsClientIdRoute: typeof AuthExampleClientsClientIdRoute
-  AuthExampleClientsNewRoute: typeof AuthExampleClientsNewRoute
-  AuthExampleMyUploadsUploadIdRoute: typeof AuthExampleMyUploadsUploadIdRoute
-  AuthExampleOrdersOrderIdRoute: typeof AuthExampleOrdersOrderIdRoute
-  AuthExampleOrdersNewRoute: typeof AuthExampleOrdersNewRoute
-  AuthExampleClientsIndexRoute: typeof AuthExampleClientsIndexRoute
-  AuthExampleKitchenSinkIndexRoute: typeof AuthExampleKitchenSinkIndexRoute
-  AuthExampleMyUploadsIndexRoute: typeof AuthExampleMyUploadsIndexRoute
-  AuthExampleOrdersIndexRoute: typeof AuthExampleOrdersIndexRoute
-  AuthExampleUploadIndexRoute: typeof AuthExampleUploadIndexRoute
-}
-
-const AuthExampleRouteRouteChildren: AuthExampleRouteRouteChildren = {
-  AuthExampleClientsClientIdRoute: AuthExampleClientsClientIdRoute,
-  AuthExampleClientsNewRoute: AuthExampleClientsNewRoute,
-  AuthExampleMyUploadsUploadIdRoute: AuthExampleMyUploadsUploadIdRoute,
-  AuthExampleOrdersOrderIdRoute: AuthExampleOrdersOrderIdRoute,
-  AuthExampleOrdersNewRoute: AuthExampleOrdersNewRoute,
-  AuthExampleClientsIndexRoute: AuthExampleClientsIndexRoute,
-  AuthExampleKitchenSinkIndexRoute: AuthExampleKitchenSinkIndexRoute,
-  AuthExampleMyUploadsIndexRoute: AuthExampleMyUploadsIndexRoute,
-  AuthExampleOrdersIndexRoute: AuthExampleOrdersIndexRoute,
-  AuthExampleUploadIndexRoute: AuthExampleUploadIndexRoute,
-}
-
-const AuthExampleRouteRouteWithChildren =
-  AuthExampleRouteRoute._addFileChildren(AuthExampleRouteRouteChildren)
-
 interface AuthRouteRouteChildren {
   AuthAdminRouteRoute: typeof AuthAdminRouteRouteWithChildren
-  AuthExampleRouteRoute: typeof AuthExampleRouteRouteWithChildren
+  AuthAmazonRoute: typeof AuthAmazonRoute
+  AuthCommercialRoute: typeof AuthCommercialRoute
   AuthErrorRoute: typeof AuthErrorRoute
+  AuthInventoryRoute: typeof AuthInventoryRoute
   AuthNotFoundRoute: typeof AuthNotFoundRoute
+  AuthReportsRoute: typeof AuthReportsRoute
+  AuthSelloutRoute: typeof AuthSelloutRoute
   AuthUnauthorizedRoute: typeof AuthUnauthorizedRoute
   AuthIndexRoute: typeof AuthIndexRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthAdminRouteRoute: AuthAdminRouteRouteWithChildren,
-  AuthExampleRouteRoute: AuthExampleRouteRouteWithChildren,
+  AuthAmazonRoute: AuthAmazonRoute,
+  AuthCommercialRoute: AuthCommercialRoute,
   AuthErrorRoute: AuthErrorRoute,
+  AuthInventoryRoute: AuthInventoryRoute,
   AuthNotFoundRoute: AuthNotFoundRoute,
+  AuthReportsRoute: AuthReportsRoute,
+  AuthSelloutRoute: AuthSelloutRoute,
   AuthUnauthorizedRoute: AuthUnauthorizedRoute,
   AuthIndexRoute: AuthIndexRoute,
 }

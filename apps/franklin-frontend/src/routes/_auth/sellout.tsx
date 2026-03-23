@@ -1,0 +1,32 @@
+import { MetabaseEmbed } from '@/components/MetabaseEmbed'
+import { metabaseUrlsAtom } from '@/stores/ryde-session'
+import { createFileRoute } from '@tanstack/react-router'
+import { useAtomValue } from 'jotai'
+import { LoaderIcon } from 'lucide-react'
+
+export const Route = createFileRoute('/_auth/sellout')({
+  component: SelloutPage,
+  staticData: {
+    title: 'route.sellout',
+    crumb: 'route.sellout',
+  },
+})
+
+function SelloutPage() {
+  const metabaseUrls = useAtomValue(metabaseUrlsAtom)
+  const url = metabaseUrls?.sellout
+
+  if (!url) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <LoaderIcon className="text-muted-foreground size-6 animate-spin" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="h-full">
+      <MetabaseEmbed url={url} />
+    </div>
+  )
+}

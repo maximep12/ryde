@@ -4,17 +4,42 @@ import { HTTPException } from 'hono/http-exception'
 import { ContextVariables } from '../../index'
 import { receiveFileUpload } from '../../lib/fileUpload'
 import { sendSlackNotification, SLACK_CONTEXT } from '../../lib/slack'
-import { canUploadCircleK, canUploadRabba, requireRoles } from '../../middlewares/auth'
+import {
+  canUpload7Eleven,
+  canUploadCentralMarket,
+  canUploadCircleK,
+  canUploadLoblaws,
+  canUploadNapOrange,
+  canUploadParkland,
+  canUploadPetroCanada,
+  canUploadRabba,
+  canUploadSobeys,
+  requireRoles,
+} from '../../middlewares/auth'
 import { UPLOAD_RESULT_STATES } from '../../utils/constants.js'
 import {
   getReportsByType,
   linkReportToDataImport,
+  process7ElevenFile,
+  processCentralMarketFile,
   processCircleKFile,
   processCircleKQcAtlFile,
+  processLoblawsFile,
+  processNapOrangeFile,
+  processParklandFile,
+  processPetroCanadaFile,
   processRabbaFile,
+  processSobeysFile,
+  REPORT_TYPE_CENTRAL_MARKET,
   REPORT_TYPE_CIRCLE_K,
   REPORT_TYPE_CIRCLE_K_QCATL,
+  REPORT_TYPE_LOBLAWS,
+  REPORT_TYPE_NAP_ORANGE,
+  REPORT_TYPE_PARKLAND,
+  REPORT_TYPE_PETRO_CANADA,
   REPORT_TYPE_RABBA,
+  REPORT_TYPE_SEVEN_ELEVEN,
+  REPORT_TYPE_SOBEYS,
   updateReportFailure,
   updateReportSuccess,
 } from './helpers'
@@ -238,4 +263,438 @@ export const bannersRouterDefinition = bannersRouter
       reports: rows,
       pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) },
     })
+  })
+
+  /**
+   * POST /banners/centralMarket — Import Central Market sell-out Excel
+   */
+  .post('/centralMarket', canUploadCentralMarket, async (c) => {
+    logger.info('Central Market import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_CENTRAL_MARKET,
+      type: 'sell-out',
+      banner: 'central-market',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processCentralMarketFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Central Market import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.centralMarket })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'Central Market orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'Central Market import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.centralMarket })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/centralMarket', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_CENTRAL_MARKET, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/napOrange — Import NAP Orange sell-out Excel
+   */
+  .post('/napOrange', canUploadNapOrange, async (c) => {
+    logger.info('NAP Orange import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_NAP_ORANGE,
+      type: 'sell-out',
+      banner: 'nap-orange',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processNapOrangeFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'NAP Orange import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.napOrange })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'NAP Orange orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'NAP Orange import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.napOrange })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/napOrange', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_NAP_ORANGE, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/sobeys — Import Sobeys sell-out Excel
+   */
+  .post('/sobeys', canUploadSobeys, async (c) => {
+    logger.info('Sobeys import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_SOBEYS,
+      type: 'sell-out',
+      banner: 'sobeys',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processSobeysFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Sobeys import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.sobeys })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'Sobeys orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'Sobeys import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.sobeys })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/sobeys', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_SOBEYS, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/loblaws — Import Loblaws sell-out CSV
+   */
+  .post('/loblaws', canUploadLoblaws, async (c) => {
+    logger.info('Loblaws import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_LOBLAWS,
+      type: 'sell-out',
+      banner: 'loblaws',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processLoblawsFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Loblaws import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.loblaws })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'Loblaws orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'Loblaws import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.loblaws })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/loblaws', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_LOBLAWS, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/parkland — Import Parkland sell-out Excel
+   */
+  .post('/parkland', canUploadParkland, async (c) => {
+    logger.info('Parkland import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_PARKLAND,
+      type: 'sell-out',
+      banner: 'parkland',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processParklandFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Parkland import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.parkland })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'Parkland orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'Parkland import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.parkland })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/parkland', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_PARKLAND, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/petrocanada — Import Petro Canada sell-out Excel
+   */
+  .post('/petrocanada', canUploadPetroCanada, async (c) => {
+    logger.info('Petro Canada import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_PETRO_CANADA,
+      type: 'sell-out',
+      banner: 'petro-canada',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processPetroCanadaFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Petro Canada import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.petroCanada })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'Petro Canada orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'Petro Canada import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.petroCanada })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/petrocanada', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_PETRO_CANADA, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/7eleven — Import 7-Eleven sell-out Excel
+   */
+  .post('/7eleven', canUpload7Eleven, async (c) => {
+    logger.info('7-Eleven import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_SEVEN_ELEVEN,
+      type: 'sell-out',
+      banner: '7-eleven',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await process7ElevenFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, '7-Eleven import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.sevenEleven })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: '7-Eleven orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, '7-Eleven import error')
+      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.sevenEleven })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/7eleven', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_SEVEN_ELEVEN, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
   })

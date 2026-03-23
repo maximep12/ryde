@@ -1,3 +1,5 @@
+'use no memo'
+
 import { getApi, updateApiClient } from '@/stores/api'
 import { setSessionToken } from '@/stores/session'
 import { Button, Input, Label } from '@repo/ui/components'

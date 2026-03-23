@@ -1,20 +1,18 @@
-import config from '@/config'
 import { FileRouteTypes } from '@/routeTree.gen'
 import {
+  BarChart3Icon,
+  BoxIcon,
   Building2Icon,
   ClipboardCheckIcon,
-  FileIcon,
+  FileTextIcon,
   HomeIcon,
-  ListIcon,
   LucideIcon,
   PackageIcon,
-  PaletteIcon,
   PlusCircleIcon,
-  SearchIcon,
   ShoppingCartIcon,
   StoreIcon,
   TargetIcon,
-  UploadIcon,
+  TrendingDownIcon,
   UsersIcon,
 } from 'lucide-react'
 
@@ -67,28 +65,11 @@ export const importsNavigation: NavigationItem[] = [
   },
 ]
 
-export const exampleNavigation: NavigationItem[] = [
-  {
-    title: 'route.clientsLookup',
-    path: '/example/clients',
-    icon: SearchIcon,
-    matchChildRoutes: true,
-  },
-  { title: 'route.clientsAdd', path: '/example/clients/new', icon: PlusCircleIcon },
-  { title: 'route.ordersMonitor', path: '/example/orders', icon: ListIcon, matchChildRoutes: true },
-  { title: 'route.ordersCreate', path: '/example/orders/new', icon: PlusCircleIcon },
-  {
-    title: 'route.uploadData',
-    path: '/example/upload',
-    icon: UploadIcon,
-    shouldHide: !config.featureFlags['upload-files'],
-  },
-  {
-    title: 'route.myUploads',
-    path: '/example/my-uploads',
-    icon: FileIcon,
-    matchChildRoutes: true,
-    shouldHide: !config.featureFlags['upload-files'],
-  },
-  { title: 'route.kitchenSink', path: '/example/kitchen-sink', icon: PaletteIcon },
+export const dashboardNavigation: NavigationItem[] = [
+  { title: 'route.commercial', path: '/commercial', icon: BarChart3Icon },
+  { title: 'route.sellout', path: '/sellout', icon: TrendingDownIcon },
+  { title: 'route.inventory', path: '/inventory', icon: BoxIcon },
+  { title: 'route.reports', path: '/reports', icon: FileTextIcon },
+  { title: 'route.amazon', path: '/amazon', icon: PackageIcon },
 ]
+

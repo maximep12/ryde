@@ -1,6 +1,6 @@
 import config from '@/config'
 import { getApi, updateApiClient } from '@/stores/api'
-import { setRydeToken } from '@/stores/ryde-session'
+import { setMetabaseUrls, setRydeToken } from '@/stores/ryde-session'
 import { setSessionToken } from '@/stores/session'
 import { Button, Input, Label } from '@repo/ui/components'
 import { cn } from '@repo/ui/lib'
@@ -54,6 +54,10 @@ export function LoginForm({ className, ...props }: React.ComponentProps<'div'>) 
         if (rydeRes.ok) {
           const rydeData = await rydeRes.json()
           setRydeToken(rydeData.token)
+          const urls = rydeData.metabaseDashboardUrls
+          if (urls && Object.keys(urls).length > 0) {
+            setMetabaseUrls(urls)
+          }
         } else {
           console.error('Ryde auth failed:', rydeRes.status, await rydeRes.text())
         }

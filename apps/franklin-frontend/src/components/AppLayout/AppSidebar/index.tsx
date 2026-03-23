@@ -1,4 +1,4 @@
-import { useCurrentItem } from '@/contexts/CurrentItemContext'
+
 import useLogout from '@/hooks/queries/auth/useLogout'
 import { useMe } from '@/hooks/queries/auth/useMe'
 import {
@@ -19,8 +19,8 @@ import { useTranslation } from 'react-i18next'
 import { RydeLogo } from '@/components/RydeLogo'
 import {
   adminNavigation,
+  dashboardNavigation,
   dataManagerNavigation,
-  exampleNavigation,
   navigation,
   NavigationItem,
 } from './navigation'
@@ -95,22 +95,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const location = useLocation()
   const { logout } = useLogout()
   const { t } = useTranslation(['ui', 'routes'])
-  const { getLabel } = useCurrentItem()
-  const { data: me } = useMe()
 
-  // Lookup function to get friendly labels for child routes
-  const getChildLabel = React.useCallback(
-    (path: string, childSegment: string): string | null => {
-      // Check if a page has registered a label for this path
-      const registeredLabel = getLabel(path)
-      if (registeredLabel) {
-        return registeredLabel
-      }
-      // Fall back to the URL segment
-      return childSegment
-    },
-    [getLabel],
-  )
+  const { data: me } = useMe()
 
   return (
     <Sidebar variant="inset" className="border-r" {...props}>
@@ -124,6 +110,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSection
           items={navigation}
           label={t('sidebar.navigation')}
+          pathname={location.pathname}
+        />
+        <NavSection
+          items={dashboardNavigation}
+          label={t('sidebar.dashboards')}
           pathname={location.pathname}
         />
         {me?.role === 'admin' && (
@@ -141,12 +132,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           />
         )}
 
-        <NavSection
-          items={exampleNavigation}
-          label={t('sidebar.examples')}
-          pathname={location.pathname}
-          getChildLabel={getChildLabel}
-        />
       </SidebarContent>
 
       <SidebarFooter>

@@ -1,3 +1,5 @@
+'use no memo'
+
 import config from '@/config'
 import { setRydeToken } from '@/stores/ryde-session'
 import { getApi, updateApiClient } from '@/stores/api'
