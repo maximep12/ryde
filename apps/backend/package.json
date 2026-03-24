@@ -1,11 +1,11 @@
 {
-  "name": "@repo/ryde-backend",
+  "name": "@repo/backend",
   "type": "module",
   "version": "1.0.0",
   "exports": {
     "./app": "./src/index.ts"
   },
-  "description": "Ryde Backend - Hono API server with TypeScript, PostgreSQL/Drizzle ORM, Redis, JWT auth",
+  "description": "Backend - Hono API server with TypeScript, PostgreSQL/Drizzle ORM, Redis, JWT auth",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' tsx watch --conditions=volume-seven src/index.ts",
     "build": "tsup",

@@ -15,15 +15,15 @@ RUN npm pkg delete scripts.prepare && \
   addgroup -S backend && adduser -S backend -G backend
 
 FROM base AS prod-deps
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod --filter=@repo/ryde-backend... --config.dedupe-peer-dependents=false
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod --filter=@repo/backend... --config.dedupe-peer-dependents=false
 # Remove everything except node_modules
 RUN find apps packages -mindepth 2 -depth \
   ! -path "*/node_modules*" \
   -exec rm -rf {} + 2>/dev/null || true
 
 FROM base AS build
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod=false --filter=@repo/ryde-backend... --config.dedupe-peer-dependents=false
-RUN pnpm build --filter=@repo/ryde-backend
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod=false --filter=@repo/backend... --config.dedupe-peer-dependents=false
+RUN pnpm build --filter=@repo/backend
 # Remove everything except dist
 RUN find apps packages -mindepth 2 -depth \
   ! -path "*/dist*" \
@@ -35,7 +35,7 @@ FROM base
 COPY --from=prod-deps --chown=backend:backend /app /app
 COPY --from=build --chown=backend:backend /app /app
 
-WORKDIR /app/apps/ryde-backend
+WORKDIR /app/apps/backend
 USER backend
 
 ENTRYPOINT ["/sbin/tini", "--", "node", "dist"]

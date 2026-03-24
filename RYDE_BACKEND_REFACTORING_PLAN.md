@@ -4,11 +4,11 @@
 
 ## Context
 
-`apps/ryde-backend` is a legacy Koa/JavaScript/Knex/Objection.js backend pasted from another project without being adapted to this monorepo (turborepo). It is being converted to **Hono/TypeScript/Drizzle ORM**, following the patterns established in `apps/franklin-backend`. Work is done controller-by-controller in separate Git branches. The old code stays functional throughout.
+`apps/backend` is a legacy Koa/JavaScript/Knex/Objection.js backend pasted from another project without being adapted to this monorepo (turborepo). It is being converted to **Hono/TypeScript/Drizzle ORM**, following the patterns established in `apps/franklin-backend`. Work is done controller-by-controller in separate Git branches. The old code stays functional throughout.
 
 ## Strategy
 
-- Convert `apps/ryde-backend` in-place (same directory, new structure)
+- Convert `apps/backend` in-place (same directory, new structure)
 - Work in Git feature branches, one per module (see branch names below)
 - The Drizzle schema in `packages/db/src/schema/` already covers all ryde domain tables — **no new tables needed**
 - Follow `apps/franklin-backend` patterns exactly for structure, error handling, and middleware
@@ -61,7 +61,7 @@ feat/ryde-backend-misc
 
 **Branch:** `feat/ryde-backend-hono-setup`
 
-Create the full TypeScript Hono project scaffold inside `apps/ryde-backend/`, mirroring `apps/franklin-backend`.
+Create the full TypeScript Hono project scaffold inside `apps/backend/`, mirroring `apps/franklin-backend`.
 
 ### Files to Create
 
@@ -93,7 +93,7 @@ export const verifyJWT = createMiddleware<{ Variables: ContextVariables }>(async
 export const requireRoles = (...roles: string[]) =>
   createMiddleware<{ Variables: ContextVariables }>(async (c, next) => { ... })
 
-// Pre-built guards (matching old apps/ryde-backend/src/utils/handlers.js)
+// Pre-built guards (matching old apps/backend/src/utils/handlers.js)
 export const tokenIsValid = requireRoles('Admin')
 export const canUploadRabba = requireRoles('Admin', 'rabba')
 export const canUploadCircleK = requireRoles('Admin', 'circle k')
@@ -124,7 +124,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | GET    | `/auth/me`             | Return user from JWT payload              |
 | POST   | `/token`               | Validate JWT token                        |
 
-**Reference:** `apps/ryde-backend/src/modules/auth/`, `apps/ryde-backend/src/modules/login/`, `apps/ryde-backend/src/modules/token/`
+**Reference:** `apps/backend/src/modules/auth/`, `apps/backend/src/modules/login/`, `apps/backend/src/modules/token/`
 
 **Files:** `src/routers/auth/handlers.ts`, `helpers.ts`, `schemas.ts`
 
@@ -139,7 +139,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | GET    | `/users`       | List all users with roles |
 | PATCH  | `/users/batch` | Batch update user roles   |
 
-**Reference:** `apps/ryde-backend/src/modules/users/`
+**Reference:** `apps/backend/src/modules/users/`
 
 **Files:** `src/routers/users/handlers.ts`, `helpers.ts`, `schemas.ts`
 
@@ -154,7 +154,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | POST   | `/customers`         | `tokenIsValid` | Upload customer master data (Excel)   |
 | POST   | `/customers/targets` | `tokenIsValid` | Upload customer sales targets (Excel) |
 
-**Reference:** `apps/ryde-backend/src/modules/customers/`
+**Reference:** `apps/backend/src/modules/customers/`
 
 **Files:** `src/routers/customers/handlers.ts`, `helpers.ts`, `schemas.ts`, `src/lib/FileParser/customerExcel.ts`
 
@@ -169,7 +169,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | POST   | `/products`         | `tokenIsValid` | Create products from CSV        |
 | POST   | `/products/formats` | `tokenIsValid` | Create product formats from CSV |
 
-**Reference:** `apps/ryde-backend/src/modules/products/`
+**Reference:** `apps/backend/src/modules/products/`
 
 **Files:** `src/routers/products/handlers.ts`, `helpers.ts`, `schemas.ts`
 
@@ -192,7 +192,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | POST   | `/banners/petrocanada`   | `canUploadPetroCanada`   |
 | POST   | `/banners/7eleven`       | `canUpload7Eleven`       |
 
-**Reference:** `apps/ryde-backend/src/modules/banners/`
+**Reference:** `apps/backend/src/modules/banners/`
 
 **Files:** `src/routers/banners/handlers.ts`, `helpers.ts`, `src/lib/FileParser/circleKExcel.ts`, `parklandExcel.ts`, `petroCanadaExcel.ts`, `sevenElevenExcel.ts`
 
@@ -206,7 +206,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | ------ | -------------------- | ---------------- |
 | POST   | `/competitors/rabba` | `canUploadRabba` |
 
-**Reference:** `apps/ryde-backend/src/modules/competitorSales/`
+**Reference:** `apps/backend/src/modules/competitorSales/`
 
 **Files:** `src/routers/competitorSales/handlers.ts`, `helpers.ts`
 
@@ -222,7 +222,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | POST   | `/sellin-orders-confirmed/file`          | `tokenIsValid` |
 | POST   | `/sellin-orders-confirmed/file/7-eleven` | `tokenIsValid` |
 
-**Reference:** `apps/ryde-backend/src/modules/sellinOrders/`, `apps/ryde-backend/src/modules/sellinOrdersConfirmed/`
+**Reference:** `apps/backend/src/modules/sellinOrders/`, `apps/backend/src/modules/sellinOrdersConfirmed/`
 
 **Files:** `src/routers/sellinOrders/handlers.ts`, `helpers.ts`, `src/routers/sellinOrdersConfirmed/handlers.ts`, `helpers.ts`
 
@@ -238,7 +238,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | POST   | `/amazon-orders/bundles` | `tokenIsValid` |
 | POST   | `/forecast/amazon`       | `tokenIsValid` |
 
-**Reference:** `apps/ryde-backend/src/modules/amazonOrders/`, `apps/ryde-backend/src/modules/forecast/`
+**Reference:** `apps/backend/src/modules/amazonOrders/`, `apps/backend/src/modules/forecast/`
 
 **Files:** `src/routers/amazonOrders/handlers.ts`, `helpers.ts`, `src/routers/forecast/handlers.ts`, `helpers.ts`
 
@@ -258,7 +258,7 @@ export const canUpload7Eleven = requireRoles('Admin')
 | GET    | `/download/:banner/:provider/:fileName` | `tokenIsValid` |
 | GET    | `/workers/rabba/:container`             | `tokenIsValid` |
 
-**Reference:** `apps/ryde-backend/src/modules/customerProductStatus/`, `files/`, `workers/`
+**Reference:** `apps/backend/src/modules/customerProductStatus/`, `files/`, `workers/`
 
 **Files:** `src/routers/customerProductStatus/`, `src/routers/files/`, `src/routers/workers/`, `src/lib/FileDownloader/s3.ts`, `azure.ts`, `src/lib/SFTP/index.ts`, `src/lib/Workers/index.ts`
 
@@ -273,9 +273,9 @@ export const canUpload7Eleven = requireRoles('Admin')
 | `apps/franklin-backend/src/lib/errors/index.ts`           | Error handler                               |
 | `apps/franklin-backend/src/lib/errors/zValidatorThrow.ts` | Validation wrapper                          |
 | `packages/db/src/schema/`                                 | All Drizzle table definitions               |
-| `apps/ryde-backend/src/modules/`                          | All 17 old modules (business logic to port) |
-| `apps/ryde-backend/src/utils/handlers.js`                 | Old role middleware guards                  |
-| `apps/ryde-backend/src/config/index.js`                   | Old env var reference                       |
+| `apps/backend/src/modules/`                          | All 17 old modules (business logic to port) |
+| `apps/backend/src/utils/handlers.js`                 | Old role middleware guards                  |
+| `apps/backend/src/config/index.js`                   | Old env var reference                       |
 
 ---
 

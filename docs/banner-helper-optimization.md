@@ -1,6 +1,6 @@
 # Banner Helper Optimization Standard
 
-When writing or refactoring banner processing functions in `apps/ryde-backend/src/routers/banners/helpers.ts`, always use Map-based lookups instead of linear `.find()` scans.
+When writing or refactoring banner processing functions in `apps/backend/src/routers/banners/helpers.ts`, always use Map-based lookups instead of linear `.find()` scans.
 
 ## Why
 
@@ -68,4 +68,4 @@ const existing = existingContent.find((c) => c.upc === item.upc)
 
 ## Reference implementation
 
-See `processCircleKQcAtlFile` in `apps/ryde-backend/src/routers/banners/helpers.ts` for the canonical example.
+See `processCircleKQcAtlFile` in `apps/backend/src/routers/banners/helpers.ts` for the canonical example.

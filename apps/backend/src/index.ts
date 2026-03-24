@@ -66,7 +66,7 @@ export type AppType = typeof appDefinition
 const port = env.PORT
 
 const logger = createBaseLogger().child({
-  module: 'ryde-backend',
+  module: 'backend',
 })
 
 logger.info({ url: `http://localhost:${port}` }, 'Server is running')

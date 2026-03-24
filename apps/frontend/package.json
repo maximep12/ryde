@@ -1,5 +1,5 @@
 {
-  "name": "@repo/franklin-frontend",
+  "name": "@repo/frontend",
   "version": "0.1.0",
   "private": true,
   "description": "Frontend - Tanstack Router SPA with React, Tailwind v4",
@@ -18,7 +18,7 @@
     "@repo/constants": "workspace:*",
     "@repo/csv": "workspace:*",
     "@repo/feature-flags": "workspace:*",
-    "@repo/ryde-backend": "workspace:*",
+    "@repo/backend": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",
     "@repo/zod-schemas": "workspace:*",

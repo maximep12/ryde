@@ -17,7 +17,7 @@ spec:
         - name: docker-hub
       containers:
         - name: api
-          image: volume7/ryde-backend:__IMAGE_TAG__
+          image: volume7/backend:__IMAGE_TAG__
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

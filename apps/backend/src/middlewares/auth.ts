@@ -49,7 +49,7 @@ export const requireRoles = (...roles: string[]) =>
     await next()
   })
 
-// Pre-built guards (matching old apps/ryde-backend/src/utils/handlers.js)
+// Pre-built guards (matching old apps/backend/src/utils/handlers.js)
 export const tokenIsValid = requireRoles('admin')
 export const canUploadRabba = requireRoles('admin', 'rabba')
 export const canUploadCircleK = requireRoles('admin', 'circle k')

@@ -1,6 +1,6 @@
 import config from '@/config'
 import { fetchWithThrow } from '@/lib/queries'
-import { AppType } from '@repo/ryde-backend/app'
+import { AppType } from '@repo/backend/app'
 import { hc } from 'hono/client'
 import { atom } from 'jotai'
 import { store } from '.'
