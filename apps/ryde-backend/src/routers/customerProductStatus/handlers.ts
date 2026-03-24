@@ -94,9 +94,7 @@ export const customerProductStatusRouterDefinition = customerProductStatusRouter
       }
 
       const existingStatuses = await getExistingStatuses()
-      const existingMap = new Map(
-        existingStatuses.map((s) => [`${s.customerId}|${s.statusDate}`, s]),
-      )
+      const existingMap = new Map(existingStatuses.map((s) => [`${s.customerId}|${s.statusDate}`, s]))
 
       let createdRows = 0
       let updatedRows = 0
@@ -169,4 +167,3 @@ export const customerProductStatusRouterDefinition = customerProductStatusRouter
       pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) },
     })
   })
-

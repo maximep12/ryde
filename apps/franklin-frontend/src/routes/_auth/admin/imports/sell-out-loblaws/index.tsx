@@ -11,6 +11,8 @@ export const Route = createFileRoute('/_auth/admin/imports/sell-out-loblaws/')({
   },
 })
 
+const EXPECTED_COLUMNS = ['Week End Date', 'UPC', 'Site Number', 'Sales', 'Units']
+
 function ImportSellOutLoblawsPage() {
   const navigate = useNavigate()
   return (
@@ -19,7 +21,7 @@ function ImportSellOutLoblawsPage() {
       description="Upload the Loblaws sell-out CSV file"
       uploadEndpoint="/banners/loblaws"
       reportsEndpoint="/banners/reports/loblaws"
-      expectedColumns={[]}
+      expectedColumns={EXPECTED_COLUMNS}
       unit="rows"
       uploadType="sell-out-loblaws"
       accept={['.csv']}

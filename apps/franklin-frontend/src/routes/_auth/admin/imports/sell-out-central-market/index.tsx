@@ -11,15 +11,17 @@ export const Route = createFileRoute('/_auth/admin/imports/sell-out-central-mark
   },
 })
 
+const EXPECTED_COLUMNS = ['SKU', 'ID', 'Quantity', 'Net Value', 'Date']
+
 function ImportSellOutCentralMarketPage() {
   const navigate = useNavigate()
   return (
     <ImportPage
       title="Central Market Sell-Out"
-      description="Upload the Central Market sell-out Excel file"
+      description="Upload the Central Market sell-out Excel file (Data sheet)"
       uploadEndpoint="/banners/centralMarket"
       reportsEndpoint="/banners/reports/centralMarket"
-      expectedColumns={[]}
+      expectedColumns={EXPECTED_COLUMNS}
       unit="rows"
       uploadType="sell-out-central-market"
       accept={['.xlsx', '.xls']}

@@ -1,13 +1,7 @@
 import { useMe } from '@/hooks/queries/auth/useMe'
 import { Card, CardDescription, CardHeader, CardTitle } from '@repo/ui/components'
 import { createFileRoute, Link } from '@tanstack/react-router'
-import {
-  BarChart3Icon,
-  BoxIcon,
-  FileTextIcon,
-  PackageIcon,
-  TrendingDownIcon,
-} from 'lucide-react'
+import { BarChart3Icon, BoxIcon, FileTextIcon, PackageIcon, TrendingDownIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 
 export const Route = createFileRoute('/_auth/')({
@@ -19,11 +13,36 @@ export const Route = createFileRoute('/_auth/')({
 })
 
 const dashboardCards = [
-  { titleKey: 'route.commercial', descriptionKey: 'welcome.commercialDesc', path: '/commercial', icon: BarChart3Icon },
-  { titleKey: 'route.sellout', descriptionKey: 'welcome.selloutDesc', path: '/sellout', icon: TrendingDownIcon },
-  { titleKey: 'route.inventory', descriptionKey: 'welcome.inventoryDesc', path: '/inventory', icon: BoxIcon },
-  { titleKey: 'route.reports', descriptionKey: 'welcome.reportsDesc', path: '/reports', icon: FileTextIcon },
-  { titleKey: 'route.amazon', descriptionKey: 'welcome.amazonDesc', path: '/amazon', icon: PackageIcon },
+  {
+    titleKey: 'route.commercial',
+    descriptionKey: 'welcome.commercialDesc',
+    path: '/commercial',
+    icon: BarChart3Icon,
+  },
+  {
+    titleKey: 'route.sellout',
+    descriptionKey: 'welcome.selloutDesc',
+    path: '/sellout',
+    icon: TrendingDownIcon,
+  },
+  {
+    titleKey: 'route.inventory',
+    descriptionKey: 'welcome.inventoryDesc',
+    path: '/inventory',
+    icon: BoxIcon,
+  },
+  {
+    titleKey: 'route.reports',
+    descriptionKey: 'welcome.reportsDesc',
+    path: '/reports',
+    icon: FileTextIcon,
+  },
+  {
+    titleKey: 'route.amazon',
+    descriptionKey: 'welcome.amazonDesc',
+    path: '/amazon',
+    icon: PackageIcon,
+  },
 ] as const
 
 function getGreetingForTimeOfDay(): string {
@@ -34,9 +53,9 @@ function getGreetingForTimeOfDay(): string {
 }
 
 function WelcomePage() {
-  const { data: user } = useMe()
+  const { data: me } = useMe()
   const { t } = useTranslation(['routes', 'ui'])
-  const userName = user?.givenName || user?.familyName
+  const userName = me?.user?.fullName
 
   return (
     <div className="space-y-8">

@@ -36,7 +36,7 @@ export function RequestAccessForm({ className, onBack, ...props }: RequestAccess
       if (!res.ok) {
         const body = await res.json()
         const message = 'message' in body ? String(body.message) : 'Something went wrong'
-        if (message === 'USER_ALREADY_EXISTS') {
+        if (message === 'emailAlreadyExists') {
           setError('email', { message: 'An account with this email already exists' })
         } else {
           setError('root', { message })

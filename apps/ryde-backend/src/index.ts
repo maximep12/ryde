@@ -4,6 +4,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { z } from 'zod'
 import { errorHandler } from './lib/errors'
+import { env } from './lib/utils/env'
 import { httpLogger } from './middlewares/httpLogger'
 import { bannersRouterDefinition } from './routers/banners/handlers'
 import { authRouterDefinition, tokenRouterDefinition } from './routers/auth/handlers'
@@ -15,6 +16,7 @@ import { filesRouterDefinition } from './routers/files/handlers'
 import { forecastRouterDefinition } from './routers/forecast/handlers'
 import { sellinOrdersRouterDefinition } from './routers/sellinOrders/handlers'
 import { sellinOrdersConfirmedRouterDefinition } from './routers/sellinOrdersConfirmed/handlers'
+import { uploadDataDefinition } from './routers/upload'
 import { usersRouterDefinition } from './routers/users/handlers'
 import { workersRouterDefinition } from './routers/workers/handlers'
 
@@ -36,7 +38,7 @@ const app = new Hono<{ Variables: ContextVariables }>()
 const appDefinition = app
   .use(
     cors({
-      origin: ['http://localhost:3000', 'http://localhost:5173'],
+      origin: env.CORS_ORIGINS.split(',').map((o) => o.trim()),
       allowHeaders: ['Content-Type', 'Authorization', 'Content-Disposition'],
       credentials: true,
     }),
@@ -56,11 +58,12 @@ const appDefinition = app
   .route('/download', filesRouterDefinition)
   .route('/banners', bannersRouterDefinition)
   .route('/workers', workersRouterDefinition)
+  .route('/upload', uploadDataDefinition)
   .onError(errorHandler)
 
 export type AppType = typeof appDefinition
 
-const port = 5001
+const port = env.PORT
 
 const logger = createBaseLogger().child({
   module: 'ryde-backend',

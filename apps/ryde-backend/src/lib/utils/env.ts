@@ -31,11 +31,19 @@ const envSchema = z.object({
   METABASE_SECRET_KEY: z.string().default(''),
   // Frontend
   FRONTEND_URL: z.string().default('http://localhost:3000'),
+  FRANKLIN_FRONTEND_URL: z.string().default('http://localhost:5173'),
   // Resend (email)
   RESEND_API_KEY: z.string().default(''),
   RESEND_FROM: z.string().default('noreply@ryde.com'),
   // Advance DB (external)
   ADVANCE_DATABASE_URL: z.string().default(''),
+  // File upload S3 (separate bucket/credentials for CSV uploads)
+  AWS_FILE_UPLOAD_S3_BUCKET_NAME: z.string().default(''),
+  AWS_FILE_UPLOAD_S3_BUCKET_REGION: z.string().default(''),
+  AWS_FILE_UPLOAD_IAM_USER_ACCESS_KEY_ID: z.string().default(''),
+  AWS_FILE_UPLOAD_IAM_USER_SECRET_ACCESS_KEY_ID: z.string().default(''),
+  // CORS
+  CORS_ORIGINS: z.string().default('http://localhost:3000,http://localhost:5173'),
   // App
   NODE_ENV: z.enum(['development', 'qa', 'production']).default('development'),
   PORT: z.coerce.number().default(5001),

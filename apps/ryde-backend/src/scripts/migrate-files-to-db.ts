@@ -37,11 +37,15 @@ const s3 = new AmazonS3Client({
 const AWS_CK_ACCESS_KEY_ID = process.env.AWS_CK_ACCESS_KEY_ID
 const AWS_CK_SECRET_ACCESS_KEY = process.env.AWS_CK_SECRET_ACCESS_KEY
 const AWS_CK_BUCKET = process.env.AWS_CK_BUCKET ?? 'ryde-circlek'
-const awsS3 = AWS_CK_ACCESS_KEY_ID && AWS_CK_SECRET_ACCESS_KEY
-  ? new AmazonS3Client({
-      clientInfos: { region: S3_BUCKET.region, credentials: { accessKeyId: AWS_CK_ACCESS_KEY_ID, secretAccessKey: AWS_CK_SECRET_ACCESS_KEY } },
-    })
-  : null
+const awsS3 =
+  AWS_CK_ACCESS_KEY_ID && AWS_CK_SECRET_ACCESS_KEY
+    ? new AmazonS3Client({
+        clientInfos: {
+          region: S3_BUCKET.region,
+          credentials: { accessKeyId: AWS_CK_ACCESS_KEY_ID, secretAccessKey: AWS_CK_SECRET_ACCESS_KEY },
+        },
+      })
+    : null
 
 const BANNERS: { banner: string; slug: string }[] = [
   { banner: 'circle_k', slug: 'circlek' },

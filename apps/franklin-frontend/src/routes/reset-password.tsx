@@ -1,9 +1,7 @@
 'use no memo'
 
-import config from '@/config'
-import { setRydeToken } from '@/stores/ryde-session'
 import { getApi, updateApiClient } from '@/stores/api'
-import { setSessionToken } from '@/stores/session'
+import { type MetabaseUrls, setMetabaseUrls, setSessionToken } from '@/stores/session'
 import { Button, Input, Label } from '@repo/ui/components'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
@@ -45,10 +43,9 @@ function ResetPasswordPage() {
     }
 
     try {
-      const res = await fetch(`${config.rydeBackendURL}/auth/set-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email, password: data.password, token }),
+      const api = getApi()
+      const res = await api.auth['set-password'].$post({
+        json: { email: data.email, password: data.password, token },
       })
 
       if (!res.ok) {
@@ -60,23 +57,12 @@ function ResetPasswordPage() {
       }
 
       const body = await res.json()
+      setSessionToken(body.token)
+      updateApiClient(body.token)
 
-      // Authenticate with ryde-backend (same credentials)
-      setRydeToken(body.token)
-
-      // Also create a franklin session
-      try {
-        const api = getApi()
-        const franklinRes = await api.auth.callback.$post({
-          json: { email: data.email, password: data.password },
-        })
-        if (franklinRes.ok) {
-          const franklinData = await franklinRes.json()
-          setSessionToken(franklinData.sessionToken)
-          updateApiClient(franklinData.sessionToken)
-        }
-      } catch {
-        // Non-critical
+      const urls = body.metabaseDashboardUrls as MetabaseUrls | undefined
+      if (urls && Object.keys(urls).length > 0) {
+        setMetabaseUrls(urls)
       }
 
       window.location.href = '/'

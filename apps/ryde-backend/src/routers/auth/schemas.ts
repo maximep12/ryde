@@ -2,6 +2,8 @@ import { z } from 'zod'
 
 export const requestAccessSchema = z.object({
   email: z.string().email(),
+  givenName: z.string().optional(),
+  familyName: z.string().optional(),
 })
 
 export const loginSchema = z.object({
@@ -23,4 +25,9 @@ export const setPasswordSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   token: z.string(),
+})
+
+export const joinSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
 })

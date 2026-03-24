@@ -1,4 +1,4 @@
-import { dataImports, type Role, replenOrders, replenOrdersConfirmed, reports, users } from '@repo/db'
+import { dataImports, type Role, replenOrders, replenOrdersConfirmed, reports, type Status, users } from '@repo/db'
 import { desc, eq, InferSelectModel } from 'drizzle-orm'
 import { HTTPException } from 'hono/http-exception'
 import jwt from 'jsonwebtoken'
@@ -20,6 +20,10 @@ export const BANNERS = {
 
 export const REPORTS_AMAZON = 'AMAZON_ORDERS'
 
+export function buildFullName(user: { givenName: string | null; familyName: string | null; email: string }) {
+  return user.givenName && user.familyName ? `${user.givenName} ${user.familyName}` : user.email
+}
+
 export async function getUserByEmail(email: string) {
   const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1)
   return user
@@ -40,16 +44,16 @@ export async function createUser(data: {
   email: string
   passwordHash?: string
   role?: Role
+  status?: Status
+  givenName?: string
+  familyName?: string
 }) {
   const [user] = await db.insert(users).values(data).returning()
   if (!user) throw new HTTPException(500, { message: 'Failed to create user.' })
   return user
 }
 
-export async function updateUser(
-  id: string,
-  data: Partial<InferSelectModel<typeof users>>,
-) {
+export async function updateUser(id: string, data: Partial<InferSelectModel<typeof users>>) {
   const [user] = await db.update(users).set(data).where(eq(users.id, id)).returning()
   return user
 }
@@ -73,11 +77,7 @@ export function resolveStaticToken(token: string): string | null {
 
 export async function getMetabaseUpdates() {
   try {
-    const [latestSellIn] = await db
-      .select()
-      .from(replenOrders)
-      .orderBy(desc(replenOrders.billingDate))
-      .limit(1)
+    const [latestSellIn] = await db.select().from(replenOrders).orderBy(desc(replenOrders.billingDate)).limit(1)
 
     const [latestConfirmed] = await db
       .select()
@@ -131,16 +131,13 @@ export function generateMetabaseDashboardLinks() {
 
   const metabaseUrl = 'https://ryde-metabase.v7apps.com'
 
-  return Object.entries(METABASE_DASHBOARDS).reduce<Record<string, string>>(
-    (acc, [dashboard, infos]) => {
-      const payload = {
-        resource: { dashboard: infos.dashboardNumber },
-        params: {},
-      }
-      const token = jwt.sign(payload, env.METABASE_SECRET_KEY, { expiresIn: '8h' })
-      const url = `${metabaseUrl}/embed/dashboard/${token}#bordered=true&titled=true`
-      return { ...acc, [dashboard]: url }
-    },
-    {},
-  )
+  return Object.entries(METABASE_DASHBOARDS).reduce<Record<string, string>>((acc, [dashboard, infos]) => {
+    const payload = {
+      resource: { dashboard: infos.dashboardNumber },
+      params: {},
+    }
+    const token = jwt.sign(payload, env.METABASE_SECRET_KEY, { expiresIn: '8h' })
+    const url = `${metabaseUrl}/embed/dashboard/${token}#bordered=true&titled=true`
+    return { ...acc, [dashboard]: url }
+  }, {})
 }

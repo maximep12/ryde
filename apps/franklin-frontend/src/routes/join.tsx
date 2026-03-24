@@ -1,7 +1,7 @@
 'use no memo'
 
 import { getApi, updateApiClient } from '@/stores/api'
-import { setSessionToken } from '@/stores/session'
+import { type MetabaseUrls, setMetabaseUrls, setSessionToken } from '@/stores/session'
 import { Button, Input, Label } from '@repo/ui/components'
 import { createFileRoute, redirect } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
@@ -54,8 +54,14 @@ function JoinPage() {
       }
 
       const body = await res.json()
-      setSessionToken(body.sessionToken)
-      updateApiClient(body.sessionToken)
+      setSessionToken(body.token)
+      updateApiClient(body.token)
+
+      const urls = body.metabaseDashboardUrls as MetabaseUrls | undefined
+      if (urls && Object.keys(urls).length > 0) {
+        setMetabaseUrls(urls)
+      }
+
       window.location.href = '/'
     } catch {
       setError('root', { message: 'An error occurred. Please try again.' })

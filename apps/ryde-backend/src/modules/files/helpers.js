@@ -308,7 +308,9 @@ export async function removeSheetFromWorkbook(zip, sheetName) {
   const workbookXml = await zip.file('xl/workbook.xml').async('string')
 
   // Find the sheet to remove
-  const sheetRegex = new RegExp(`<sheet[^>]*name="${sheetName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*sheetId="(\\d+)"[^>]*r:id="(rId\\d+)"[^>]*/>`)
+  const sheetRegex = new RegExp(
+    `<sheet[^>]*name="${sheetName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}"[^>]*sheetId="(\\d+)"[^>]*r:id="(rId\\d+)"[^>]*/>`,
+  )
   const sheetMatch = workbookXml.match(sheetRegex)
 
   if (!sheetMatch) {
@@ -360,7 +362,9 @@ export async function addSheetToWorkbook(zip, sheetName, worksheetXml) {
   const workbookXml = await zip.file('xl/workbook.xml').async('string')
 
   // Find existing sheets
-  const sheetMatches = Array.from(workbookXml.matchAll(/<sheet[^>]*name="([^"]*)"[^>]*sheetId="(\d+)"[^>]*r:id="(rId\d+)"/g))
+  const sheetMatches = Array.from(
+    workbookXml.matchAll(/<sheet[^>]*name="([^"]*)"[^>]*sheetId="(\d+)"[^>]*r:id="(rId\d+)"/g),
+  )
 
   const existingSheets = sheetMatches.map((match) => ({
     name: match[1],
@@ -376,7 +380,7 @@ export async function addSheetToWorkbook(zip, sheetName, worksheetXml) {
   // The template has rId8, rId9, etc. used by pivot caches, slicers, etc.
   const relsPath = 'xl/_rels/workbook.xml.rels'
   const relsXml = await zip.file(relsPath).async('string')
-  const allRIds = Array.from(relsXml.matchAll(/Id="rId(\d+)"/g)).map(m => parseInt(m[1]))
+  const allRIds = Array.from(relsXml.matchAll(/Id="rId(\d+)"/g)).map((m) => parseInt(m[1]))
   const nextRIdNum = allRIds.length > 0 ? Math.max(...allRIds) + 1 : 1
   const nextRId = `rId${nextRIdNum}`
 
@@ -523,7 +527,7 @@ export function createMultiTableWorksheetXml(tables, stringManager, options = {}
           title: table.title,
           titleStyle: table.titleStyle,
           headerStyle: table.headerStyle,
-        }
+        },
       )
 
       allRows.push(tableBlock.rows)
@@ -551,7 +555,7 @@ export function createMultiTableWorksheetXml(tables, stringManager, options = {}
           title: table.title,
           titleStyle: table.titleStyle,
           headerStyle: table.headerStyle,
-        }
+        },
       )
 
       allRows.push(tableBlock.rows)

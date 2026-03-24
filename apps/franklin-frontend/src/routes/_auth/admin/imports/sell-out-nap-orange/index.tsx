@@ -11,15 +11,30 @@ export const Route = createFileRoute('/_auth/admin/imports/sell-out-nap-orange/'
   },
 })
 
+const EXPECTED_COLUMNS = [
+  'Week',
+  'Week Wending Date',
+  'Location',
+  'Site Name',
+  'Store',
+  'ERP',
+  'TM',
+  'OT',
+  'Site_Details',
+  'Description',
+  'Total Qty',
+  'Total Amount',
+]
+
 function ImportSellOutNapOrangePage() {
   const navigate = useNavigate()
   return (
     <ImportPage
       title="NAP Orange Sell-Out"
-      description="Upload the NAP Orange sell-out Excel file"
+      description="Upload the NAP Orange sell-out Excel file (DATA sheet)"
       uploadEndpoint="/banners/napOrange"
       reportsEndpoint="/banners/reports/napOrange"
-      expectedColumns={[]}
+      expectedColumns={EXPECTED_COLUMNS}
       unit="rows"
       uploadType="sell-out-nap-orange"
       accept={['.xlsx', '.xls']}

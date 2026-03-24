@@ -2,6 +2,9 @@
   "name": "@repo/ryde-backend",
   "type": "module",
   "version": "1.0.0",
+  "exports": {
+    "./app": "./src/index.ts"
+  },
   "description": "Ryde Backend - Hono API server with TypeScript, PostgreSQL/Drizzle ORM, Redis, JWT auth",
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' tsx watch --conditions=volume-seven src/index.ts",
@@ -9,17 +12,20 @@
     "lint": "FORCE_COLOR=1 eslint src/",
     "type-check": "tsc --noEmit",
     "test": "vitest run",
-    "start": "node dist"
+    "start": "pnpm -w db:migrate:deploy && node dist"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.972.0",
+    "@aws-sdk/s3-request-presigner": "^3.972.0",
     "@azure/storage-blob": "^12.17.0",
     "@hono/node-server": "^1.19.7",
     "@hono/zod-validator": "^0.7.5",
     "@repo/config-eslint-custom": "workspace:*",
     "@repo/config-typescript": "workspace:*",
     "@repo/constants": "workspace:*",
+    "@repo/csv": "workspace:*",
     "@repo/db": "workspace:*",
+    "@repo/zod-schemas": "workspace:*",
     "@repo/logger": "workspace:*",
     "@repo/redis": "workspace:*",
     "@types/bcrypt": "^5.0.2",

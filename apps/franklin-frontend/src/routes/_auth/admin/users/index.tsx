@@ -2,7 +2,11 @@
 
 import { DebouncedSearchInput } from '@/components/DebouncedSearchInput'
 import { TableLoading } from '@/components/TableLoading'
-import { useCreateUser, type UserRole, type UserStatus } from '@/hooks/mutations/users/useCreateUser'
+import {
+  useCreateUser,
+  type UserRole,
+  type UserStatus,
+} from '@/hooks/mutations/users/useCreateUser'
 import { useUpdateUser } from '@/hooks/mutations/users/useUpdateUser'
 import { useUser } from '@/hooks/queries/users/useUser'
 import { useUsers } from '@/hooks/queries/users/useUsers'
@@ -369,9 +373,7 @@ function EditUserDialog({
                   </Select>
                 )}
               />
-              {errors.status && (
-                <p className="text-destructive text-sm">{errors.status.message}</p>
-              )}
+              {errors.status && <p className="text-destructive text-sm">{errors.status.message}</p>}
             </div>
 
             <DialogFooter>

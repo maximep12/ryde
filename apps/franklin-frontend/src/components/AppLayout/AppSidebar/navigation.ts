@@ -72,4 +72,3 @@ export const dashboardNavigation: NavigationItem[] = [
   { title: 'route.reports', path: '/reports', icon: FileTextIcon },
   { title: 'route.amazon', path: '/amazon', icon: PackageIcon },
 ]
-

@@ -34,11 +34,7 @@ const CANADIAN_PROVINCES = new Set([
 
 // ─── Main export ──────────────────────────────────────────────────────────────
 
-export async function parseParklandSellOut({
-  stream,
-}: {
-  stream: NodeJS.ReadableStream
-}): Promise<ParsedParkland> {
+export async function parseParklandSellOut({ stream }: { stream: NodeJS.ReadableStream }): Promise<ParsedParkland> {
   const workbook = new Excel.Workbook()
   await workbook.xlsx.read(stream)
 
@@ -195,10 +191,7 @@ function parseStoreData(
   return { storesData, totalRowsReceived }
 }
 
-function aggregateStoreSales(
-  products: ProductData[],
-  dates: DateEntry[],
-): StoreRawData['sales'] {
+function aggregateStoreSales(products: ProductData[], dates: DateEntry[]): StoreRawData['sales'] {
   return dates.map(({ date }) => {
     let rydeSales = 0
     let rydeUnits = 0

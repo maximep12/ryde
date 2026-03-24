@@ -1,5 +1,5 @@
 import { MetabaseEmbed } from '@/components/MetabaseEmbed'
-import { metabaseUrlsAtom } from '@/stores/ryde-session'
+import { metabaseUrlsAtom } from '@/stores/session'
 import { createFileRoute } from '@tanstack/react-router'
 import { useAtomValue } from 'jotai'
 import { LoaderIcon } from 'lucide-react'

@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
@@ -10,6 +11,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import {
   Building2Icon,
   ClipboardCheckIcon,
+  HistoryIcon,
   PackageIcon,
   ShoppingCartIcon,
   StoreIcon,
@@ -38,13 +40,6 @@ type ImportConfig = {
 
 const IMPORTS: ImportConfig[] = [
   {
-    title: 'route.importCustomers',
-    description: 'Upload the customers master data file',
-    icon: <StoreIcon className="size-6" />,
-    path: '/admin/imports/customers',
-    category: 'Schema',
-  },
-  {
     title: 'route.importSellInTargets',
     description: 'Upload the sell-in targets file',
     icon: <TargetIcon className="size-6" />,
@@ -70,7 +65,14 @@ const IMPORTS: ImportConfig[] = [
     description: 'Upload the 7-Eleven confirmed orders file',
     icon: <Building2Icon className="size-6" />,
     path: '/admin/imports/sell-in-orders-confirmed-7-eleven',
-    category: 'Sell-In',
+    category: 'Warehouse Transfer',
+  },
+  {
+    title: 'route.importSellInOrdersConfirmedCircleK',
+    description: 'Upload the Circle K QC confirmed orders file',
+    icon: <ClipboardCheckIcon className="size-6" />,
+    path: '/admin/imports/sell-in-orders-confirmed-circle-k',
+    category: 'Warehouse Transfer',
   },
   {
     title: 'route.importAmazonOrders',
@@ -156,6 +158,20 @@ const IMPORTS: ImportConfig[] = [
     path: '/admin/imports/sell-out-7-eleven',
     category: 'Sell-Out',
   },
+  {
+    title: 'route.importSellOutBgFuels',
+    description: 'Upload the BG Fuels sell-out file',
+    icon: <TagIcon className="size-6" />,
+    path: '/admin/imports/sell-out-bg-fuels',
+    category: 'Sell-Out',
+  },
+  {
+    title: 'route.importCustomers',
+    description: 'Upload the customers master data file',
+    icon: <StoreIcon className="size-6" />,
+    path: '/admin/imports/customers',
+    category: 'Schema',
+  },
   /*
   {
     title: 'route.importProducts',
@@ -177,10 +193,15 @@ const IMPORTS: ImportConfig[] = [
 function ImportsPage() {
   const { t } = useTranslation('routes')
   const [filterText, setFilterText] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
-  const filtered = IMPORTS.filter((imp) =>
-    t(imp.title).toLowerCase().includes(filterText.toLowerCase()),
-  )
+  const allCategories = [...new Set(IMPORTS.map((imp) => imp.category))].sort()
+
+  const filtered = IMPORTS.filter((imp) => {
+    const matchesText = t(imp.title).toLowerCase().includes(filterText.toLowerCase())
+    const matchesCategory = !selectedCategory || imp.category === selectedCategory
+    return matchesText && matchesCategory
+  }).sort((a, b) => a.category.localeCompare(b.category) || t(a.title).localeCompare(t(b.title)))
 
   const categories = filtered.reduce<[string, typeof filtered][]>((acc, imp) => {
     const group = acc.find(([key]) => key === imp.category)
@@ -199,15 +220,48 @@ function ImportsPage() {
           <h1 className="text-2xl font-bold">Imports</h1>
           <p className="text-muted-foreground mt-1">Import data in the system.</p>
         </div>
+        <Button variant="outline" asChild>
+          <Link to="/admin/imports/history">
+            <HistoryIcon className="size-4" />
+            Import History
+          </Link>
+        </Button>
       </header>
 
-      <div className="bg-background/80 sticky top-0 z-10 -mx-1 px-1 pb-4 backdrop-blur-lg">
+      <div className="bg-background/80 sticky top-0 z-10 -mx-1 space-y-3 px-1 pb-4 backdrop-blur-lg">
         <Input
           type="search"
           placeholder="Search imports..."
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
         />
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setSelectedCategory(null)}
+            className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+              !selectedCategory
+                ? 'bg-primary text-primary-foreground border-transparent'
+                : 'bg-muted text-muted-foreground hover:bg-accent border-transparent'
+            }`}
+          >
+            All
+          </button>
+          {allCategories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                selectedCategory === cat
+                  ? 'bg-primary text-primary-foreground border-transparent'
+                  : 'bg-muted text-muted-foreground hover:bg-accent border-transparent'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
       {categories.length > 0 ? (

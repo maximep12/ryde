@@ -51,9 +51,9 @@ export async function bulkUpsertProducts(
       const key = `${row.name}|${row.description}|${row.isWsc}`
       const productId = productIdByKey.get(key)
       if (!productId) return null
-      return { productId, sku: row.sku }
+      return { productId, sku: row.sku, formatId: 0 }
     })
-    .filter((v): v is { productId: number; sku: string } => v !== null)
+    .filter((v): v is { productId: number; sku: string; formatId: number } => v !== null)
 
   if (skuValues.length === 0) return { created: 0, updated: 0, identical: rows.length }
 

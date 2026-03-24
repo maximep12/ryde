@@ -1,26 +1,41 @@
-FROM node:22.18.0-alpine
+FROM node:24-alpine AS base
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-
-# Install app dependencies (also remove node_modules to prevent leaking host deps when using with compose)
-COPY yarn.lock ./
-COPY package.json ./
-
-RUN yarn --production --frozen-lockfile install
-
-# Bundle app source
-COPY . ./
-
-# Transpile
-RUN npm run build
-
-# Copy templates to root (Babel doesn't copy non-JS files)
-RUN cp -r src/templates ./templates
-
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 ENV NODE_ENV=production
 
-# Start server
-CMD [ "npm", "start" ]
+RUN npm install -g corepack@latest && \
+    corepack enable && \
+    apk add --no-cache tini
 
+COPY . /app
+WORKDIR /app
+
+RUN npm pkg delete scripts.prepare && \
+  addgroup -S backend && adduser -S backend -G backend
+
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod --filter=@repo/ryde-backend... --config.dedupe-peer-dependents=false
+# Remove everything except node_modules
+RUN find apps packages -mindepth 2 -depth \
+  ! -path "*/node_modules*" \
+  -exec rm -rf {} + 2>/dev/null || true
+
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store CI=1 pnpm install --frozen-lockfile --prod=false --filter=@repo/ryde-backend... --config.dedupe-peer-dependents=false
+RUN pnpm build --filter=@repo/ryde-backend
+# Remove everything except dist
+RUN find apps packages -mindepth 2 -depth \
+  ! -path "*/dist*" \
+  -exec rm -rf {} + 2>/dev/null || true
+
+
+FROM base
+
+COPY --from=prod-deps --chown=backend:backend /app /app
+COPY --from=build --chown=backend:backend /app /app
+
+WORKDIR /app/apps/ryde-backend
+USER backend
+
+ENTRYPOINT ["/sbin/tini", "--", "node", "dist"]

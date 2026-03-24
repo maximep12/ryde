@@ -18,7 +18,7 @@
     "@repo/constants": "workspace:*",
     "@repo/csv": "workspace:*",
     "@repo/feature-flags": "workspace:*",
-    "@repo/franklin-backend": "workspace:*",
+    "@repo/ryde-backend": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",
     "@repo/zod-schemas": "workspace:*",

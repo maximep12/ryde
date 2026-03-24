@@ -40,10 +40,5 @@ export async function updateStatus({
   await db
     .update(customerProductStatus)
     .set({ facings, placements })
-    .where(
-      and(
-        eq(customerProductStatus.customerId, customerId),
-        eq(customerProductStatus.statusDate, statusDate),
-      ),
-    )
+    .where(and(eq(customerProductStatus.customerId, customerId), eq(customerProductStatus.statusDate, statusDate)))
 }

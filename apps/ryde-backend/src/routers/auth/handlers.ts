@@ -7,6 +7,7 @@ import { env } from '../../lib/utils/env'
 import { verifyJWT } from '../../middlewares/auth'
 import { ContextVariables } from '../../index'
 import {
+  buildFullName,
   countUsers,
   createUser,
   generateJWT,
@@ -17,8 +18,20 @@ import {
   resolveStaticToken,
   updateUser,
 } from './helpers'
-import { sendPasswordResetEmail } from '../../lib/email'
-import { loginSchema, requestAccessSchema, requestPasswordResetSchema, setPasswordSchema, tokenSchema } from './schemas'
+import { sendAccessRequestEmails, sendPasswordResetEmail } from '../../lib/email'
+import { getAdminEmails } from '../users/helpers'
+import { rateLimiter } from '../../middlewares/rateLimiter'
+import {
+  joinSchema,
+  loginSchema,
+  requestAccessSchema,
+  requestPasswordResetSchema,
+  setPasswordSchema,
+  tokenSchema,
+} from './schemas'
+
+const authRateLimit = rateLimiter({ max: 10, windowSeconds: 60, prefix: 'auth' })
+const strictRateLimit = rateLimiter({ max: 5, windowSeconds: 60, prefix: 'auth-strict' })
 
 const authRouter = new Hono<{ Variables: ContextVariables }>()
 const tokenRouter = new Hono<{ Variables: ContextVariables }>()
@@ -28,24 +41,57 @@ export const authRouterDefinition = authRouter
   /**
    * Request access — creates a pending user with email only.
    */
-  .post('/request-access', zValidatorThrow('json', requestAccessSchema), async (c) => {
-    const { email } = c.req.valid('json')
+  .post('/request-access', authRateLimit, zValidatorThrow('json', requestAccessSchema), async (c) => {
+    const { email, givenName, familyName } = c.req.valid('json')
 
     const existing = await getUserByEmail(email)
     if (existing) {
       throw new HTTPException(409, { message: 'emailAlreadyExists' })
     }
 
-    await createUser({ id: crypto.randomUUID(), email })
+    await createUser({ id: crypto.randomUUID(), email, givenName, familyName, status: 'pending' })
+
+    const adminEmails = await getAdminEmails()
+    void sendAccessRequestEmails({ requesterEmail: email, adminEmails })
 
     return c.json({ message: 'accessRequested' }, 201)
+  })
+
+  /**
+   * Join — pending user sets their password, account becomes active.
+   */
+  .post('/join', authRateLimit, zValidatorThrow('json', joinSchema), async (c) => {
+    const { email, password } = c.req.valid('json')
+
+    const user = await getUserByEmail(email)
+    if (!user) {
+      throw new HTTPException(404, { message: 'userNotFound' })
+    }
+
+    if (user.passwordHash) {
+      throw new HTTPException(400, { message: 'userNotPending' })
+    }
+
+    const passwordHash = await hashPassword(password)
+    await updateUser(user.id, { passwordHash, status: 'active' })
+
+    const token = generateJWT({ id: user.id, email: user.email, role: user.role ?? '' })
+    const dates = await getMetabaseUpdates()
+    const metabaseDashboardUrls = generateMetabaseDashboardLinks()
+
+    return c.json({
+      token,
+      user: { id: user.id, email: user.email, role: user.role, fullName: buildFullName(user) },
+      dates,
+      metabaseDashboardUrls,
+    })
   })
 
   /**
    * Login — verify bcrypt password and return signed JWT.
    * If this is the first user ever, create them as Admin automatically.
    */
-  .post('/login', zValidatorThrow('json', loginSchema), async (c) => {
+  .post('/login', strictRateLimit, zValidatorThrow('json', loginSchema), async (c) => {
     const { email, password } = c.req.valid('json')
 
     const userCount = await countUsers()
@@ -82,25 +128,28 @@ export const authRouterDefinition = authRouter
     const dates = await getMetabaseUpdates()
     const metabaseDashboardUrls = generateMetabaseDashboardLinks()
 
-    return c.json({ token, user: { id: user.id, email: user.email, role: user.role }, dates, metabaseDashboardUrls })
+    return c.json({
+      token,
+      user: { id: user.id, email: user.email, role: user.role, fullName: buildFullName(user) },
+      dates,
+      metabaseDashboardUrls,
+    })
   })
 
   /**
    * Request password reset — generates a short-lived reset token and logs the link to the server console.
    * An admin should retrieve the link from the server logs and share it with the user out-of-band.
    */
-  .post('/request-password-reset', zValidatorThrow('json', requestPasswordResetSchema), async (c) => {
+  .post('/request-password-reset', authRateLimit, zValidatorThrow('json', requestPasswordResetSchema), async (c) => {
     const { email } = c.req.valid('json')
 
     const user = await getUserByEmail(email)
     // Always return success to prevent email enumeration
     if (user) {
-      const resetToken = jwt.sign(
-        { id: user.id, email: user.email, purpose: 'password-reset' },
-        env.JWT_SECRET,
-        { expiresIn: '1h' },
-      )
-      const resetLink = `${env.FRONTEND_URL}/set-password?token=${resetToken}`
+      const resetToken = jwt.sign({ id: user.id, email: user.email, purpose: 'password-reset' }, env.JWT_SECRET, {
+        expiresIn: '1h',
+      })
+      const resetLink = `${env.FRANKLIN_FRONTEND_URL}/reset-password?token=${resetToken}`
       await sendPasswordResetEmail({ to: email, resetLink })
     }
 
@@ -110,7 +159,7 @@ export const authRouterDefinition = authRouter
   /**
    * Set password — verifies the reset token and updates the user's password.
    */
-  .post('/set-password', zValidatorThrow('json', setPasswordSchema), async (c) => {
+  .post('/set-password', strictRateLimit, zValidatorThrow('json', setPasswordSchema), async (c) => {
     const { email, password, token } = c.req.valid('json')
 
     let decoded: jwt.JwtPayload
@@ -136,7 +185,12 @@ export const authRouterDefinition = authRouter
     const dates = await getMetabaseUpdates()
     const metabaseDashboardUrls = generateMetabaseDashboardLinks()
 
-    return c.json({ token: newToken, user: { id: user.id, email: user.email, role: user.role }, dates, metabaseDashboardUrls })
+    return c.json({
+      token: newToken,
+      user: { id: user.id, email: user.email, role: user.role, fullName: buildFullName(user) },
+      dates,
+      metabaseDashboardUrls,
+    })
   })
 
   /**
@@ -155,11 +209,18 @@ export const authRouterDefinition = authRouter
     const metabaseDashboardUrls = generateMetabaseDashboardLinks()
 
     return c.json({
-      user: { id: user.id, email: user.email, role: user.role },
+      user: { id: user.id, email: user.email, role: user.role, fullName: buildFullName(user) },
       token,
       dates,
       metabaseDashboardUrls,
     })
+  })
+
+  /**
+   * Verify — lightweight JWT check. Returns 204 if valid, 401 via middleware if not.
+   */
+  .get('/verify', verifyJWT, async () => {
+    return new Response(null, { status: 204 })
   })
 
 export const tokenRouterDefinition = tokenRouter

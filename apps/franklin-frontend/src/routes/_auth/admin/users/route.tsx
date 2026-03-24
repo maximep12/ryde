@@ -9,14 +9,14 @@ export const Route = createFileRoute('/_auth/admin/users')({
       queryKey: ['me'],
       queryFn: async () => {
         const api = getApi()
-        const res = await api.example.users.me.$post()
+        const res = await api.auth.me.$get()
         if (!res.ok) throw new Error('Failed to fetch user')
         return res.json()
       },
       staleTime: 1000 * 10,
     })
 
-    if (me?.role !== 'admin') {
+    if (me?.user?.role !== 'admin') {
       throw redirect({ to: '/unauthorized' })
     }
   },

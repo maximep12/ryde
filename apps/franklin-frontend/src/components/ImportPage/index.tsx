@@ -3,8 +3,7 @@
 import { FileDrop } from '@/components/FileDrop'
 import { useUploadToRyde, type UploadResult } from '@/hooks/mutations/imports/useUploadToRyde'
 import { useImportReports, type ImportReport } from '@/hooks/queries/imports/useImportReports'
-import { getRydeToken } from '@/stores/ryde-session'
-import { destroySessionToken } from '@/stores/session'
+import { destroySessionToken, getSessionToken } from '@/stores/session'
 import {
   Button,
   Table,
@@ -129,7 +128,7 @@ export function ImportPage({
   onRowClick,
   onBack,
 }: ImportPageProps) {
-  const hasRydeToken = !!getRydeToken()
+  const hasToken = !!getSessionToken()
   const queryClient = useQueryClient()
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
@@ -190,7 +189,7 @@ export function ImportPage({
       </header>
 
       {/* Re-login banner when ryde token is missing */}
-      {!hasRydeToken && (
+      {!hasToken && (
         <div className="flex items-center justify-between gap-4 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/10">
           <div className="flex items-center gap-3">
             <AlertCircleIcon className="size-5 shrink-0 text-amber-600" />

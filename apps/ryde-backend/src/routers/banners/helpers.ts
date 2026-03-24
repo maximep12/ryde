@@ -36,7 +36,15 @@ import { parsePetroCanadaSellOut } from '../../lib/FileParser/petroCanadaExcel'
 import { parseSevenElevenWHToStore } from '../../lib/FileParser/sevenElevenExcel'
 import { bufferToStream } from '../../lib/fileUpload'
 import { ERRORS } from '../../utils/constants.js'
-export { createReport, getReportsByType, updateReportFailure, updateReportSuccess } from '../../lib/reports'
+export {
+  createReport,
+  getAllReports,
+  getDistinctReportTypes,
+  getReportById,
+  getReportsByType,
+  updateReportFailure,
+  updateReportSuccess,
+} from '../../lib/reports'
 
 const BANNER_RABBA = 'Rabba'
 const RYDE_WEEK_0 = parseISO('2023-11-06')
@@ -1115,7 +1123,11 @@ async function getOrCreateBannerDataImport(
     .select()
     .from(dataImports)
     .where(
-      and(eq(dataImports.periodStart, periodStart), eq(dataImports.periodEnd, periodEnd), eq(dataImports.fileOrigin, fileOrigin)),
+      and(
+        eq(dataImports.periodStart, periodStart),
+        eq(dataImports.periodEnd, periodEnd),
+        eq(dataImports.fileOrigin, fileOrigin),
+      ),
     )
     .limit(1)
 
@@ -1145,7 +1157,10 @@ const BANNER_NAP_ORANGE = 'NAP Orange'
 export const REPORT_TYPE_NAP_ORANGE = 'NAP_ORANGE'
 
 async function getNapOrangeCustomers() {
-  return db.select().from(customers).where(like(customers.banner, `%${BANNER_NAP_ORANGE}%`))
+  return db
+    .select()
+    .from(customers)
+    .where(like(customers.banner, `%${BANNER_NAP_ORANGE}%`))
 }
 
 async function getNapOrangeUpcData() {
@@ -1173,7 +1188,20 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
     expected: [
       {
         sheetName: 'DATA',
-        columns: ['Week', 'Week Wending Date', 'Location', 'Site Name', 'Store', 'ERP', 'TM', 'OT', 'Site_Details', 'Description', 'Total Qty', 'Total Amount'],
+        columns: [
+          'Week',
+          'Week Wending Date',
+          'Location',
+          'Site Name',
+          'Store',
+          'ERP',
+          'TM',
+          'OT',
+          'Site_Details',
+          'Description',
+          'Total Qty',
+          'Total Amount',
+        ],
       },
     ],
   })
@@ -1225,7 +1253,10 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
 
       // Fetch existing orders for this week
       const existingOrderRows = customerIds.length
-        ? await db.select().from(orders).where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
+        ? await db
+            .select()
+            .from(orders)
+            .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
         : []
 
       const orderByCustomerId = new Map(existingOrderRows.map((o) => [o.customerId, o]))
@@ -1256,12 +1287,22 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
 
       const storeResults = await Promise.all(
         [...byErp.entries()].map(async ([erp, storeRows]) => {
-          const base = { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, identicalRows: 0, rejected: [] as string[], invalidCustomer: null as { id: string; rows: number[] } | null }
+          const base = {
+            ordersCreated: 0,
+            ordersUpdated: 0,
+            createdRows: 0,
+            updatedRows: 0,
+            identicalRows: 0,
+            rejected: [] as string[],
+            invalidCustomer: null as { id: string; rows: number[] } | null,
+          }
 
-          if (!erp) return { ...base, invalidCustomer: { id: '(empty)', rows: storeRows.map((r) => r['rowNumber'] as number) } }
+          if (!erp)
+            return { ...base, invalidCustomer: { id: '(empty)', rows: storeRows.map((r) => r['rowNumber'] as number) } }
 
           const customer = customerByBatId.get(erp)
-          if (!customer) return { ...base, invalidCustomer: { id: erp, rows: storeRows.map((r) => r['rowNumber'] as number) } }
+          if (!customer)
+            return { ...base, invalidCustomer: { id: erp, rows: storeRows.map((r) => r['rowNumber'] as number) } }
 
           const content: { sku: string; quantity: number; netValue: number; upc: string }[] = []
           const storeRejected: string[] = []
@@ -1273,11 +1314,21 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
             const description = String(storeRow['description'] ?? '')
             const linkedProduct = upcByCustomerUpc.get(description)
             if (!linkedProduct || !linkedProduct.sku) {
-              storeRejected.push(ERRORS.custom(storeRow['rowNumber'] as number, `Could not map Description "${description}" to a product`))
+              storeRejected.push(
+                ERRORS.custom(
+                  storeRow['rowNumber'] as number,
+                  `Could not map Description "${description}" to a product`,
+                ),
+              )
               continue
             }
 
-            content.push({ sku: linkedProduct.sku, quantity, netValue: round(Number(storeRow['totalAmount']) || 0, 2), upc: description })
+            content.push({
+              sku: linkedProduct.sku,
+              quantity,
+              netValue: round(Number(storeRow['totalAmount']) || 0, 2),
+              upc: description,
+            })
           }
 
           if (content.length === 0) return { ...base, rejected: storeRejected }
@@ -1295,24 +1346,51 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
               const existing = existingUpcMap?.get(item.upc)
               if (existing) {
                 if (existing.quantity !== item.quantity || round(existing.netValue ?? 0, 2) !== item.netValue) {
-                  toUpdate.push(db.update(ordersContent).set({ quantity: item.quantity, netValue: item.netValue }).where(eq(ordersContent.id, existing.id)))
+                  toUpdate.push(
+                    db
+                      .update(ordersContent)
+                      .set({ quantity: item.quantity, netValue: item.netValue })
+                      .where(eq(ordersContent.id, existing.id)),
+                  )
                   updatedRows++
                 } else {
                   identicalRows++
                 }
               } else {
-                toInsert.push({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: existingOrder.id })
+                toInsert.push({
+                  sku: item.sku,
+                  quantity: item.quantity,
+                  netValue: item.netValue,
+                  upc: item.upc,
+                  billingDocumentId: existingOrder.id,
+                })
               }
             }
 
             await Promise.all([toInsert.length ? db.insert(ordersContent).values(toInsert) : null, ...toUpdate])
             const ordersUpdated = toInsert.length > 0 || toUpdate.length > 0 ? 1 : 0
-            return { ...base, rejected: storeRejected, ordersUpdated, createdRows: toInsert.length, updatedRows, identicalRows }
+            return {
+              ...base,
+              rejected: storeRejected,
+              ordersUpdated,
+              createdRows: toInsert.length,
+              updatedRows,
+              identicalRows,
+            }
           } else {
-            const [newOrder] = await db.insert(orders).values({ customerId: customer.id, orderDate: periodStart }).returning()
+            const [newOrder] = await db
+              .insert(orders)
+              .values({ customerId: customer.id, orderDate: periodStart })
+              .returning()
             if (!newOrder) return { ...base, rejected: storeRejected }
 
-            const toInsert = content.map((item) => ({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: newOrder.id }))
+            const toInsert = content.map((item) => ({
+              sku: item.sku,
+              quantity: item.quantity,
+              netValue: item.netValue,
+              upc: item.upc,
+              billingDocumentId: newOrder.id,
+            }))
             await db.insert(ordersContent).values(toInsert)
             return { ...base, rejected: storeRejected, ordersCreated: 1, createdRows: toInsert.length }
           }
@@ -1330,7 +1408,15 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
           if (r.invalidCustomer) acc.invalidCustomerIds.push(r.invalidCustomer)
           return acc
         },
-        { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, identicalRows: 0, rejected: [] as string[], invalidCustomerIds: [] as { id: string; rows: number[] }[] },
+        {
+          ordersCreated: 0,
+          ordersUpdated: 0,
+          createdRows: 0,
+          updatedRows: 0,
+          identicalRows: 0,
+          rejected: [] as string[],
+          invalidCustomerIds: [] as { id: string; rows: number[] }[],
+        },
       )
 
       return { dataImportId: dataImport.id, ...weekTotals }
@@ -1349,7 +1435,16 @@ export async function processNapOrangeFile(buffer: Buffer): Promise<NapOrangePro
       acc.lastDataImportId = r.dataImportId
       return acc
     },
-    { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, identicalRows: 0, rejected: initialRejected, invalidCustomerIds: [] as { id: string; rows: number[] }[], lastDataImportId: 0 },
+    {
+      ordersCreated: 0,
+      ordersUpdated: 0,
+      createdRows: 0,
+      updatedRows: 0,
+      identicalRows: 0,
+      rejected: initialRejected,
+      invalidCustomerIds: [] as { id: string; rows: number[] }[],
+      lastDataImportId: 0,
+    },
   )
 
   totals.rejected.push(...buildInvalidCustomerErrors(totals.invalidCustomerIds))
@@ -1374,7 +1469,10 @@ const BANNER_SOBEYS = 'Sobeys'
 export const REPORT_TYPE_SOBEYS = 'SOBEYS'
 
 async function getSobeysCustomers() {
-  return db.select().from(customers).where(like(customers.banner, `%${BANNER_SOBEYS}%`))
+  return db
+    .select()
+    .from(customers)
+    .where(like(customers.banner, `%${BANNER_SOBEYS}%`))
 }
 
 async function getSobeysUpcData() {
@@ -1392,7 +1490,24 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
     expected: [
       {
         sheetName: 'DATA',
-        columns: ['Site', 'Name', 'Fiscal Week', 'Article', 'SKU', 'Net contents', 'UNITS', 'GSR', 'Banner2', 'Region', 'Week Ending', 'ERP', 'Owner', 'Province', 'BAM', 'TM'],
+        columns: [
+          'Site',
+          'Name',
+          'Fiscal Week',
+          'Article',
+          'SKU',
+          'Net contents',
+          'UNITS',
+          'GSR',
+          'Banner2',
+          'Region',
+          'Week Ending',
+          'ERP',
+          'Owner',
+          'Province',
+          'BAM',
+          'TM',
+        ],
       },
     ],
   })
@@ -1441,7 +1556,10 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
       const dataImport = await getOrCreateBannerDataImport(periodStart, periodEnd, rydeWeek, BANNER_SOBEYS)
 
       const existingOrderRows = customerIds.length
-        ? await db.select().from(orders).where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
+        ? await db
+            .select()
+            .from(orders)
+            .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
         : []
 
       const orderByCustomerId = new Map(existingOrderRows.map((o) => [o.customerId, o]))
@@ -1472,10 +1590,19 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
 
       const storeResults = await Promise.all(
         [...bySite.entries()].map(async ([site, storeRows]) => {
-          const base = { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, identicalRows: 0, rejected: [] as string[], invalidCustomer: null as { id: string; rows: number[] } | null }
+          const base = {
+            ordersCreated: 0,
+            ordersUpdated: 0,
+            createdRows: 0,
+            updatedRows: 0,
+            identicalRows: 0,
+            rejected: [] as string[],
+            invalidCustomer: null as { id: string; rows: number[] } | null,
+          }
 
           const customer = customerByBannerInternalId.get(site)
-          if (!customer) return { ...base, invalidCustomer: { id: site, rows: storeRows.map((r) => r['rowNumber'] as number) } }
+          if (!customer)
+            return { ...base, invalidCustomer: { id: site, rows: storeRows.map((r) => r['rowNumber'] as number) } }
 
           const content: { sku: string; quantity: number; netValue: number; upc: string }[] = []
           const storeRejected: string[] = []
@@ -1487,11 +1614,18 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
             const article = String(storeRow['article'] ?? '')
             const linkedProduct = upcByCustomerUpc.get(article)
             if (!linkedProduct || !linkedProduct.sku) {
-              storeRejected.push(ERRORS.custom(storeRow['rowNumber'] as number, `Could not map Article "${article}" to a product`))
+              storeRejected.push(
+                ERRORS.custom(storeRow['rowNumber'] as number, `Could not map Article "${article}" to a product`),
+              )
               continue
             }
 
-            content.push({ sku: linkedProduct.sku, quantity, netValue: Number(storeRow['gsr']) || 0, upc: String(storeRow['sku'] ?? '') })
+            content.push({
+              sku: linkedProduct.sku,
+              quantity,
+              netValue: Number(storeRow['gsr']) || 0,
+              upc: String(storeRow['sku'] ?? ''),
+            })
           }
 
           if (content.length === 0) return { ...base, rejected: storeRejected }
@@ -1509,24 +1643,48 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
               const existing = existingUpcMap?.get(item.upc)
               if (existing) {
                 if (existing.quantity !== item.quantity) {
-                  toUpdate.push(db.update(ordersContent).set({ quantity: item.quantity }).where(eq(ordersContent.id, existing.id)))
+                  toUpdate.push(
+                    db.update(ordersContent).set({ quantity: item.quantity }).where(eq(ordersContent.id, existing.id)),
+                  )
                   updatedRows++
                 } else {
                   identicalRows++
                 }
               } else {
-                toInsert.push({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: existingOrder.id })
+                toInsert.push({
+                  sku: item.sku,
+                  quantity: item.quantity,
+                  netValue: item.netValue,
+                  upc: item.upc,
+                  billingDocumentId: existingOrder.id,
+                })
               }
             }
 
             await Promise.all([toInsert.length ? db.insert(ordersContent).values(toInsert) : null, ...toUpdate])
             const ordersUpdated = toInsert.length > 0 || toUpdate.length > 0 ? 1 : 0
-            return { ...base, rejected: storeRejected, ordersUpdated, createdRows: toInsert.length, updatedRows, identicalRows }
+            return {
+              ...base,
+              rejected: storeRejected,
+              ordersUpdated,
+              createdRows: toInsert.length,
+              updatedRows,
+              identicalRows,
+            }
           } else {
-            const [newOrder] = await db.insert(orders).values({ customerId: customer.id, orderDate: periodStart }).returning()
+            const [newOrder] = await db
+              .insert(orders)
+              .values({ customerId: customer.id, orderDate: periodStart })
+              .returning()
             if (!newOrder) return { ...base, rejected: storeRejected }
 
-            const toInsert = content.map((item) => ({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: newOrder.id }))
+            const toInsert = content.map((item) => ({
+              sku: item.sku,
+              quantity: item.quantity,
+              netValue: item.netValue,
+              upc: item.upc,
+              billingDocumentId: newOrder.id,
+            }))
             await db.insert(ordersContent).values(toInsert)
             return { ...base, rejected: storeRejected, ordersCreated: 1, createdRows: toInsert.length }
           }
@@ -1544,7 +1702,15 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
           if (r.invalidCustomer) acc.invalidCustomerIds.push(r.invalidCustomer)
           return acc
         },
-        { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, identicalRows: 0, rejected: [] as string[], invalidCustomerIds: [] as { id: string; rows: number[] }[] },
+        {
+          ordersCreated: 0,
+          ordersUpdated: 0,
+          createdRows: 0,
+          updatedRows: 0,
+          identicalRows: 0,
+          rejected: [] as string[],
+          invalidCustomerIds: [] as { id: string; rows: number[] }[],
+        },
       )
 
       return { dataImportId: dataImport.id, ...weekTotals }
@@ -1563,7 +1729,16 @@ export async function processSobeysFile(buffer: Buffer): Promise<SobeysProcessRe
       acc.lastDataImportId = r.dataImportId
       return acc
     },
-    { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, identicalRows: 0, rejected: initialRejected, invalidCustomerIds: [] as { id: string; rows: number[] }[], lastDataImportId: 0 },
+    {
+      ordersCreated: 0,
+      ordersUpdated: 0,
+      createdRows: 0,
+      updatedRows: 0,
+      identicalRows: 0,
+      rejected: initialRejected,
+      invalidCustomerIds: [] as { id: string; rows: number[] }[],
+      lastDataImportId: 0,
+    },
   )
 
   totals.rejected.push(...buildInvalidCustomerErrors(totals.invalidCustomerIds))
@@ -1663,7 +1838,10 @@ export async function processCentralMarketFile(buffer: Buffer): Promise<CentralM
 
   // Batch-fetch existing orders and content
   const existingOrderRows = customerIds.length
-    ? await db.select().from(orders).where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
+    ? await db
+        .select()
+        .from(orders)
+        .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
     : []
 
   const orderByCustomerId = new Map(existingOrderRows.map((o) => [o.customerId, o]))
@@ -1707,7 +1885,9 @@ export async function processCentralMarketFile(buffer: Buffer): Promise<CentralM
         const existingRow = existingSkuMap?.get(sku)
         if (existingRow) {
           if (existingRow.quantity !== quantity || existingRow.netValue !== netValue) {
-            toUpdate.push(db.update(ordersContent).set({ quantity, netValue }).where(eq(ordersContent.id, existingRow.id)))
+            toUpdate.push(
+              db.update(ordersContent).set({ quantity, netValue }).where(eq(ordersContent.id, existingRow.id)),
+            )
             updatedRows++
             ordersUpdated++
           } else {
@@ -1739,7 +1919,12 @@ export async function processCentralMarketFile(buffer: Buffer): Promise<CentralM
         const [newOrder] = await db.insert(orders).values({ customerId, orderDate: periodStart }).returning()
         if (newOrder) {
           ordersCreated++
-          const toInsert = content.map((item) => ({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, billingDocumentId: newOrder.id }))
+          const toInsert = content.map((item) => ({
+            sku: item.sku,
+            quantity: item.quantity,
+            netValue: item.netValue,
+            billingDocumentId: newOrder.id,
+          }))
           await db.insert(ordersContent).values(toInsert)
           createdRows += toInsert.length
         }
@@ -1755,7 +1940,11 @@ export async function processCentralMarketFile(buffer: Buffer): Promise<CentralM
         await db.delete(ordersContent).where(eq(ordersContent.billingDocumentId, existingOrder.id))
         deletedRows += contentToDelete.size
       }
-      const remainingContent = await db.select().from(ordersContent).where(eq(ordersContent.billingDocumentId, existingOrder.id)).limit(1)
+      const remainingContent = await db
+        .select()
+        .from(ordersContent)
+        .where(eq(ordersContent.billingDocumentId, existingOrder.id))
+        .limit(1)
       if (remainingContent.length === 0) {
         await db.delete(orders).where(eq(orders.id, existingOrder.id))
       }
@@ -1779,7 +1968,14 @@ export async function processCentralMarketFile(buffer: Buffer): Promise<CentralM
 
   for (const { customerId, quantity, netValue } of customerMonthlySales) {
     const existingComp = compByCustomerId.get(customerId)
-    const compData = { customerId, rydeUnits: Number(quantity), rydeValue: Number(netValue), romUnits: 0, romValue: 0, fileImport: dataImport.id }
+    const compData = {
+      customerId,
+      rydeUnits: Number(quantity),
+      rydeValue: Number(netValue),
+      romUnits: 0,
+      romValue: 0,
+      fileImport: dataImport.id,
+    }
 
     if (existingComp) {
       if (existingComp.rydeUnits !== compData.rydeUnits || existingComp.rydeValue !== compData.rydeValue) {
@@ -1859,7 +2055,10 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
       const dataImport = await getOrCreateBannerDataImport(periodStart, periodEnd, rydeWeek, BANNER_LOBLAWS)
 
       const existingOrderRows = customerIds.length
-        ? await db.select().from(orders).where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
+        ? await db
+            .select()
+            .from(orders)
+            .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
         : []
 
       const orderByCustomerId = new Map(existingOrderRows.map((o) => [o.customerId, o]))
@@ -1879,7 +2078,10 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
       }
 
       // Existing competitor sales for this week
-      const existingCompSales = await db.select().from(competitorSales).where(eq(competitorSales.fileImport, dataImport.id))
+      const existingCompSales = await db
+        .select()
+        .from(competitorSales)
+        .where(eq(competitorSales.fileImport, dataImport.id))
       const compByCustomerId = new Map(existingCompSales.map((cs) => [cs.customerId, cs]))
 
       // Group by site number
@@ -1947,14 +2149,23 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
 
             if (existingRow) {
               if (existingRow.quantity !== totalUnits || existingRow.netValue !== item.netValue) {
-                await db.update(ordersContent).set({ quantity: totalUnits, netValue: item.netValue }).where(eq(ordersContent.id, existingRow.id))
+                await db
+                  .update(ordersContent)
+                  .set({ quantity: totalUnits, netValue: item.netValue })
+                  .where(eq(ordersContent.id, existingRow.id))
                 updatedRows++
                 orderIsUpdated = true
               } else {
                 identicalRows++
               }
             } else {
-              await db.insert(ordersContent).values({ sku: item.sku, quantity: totalUnits, netValue: item.netValue, upc: item.upc, billingDocumentId: existingOrder.id })
+              await db.insert(ordersContent).values({
+                sku: item.sku,
+                quantity: totalUnits,
+                netValue: item.netValue,
+                upc: item.upc,
+                billingDocumentId: existingOrder.id,
+              })
               createdRows++
               orderIsUpdated = true
             }
@@ -1975,12 +2186,21 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
 
           if (orderIsUpdated) ordersUpdated++
         } else {
-          const [newOrder] = await db.insert(orders).values({ customerId: customer.id, orderDate: periodStart }).returning()
+          const [newOrder] = await db
+            .insert(orders)
+            .values({ customerId: customer.id, orderDate: periodStart })
+            .returning()
           if (!newOrder) continue
           ordersCreated++
 
           for (const item of content) {
-            await db.insert(ordersContent).values({ sku: item.sku, quantity: item.quantity * item.packSize, netValue: item.netValue, upc: item.upc, billingDocumentId: newOrder.id })
+            await db.insert(ordersContent).values({
+              sku: item.sku,
+              quantity: item.quantity * item.packSize,
+              netValue: item.netValue,
+              upc: item.upc,
+              billingDocumentId: newOrder.id,
+            })
             createdRows++
           }
         }
@@ -1989,7 +2209,10 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
         const compData = {
           customerId: customer.id,
           rydeUnits: content.reduce((sum, c) => sum + c.quantity * c.packSize, 0),
-          rydeValue: round(content.reduce((sum, c) => sum + c.netValue, 0), 2),
+          rydeValue: round(
+            content.reduce((sum, c) => sum + c.netValue, 0),
+            2,
+          ),
           romUnits: 0,
           romValue: 0,
           fileImport: dataImport.id,
@@ -2018,7 +2241,16 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
         }
       }
 
-      return { dataImportId: dataImport.id, ordersCreated, ordersUpdated, createdRows, updatedRows, deletedRows, identicalRows, rejected }
+      return {
+        dataImportId: dataImport.id,
+        ordersCreated,
+        ordersUpdated,
+        createdRows,
+        updatedRows,
+        deletedRows,
+        identicalRows,
+        rejected,
+      }
     }),
   )
 
@@ -2034,7 +2266,16 @@ export async function processLoblawsFile(buffer: Buffer): Promise<LoblawsProcess
       acc.lastDataImportId = r.dataImportId
       return acc
     },
-    { ordersCreated: 0, ordersUpdated: 0, createdRows: 0, updatedRows: 0, deletedRows: 0, identicalRows: 0, rejected: [] as string[], lastDataImportId: 0 },
+    {
+      ordersCreated: 0,
+      ordersUpdated: 0,
+      createdRows: 0,
+      updatedRows: 0,
+      deletedRows: 0,
+      identicalRows: 0,
+      rejected: [] as string[],
+      lastDataImportId: 0,
+    },
   )
 
   return { received: rawRows.length, ...totals, dataImportId: totals.lastDataImportId }
@@ -2047,7 +2288,10 @@ const BANNER_SEVEN_ELEVEN = '7-Eleven'
 export const REPORT_TYPE_SEVEN_ELEVEN = '7_ELEVEN'
 
 async function getSevenElevenCustomers() {
-  return db.select().from(customers).where(like(customers.banner, `%${BANNER_SEVEN_ELEVEN}%`))
+  return db
+    .select()
+    .from(customers)
+    .where(like(customers.banner, `%${BANNER_SEVEN_ELEVEN}%`))
 }
 
 async function getSevenElevenUpcData() {
@@ -2060,7 +2304,9 @@ async function getSevenElevenUpcData() {
 export type SevenElevenProcessResult = NapOrangeProcessResult
 
 export async function process7ElevenFile(buffer: Buffer): Promise<SevenElevenProcessResult> {
-  const { dateRange, salesByCustomer, totalRowsReceived } = await parseSevenElevenWHToStore({ stream: bufferToStream(buffer) })
+  const { dateRange, salesByCustomer, totalRowsReceived } = await parseSevenElevenWHToStore({
+    stream: bufferToStream(buffer),
+  })
 
   if (!salesByCustomer || salesByCustomer.length === 0) {
     throw Object.assign(new Error('No data found in 7-Eleven file.'), { code: 406 })
@@ -2144,26 +2390,47 @@ export async function process7ElevenFile(buffer: Buffer): Promise<SevenElevenPro
 
     if (existingOrder) {
       const existingUpcMap = existingContentByOrderId.get(existingOrder.id)
+      let orderWasUpdated = false
       for (const item of content) {
         const existing = existingUpcMap?.get(item.upc)
         if (existing) {
           if (existing.quantity !== item.quantity || existing.netValue !== item.netValue) {
-            await db.update(ordersContent).set({ quantity: item.quantity, netValue: item.netValue }).where(eq(ordersContent.id, existing.id))
+            await db
+              .update(ordersContent)
+              .set({ quantity: item.quantity, netValue: item.netValue })
+              .where(eq(ordersContent.id, existing.id))
             updatedRows++
+            orderWasUpdated = true
           } else {
             identicalRows++
           }
         } else {
-          await db.insert(ordersContent).values({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: existingOrder.id })
+          await db.insert(ordersContent).values({
+            sku: item.sku,
+            quantity: item.quantity,
+            netValue: item.netValue,
+            upc: item.upc,
+            billingDocumentId: existingOrder.id,
+          })
           createdRows++
+          orderWasUpdated = true
         }
+      }
+      if (orderWasUpdated) {
+        ordersUpdated++
       }
     } else if (content.length > 0) {
       const [newOrder] = await db.insert(orders).values({ customerId: customer.id, orderDate: periodStart }).returning()
       if (newOrder) {
         ordersCreated++
         for (const item of content) {
-          await db.insert(ordersContent).values({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: newOrder.id })
+          await db.insert(ordersContent).values({
+            sku: item.sku,
+            quantity: item.quantity,
+            netValue: item.netValue,
+            upc: item.upc,
+            billingDocumentId: newOrder.id,
+          })
           createdRows++
         }
       }
@@ -2181,7 +2448,12 @@ export async function process7ElevenFile(buffer: Buffer): Promise<SevenElevenPro
 
     const existingComp = compByCustomerId.get(customer.id)
     if (existingComp) {
-      if (existingComp.rydeUnits !== compData.rydeUnits || existingComp.rydeValue !== compData.rydeValue || existingComp.romUnits !== compData.romUnits || existingComp.romValue !== compData.romValue) {
+      if (
+        existingComp.rydeUnits !== compData.rydeUnits ||
+        existingComp.rydeValue !== compData.rydeValue ||
+        existingComp.romUnits !== compData.romUnits ||
+        existingComp.romValue !== compData.romValue
+      ) {
         await db.update(competitorSales).set(compData).where(eq(competitorSales.id, existingComp.id))
         updatedRows++
       } else {
@@ -2248,9 +2520,15 @@ export async function processParklandFile(buffer: Buffer): Promise<ParklandProce
     // Fetch existing data
     const [existingCompSales, existingCompOrders, existingOrderRows] = await Promise.all([
       db.select().from(competitorSales).where(eq(competitorSales.fileImport, dataImport.id)),
-      db.select().from(competitorOrders).where(and(eq(competitorOrders.orderDate, salesDate), inArray(competitorOrders.customerId, customerIds))),
+      db
+        .select()
+        .from(competitorOrders)
+        .where(and(eq(competitorOrders.orderDate, salesDate), inArray(competitorOrders.customerId, customerIds))),
       customerIds.length
-        ? db.select().from(orders).where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, salesDate)))
+        ? db
+            .select()
+            .from(orders)
+            .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, salesDate)))
         : Promise.resolve([] as (typeof orders.$inferSelect)[]),
     ])
 
@@ -2310,14 +2588,22 @@ export async function processParklandFile(buffer: Buffer): Promise<ParklandProce
           const existingRow = existingContent.find((c) => c.sku === item.sku)
           if (existingRow) {
             if (existingRow.quantity !== item.quantity || existingRow.netValue !== item.netValue) {
-              await db.update(ordersContent).set({ quantity: item.quantity, netValue: item.netValue }).where(eq(ordersContent.id, existingRow.id))
+              await db
+                .update(ordersContent)
+                .set({ quantity: item.quantity, netValue: item.netValue })
+                .where(eq(ordersContent.id, existingRow.id))
               totalUpdatedRows++
               hasChanges = true
             } else {
               totalIdenticalRows++
             }
           } else {
-            await db.insert(ordersContent).values({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, billingDocumentId: existingOrder.id })
+            await db.insert(ordersContent).values({
+              sku: item.sku,
+              quantity: item.quantity,
+              netValue: item.netValue,
+              billingDocumentId: existingOrder.id,
+            })
             totalCreatedRows++
             hasChanges = true
           }
@@ -2339,7 +2625,12 @@ export async function processParklandFile(buffer: Buffer): Promise<ParklandProce
         if (newOrder) {
           totalOrdersCreated++
           for (const item of content) {
-            await db.insert(ordersContent).values({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, billingDocumentId: newOrder.id })
+            await db.insert(ordersContent).values({
+              sku: item.sku,
+              quantity: item.quantity,
+              netValue: item.netValue,
+              billingDocumentId: newOrder.id,
+            })
             totalCreatedRows++
           }
         }
@@ -2350,14 +2641,26 @@ export async function processParklandFile(buffer: Buffer): Promise<ParklandProce
       for (const [brand, brandData] of Object.entries(rom.salesByBrand)) {
         const existingCompOrder = customerCompOrders.find((o) => o.brand === brand)
         if (existingCompOrder) {
-          if (Number(existingCompOrder.quantity) !== brandData.units || Number(existingCompOrder.value) !== brandData.sales) {
-            await db.update(competitorOrders).set({ quantity: brandData.units, value: String(round(brandData.sales, 2)) }).where(eq(competitorOrders.id, existingCompOrder.id))
+          if (
+            Number(existingCompOrder.quantity) !== brandData.units ||
+            Number(existingCompOrder.value) !== brandData.sales
+          ) {
+            await db
+              .update(competitorOrders)
+              .set({ quantity: brandData.units, value: String(round(brandData.sales, 2)) })
+              .where(eq(competitorOrders.id, existingCompOrder.id))
             totalUpdatedRows++
           } else {
             totalIdenticalRows++
           }
         } else {
-          await db.insert(competitorOrders).values({ customerId: customer.id, brand, quantity: brandData.units, value: String(round(brandData.sales, 2)), orderDate: salesDate })
+          await db.insert(competitorOrders).values({
+            customerId: customer.id,
+            brand,
+            quantity: brandData.units,
+            value: String(round(brandData.sales, 2)),
+            orderDate: salesDate,
+          })
           totalCreatedRows++
         }
       }
@@ -2382,7 +2685,12 @@ export async function processParklandFile(buffer: Buffer): Promise<ParklandProce
       }
 
       if (existingComp) {
-        if (existingComp.rydeUnits !== compData.rydeUnits || existingComp.rydeValue !== compData.rydeValue || existingComp.romUnits !== compData.romUnits || existingComp.romValue !== compData.romValue) {
+        if (
+          existingComp.rydeUnits !== compData.rydeUnits ||
+          existingComp.rydeValue !== compData.rydeValue ||
+          existingComp.romUnits !== compData.romUnits ||
+          existingComp.romValue !== compData.romValue
+        ) {
           await db.update(competitorSales).set(compData).where(eq(competitorSales.id, existingComp.id))
           totalUpdatedRows++
         } else {
@@ -2431,7 +2739,10 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
   }
 
   const [petroCanadaCustomers, petroCanadaUpcs] = await Promise.all([
-    db.select().from(customers).where(like(customers.banner, `%${BANNER_PETRO_CANADA}%`)),
+    db
+      .select()
+      .from(customers)
+      .where(like(customers.banner, `%${BANNER_PETRO_CANADA}%`)),
     getPetroCanadaUpcData(),
   ])
 
@@ -2460,9 +2771,15 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
 
     const [existingCompSales, existingCompOrders, existingOrderRows] = await Promise.all([
       db.select().from(competitorSales).where(eq(competitorSales.fileImport, dataImport.id)),
-      db.select().from(competitorOrders).where(and(eq(competitorOrders.orderDate, salesDate), inArray(competitorOrders.customerId, customerIds))),
+      db
+        .select()
+        .from(competitorOrders)
+        .where(and(eq(competitorOrders.orderDate, salesDate), inArray(competitorOrders.customerId, customerIds))),
       customerIds.length
-        ? db.select().from(orders).where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, salesDate)))
+        ? db
+            .select()
+            .from(orders)
+            .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, salesDate)))
         : Promise.resolve([] as (typeof orders.$inferSelect)[]),
     ])
 
@@ -2515,19 +2832,34 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
       if (existingOrder) {
         if (content.length > 0) {
           const existingUpcMap = existingContentByOrderId.get(existingOrder.id)
+          let orderWasUpdated = false
           for (const item of content) {
             const existing = existingUpcMap?.get(item.upc)
             if (existing) {
               if (existing.quantity !== item.quantity || existing.netValue !== item.netValue) {
-                await db.update(ordersContent).set({ quantity: item.quantity, netValue: item.netValue }).where(eq(ordersContent.id, existing.id))
+                await db
+                  .update(ordersContent)
+                  .set({ quantity: item.quantity, netValue: item.netValue })
+                  .where(eq(ordersContent.id, existing.id))
                 totalUpdatedRows++
+                orderWasUpdated = true
               } else {
                 totalIdenticalRows++
               }
             } else {
-              await db.insert(ordersContent).values({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: existingOrder.id })
+              await db.insert(ordersContent).values({
+                sku: item.sku,
+                quantity: item.quantity,
+                netValue: item.netValue,
+                upc: item.upc,
+                billingDocumentId: existingOrder.id,
+              })
               totalCreatedRows++
+              orderWasUpdated = true
             }
+          }
+          if (orderWasUpdated) {
+            totalOrdersUpdated++
           }
         } else {
           // Delete order and content if no content
@@ -2539,7 +2871,13 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
         const [newOrder] = await db.insert(orders).values({ customerId: customer.id, orderDate: salesDate }).returning()
         if (newOrder) {
           totalOrdersCreated++
-          const toInsert = content.map((item) => ({ sku: item.sku, quantity: item.quantity, netValue: item.netValue, upc: item.upc, billingDocumentId: newOrder.id }))
+          const toInsert = content.map((item) => ({
+            sku: item.sku,
+            quantity: item.quantity,
+            netValue: item.netValue,
+            upc: item.upc,
+            billingDocumentId: newOrder.id,
+          }))
           await db.insert(ordersContent).values(toInsert)
           totalCreatedRows += toInsert.length
         }
@@ -2550,14 +2888,26 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
       for (const [brand, brandData] of Object.entries(rom.salesByBrand)) {
         const existingCompOrder = customerCompOrders.find((o) => o.brand === brand)
         if (existingCompOrder) {
-          if (Number(existingCompOrder.quantity) !== brandData.units || Number(existingCompOrder.value) !== brandData.sales) {
-            await db.update(competitorOrders).set({ quantity: brandData.units, value: String(round(brandData.sales, 2)) }).where(eq(competitorOrders.id, existingCompOrder.id))
+          if (
+            Number(existingCompOrder.quantity) !== brandData.units ||
+            Number(existingCompOrder.value) !== brandData.sales
+          ) {
+            await db
+              .update(competitorOrders)
+              .set({ quantity: brandData.units, value: String(round(brandData.sales, 2)) })
+              .where(eq(competitorOrders.id, existingCompOrder.id))
             totalUpdatedRows++
           } else {
             totalIdenticalRows++
           }
         } else {
-          await db.insert(competitorOrders).values({ customerId: customer.id, brand, quantity: brandData.units, value: String(round(brandData.sales, 2)), orderDate: salesDate })
+          await db.insert(competitorOrders).values({
+            customerId: customer.id,
+            brand,
+            quantity: brandData.units,
+            value: String(round(brandData.sales, 2)),
+            orderDate: salesDate,
+          })
           totalCreatedRows++
         }
       }
@@ -2581,7 +2931,12 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
       }
 
       if (existingComp) {
-        if (existingComp.rydeUnits !== compData.rydeUnits || existingComp.rydeValue !== compData.rydeValue || existingComp.romUnits !== compData.romUnits || existingComp.romValue !== compData.romValue) {
+        if (
+          existingComp.rydeUnits !== compData.rydeUnits ||
+          existingComp.rydeValue !== compData.rydeValue ||
+          existingComp.romUnits !== compData.romUnits ||
+          existingComp.romValue !== compData.romValue
+        ) {
           await db.update(competitorSales).set(compData).where(eq(competitorSales.id, existingComp.id))
           totalUpdatedRows++
         } else {
@@ -2602,6 +2957,226 @@ export async function processPetroCanadaFile(buffer: Buffer): Promise<PetroCanad
     createdRows: totalCreatedRows,
     updatedRows: totalUpdatedRows,
     deletedRows: totalDeletedRows,
+    identicalRows: totalIdenticalRows,
+    dataImportId: lastDataImportId,
+  }
+}
+
+// ─── BG Fuels ────────────────────────────────────────────────────────────────
+
+const BANNER_BG_FUELS = 'BG Fuels'
+
+export const REPORT_TYPE_BG_FUELS = 'BG_FUELS'
+
+export type BgFuelsProcessResult = NapOrangeProcessResult
+
+export async function processBgFuelsFile(buffer: Buffer): Promise<BgFuelsProcessResult> {
+  const fileContent = buffer.toString('utf-8')
+  const lines = fileContent.split('\n').filter((l) => l.trim() !== '')
+
+  const allRows = lines.map((line, index) => {
+    const cols = line.split('|')
+    return {
+      rowNumber: index + 1,
+      date: cols[0]?.trim() ?? '',
+      bannerId: cols[1]?.trim() ?? '',
+      description: cols[6]?.trim() ?? '',
+      upc: cols[7]?.trim() ?? '',
+      salesAmount: cols[8]?.trim() ?? '',
+      salesUnits: cols[9]?.trim() ?? '',
+    }
+  })
+
+  // Silently skip non-RYDE products — only process rows where description contains "ryde"
+  const rows = allRows.filter((r) => r.description.toLowerCase().includes('ryde'))
+
+  const upcProducts = await db
+    .select({ customerUpc: customersUpc.customerUpc, sku: customersUpc.sku })
+    .from(customersUpc)
+    .where(eq(customersUpc.banner, BANNER_BG_FUELS))
+
+  const upcByCustomerUpc = new Map(upcProducts.map((p) => [p.customerUpc, p]))
+
+  const INVALID_DATE = 'INVALID_DATE'
+
+  // Group rows by ISO week start — unmatched UPCs will be rejected later
+  const rowsByWeek = new Map<string, typeof rows>()
+  for (const row of rows) {
+    const parsed = parse(row.date, 'yyyyMMdd', new Date())
+    if (isNaN(parsed.getTime())) {
+      const bucket = rowsByWeek.get(INVALID_DATE) ?? []
+      bucket.push(row)
+      rowsByWeek.set(INVALID_DATE, bucket)
+      continue
+    }
+    const weekKey = format(startOfISOWeek(parsed), 'yyyy-MM-dd')
+    const bucket = rowsByWeek.get(weekKey) ?? []
+    bucket.push(row)
+    rowsByWeek.set(weekKey, bucket)
+  }
+
+  const bgFuelsCustomers = await db.select().from(customers).where(eq(customers.banner, BANNER_BG_FUELS))
+
+  // Map-based lookups
+  const customerByBannerInternalId = new Map(bgFuelsCustomers.map((c) => [c.bannerInternalId, c]))
+  const customerIds = bgFuelsCustomers.map((c) => c.id)
+
+  // Handle invalid date rows upfront
+  const invalidDateRows = rowsByWeek.get(INVALID_DATE)
+  const initialRejected: string[] = invalidDateRows
+    ? [ERRORS.custom(invalidDateRows.map((r) => r.rowNumber).join(', '), 'Invalid date provided')]
+    : []
+
+  const validWeeks = [...rowsByWeek.entries()].filter(([key]) => key !== INVALID_DATE)
+
+  let totalOrdersCreated = 0
+  let totalOrdersUpdated = 0
+  let totalCreatedRows = 0
+  let totalUpdatedRows = 0
+  let totalIdenticalRows = 0
+  const allRejected: string[] = [...initialRejected]
+  let lastDataImportId = 0
+
+  for (const [weekKey, weekRows] of validWeeks) {
+    const periodStartDate = new Date(weekKey + 'T00:00:00Z')
+    const periodStart = format(periodStartDate, 'yyyy-MM-dd')
+    const periodEnd = format(endOfISOWeek(periodStartDate), 'yyyy-MM-dd')
+    const rydeWeek = differenceInWeeks(periodStartDate, RYDE_WEEK_0_GENERIC)
+
+    const dataImport = await getOrCreateBannerDataImport(periodStart, periodEnd, rydeWeek, BANNER_BG_FUELS)
+    lastDataImportId = dataImport.id
+
+    const existingOrderRows = customerIds.length
+      ? await db
+          .select()
+          .from(orders)
+          .where(and(inArray(orders.customerId, customerIds), eq(orders.orderDate, periodStart)))
+      : []
+
+    const orderByCustomerId = new Map(existingOrderRows.map((o) => [o.customerId, o]))
+
+    const existingOrderIds = existingOrderRows.map((o) => o.id)
+    const existingContentRows = existingOrderIds.length
+      ? await db.select().from(ordersContent).where(inArray(ordersContent.billingDocumentId, existingOrderIds))
+      : []
+
+    const existingContentByOrderId = new Map<number, Map<string | null, typeof ordersContent.$inferSelect>>()
+    for (const row of existingContentRows) {
+      let upcMap = existingContentByOrderId.get(row.billingDocumentId)
+      if (!upcMap) {
+        upcMap = new Map()
+        existingContentByOrderId.set(row.billingDocumentId, upcMap)
+      }
+      upcMap.set(row.upc, row)
+    }
+
+    // Group rows by store (bannerId)
+    const byStore = new Map<string, typeof weekRows>()
+    for (const row of weekRows) {
+      const bucket = byStore.get(row.bannerId) ?? []
+      bucket.push(row)
+      byStore.set(row.bannerId, bucket)
+    }
+
+    for (const [bannerId, storeRows] of byStore) {
+      if (!bannerId) {
+        allRejected.push(ERRORS.custom(storeRows.map((r) => r.rowNumber).join(', '), 'Missing Banner ID'))
+        continue
+      }
+
+      const customer = customerByBannerInternalId.get(bannerId)
+      if (!customer) {
+        allRejected.push(ERRORS.custom(storeRows.map((r) => r.rowNumber).join(', '), `Unknown Banner ID "${bannerId}"`))
+        continue
+      }
+
+      // Group rows by UPC and aggregate
+      const byUpc = new Map<string, typeof storeRows>()
+      for (const row of storeRows) {
+        const bucket = byUpc.get(row.upc) ?? []
+        bucket.push(row)
+        byUpc.set(row.upc, bucket)
+      }
+
+      const content: { sku: string; quantity: number; netValue: number; upc: string }[] = []
+
+      for (const [upc, upcRows] of byUpc) {
+        const linkedProduct = upcByCustomerUpc.get(upc)
+        if (!linkedProduct || !linkedProduct.sku) {
+          allRejected.push(ERRORS.invalidUPC(upcRows.map((r) => r.rowNumber).join(', '), upc))
+          continue
+        }
+
+        const sku = linkedProduct.sku
+
+        const quantity = sumBy(upcRows, (r) => Number(r.salesUnits) || 0)
+        const netValue = round(
+          sumBy(upcRows, (r) => Number(r.salesAmount) || 0),
+          2,
+        )
+
+        if (!quantity) continue
+        content.push({ sku, quantity, netValue, upc })
+      }
+
+      if (content.length === 0) continue
+
+      const existingOrder = orderByCustomerId.get(customer.id)
+
+      if (existingOrder) {
+        const existingUpcMap = existingContentByOrderId.get(existingOrder.id)
+        let orderWasUpdated = false
+        for (const item of content) {
+          const existing = existingUpcMap?.get(item.upc)
+          if (existing) {
+            if (existing.quantity !== item.quantity) {
+              await db.update(ordersContent).set({ quantity: item.quantity }).where(eq(ordersContent.id, existing.id))
+              totalUpdatedRows++
+              orderWasUpdated = true
+            } else {
+              totalIdenticalRows++
+            }
+          } else {
+            await db.insert(ordersContent).values({
+              sku: item.sku,
+              quantity: item.quantity,
+              netValue: item.netValue,
+              upc: item.upc,
+              billingDocumentId: existingOrder.id,
+            })
+            totalCreatedRows++
+            orderWasUpdated = true
+          }
+        }
+        if (orderWasUpdated) totalOrdersUpdated++
+      } else {
+        const [newOrder] = await db
+          .insert(orders)
+          .values({ customerId: customer.id, orderDate: periodStart })
+          .returning()
+        if (!newOrder) continue
+        totalOrdersCreated++
+        const toInsert = content.map((item) => ({
+          sku: item.sku,
+          quantity: item.quantity,
+          netValue: item.netValue,
+          upc: item.upc,
+          billingDocumentId: newOrder.id,
+        }))
+        await db.insert(ordersContent).values(toInsert)
+        totalCreatedRows += toInsert.length
+      }
+    }
+  }
+
+  return {
+    received: rows.length,
+    ordersCreated: totalOrdersCreated,
+    ordersUpdated: totalOrdersUpdated,
+    rejected: allRejected,
+    createdRows: totalCreatedRows,
+    updatedRows: totalUpdatedRows,
+    deletedRows: 0,
     identicalRows: totalIdenticalRows,
     dataImportId: lastDataImportId,
   }

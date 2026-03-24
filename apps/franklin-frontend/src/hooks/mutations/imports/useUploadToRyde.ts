@@ -1,5 +1,5 @@
 import config from '@/config'
-import { getRydeToken } from '@/stores/ryde-session'
+import { getSessionToken } from '@/stores/session'
 import { useMutation } from '@tanstack/react-query'
 
 type UploadToRydeInput = {
@@ -29,8 +29,8 @@ export type UploadResult = {
 export function useUploadToRyde() {
   return useMutation({
     mutationFn: async ({ file, endpoint }: UploadToRydeInput): Promise<UploadResult> => {
-      const token = getRydeToken()
-      const res = await fetch(`${config.rydeBackendURL}${endpoint}`, {
+      const token = getSessionToken()
+      const res = await fetch(`${config.backendURL}${endpoint}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

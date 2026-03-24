@@ -4,7 +4,6 @@ import { FEATURE_FLAGS_ENV } from '@repo/feature-flags'
 type Config = {
   env: Environment
   backendURL: string
-  rydeBackendURL: string
   guideBasePath: string
   featureFlags: (typeof FEATURE_FLAGS_ENV)[Environment]
 }
@@ -16,24 +15,21 @@ const base = {
 const local: Config = {
   ...base,
   env: ENV.LOCAL,
-  backendURL: 'http://localhost:5000',
-  rydeBackendURL: 'http://localhost:5001',
+  backendURL: 'http://localhost:5001',
   featureFlags: FEATURE_FLAGS_ENV.LOCAL,
 }
 
 const dev: Config = {
   ...base,
   env: ENV.DEV,
-  backendURL: 'https://api-dev.example.com',
-  rydeBackendURL: 'https://ryde-api-dev.example.com',
+  backendURL: 'https://ryde-api-dev.example.com',
   featureFlags: FEATURE_FLAGS_ENV.DEV,
 }
 
 const prod: Config = {
   ...base,
   env: ENV.PROD,
-  backendURL: 'https://api.example.com',
-  rydeBackendURL: 'https://ryde-api.example.com',
+  backendURL: 'https://ryde-api.example.com',
   featureFlags: FEATURE_FLAGS_ENV.PROD,
 }
 

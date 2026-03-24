@@ -65,9 +65,7 @@ export const forecastRouterDefinition = forecastRouter
         }
 
         const skusForecast = Object.entries(rest).filter(([key]) => validSkus.includes(key))
-        const invalidSkus = Object.keys(rest).filter(
-          (key) => key !== 'rowNumber' && !validSkus.includes(key),
-        )
+        const invalidSkus = Object.keys(rest).filter((key) => key !== 'rowNumber' && !validSkus.includes(key))
 
         if (invalidSkus.length) {
           excluded.push(
@@ -113,9 +111,7 @@ export const forecastRouterDefinition = forecastRouter
       await db.transaction(async (tx) => {
         for (const forecast of parsedForecasts) {
           const { year, month, skus } = forecast
-          const rowAlreadyExisted = existingForecasts.filter(
-            (f) => f.year === year && f.month === month,
-          )
+          const rowAlreadyExisted = existingForecasts.filter((f) => f.year === year && f.month === month)
 
           if (rowAlreadyExisted.length) {
             let rowWasUpdated = false
@@ -124,10 +120,7 @@ export const forecastRouterDefinition = forecastRouter
               const existing = rowAlreadyExisted.find((f) => f.sku === sku)
               if (existing) {
                 if (quantity !== existing.quantity) {
-                  await tx
-                    .update(forecasts)
-                    .set({ quantity })
-                    .where(eq(forecasts.id, existing.id))
+                  await tx.update(forecasts).set({ quantity }).where(eq(forecasts.id, existing.id))
                   forecastsUpdated++
                   rowWasUpdated = true
                 }
@@ -160,9 +153,9 @@ export const forecastRouterDefinition = forecastRouter
 
         // Delete forecasts for year/month combos no longer in the file
         const incomingPeriods = new Set(parsedForecasts.map((f) => `${f.year}-${f.month}`))
-        const periodsToDelete = [
-          ...new Set(existingForecasts.map((f) => `${f.year}-${f.month}`)),
-        ].filter((period) => !incomingPeriods.has(period))
+        const periodsToDelete = [...new Set(existingForecasts.map((f) => `${f.year}-${f.month}`))].filter(
+          (period) => !incomingPeriods.has(period),
+        )
 
         for (const period of periodsToDelete) {
           const [yearStr, monthStr] = period.split('-')

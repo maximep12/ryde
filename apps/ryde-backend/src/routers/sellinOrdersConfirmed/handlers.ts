@@ -23,12 +23,14 @@ import {
   getProductSkusWithFormats,
   getReportsByType,
   getSevenElevenUpcProducts,
+  processCircleKQcConfirmedFile,
   updateReportFailure,
   updateReportSuccess,
 } from './helpers'
 
 const REPORT_TYPE_CONFIRMED = 'CONFIRMED_ORDERS'
 const REPORT_TYPE_SEVEN_ELEVEN_CONFIRMED = '7_ELEVEN_CONFIRMED'
+const REPORT_TYPE_CIRCLE_K_CONFIRMED = 'CIRCLE_K_CONFIRMED'
 const BANNER_SEVEN_ELEVEN = '7-Eleven'
 
 const logger = createBaseLogger().child({ module: 'sellin-orders-confirmed' })
@@ -47,10 +49,15 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
   .post('/file', tokenIsValid, async (c) => {
     logger.info('Confirmed sell-in import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_CONFIRMED, type: 'confirmed', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_CONFIRMED,
+      type: 'confirmed',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
-
       const contentBySheet = await readExcelFile({
         stream: bufferToStream(buffer),
         expected: [
@@ -307,10 +314,15 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
   .post('/file/7-eleven', tokenIsValid, async (c) => {
     logger.info('7-Eleven confirmed import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_SEVEN_ELEVEN_CONFIRMED, type: '7-eleven-confirmed', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_SEVEN_ELEVEN_CONFIRMED,
+      type: '7-eleven-confirmed',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
-
       const { dateRange, salesByCustomer, totalRowsReceived } = await parseSevenElevenWHToStore({
         stream: bufferToStream(buffer),
       })
@@ -457,6 +469,66 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
   })
 
   /**
+   * POST /sellin-orders-confirmed/file/circle-k — Import Circle K QC confirmed CSV
+   * Same format as QC+ATL sell-out (ERP, Item Description, DATE, VENTES) but CSV instead of Excel.
+   */
+  .post('/file/circle-k', tokenIsValid, async (c) => {
+    logger.info('Circle K Confirmed import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_CIRCLE_K_CONFIRMED,
+      type: 'circle-k-confirmed',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processCircleKQcConfirmedFile(buffer)
+
+      logger.info(
+        { ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated },
+        'Circle K Confirmed import success',
+      )
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.circleKConfirmed })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'Circle K QC Confirmed orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'Circle K Confirmed import error')
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.circleKConfirmed,
+      })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      const status = (err.code ?? 400) as 400 | 406 | 500
+      throw new HTTPException(status, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  /**
    * GET /sellin-orders-confirmed/reports — List import reports for confirmed sell-in orders
    */
   .get('/reports', tokenIsValid, async (c) => {
@@ -476,6 +548,19 @@ export const sellinOrdersConfirmedRouterDefinition = sellinOrdersConfirmedRouter
     const page = Math.max(1, Number(c.req.query('page') ?? 1))
     const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
     const { rows, total } = await getReportsByType(REPORT_TYPE_SEVEN_ELEVEN_CONFIRMED, page, pageSize)
+    return c.json({
+      reports: rows,
+      pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) },
+    })
+  })
+
+  /**
+   * GET /sellin-orders-confirmed/reports/circle-k — List import reports for Circle K confirmed orders
+   */
+  .get('/reports/circle-k', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_CIRCLE_K_CONFIRMED, page, pageSize)
     return c.json({
       reports: rows,
       pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) },

@@ -31,17 +31,17 @@ export class AmazonS3Client {
   async getAllFilesInContainer({ bucket, prefix }: { bucket: string; prefix?: string }): Promise<S3FileInfo[]> {
     const response = await this.client.send(new ListObjectsCommand({ Bucket: bucket, Prefix: prefix }))
     const contents = response.Contents
-    if (!contents || contents.length === 0) throw new Error(`No file in the selected bucket ${bucket}${prefix ? `/${prefix}` : ''}`)
+    if (!contents || contents.length === 0)
+      throw new Error(`No file in the selected bucket ${bucket}${prefix ? `/${prefix}` : ''}`)
     return contents.map((file) => ({ name: file.Key ?? '', date: file.LastModified ?? new Date() }))
   }
 
   async getLatestFileKey({ bucket, prefix }: { bucket: string; prefix?: string }): Promise<string> {
     const response = await this.client.send(new ListObjectsCommand({ Bucket: bucket, Prefix: prefix }))
     const contents = response.Contents
-    if (!contents || contents.length === 0) throw new Error(`No file in the selected bucket ${bucket}${prefix ? `/${prefix}` : ''}`)
-    const sorted = [...contents].sort(
-      (a, b) => (b.LastModified?.getTime() ?? 0) - (a.LastModified?.getTime() ?? 0),
-    )
+    if (!contents || contents.length === 0)
+      throw new Error(`No file in the selected bucket ${bucket}${prefix ? `/${prefix}` : ''}`)
+    const sorted = [...contents].sort((a, b) => (b.LastModified?.getTime() ?? 0) - (a.LastModified?.getTime() ?? 0))
     return sorted[0]?.Key ?? ''
   }
 
@@ -56,11 +56,35 @@ export class AmazonS3Client {
     await this.client.send(new PutObjectCommand({ Bucket: bucket, Key: key, Body: body }))
   }
 
-  async copyFile({ sourceBucket, sourceKey, destBucket, destKey }: { sourceBucket: string; sourceKey: string; destBucket: string; destKey: string }): Promise<void> {
-    await this.client.send(new CopyObjectCommand({ Bucket: destBucket, Key: destKey, CopySource: `${sourceBucket}/${encodeURIComponent(sourceKey)}` }))
+  async copyFile({
+    sourceBucket,
+    sourceKey,
+    destBucket,
+    destKey,
+  }: {
+    sourceBucket: string
+    sourceKey: string
+    destBucket: string
+    destKey: string
+  }): Promise<void> {
+    await this.client.send(
+      new CopyObjectCommand({
+        Bucket: destBucket,
+        Key: destKey,
+        CopySource: `${sourceBucket}/${encodeURIComponent(sourceKey)}`,
+      }),
+    )
   }
 
-  async downloadFile({ stream, fileName, path }: { stream: Readable; fileName: string; path: string }): Promise<string> {
+  async downloadFile({
+    stream,
+    fileName,
+    path,
+  }: {
+    stream: Readable
+    fileName: string
+    path: string
+  }): Promise<string> {
     const name = `${path}/${fileName.replace(/\s/g, '').replace(/\//g, '_')}`
     await new Promise<void>((resolve, reject) => {
       const writer = createWriteStream(name)

@@ -1,7 +1,6 @@
 import config from '@/config'
 import { fetchWithThrow } from '@/lib/queries'
-import { AUTHORIZATION_HEADER_PREFIX } from '@repo/constants'
-import { AppType } from '@repo/franklin-backend/app'
+import { AppType } from '@repo/ryde-backend/app'
 import { hc } from 'hono/client'
 import { atom } from 'jotai'
 import { store } from '.'
@@ -11,7 +10,7 @@ export const createHonoClient = (sessionToken: string | null) => {
   if (sessionToken) {
     return hc<AppType>(config.backendURL, {
       headers: {
-        Authorization: `${AUTHORIZATION_HEADER_PREFIX}${sessionToken}`,
+        Authorization: `Bearer ${sessionToken}`,
       },
       fetch: fetchWithThrow,
     })

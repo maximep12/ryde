@@ -137,7 +137,11 @@ function parseStoreData(
   dollarSalesSheet: Excel.Worksheet,
   dates: DateEntry[],
 ): {
-  storesData: { id: string; lines: number[]; sales: { date: string; ryde: PetroCanadaSalesEntry['ryde']; rom: PetroCanadaSalesEntry['rom'] }[] }[]
+  storesData: {
+    id: string
+    lines: number[]
+    sales: { date: string; ryde: PetroCanadaSalesEntry['ryde']; rom: PetroCanadaSalesEntry['rom'] }[]
+  }[]
   totalRowsReceived: number
 } {
   const storesMap = new Map<string, StoreAccumulator>()
@@ -228,7 +232,10 @@ function parseStoreData(
         byUpc: Object.fromEntries(
           Array.from(s.rydeByUpc.entries())
             .filter(([, data]) => data.units > 0)
-            .map(([upcKey, data]) => [upcKey, { product: data.product, units: data.units, sales: round(data.sales, 2) }]),
+            .map(([upcKey, data]) => [
+              upcKey,
+              { product: data.product, units: data.units, sales: round(data.sales, 2) },
+            ]),
         ),
       },
       rom: {
@@ -247,7 +254,11 @@ function parseStoreData(
 }
 
 function reorganizeByDate(
-  storesData: { id: string; lines: number[]; sales: { date: string; ryde: PetroCanadaSalesEntry['ryde']; rom: PetroCanadaSalesEntry['rom'] }[] }[],
+  storesData: {
+    id: string
+    lines: number[]
+    sales: { date: string; ryde: PetroCanadaSalesEntry['ryde']; rom: PetroCanadaSalesEntry['rom'] }[]
+  }[],
   dates: DateEntry[],
 ): PetroCanadaDateData[] {
   const dateMap = new Map<string, PetroCanadaDateData>()

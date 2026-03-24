@@ -151,8 +151,8 @@ function parseStoreData(unitSalesSheet, dollarSalesSheet, dates) {
     if (!brand || !storeNumber || !productName || productName === 'Total') return
 
     // Determine if this is RYDE or ROM
-    const isRyde = RYDE_BRANDS.some(b => brand.toUpperCase().includes(b))
-    const isRom = ROM_BRANDS.some(b => brand.toUpperCase().includes(b))
+    const isRyde = RYDE_BRANDS.some((b) => brand.toUpperCase().includes(b))
+    const isRom = ROM_BRANDS.some((b) => brand.toUpperCase().includes(b))
 
     // Skip brands that are neither RYDE nor ROM
     if (!isRyde && !isRom) return
@@ -231,10 +231,10 @@ function parseStoreData(unitSalesSheet, dollarSalesSheet, dates) {
   })
 
   // Convert to array format
-  const storesData = Array.from(storesMap.values()).map(store => ({
+  const storesData = Array.from(storesMap.values()).map((store) => ({
     id: store.id,
     lines: store.lines,
-    sales: Array.from(store.salesByDate.values()).map(s => ({
+    sales: Array.from(store.salesByDate.values()).map((s) => ({
       date: s.date,
       ryde: {
         sales: round(s.rydeSales, 2),
@@ -249,7 +249,7 @@ function parseStoreData(unitSalesSheet, dollarSalesSheet, dates) {
                 units: data.units,
                 sales: round(data.sales, 2),
               },
-            ])
+            ]),
         ),
       },
       rom: {
@@ -264,7 +264,7 @@ function parseStoreData(unitSalesSheet, dollarSalesSheet, dates) {
                 units: data.units,
                 sales: round(data.sales, 2),
               },
-            ])
+            ]),
         ),
       },
     })),

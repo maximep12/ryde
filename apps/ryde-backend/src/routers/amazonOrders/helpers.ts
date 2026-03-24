@@ -1,4 +1,11 @@
-import { amazonBundles, amazonBundlesOrders, amazonOrders, amazonOrdersContent, productFormats, productSkus } from '@repo/db'
+import {
+  amazonBundles,
+  amazonBundlesOrders,
+  amazonOrders,
+  amazonOrdersContent,
+  productFormats,
+  productSkus,
+} from '@repo/db'
 import { eq, inArray, isNotNull } from 'drizzle-orm'
 import camelCase from 'lodash/camelCase.js'
 import tail from 'lodash/tail.js'
@@ -9,7 +16,13 @@ import zipState from 'zip-state'
 import { db } from '../../db'
 import { FileLevelError } from '../../lib/FileParser/excel'
 import { ERRORS, US_SHIPSTATES } from '../../utils/constants'
-export { createReport, getReportsByType, linkReportToUploadedFile, updateReportFailure, updateReportSuccess } from '../../lib/reports'
+export {
+  createReport,
+  getReportsByType,
+  linkReportToUploadedFile,
+  updateReportFailure,
+  updateReportSuccess,
+} from '../../lib/reports'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -158,10 +171,24 @@ export function csvToJson({
 function getCAShipState(zipCode: string): string | null {
   const first = toLower(zipCode?.charAt(0))
   const map: Record<string, string> = {
-    a: 'NL', b: 'NS', c: 'PE', e: 'NB',
-    g: 'QC', h: 'QC', j: 'QC',
-    k: 'ON', l: 'ON', m: 'ON', n: 'ON', p: 'ON',
-    r: 'MB', s: 'SK', t: 'AB', v: 'BC', x: 'NT', y: 'YT',
+    a: 'NL',
+    b: 'NS',
+    c: 'PE',
+    e: 'NB',
+    g: 'QC',
+    h: 'QC',
+    j: 'QC',
+    k: 'ON',
+    l: 'ON',
+    m: 'ON',
+    n: 'ON',
+    p: 'ON',
+    r: 'MB',
+    s: 'SK',
+    t: 'AB',
+    v: 'BC',
+    x: 'NT',
+    y: 'YT',
   }
   return map[first] ?? null
 }

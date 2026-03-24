@@ -34,7 +34,13 @@ export const customersRouterDefinition = customersRouter
   .post('/', canUploadCustomers, async (c) => {
     customersLogger.info('Customers report start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '')
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: 'CUSTOMERS', type: 'customers', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: 'CUSTOMERS',
+      type: 'customers',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
       const contentBySheet = await readExcelFile({
@@ -208,7 +214,13 @@ export const customersRouterDefinition = customersRouter
   .post('/targets', canUploadCustomers, async (c) => {
     targetsLogger.info('Customers targets report start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '')
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: 'CUSTOMERS_TARGETS', type: 'customers', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: 'CUSTOMERS_TARGETS',
+      type: 'customers',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
       const contentBySheet = await readExcelFile({

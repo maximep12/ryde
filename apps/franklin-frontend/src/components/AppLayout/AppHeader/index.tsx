@@ -29,16 +29,15 @@ const THEMES = [
 export function AppHeader() {
   const { t, i18n } = useTranslation('ui')
   const { theme, setTheme } = useTheme()
-  const { data: user } = useMe()
+  const { data: me } = useMe()
+  const user = me?.user
   const { logout } = useLogout()
 
   const currentLanguage = LANGUAGES.find((lang) => lang.code === i18n.language) ?? LANGUAGES[0]
   const currentTheme = THEMES.find((th) => th.value === theme) ?? THEMES[0]
   const CurrentThemeIcon = currentTheme.icon
 
-  const displayName = user
-    ? `${user.givenName ?? ''} ${user.familyName ?? ''}`.trim() || user.email
-    : ''
+  const displayName = user?.email ?? ''
 
   const handleLanguageChange = (code: Language) => {
     i18n.changeLanguage(code)

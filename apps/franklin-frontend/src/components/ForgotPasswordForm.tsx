@@ -1,4 +1,4 @@
-import config from '@/config'
+import { getApi } from '@/stores/api'
 import { Button, Input, Label } from '@repo/ui/components'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -8,10 +8,9 @@ export function ForgotPasswordForm({ onBack }: { onBack: () => void }) {
 
   const { mutate, isPending, isSuccess, error } = useMutation<void, Error, string>({
     mutationFn: async (email: string) => {
-      const res = await fetch(`${config.rydeBackendURL}/auth/request-password-reset`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+      const api = getApi()
+      const res = await api.auth['request-password-reset'].$post({
+        json: { email },
       })
       if (!res.ok) throw new Error('An error occurred. Please try again.')
     },

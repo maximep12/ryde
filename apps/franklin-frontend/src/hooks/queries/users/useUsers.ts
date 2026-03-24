@@ -1,4 +1,5 @@
-import { getApi } from '@/stores/api'
+import config from '@/config'
+import { getSessionToken } from '@/stores/session'
 import { useQuery } from '@tanstack/react-query'
 
 interface UseUsersParams {
@@ -23,20 +24,20 @@ export function useUsers(params: UseUsersParams = {}) {
   return useQuery({
     queryKey: ['users', { search, showActive, showInactive, showPending, page, pageSize }],
     queryFn: async () => {
-      const api = getApi()
-      const res = await api.example.users.$get({
-        query: {
-          search: search || undefined,
-          showActive: showActive.toString(),
-          showInactive: showInactive.toString(),
-          showPending: showPending.toString(),
-          page: page.toString(),
-          pageSize: pageSize.toString(),
-        },
+      const token = getSessionToken()
+      const queryParams = new URLSearchParams({
+        showActive: showActive.toString(),
+        showInactive: showInactive.toString(),
+        showPending: showPending.toString(),
+        page: page.toString(),
+        pageSize: pageSize.toString(),
       })
-      if (!res.ok) {
-        throw new Error('Failed to fetch users')
-      }
+      if (search) queryParams.set('search', search)
+
+      const res = await fetch(`${config.backendURL}/users?${queryParams}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!res.ok) throw new Error('Failed to fetch users')
       return res.json()
     },
   })

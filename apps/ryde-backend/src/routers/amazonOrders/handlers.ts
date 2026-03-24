@@ -41,11 +41,31 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
   .post('/file', tokenIsValid, async (c) => {
     logger.info('Amazon import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_AMAZON, type: 'amazon', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_AMAZON,
+      type: 'amazon',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
-
-      const rawData = await parseCsvStream(bufferToStream(buffer), { delimiter: '\t', columns: ['amazon-order-id', 'purchase-date', 'order-status', 'sku', 'quantity', 'item-price', 'ship-state', 'ship-postal-code', 'currency', 'ship-country', 'sales-channel'] })
+      const rawData = await parseCsvStream(bufferToStream(buffer), {
+        delimiter: '\t',
+        columns: [
+          'amazon-order-id',
+          'purchase-date',
+          'order-status',
+          'sku',
+          'quantity',
+          'item-price',
+          'ship-state',
+          'ship-postal-code',
+          'currency',
+          'ship-country',
+          'sales-channel',
+        ],
+      })
       const { validRows, rejectedRows: rawRejectedRows } = validateRawRows(rawData)
 
       const products = await getAmazonProductSkus()
@@ -69,8 +89,13 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
       const newOrders: typeof validOrders = []
       const orderStatusUpdates: { id: number; orderStatus: string; contentLength: number; isCancelled: boolean }[] = []
       const contentInserts: {
-        orderId: string; sku: string; quantity: number; netValue: number
-        currency: string; asin: string; packSize: number | null
+        orderId: string
+        sku: string
+        quantity: number
+        netValue: number
+        currency: string
+        asin: string
+        packSize: number | null
       }[] = []
       const contentUpdates: { id: number; quantity: number; netValue: number; currency: string; asin: string }[] = []
       const contentSoftDeletes: { id: number; sku: string }[] = []
@@ -99,13 +124,27 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
                 linkedItem.currency !== rowItem.currency ||
                 linkedItem.asin !== rowItem.asin
               if (changed) {
-                contentUpdates.push({ id: linkedItem.id, quantity: rowItem.quantity, netValue: rowItem.netValue, currency: rowItem.currency, asin: rowItem.asin })
+                contentUpdates.push({
+                  id: linkedItem.id,
+                  quantity: rowItem.quantity,
+                  netValue: rowItem.netValue,
+                  currency: rowItem.currency,
+                  asin: rowItem.asin,
+                })
                 if (statusIsSame) rowsUpdated++
               } else {
                 identicalRows++
               }
             } else {
-              contentInserts.push({ orderId: linkedOrder.orderId, sku: rowItem.sku, quantity: rowItem.quantity, netValue: rowItem.netValue, currency: rowItem.currency, asin: rowItem.asin, packSize: rowItem.packSize })
+              contentInserts.push({
+                orderId: linkedOrder.orderId,
+                sku: rowItem.sku,
+                quantity: rowItem.quantity,
+                netValue: rowItem.netValue,
+                currency: rowItem.currency,
+                asin: rowItem.asin,
+                packSize: rowItem.packSize,
+              })
               rowsCreated++
             }
           }
@@ -136,10 +175,24 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
         // Insert new orders in batch, then their content
         if (newOrders.length) {
           await tx.insert(amazonOrdersTable).values(
-            newOrders.map((o) => ({ orderId: o.orderId, orderDate: o.orderDate, orderStatus: o.orderStatus, country: o.country, shipState: o.shipState })),
+            newOrders.map((o) => ({
+              orderId: o.orderId,
+              orderDate: o.orderDate,
+              orderStatus: o.orderStatus,
+              country: o.country,
+              shipState: o.shipState,
+            })),
           )
           const newContent = newOrders.flatMap((o) =>
-            o.content.map((c) => ({ orderId: o.orderId, sku: c.sku, quantity: c.quantity, netValue: c.netValue, currency: c.currency, asin: c.asin, packSize: c.packSize })),
+            o.content.map((c) => ({
+              orderId: o.orderId,
+              sku: c.sku,
+              quantity: c.quantity,
+              netValue: c.netValue,
+              currency: c.currency,
+              asin: c.asin,
+              packSize: c.packSize,
+            })),
           )
           if (newContent.length) {
             for (let i = 0; i < newContent.length; i += CHUNK_SIZE) {
@@ -156,7 +209,10 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
             tx.update(amazonOrdersContent).set(fields).where(eq(amazonOrdersContent.id, id)),
           ),
           ...contentSoftDeletes.map(({ id, sku }) =>
-            tx.update(amazonOrdersContent).set({ quantity: 0 }).where(and(eq(amazonOrdersContent.sku, sku), eq(amazonOrdersContent.id, id))),
+            tx
+              .update(amazonOrdersContent)
+              .set({ quantity: 0 })
+              .where(and(eq(amazonOrdersContent.sku, sku), eq(amazonOrdersContent.id, id))),
           ),
           ...Array.from({ length: Math.ceil(contentInserts.length / CHUNK_SIZE) }, (_, i) =>
             tx.insert(amazonOrdersContent).values(contentInserts.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE)),
@@ -211,11 +267,18 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
   .post('/bundles', tokenIsValid, async (c) => {
     logger.info('Amazon bundles import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_AMAZON_BUNDLES, type: 'amazon-bundles', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_AMAZON_BUNDLES,
+      type: 'amazon-bundles',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
-
-      const rawData = await parseCsvStream(bufferToStream(buffer), { columns: ['DATE', 'BUNDLE_ASIN', 'TITLE', 'BUNDLES_SOLD', 'TOTAL_SALES'] })
+      const rawData = await parseCsvStream(bufferToStream(buffer), {
+        columns: ['DATE', 'BUNDLE_ASIN', 'TITLE', 'BUNDLES_SOLD', 'TOTAL_SALES'],
+      })
       const data = rawData
 
       const availableBundles = await getAmazonBundles()
@@ -240,7 +303,8 @@ export const amazonOrdersRouterDefinition = amazonOrdersRouter
         const quantity = Number(r['bundlesSold'] ?? '0')
         const netValue = Number(r['totalSales'] ?? '0')
         const parsedDate = date ? new Date(date) : null
-        const dateStr = parsedDate && !isNaN(parsedDate.getTime()) ? (parsedDate.toISOString().split('T')[0] ?? date) : null
+        const dateStr =
+          parsedDate && !isNaN(parsedDate.getTime()) ? (parsedDate.toISOString().split('T')[0] ?? date) : null
         if (!dateStr) continue
         const existing = existingBundlesMap.get(`${dateStr}|${bundleAsin}`)
 

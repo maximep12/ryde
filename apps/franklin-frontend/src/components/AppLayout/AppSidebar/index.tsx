@@ -1,4 +1,3 @@
-
 import useLogout from '@/hooks/queries/auth/useLogout'
 import { useMe } from '@/hooks/queries/auth/useMe'
 import {
@@ -117,21 +116,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           label={t('sidebar.dashboards')}
           pathname={location.pathname}
         />
-        {me?.role === 'admin' && (
+        {me?.user?.role === 'admin' && (
           <NavSection
             items={adminNavigation}
             label={t('sidebar.admin')}
             pathname={location.pathname}
           />
         )}
-        {me?.role === 'data_manager' && (
+        {me?.user?.role === 'data_manager' && (
           <NavSection
             items={dataManagerNavigation}
             label={t('sidebar.admin')}
             pathname={location.pathname}
           />
         )}
-
       </SidebarContent>
 
       <SidebarFooter>

@@ -100,4 +100,6 @@ export const SLACK_CONTEXT = {
   sevenElevenConfirmed: '7 ELEVEN CONFIRMED',
   napOrange: 'NAP ORANGE',
   sobeys: 'SOBEYS',
+  bgFuels: 'BG FUELS',
+  circleKConfirmed: 'CIRCLE K CONFIRMED',
 } as const

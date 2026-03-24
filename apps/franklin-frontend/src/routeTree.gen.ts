@@ -35,13 +35,16 @@ import { Route as AuthAdminImportsSellOutLoblawsIndexRouteImport } from './route
 import { Route as AuthAdminImportsSellOutCircleKIndexRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k/index'
 import { Route as AuthAdminImportsSellOutCircleKQcatlIndexRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k-qcatl/index'
 import { Route as AuthAdminImportsSellOutCentralMarketIndexRouteImport } from './routes/_auth/admin/imports/sell-out-central-market/index'
+import { Route as AuthAdminImportsSellOutBgFuelsIndexRouteImport } from './routes/_auth/admin/imports/sell-out-bg-fuels/index'
 import { Route as AuthAdminImportsSellOut7ElevenIndexRouteImport } from './routes/_auth/admin/imports/sell-out-7-eleven/index'
 import { Route as AuthAdminImportsSellInTargetsIndexRouteImport } from './routes/_auth/admin/imports/sell-in-targets/index'
 import { Route as AuthAdminImportsSellInOrdersIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders/index'
 import { Route as AuthAdminImportsSellInOrdersConfirmedIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/index'
+import { Route as AuthAdminImportsSellInOrdersConfirmedCircleKIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed-circle-k/index'
 import { Route as AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/index'
 import { Route as AuthAdminImportsProductsIndexRouteImport } from './routes/_auth/admin/imports/products/index'
 import { Route as AuthAdminImportsProductFormatsIndexRouteImport } from './routes/_auth/admin/imports/product-formats/index'
+import { Route as AuthAdminImportsHistoryIndexRouteImport } from './routes/_auth/admin/imports/history/index'
 import { Route as AuthAdminImportsCustomersIndexRouteImport } from './routes/_auth/admin/imports/customers/index'
 import { Route as AuthAdminImportsAmazonOrdersIndexRouteImport } from './routes/_auth/admin/imports/amazon-orders/index'
 import { Route as AuthAdminImportsAmazonBundlesIndexRouteImport } from './routes/_auth/admin/imports/amazon-bundles/index'
@@ -54,11 +57,14 @@ import { Route as AuthAdminImportsSellOutLoblawsReportIdRouteImport } from './ro
 import { Route as AuthAdminImportsSellOutCircleKReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k/$reportId'
 import { Route as AuthAdminImportsSellOutCircleKQcatlReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
 import { Route as AuthAdminImportsSellOutCentralMarketReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-central-market/$reportId'
+import { Route as AuthAdminImportsSellOutBgFuelsReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-bg-fuels/$reportId'
 import { Route as AuthAdminImportsSellOut7ElevenReportIdRouteImport } from './routes/_auth/admin/imports/sell-out-7-eleven/$reportId'
 import { Route as AuthAdminImportsSellInTargetsReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-targets/$reportId'
 import { Route as AuthAdminImportsSellInOrdersReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders/$reportId'
 import { Route as AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
+import { Route as AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed-circle-k/$reportId'
 import { Route as AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRouteImport } from './routes/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+import { Route as AuthAdminImportsHistoryReportIdRouteImport } from './routes/_auth/admin/imports/history/$reportId'
 import { Route as AuthAdminImportsCustomersReportIdRouteImport } from './routes/_auth/admin/imports/customers/$reportId'
 import { Route as AuthAdminImportsAmazonOrdersReportIdRouteImport } from './routes/_auth/admin/imports/amazon-orders/$reportId'
 import { Route as AuthAdminImportsAmazonBundlesReportIdRouteImport } from './routes/_auth/admin/imports/amazon-bundles/$reportId'
@@ -201,6 +207,12 @@ const AuthAdminImportsSellOutCentralMarketIndexRoute =
     path: '/imports/sell-out-central-market/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellOutBgFuelsIndexRoute =
+  AuthAdminImportsSellOutBgFuelsIndexRouteImport.update({
+    id: '/imports/sell-out-bg-fuels/',
+    path: '/imports/sell-out-bg-fuels/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellOut7ElevenIndexRoute =
   AuthAdminImportsSellOut7ElevenIndexRouteImport.update({
     id: '/imports/sell-out-7-eleven/',
@@ -225,6 +237,12 @@ const AuthAdminImportsSellInOrdersConfirmedIndexRoute =
     path: '/imports/sell-in-orders-confirmed/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute =
+  AuthAdminImportsSellInOrdersConfirmedCircleKIndexRouteImport.update({
+    id: '/imports/sell-in-orders-confirmed-circle-k/',
+    path: '/imports/sell-in-orders-confirmed-circle-k/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute =
   AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRouteImport.update({
     id: '/imports/sell-in-orders-confirmed-7-eleven/',
@@ -241,6 +259,12 @@ const AuthAdminImportsProductFormatsIndexRoute =
   AuthAdminImportsProductFormatsIndexRouteImport.update({
     id: '/imports/product-formats/',
     path: '/imports/product-formats/',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsHistoryIndexRoute =
+  AuthAdminImportsHistoryIndexRouteImport.update({
+    id: '/imports/history/',
+    path: '/imports/history/',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsCustomersIndexRoute =
@@ -315,6 +339,12 @@ const AuthAdminImportsSellOutCentralMarketReportIdRoute =
     path: '/imports/sell-out-central-market/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellOutBgFuelsReportIdRoute =
+  AuthAdminImportsSellOutBgFuelsReportIdRouteImport.update({
+    id: '/imports/sell-out-bg-fuels/$reportId',
+    path: '/imports/sell-out-bg-fuels/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellOut7ElevenReportIdRoute =
   AuthAdminImportsSellOut7ElevenReportIdRouteImport.update({
     id: '/imports/sell-out-7-eleven/$reportId',
@@ -339,10 +369,22 @@ const AuthAdminImportsSellInOrdersConfirmedReportIdRoute =
     path: '/imports/sell-in-orders-confirmed/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
+const AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute =
+  AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRouteImport.update({
+    id: '/imports/sell-in-orders-confirmed-circle-k/$reportId',
+    path: '/imports/sell-in-orders-confirmed-circle-k/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
 const AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute =
   AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRouteImport.update({
     id: '/imports/sell-in-orders-confirmed-7-eleven/$reportId',
     path: '/imports/sell-in-orders-confirmed-7-eleven/$reportId',
+    getParentRoute: () => AuthAdminRouteRoute,
+  } as any)
+const AuthAdminImportsHistoryReportIdRoute =
+  AuthAdminImportsHistoryReportIdRouteImport.update({
+    id: '/imports/history/$reportId',
+    path: '/imports/history/$reportId',
     getParentRoute: () => AuthAdminRouteRoute,
   } as any)
 const AuthAdminImportsCustomersReportIdRoute =
@@ -384,11 +426,14 @@ export interface FileRoutesByFullPath {
   '/admin/imports/amazon-bundles/$reportId': typeof AuthAdminImportsAmazonBundlesReportIdRoute
   '/admin/imports/amazon-orders/$reportId': typeof AuthAdminImportsAmazonOrdersReportIdRoute
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/admin/imports/history/$reportId': typeof AuthAdminImportsHistoryReportIdRoute
   '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  '/admin/imports/sell-in-orders-confirmed-circle-k/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/admin/imports/sell-out-7-eleven/$reportId': typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  '/admin/imports/sell-out-bg-fuels/$reportId': typeof AuthAdminImportsSellOutBgFuelsReportIdRoute
   '/admin/imports/sell-out-central-market/$reportId': typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   '/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   '/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
@@ -401,13 +446,16 @@ export interface FileRoutesByFullPath {
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
+  '/admin/imports/history': typeof AuthAdminImportsHistoryIndexRoute
   '/admin/imports/product-formats': typeof AuthAdminImportsProductFormatsIndexRoute
   '/admin/imports/products': typeof AuthAdminImportsProductsIndexRoute
   '/admin/imports/sell-in-orders-confirmed-7-eleven': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  '/admin/imports/sell-in-orders-confirmed-circle-k': typeof AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
   '/admin/imports/sell-out-7-eleven': typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  '/admin/imports/sell-out-bg-fuels': typeof AuthAdminImportsSellOutBgFuelsIndexRoute
   '/admin/imports/sell-out-central-market': typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   '/admin/imports/sell-out-circle-k-qcatl': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   '/admin/imports/sell-out-circle-k': typeof AuthAdminImportsSellOutCircleKIndexRoute
@@ -437,11 +485,14 @@ export interface FileRoutesByTo {
   '/admin/imports/amazon-bundles/$reportId': typeof AuthAdminImportsAmazonBundlesReportIdRoute
   '/admin/imports/amazon-orders/$reportId': typeof AuthAdminImportsAmazonOrdersReportIdRoute
   '/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/admin/imports/history/$reportId': typeof AuthAdminImportsHistoryReportIdRoute
   '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  '/admin/imports/sell-in-orders-confirmed-circle-k/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute
   '/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/admin/imports/sell-out-7-eleven/$reportId': typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  '/admin/imports/sell-out-bg-fuels/$reportId': typeof AuthAdminImportsSellOutBgFuelsReportIdRoute
   '/admin/imports/sell-out-central-market/$reportId': typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   '/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   '/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
@@ -454,13 +505,16 @@ export interface FileRoutesByTo {
   '/admin/imports/amazon-bundles': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/admin/imports/amazon-orders': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/admin/imports/customers': typeof AuthAdminImportsCustomersIndexRoute
+  '/admin/imports/history': typeof AuthAdminImportsHistoryIndexRoute
   '/admin/imports/product-formats': typeof AuthAdminImportsProductFormatsIndexRoute
   '/admin/imports/products': typeof AuthAdminImportsProductsIndexRoute
   '/admin/imports/sell-in-orders-confirmed-7-eleven': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  '/admin/imports/sell-in-orders-confirmed-circle-k': typeof AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute
   '/admin/imports/sell-in-orders-confirmed': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/admin/imports/sell-in-orders': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/admin/imports/sell-in-targets': typeof AuthAdminImportsSellInTargetsIndexRoute
   '/admin/imports/sell-out-7-eleven': typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  '/admin/imports/sell-out-bg-fuels': typeof AuthAdminImportsSellOutBgFuelsIndexRoute
   '/admin/imports/sell-out-central-market': typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   '/admin/imports/sell-out-circle-k-qcatl': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   '/admin/imports/sell-out-circle-k': typeof AuthAdminImportsSellOutCircleKIndexRoute
@@ -493,11 +547,14 @@ export interface FileRoutesById {
   '/_auth/admin/imports/amazon-bundles/$reportId': typeof AuthAdminImportsAmazonBundlesReportIdRoute
   '/_auth/admin/imports/amazon-orders/$reportId': typeof AuthAdminImportsAmazonOrdersReportIdRoute
   '/_auth/admin/imports/customers/$reportId': typeof AuthAdminImportsCustomersReportIdRoute
+  '/_auth/admin/imports/history/$reportId': typeof AuthAdminImportsHistoryReportIdRoute
   '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute
   '/_auth/admin/imports/sell-in-orders-confirmed/$reportId': typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   '/_auth/admin/imports/sell-in-orders/$reportId': typeof AuthAdminImportsSellInOrdersReportIdRoute
   '/_auth/admin/imports/sell-in-targets/$reportId': typeof AuthAdminImportsSellInTargetsReportIdRoute
   '/_auth/admin/imports/sell-out-7-eleven/$reportId': typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  '/_auth/admin/imports/sell-out-bg-fuels/$reportId': typeof AuthAdminImportsSellOutBgFuelsReportIdRoute
   '/_auth/admin/imports/sell-out-central-market/$reportId': typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId': typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   '/_auth/admin/imports/sell-out-circle-k/$reportId': typeof AuthAdminImportsSellOutCircleKReportIdRoute
@@ -510,13 +567,16 @@ export interface FileRoutesById {
   '/_auth/admin/imports/amazon-bundles/': typeof AuthAdminImportsAmazonBundlesIndexRoute
   '/_auth/admin/imports/amazon-orders/': typeof AuthAdminImportsAmazonOrdersIndexRoute
   '/_auth/admin/imports/customers/': typeof AuthAdminImportsCustomersIndexRoute
+  '/_auth/admin/imports/history/': typeof AuthAdminImportsHistoryIndexRoute
   '/_auth/admin/imports/product-formats/': typeof AuthAdminImportsProductFormatsIndexRoute
   '/_auth/admin/imports/products/': typeof AuthAdminImportsProductsIndexRoute
   '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/': typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/': typeof AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute
   '/_auth/admin/imports/sell-in-orders-confirmed/': typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   '/_auth/admin/imports/sell-in-orders/': typeof AuthAdminImportsSellInOrdersIndexRoute
   '/_auth/admin/imports/sell-in-targets/': typeof AuthAdminImportsSellInTargetsIndexRoute
   '/_auth/admin/imports/sell-out-7-eleven/': typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  '/_auth/admin/imports/sell-out-bg-fuels/': typeof AuthAdminImportsSellOutBgFuelsIndexRoute
   '/_auth/admin/imports/sell-out-central-market/': typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   '/_auth/admin/imports/sell-out-circle-k-qcatl/': typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   '/_auth/admin/imports/sell-out-circle-k/': typeof AuthAdminImportsSellOutCircleKIndexRoute
@@ -549,11 +609,14 @@ export interface FileRouteTypes {
     | '/admin/imports/amazon-bundles/$reportId'
     | '/admin/imports/amazon-orders/$reportId'
     | '/admin/imports/customers/$reportId'
+    | '/admin/imports/history/$reportId'
     | '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+    | '/admin/imports/sell-in-orders-confirmed-circle-k/$reportId'
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
     | '/admin/imports/sell-out-7-eleven/$reportId'
+    | '/admin/imports/sell-out-bg-fuels/$reportId'
     | '/admin/imports/sell-out-central-market/$reportId'
     | '/admin/imports/sell-out-circle-k-qcatl/$reportId'
     | '/admin/imports/sell-out-circle-k/$reportId'
@@ -566,13 +629,16 @@ export interface FileRouteTypes {
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
     | '/admin/imports/customers'
+    | '/admin/imports/history'
     | '/admin/imports/product-formats'
     | '/admin/imports/products'
     | '/admin/imports/sell-in-orders-confirmed-7-eleven'
+    | '/admin/imports/sell-in-orders-confirmed-circle-k'
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
     | '/admin/imports/sell-out-7-eleven'
+    | '/admin/imports/sell-out-bg-fuels'
     | '/admin/imports/sell-out-central-market'
     | '/admin/imports/sell-out-circle-k-qcatl'
     | '/admin/imports/sell-out-circle-k'
@@ -602,11 +668,14 @@ export interface FileRouteTypes {
     | '/admin/imports/amazon-bundles/$reportId'
     | '/admin/imports/amazon-orders/$reportId'
     | '/admin/imports/customers/$reportId'
+    | '/admin/imports/history/$reportId'
     | '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+    | '/admin/imports/sell-in-orders-confirmed-circle-k/$reportId'
     | '/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/admin/imports/sell-in-orders/$reportId'
     | '/admin/imports/sell-in-targets/$reportId'
     | '/admin/imports/sell-out-7-eleven/$reportId'
+    | '/admin/imports/sell-out-bg-fuels/$reportId'
     | '/admin/imports/sell-out-central-market/$reportId'
     | '/admin/imports/sell-out-circle-k-qcatl/$reportId'
     | '/admin/imports/sell-out-circle-k/$reportId'
@@ -619,13 +688,16 @@ export interface FileRouteTypes {
     | '/admin/imports/amazon-bundles'
     | '/admin/imports/amazon-orders'
     | '/admin/imports/customers'
+    | '/admin/imports/history'
     | '/admin/imports/product-formats'
     | '/admin/imports/products'
     | '/admin/imports/sell-in-orders-confirmed-7-eleven'
+    | '/admin/imports/sell-in-orders-confirmed-circle-k'
     | '/admin/imports/sell-in-orders-confirmed'
     | '/admin/imports/sell-in-orders'
     | '/admin/imports/sell-in-targets'
     | '/admin/imports/sell-out-7-eleven'
+    | '/admin/imports/sell-out-bg-fuels'
     | '/admin/imports/sell-out-central-market'
     | '/admin/imports/sell-out-circle-k-qcatl'
     | '/admin/imports/sell-out-circle-k'
@@ -657,11 +729,14 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/amazon-bundles/$reportId'
     | '/_auth/admin/imports/amazon-orders/$reportId'
     | '/_auth/admin/imports/customers/$reportId'
+    | '/_auth/admin/imports/history/$reportId'
     | '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
+    | '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/$reportId'
     | '/_auth/admin/imports/sell-in-orders-confirmed/$reportId'
     | '/_auth/admin/imports/sell-in-orders/$reportId'
     | '/_auth/admin/imports/sell-in-targets/$reportId'
     | '/_auth/admin/imports/sell-out-7-eleven/$reportId'
+    | '/_auth/admin/imports/sell-out-bg-fuels/$reportId'
     | '/_auth/admin/imports/sell-out-central-market/$reportId'
     | '/_auth/admin/imports/sell-out-circle-k-qcatl/$reportId'
     | '/_auth/admin/imports/sell-out-circle-k/$reportId'
@@ -674,13 +749,16 @@ export interface FileRouteTypes {
     | '/_auth/admin/imports/amazon-bundles/'
     | '/_auth/admin/imports/amazon-orders/'
     | '/_auth/admin/imports/customers/'
+    | '/_auth/admin/imports/history/'
     | '/_auth/admin/imports/product-formats/'
     | '/_auth/admin/imports/products/'
     | '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/'
+    | '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/'
     | '/_auth/admin/imports/sell-in-orders-confirmed/'
     | '/_auth/admin/imports/sell-in-orders/'
     | '/_auth/admin/imports/sell-in-targets/'
     | '/_auth/admin/imports/sell-out-7-eleven/'
+    | '/_auth/admin/imports/sell-out-bg-fuels/'
     | '/_auth/admin/imports/sell-out-central-market/'
     | '/_auth/admin/imports/sell-out-circle-k-qcatl/'
     | '/_auth/admin/imports/sell-out-circle-k/'
@@ -883,6 +961,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellOutCentralMarketIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-out-bg-fuels/': {
+      id: '/_auth/admin/imports/sell-out-bg-fuels/'
+      path: '/imports/sell-out-bg-fuels'
+      fullPath: '/admin/imports/sell-out-bg-fuels'
+      preLoaderRoute: typeof AuthAdminImportsSellOutBgFuelsIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-out-7-eleven/': {
       id: '/_auth/admin/imports/sell-out-7-eleven/'
       path: '/imports/sell-out-7-eleven'
@@ -911,6 +996,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/': {
+      id: '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/'
+      path: '/imports/sell-in-orders-confirmed-circle-k'
+      fullPath: '/admin/imports/sell-in-orders-confirmed-circle-k'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmedCircleKIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/': {
       id: '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/'
       path: '/imports/sell-in-orders-confirmed-7-eleven'
@@ -930,6 +1022,13 @@ declare module '@tanstack/react-router' {
       path: '/imports/product-formats'
       fullPath: '/admin/imports/product-formats'
       preLoaderRoute: typeof AuthAdminImportsProductFormatsIndexRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/history/': {
+      id: '/_auth/admin/imports/history/'
+      path: '/imports/history'
+      fullPath: '/admin/imports/history'
+      preLoaderRoute: typeof AuthAdminImportsHistoryIndexRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/customers/': {
@@ -1016,6 +1115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellOutCentralMarketReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-out-bg-fuels/$reportId': {
+      id: '/_auth/admin/imports/sell-out-bg-fuels/$reportId'
+      path: '/imports/sell-out-bg-fuels/$reportId'
+      fullPath: '/admin/imports/sell-out-bg-fuels/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellOutBgFuelsReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-out-7-eleven/$reportId': {
       id: '/_auth/admin/imports/sell-out-7-eleven/$reportId'
       path: '/imports/sell-out-7-eleven/$reportId'
@@ -1044,11 +1150,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
+    '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/$reportId': {
+      id: '/_auth/admin/imports/sell-in-orders-confirmed-circle-k/$reportId'
+      path: '/imports/sell-in-orders-confirmed-circle-k/$reportId'
+      fullPath: '/admin/imports/sell-in-orders-confirmed-circle-k/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
     '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId': {
       id: '/_auth/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
       path: '/imports/sell-in-orders-confirmed-7-eleven/$reportId'
       fullPath: '/admin/imports/sell-in-orders-confirmed-7-eleven/$reportId'
       preLoaderRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRouteImport
+      parentRoute: typeof AuthAdminRouteRoute
+    }
+    '/_auth/admin/imports/history/$reportId': {
+      id: '/_auth/admin/imports/history/$reportId'
+      path: '/imports/history/$reportId'
+      fullPath: '/admin/imports/history/$reportId'
+      preLoaderRoute: typeof AuthAdminImportsHistoryReportIdRouteImport
       parentRoute: typeof AuthAdminRouteRoute
     }
     '/_auth/admin/imports/customers/$reportId': {
@@ -1092,11 +1212,14 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsAmazonBundlesReportIdRoute: typeof AuthAdminImportsAmazonBundlesReportIdRoute
   AuthAdminImportsAmazonOrdersReportIdRoute: typeof AuthAdminImportsAmazonOrdersReportIdRoute
   AuthAdminImportsCustomersReportIdRoute: typeof AuthAdminImportsCustomersReportIdRoute
+  AuthAdminImportsHistoryReportIdRoute: typeof AuthAdminImportsHistoryReportIdRoute
   AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute
+  AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute
   AuthAdminImportsSellInOrdersConfirmedReportIdRoute: typeof AuthAdminImportsSellInOrdersConfirmedReportIdRoute
   AuthAdminImportsSellInOrdersReportIdRoute: typeof AuthAdminImportsSellInOrdersReportIdRoute
   AuthAdminImportsSellInTargetsReportIdRoute: typeof AuthAdminImportsSellInTargetsReportIdRoute
   AuthAdminImportsSellOut7ElevenReportIdRoute: typeof AuthAdminImportsSellOut7ElevenReportIdRoute
+  AuthAdminImportsSellOutBgFuelsReportIdRoute: typeof AuthAdminImportsSellOutBgFuelsReportIdRoute
   AuthAdminImportsSellOutCentralMarketReportIdRoute: typeof AuthAdminImportsSellOutCentralMarketReportIdRoute
   AuthAdminImportsSellOutCircleKQcatlReportIdRoute: typeof AuthAdminImportsSellOutCircleKQcatlReportIdRoute
   AuthAdminImportsSellOutCircleKReportIdRoute: typeof AuthAdminImportsSellOutCircleKReportIdRoute
@@ -1109,13 +1232,16 @@ interface AuthAdminRouteRouteChildren {
   AuthAdminImportsAmazonBundlesIndexRoute: typeof AuthAdminImportsAmazonBundlesIndexRoute
   AuthAdminImportsAmazonOrdersIndexRoute: typeof AuthAdminImportsAmazonOrdersIndexRoute
   AuthAdminImportsCustomersIndexRoute: typeof AuthAdminImportsCustomersIndexRoute
+  AuthAdminImportsHistoryIndexRoute: typeof AuthAdminImportsHistoryIndexRoute
   AuthAdminImportsProductFormatsIndexRoute: typeof AuthAdminImportsProductFormatsIndexRoute
   AuthAdminImportsProductsIndexRoute: typeof AuthAdminImportsProductsIndexRoute
   AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute
+  AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute
   AuthAdminImportsSellInOrdersConfirmedIndexRoute: typeof AuthAdminImportsSellInOrdersConfirmedIndexRoute
   AuthAdminImportsSellInOrdersIndexRoute: typeof AuthAdminImportsSellInOrdersIndexRoute
   AuthAdminImportsSellInTargetsIndexRoute: typeof AuthAdminImportsSellInTargetsIndexRoute
   AuthAdminImportsSellOut7ElevenIndexRoute: typeof AuthAdminImportsSellOut7ElevenIndexRoute
+  AuthAdminImportsSellOutBgFuelsIndexRoute: typeof AuthAdminImportsSellOutBgFuelsIndexRoute
   AuthAdminImportsSellOutCentralMarketIndexRoute: typeof AuthAdminImportsSellOutCentralMarketIndexRoute
   AuthAdminImportsSellOutCircleKQcatlIndexRoute: typeof AuthAdminImportsSellOutCircleKQcatlIndexRoute
   AuthAdminImportsSellOutCircleKIndexRoute: typeof AuthAdminImportsSellOutCircleKIndexRoute
@@ -1136,8 +1262,11 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsAmazonOrdersReportIdRoute,
   AuthAdminImportsCustomersReportIdRoute:
     AuthAdminImportsCustomersReportIdRoute,
+  AuthAdminImportsHistoryReportIdRoute: AuthAdminImportsHistoryReportIdRoute,
   AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute:
     AuthAdminImportsSellInOrdersConfirmed7ElevenReportIdRoute,
+  AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute:
+    AuthAdminImportsSellInOrdersConfirmedCircleKReportIdRoute,
   AuthAdminImportsSellInOrdersConfirmedReportIdRoute:
     AuthAdminImportsSellInOrdersConfirmedReportIdRoute,
   AuthAdminImportsSellInOrdersReportIdRoute:
@@ -1146,6 +1275,8 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInTargetsReportIdRoute,
   AuthAdminImportsSellOut7ElevenReportIdRoute:
     AuthAdminImportsSellOut7ElevenReportIdRoute,
+  AuthAdminImportsSellOutBgFuelsReportIdRoute:
+    AuthAdminImportsSellOutBgFuelsReportIdRoute,
   AuthAdminImportsSellOutCentralMarketReportIdRoute:
     AuthAdminImportsSellOutCentralMarketReportIdRoute,
   AuthAdminImportsSellOutCircleKQcatlReportIdRoute:
@@ -1169,11 +1300,14 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
   AuthAdminImportsAmazonOrdersIndexRoute:
     AuthAdminImportsAmazonOrdersIndexRoute,
   AuthAdminImportsCustomersIndexRoute: AuthAdminImportsCustomersIndexRoute,
+  AuthAdminImportsHistoryIndexRoute: AuthAdminImportsHistoryIndexRoute,
   AuthAdminImportsProductFormatsIndexRoute:
     AuthAdminImportsProductFormatsIndexRoute,
   AuthAdminImportsProductsIndexRoute: AuthAdminImportsProductsIndexRoute,
   AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute:
     AuthAdminImportsSellInOrdersConfirmed7ElevenIndexRoute,
+  AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute:
+    AuthAdminImportsSellInOrdersConfirmedCircleKIndexRoute,
   AuthAdminImportsSellInOrdersConfirmedIndexRoute:
     AuthAdminImportsSellInOrdersConfirmedIndexRoute,
   AuthAdminImportsSellInOrdersIndexRoute:
@@ -1182,6 +1316,8 @@ const AuthAdminRouteRouteChildren: AuthAdminRouteRouteChildren = {
     AuthAdminImportsSellInTargetsIndexRoute,
   AuthAdminImportsSellOut7ElevenIndexRoute:
     AuthAdminImportsSellOut7ElevenIndexRoute,
+  AuthAdminImportsSellOutBgFuelsIndexRoute:
+    AuthAdminImportsSellOutBgFuelsIndexRoute,
   AuthAdminImportsSellOutCentralMarketIndexRoute:
     AuthAdminImportsSellOutCentralMarketIndexRoute,
   AuthAdminImportsSellOutCircleKQcatlIndexRoute:

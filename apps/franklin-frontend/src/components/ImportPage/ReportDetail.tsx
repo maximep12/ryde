@@ -1,6 +1,6 @@
 import config from '@/config'
 import { type ImportReport } from '@/hooks/queries/imports/useImportReports'
-import { getRydeToken } from '@/stores/ryde-session'
+import { getSessionToken } from '@/stores/session'
 import { Button, Card, CardContent, CardHeader, CardTitle } from '@repo/ui/components'
 import { useRouter } from '@tanstack/react-router'
 import {
@@ -35,8 +35,8 @@ export function ImportReportDetail({ report }: { report: ImportReport | undefine
 
   async function handleDownload() {
     if (!report?.downloadPath) return
-    const token = getRydeToken()
-    const res = await fetch(`${config.rydeBackendURL}${report.downloadPath}`, {
+    const token = getSessionToken()
+    const res = await fetch(`${config.backendURL}${report.downloadPath}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
     if (!res.ok) return

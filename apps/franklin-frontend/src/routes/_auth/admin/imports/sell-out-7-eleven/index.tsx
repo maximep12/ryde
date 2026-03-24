@@ -11,15 +11,17 @@ export const Route = createFileRoute('/_auth/admin/imports/sell-out-7-eleven/')(
   },
 })
 
+const EXPECTED_COLUMNS = ['Item Code', 'Description', 'UPC', 'Pack', 'Size', 'Quantity', 'Amount']
+
 function ImportSellOut7ElevenPage() {
   const navigate = useNavigate()
   return (
     <ImportPage
       title="7-Eleven Sell-Out"
-      description="Upload the 7-Eleven sell-out Excel file"
+      description="Upload the 7-Eleven sell-out Excel file (SSR_001 format)"
       uploadEndpoint="/banners/7eleven"
       reportsEndpoint="/banners/reports/7eleven"
-      expectedColumns={[]}
+      expectedColumns={EXPECTED_COLUMNS}
       unit="rows"
       uploadType="sell-out-7-eleven"
       accept={['.xlsx', '.xls']}

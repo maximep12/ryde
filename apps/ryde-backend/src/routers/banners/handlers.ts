@@ -6,6 +6,7 @@ import { receiveFileUpload } from '../../lib/fileUpload'
 import { sendSlackNotification, SLACK_CONTEXT } from '../../lib/slack'
 import {
   canUpload7Eleven,
+  canUploadBgFuels,
   canUploadCentralMarket,
   canUploadCircleK,
   canUploadLoblaws,
@@ -18,9 +19,13 @@ import {
 } from '../../middlewares/auth'
 import { UPLOAD_RESULT_STATES } from '../../utils/constants.js'
 import {
+  getAllReports,
+  getDistinctReportTypes,
+  getReportById,
   getReportsByType,
   linkReportToDataImport,
   process7ElevenFile,
+  processBgFuelsFile,
   processCentralMarketFile,
   processCircleKFile,
   processCircleKQcAtlFile,
@@ -30,6 +35,7 @@ import {
   processPetroCanadaFile,
   processRabbaFile,
   processSobeysFile,
+  REPORT_TYPE_BG_FUELS,
   REPORT_TYPE_CENTRAL_MARKET,
   REPORT_TYPE_CIRCLE_K,
   REPORT_TYPE_CIRCLE_K_QCATL,
@@ -51,6 +57,42 @@ const tokenIsValid = requireRoles('admin', 'data_manager')
 const bannersRouter = new Hono<{ Variables: ContextVariables }>()
 
 export const bannersRouterDefinition = bannersRouter
+
+  /**
+   * GET /banners/reports/all — List all import reports (paginated)
+   */
+  .get('/reports/all', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 20)))
+
+    const types = c.req.query('types')
+    const dateFrom = c.req.query('dateFrom')
+    const dateTo = c.req.query('dateTo')
+    const status = c.req.query('status') as 'success' | 'failed' | undefined
+    const uploadedBy = c.req.query('uploadedBy')
+
+    const filters = {
+      types: types ? types.split(',') : undefined,
+      dateFrom: dateFrom || undefined,
+      dateTo: dateTo || undefined,
+      status: status === 'success' || status === 'failed' ? status : undefined,
+      uploadedBy: uploadedBy || undefined,
+    }
+
+    const { rows, total } = await getAllReports(page, pageSize, filters)
+    return c.json({
+      reports: rows,
+      pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) },
+    })
+  })
+
+  /**
+   * GET /banners/reports/types — List all distinct report types
+   */
+  .get('/reports/types', tokenIsValid, async (c) => {
+    const types = await getDistinctReportTypes()
+    return c.json({ types })
+  })
 
   /**
    * POST /banners/rabba — Import Rabba weekly sell-out CSV
@@ -199,7 +241,10 @@ export const bannersRouterDefinition = bannersRouter
     try {
       const res = await processCircleKQcAtlFile(buffer)
 
-      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Circle K QC+ATL import success')
+      logger.info(
+        { ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated },
+        'Circle K QC+ATL import success',
+      )
       await sendSlackNotification({ success: true, context: SLACK_CONTEXT.circleK })
       await updateReportSuccess(report.id, {
         created: res.createdRows,
@@ -283,7 +328,10 @@ export const bannersRouterDefinition = bannersRouter
     try {
       const res = await processCentralMarketFile(buffer)
 
-      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'Central Market import success')
+      logger.info(
+        { ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated },
+        'Central Market import success',
+      )
       await sendSlackNotification({ success: true, context: SLACK_CONTEXT.centralMarket })
       await updateReportSuccess(report.id, {
         created: res.createdRows,
@@ -314,7 +362,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, 'Central Market import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.centralMarket })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.centralMarket,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -376,7 +427,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, 'NAP Orange import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.napOrange })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.napOrange,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -438,7 +492,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, 'Sobeys import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.sobeys })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.sobeys,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -500,7 +557,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, 'Loblaws import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.loblaws })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.loblaws,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -562,7 +622,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, 'Parkland import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.parkland })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.parkland,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -624,7 +687,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, 'Petro Canada import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.petroCanada })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.petroCanada,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -686,7 +752,10 @@ export const bannersRouterDefinition = bannersRouter
     } catch (error) {
       const err = error as { message?: string; code?: number }
       logger.error({ err }, '7-Eleven import error')
-      await sendSlackNotification({ error: { message: err.message ?? 'Unknown error', code: err.code }, context: SLACK_CONTEXT.sevenEleven })
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.sevenEleven,
+      })
       await updateReportFailure(report.id, err.message ?? 'Unknown error')
       throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
     }
@@ -697,4 +766,81 @@ export const bannersRouterDefinition = bannersRouter
     const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
     const { rows, total } = await getReportsByType(REPORT_TYPE_SEVEN_ELEVEN, page, pageSize)
     return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * POST /banners/bgFuels — Import BG Fuels sell-out pipe-delimited file
+   */
+  .post('/bgFuels', canUploadBgFuels, async (c) => {
+    logger.info('BG Fuels import start')
+    const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_BG_FUELS,
+      type: 'sell-out',
+      banner: 'bg-fuels',
+      uploadedBy: c.get('user').id,
+    })
+
+    try {
+      const res = await processBgFuelsFile(buffer)
+
+      logger.info({ ordersCreated: res.ordersCreated, ordersUpdated: res.ordersUpdated }, 'BG Fuels import success')
+      await sendSlackNotification({ success: true, context: SLACK_CONTEXT.bgFuels })
+      await updateReportSuccess(report.id, {
+        created: res.createdRows,
+        updated: res.updatedRows,
+        deleted: res.deletedRows,
+        rejected: res.rejected,
+        identical: res.identicalRows,
+      })
+      if (res.dataImportId) await linkReportToDataImport(report.id, res.dataImportId)
+
+      return c.json({
+        result: {
+          created: res.ordersCreated,
+          updated: res.ordersUpdated,
+          unit: 'BG Fuels orders',
+          status: res.rejected.length ? UPLOAD_RESULT_STATES.withError : UPLOAD_RESULT_STATES.success,
+        },
+        rows: {
+          received: res.received,
+          rejected: res.rejected.length,
+          created: res.createdRows,
+          updated: res.updatedRows,
+          deleted: res.deletedRows,
+          identical: res.identicalRows,
+        },
+        warnings: res.rejected,
+      })
+    } catch (error) {
+      const err = error as { message?: string; code?: number }
+      logger.error({ err }, 'BG Fuels import error')
+      await sendSlackNotification({
+        error: { message: err.message ?? 'Unknown error', code: err.code },
+        context: SLACK_CONTEXT.bgFuels,
+      })
+      await updateReportFailure(report.id, err.message ?? 'Unknown error')
+      throw new HTTPException((err.code ?? 400) as 400 | 406 | 500, { message: err.message ?? 'Upload failed' })
+    }
+  })
+
+  .get('/reports/bgFuels', tokenIsValid, async (c) => {
+    const page = Math.max(1, Number(c.req.query('page') ?? 1))
+    const pageSize = Math.min(50, Math.max(1, Number(c.req.query('pageSize') ?? 10)))
+    const { rows, total } = await getReportsByType(REPORT_TYPE_BG_FUELS, page, pageSize)
+    return c.json({ reports: rows, pagination: { page, pageSize, total, totalPages: Math.ceil(total / pageSize) } })
+  })
+
+  /**
+   * GET /banners/reports/:id — Get a single report by ID
+   * Registered after all named /reports/<banner> routes to avoid param capture conflicts.
+   */
+  .get('/reports/:id', tokenIsValid, async (c) => {
+    const id = Number(c.req.param('id'))
+    if (Number.isNaN(id)) return c.json({ error: 'Invalid report ID' }, 400)
+    const report = await getReportById(id)
+    if (!report) return c.json({ error: 'Report not found' }, 404)
+    return c.json({ report })
   })

@@ -18,7 +18,8 @@ function getStorageKey(userId: string | number) {
 }
 
 export function useRecentlyViewedClients() {
-  const { data: user } = useMe()
+  const { data: me } = useMe()
+  const user = me?.user
   const [recentClients, setRecentClients] = useState<RecentlyViewedClient[]>([])
 
   // Load from local storage when user is available

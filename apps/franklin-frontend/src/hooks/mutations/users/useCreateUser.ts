@@ -1,4 +1,5 @@
-import { getApi } from '@/stores/api'
+import config from '@/config'
+import { getSessionToken } from '@/stores/session'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 export type UserRole = 'admin' | 'data_manager' | 'trade_rep'
@@ -18,8 +19,15 @@ export function useCreateUser() {
 
   return useMutation({
     mutationFn: async (input: CreateUserInput) => {
-      const api = getApi()
-      const res = await api.example.users.$post({ json: input })
+      const token = getSessionToken()
+      const res = await fetch(`${config.backendURL}/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(input),
+      })
       if (!res.ok) {
         const error = await res.json()
         throw new Error((error as { message?: string }).message || 'Failed to create user')

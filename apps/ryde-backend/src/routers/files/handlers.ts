@@ -106,11 +106,7 @@ export const filesRouterDefinition = filesRouter
       const weeklyTargets = await getWeeklyTargetsData(startDate, endDate)
 
       // STEP 2: Load template with JSZip (preserves slicers/pivots)
-      const templatePath = path.join(
-        process.cwd(),
-        'templates',
-        PERIOD_TARGETS_TEMPLATE,
-      )
+      const templatePath = path.join(process.cwd(), 'templates', PERIOD_TARGETS_TEMPLATE)
       const templateBuffer = await fs.readFile(templatePath)
       const zip = await JSZip.loadAsync(templateBuffer)
 

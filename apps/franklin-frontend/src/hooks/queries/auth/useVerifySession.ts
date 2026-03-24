@@ -1,5 +1,4 @@
 import { getApi } from '@/stores/api'
-import { destroyRydeToken } from '@/stores/ryde-session'
 import { destroySessionToken, getSessionToken } from '@/stores/session'
 import { MILLIS } from '@repo/constants'
 import { useQuery } from '@tanstack/react-query'
@@ -8,7 +7,6 @@ const redirectToLogin = () => window.location.replace(`/login?redirect=${window.
 
 export async function handleInvalidSession() {
   destroySessionToken()
-  destroyRydeToken()
   redirectToLogin()
 }
 
@@ -21,7 +19,7 @@ export async function verifySession() {
 
   try {
     const api = getApi()
-    const res = await api.auth.session.verify.$post({ json: { sessionToken } })
+    const res = await api.auth.verify.$get()
     if (res.status !== 204) {
       handleInvalidSession()
       return res

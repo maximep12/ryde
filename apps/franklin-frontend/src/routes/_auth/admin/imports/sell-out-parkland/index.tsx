@@ -11,15 +11,17 @@ export const Route = createFileRoute('/_auth/admin/imports/sell-out-parkland/')(
   },
 })
 
+const EXPECTED_COLUMNS = ['Store ID', 'Product Name', 'Date columns (Units/Sales)']
+
 function ImportSellOutParklandPage() {
   const navigate = useNavigate()
   return (
     <ImportPage
       title="Parkland Sell-Out"
-      description="Upload the Parkland sell-out Excel file"
+      description="Upload the Parkland sell-out Excel file (Data sheet)"
       uploadEndpoint="/banners/parkland"
       reportsEndpoint="/banners/reports/parkland"
-      expectedColumns={[]}
+      expectedColumns={EXPECTED_COLUMNS}
       unit="rows"
       uploadType="sell-out-parkland"
       accept={['.xlsx', '.xls']}

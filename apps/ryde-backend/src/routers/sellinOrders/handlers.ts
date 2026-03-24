@@ -31,11 +31,15 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
   .post('/file', tokenIsValid, async (c) => {
     logger.info('Sell-in import start')
     const fileName = (c.req.header('content-disposition') ?? '').replace('filename=', '') || 'unknown'
-    const { buffer, report } = await receiveFileUpload({ request: c.req.raw, fileName, reportType: REPORT_TYPE_SELLIN, type: 'sell-in', uploadedBy: c.get('user').id })
+    const { buffer, report } = await receiveFileUpload({
+      request: c.req.raw,
+      fileName,
+      reportType: REPORT_TYPE_SELLIN,
+      type: 'sell-in',
+      uploadedBy: c.get('user').id,
+    })
 
     try {
-
-
       const contentBySheet = await readExcelFile({
         stream: bufferToStream(buffer),
         expected: [
@@ -63,7 +67,9 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
 
       const billingDocIdsInFile = [
         ...new Set(
-          valuesWithoutGrandTotal.map((v) => Number((v as Record<string, unknown>).billingDocument)).filter((id) => !isNaN(id)),
+          valuesWithoutGrandTotal
+            .map((v) => Number((v as Record<string, unknown>).billingDocument))
+            .filter((id) => !isNaN(id)),
         ),
       ]
 
@@ -146,7 +152,9 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
           const createdOnRaw = String(createdOn)
           orderMap.set(billingDocumentId, {
             customerId: customerIdNum,
-            billingDate: billingDateRaw.includes('T') ? (billingDateRaw.split('T')[0] ?? billingDateRaw) : billingDateRaw,
+            billingDate: billingDateRaw.includes('T')
+              ? (billingDateRaw.split('T')[0] ?? billingDateRaw)
+              : billingDateRaw,
             billingDocumentId,
             creationDate: createdOnRaw.includes('T') ? (createdOnRaw.split('T')[0] ?? createdOnRaw) : createdOnRaw,
             content: [contentRow],
@@ -208,7 +216,12 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
       await db.transaction(async (tx) => {
         const insertOrderOps = []
         for (let i = 0; i < newOrders.length; i += CHUNK_SIZE) {
-          insertOrderOps.push(tx.insert(replenOrders).values(newOrders.slice(i, i + CHUNK_SIZE)).onConflictDoNothing())
+          insertOrderOps.push(
+            tx
+              .insert(replenOrders)
+              .values(newOrders.slice(i, i + CHUNK_SIZE))
+              .onConflictDoNothing(),
+          )
         }
         const insertContentOps = []
         for (let i = 0; i < newContentRows.length; i += CHUNK_SIZE) {
@@ -217,7 +230,9 @@ export const sellinOrdersRouterDefinition = sellinOrdersRouter
         await Promise.all([
           ...insertOrderOps,
           ...insertContentOps,
-          ...(deleteIds.length ? [tx.delete(replenOrdersContent).where(inArray(replenOrdersContent.id, deleteIds))] : []),
+          ...(deleteIds.length
+            ? [tx.delete(replenOrdersContent).where(inArray(replenOrdersContent.id, deleteIds))]
+            : []),
           ...updateOps.map(({ id, quantity }) =>
             tx.update(replenOrdersContent).set({ quantity }).where(eq(replenOrdersContent.id, id)),
           ),
